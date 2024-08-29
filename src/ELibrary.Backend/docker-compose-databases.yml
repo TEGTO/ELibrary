@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  elibrary-db:
+    container_name: elibrary-db
+    image: postgres
+    restart: always
+    ports:
+    - "54303:5432"
+    networks:
+    - backend-net
+    volumes:
+    - ./init_history.sql:/docker-entrypoint-initdb.d/init_history.sql
+    - elibrary-db:/var/lib/postgresql/data
+
+volumes:
+  elibrary-db:
+
+networks:
+  backend-net:

@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  userapi:
+    container_name: elibrary-user-api
+    image: ${DOCKER_REGISTRY-}userapi
+    build:
+      context: .
+      dockerfile: UserApi/Dockerfile
+    ports: 
+      - 7129:8081
+    networks:
+    - backend-net
+
+networks:
+  backend-net:

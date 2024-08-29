@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerPublishLocally>False</DockerPublishLocally>
+    <ProjectGuid>22576602-ae6c-4768-9cd2-a38a824f4ebb</ProjectGuid>
+    <DockerComposeProjectName>elibrary-backend-dev</DockerComposeProjectName>
+    <AdditionalComposeFilePaths>docker-compose-databases.yml;</AdditionalComposeFilePaths>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include=".env" />
+    <None Include="docker-compose-databases.override.yml">
+      <DependentUpon>docker-compose-databases.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose-databases.yml" />
+    <None Include="docker-compose.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.yml" />
+    <None Include=".dockerignore" />
+  </ItemGroup>
+</Project>
