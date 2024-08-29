@@ -1,4 +1,4 @@
-﻿namespace AuthenticationApi.Domain.Dtos
+﻿namespace UserApi.Domain.Dtos
 {
     public class AuthToken
     {

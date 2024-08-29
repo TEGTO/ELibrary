@@ -1,4 +1,4 @@
-﻿namespace AuthenticationApi
+﻿namespace UserApi
 {
     public class Configuration
     {

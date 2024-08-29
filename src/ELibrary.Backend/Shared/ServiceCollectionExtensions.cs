@@ -34,14 +34,13 @@ namespace Shared
             ValidatorOptions.Global.LanguageManager.Enabled = false;
             return services;
         }
-        public static IServiceCollection AddApplicationCors(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
+        public static IServiceCollection AddApplicationCors(this IServiceCollection services, IConfiguration configuration, string allowSpecificOrigins, bool isDevelopment)
         {
-            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-            var allowedOrigins = configuration.GetSection(Configuration.ALLOWED_CORS_ORIGINS).Get<string[]>() ?? [];
+            var allowedOrigins = configuration.GetSection(Configuration.ALLOWED_CORS_ORIGINS).Get<string[]>() ?? new string[0];
 
             services.AddCors(options =>
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
+                options.AddPolicy(name: allowSpecificOrigins, policy =>
                 {
                     policy.WithOrigins(allowedOrigins)
                     .AllowAnyHeader()

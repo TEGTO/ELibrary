@@ -1,6 +1,6 @@
 ﻿using UserApi.Domain.Dtos;
 
-namespace AuthenticationApi.Domain.Dtos
+namespace UserApi.Domain.Dtos
 {
     public class UserRegistrationRequest
     {

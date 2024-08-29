@@ -1,9 +1,10 @@
 ﻿using Authentication.Models;
 using Authentication.Services;
-using AuthenticationApi.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using UserApi.Domain.Entities;
 
-namespace AuthenticationApi.Services
+namespace UserApi.Services
 {
     public class AuthService : IAuthService
     {
@@ -41,6 +42,10 @@ namespace AuthenticationApi.Services
             var user = await userManager.FindByEmailAsync(login);
             user = user == null ? await userManager.FindByNameAsync(login) : user;
             return user;
+        }
+        public async Task<User> GetUserAsync(ClaimsPrincipal principal)
+        {
+            return await userManager.GetUserAsync(principal);
         }
         public async Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, double refreshTokenExpiryInDays)
         {

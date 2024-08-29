@@ -33,11 +33,11 @@ namespace Shared.Middlewares
             }
             catch (UnauthorizedAccessException ex)
             {
-                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, [ex.Message]);
+                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, new[] { ex.Message });
             }
             catch (Exception ex)
             {
-                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, [ex.Message]);
+                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { ex.Message });
             }
         }
         private async Task SetError(HttpContext httpContext, HttpStatusCode httpStatusCode, Exception ex, string[] messages)

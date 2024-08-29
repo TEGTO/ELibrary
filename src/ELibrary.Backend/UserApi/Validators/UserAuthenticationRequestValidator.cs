@@ -1,7 +1,7 @@
-﻿using AuthenticationApi.Domain.Dtos;
+﻿using UserApi.Domain.Dtos;
 using FluentValidation;
 
-namespace AuthenticationApi.Validators
+namespace UserApi.Validators
 {
     public class UserAuthenticationRequestValidator : AbstractValidator<UserAuthenticationRequest>
     {

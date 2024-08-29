@@ -6,7 +6,7 @@ services:
     image: postgres
     restart: always
     ports:
-    - "54303:5432"
+    - "54301:5432"
     networks:
     - backend-net
     volumes:

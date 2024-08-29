@@ -1,15 +1,15 @@
 ﻿using Authentication.Models;
-using AuthenticationApi.Domain.Dtos;
-using AuthenticationApi.Domain.Entities;
-using AuthenticationApi.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos;
 using System.Net;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Responses;
+using UserApi.Domain.Entities;
+using UserApi.Services;
 
-namespace AuthenticationApi.Controllers
+namespace UserApi.Controllers
 {
     [Route("auth")]
     [ApiController]
@@ -49,7 +49,7 @@ namespace AuthenticationApi.Controllers
                 });
             }
 
-            return Created($"/users/{user.Id}", null);
+            return Created($"/user", null);
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserAuthenticationResponse>> Login([FromBody] UserAuthenticationRequest request)
@@ -80,6 +80,29 @@ namespace AuthenticationApi.Controllers
             var newToken = await authService.RefreshTokenAsync(tokenData, expiryInDays);
             var tokenDto = mapper.Map<AuthToken>(newToken);
             return Ok(tokenDto);
+        }
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<ActionResult<GetCurrentUserResponse>> GetCurrentUser()
+        {
+            var user = await authService.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound(new ResponseError
+                {
+                    StatusCode = "404",
+                    Messages = new[] { "User not found." }
+                });
+            }
+
+            var response = new GetCurrentUserResponse()
+            {
+                UserName = user.UserName,
+                UserInfo = mapper.Map<UserInfoDto>(user.UserInfo)
+            };
+
+            return Ok(response);
         }
     }
 }

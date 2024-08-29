@@ -3,10 +3,13 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <DockerPublishLocally>False</DockerPublishLocally>
+	<DockerPublishLocally>False</DockerPublishLocally>
+	<DockerLaunchAction>None</DockerLaunchAction>
+	<DockerDevelopmentMode>Fast</DockerDevelopmentMode>
     <ProjectGuid>22576602-ae6c-4768-9cd2-a38a824f4ebb</ProjectGuid>
+	<DockerServiceName>elibrary-backend</DockerServiceName>
     <DockerComposeProjectName>elibrary-backend-dev</DockerComposeProjectName>
-    <AdditionalComposeFilePaths>docker-compose-databases.yml;</AdditionalComposeFilePaths>
+    <AdditionalComposeFilePaths>docker-compose-databases.yml;docker-compose-databases.override.yml;</AdditionalComposeFilePaths>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".env" />

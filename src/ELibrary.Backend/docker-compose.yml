@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: UserApi/Dockerfile
     ports: 
-      - 7129:8081
+      - 7130:8081
     networks:
     - backend-net
 

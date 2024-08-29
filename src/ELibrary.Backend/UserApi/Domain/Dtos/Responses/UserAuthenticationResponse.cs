@@ -1,4 +1,4 @@
-﻿using AuthenticationApi.Domain.Dtos;
+﻿using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos;
 
 namespace UserApi.Domain.Dtos.Responses

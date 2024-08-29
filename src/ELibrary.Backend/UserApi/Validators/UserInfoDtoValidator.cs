@@ -9,7 +9,7 @@ namespace UserApi.Validators
         {
             RuleFor(x => x.Name).NotNull().NotEmpty().MaximumLength(256);
             RuleFor(x => x.LastName).NotNull().NotEmpty().MaximumLength(256);
-            RuleFor(x => x.Adress).NotNull().NotEmpty().MaximumLength(256);
+            RuleFor(x => x.Address).NotNull().NotEmpty().MaximumLength(256);
         }
     }
 }

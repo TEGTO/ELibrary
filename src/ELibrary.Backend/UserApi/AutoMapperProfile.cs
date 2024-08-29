@@ -1,13 +1,11 @@
 ﻿using Authentication.Models;
-using AuthenticationApi.Domain.Dtos;
-using AuthenticationApi.Domain.Entities;
-using AuthenticationApi.Domain.Models;
+using UserApi.Domain.Dtos;
+using UserApi.Domain.Entities;
 using AutoMapper;
 using UserApi.Domain.Dtos;
-using UserApi.Domain.Dtos.Requests;
 using UserApi.Domain.Entities;
 
-namespace AuthenticationApi
+namespace UserApi
 {
     public class AutoMapperProfile : Profile
     {
@@ -19,7 +17,6 @@ namespace AuthenticationApi
             CreateMap<AuthToken, AccessTokenData>();
             CreateMap<UserInfo, UserInfoDto>();
             CreateMap<UserInfoDto, UserInfo>();
-            CreateMap<UserUpdateDataRequest, UserUpdateData>();
         }
     }
 }
