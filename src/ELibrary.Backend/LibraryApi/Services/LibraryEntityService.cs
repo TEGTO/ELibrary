@@ -9,12 +9,12 @@ namespace LibraryApi.Services
     {
         private readonly IDatabaseRepository<LibraryDbContext> repository;
 
-        protected LibraryEntityService(IDatabaseRepository<LibraryDbContext> repository)
+        public LibraryEntityService(IDatabaseRepository<LibraryDbContext> repository)
         {
             this.repository = repository;
         }
 
-        public async Task<TEntity?> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public virtual async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
             {
@@ -22,7 +22,21 @@ namespace LibraryApi.Services
             }
         }
 
-        public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<TEntity>> GetPaginatedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+        {
+            var list = new List<TEntity>();
+            using (var dbContext = await CreateDbContextAsync(cancellationToken))
+            {
+                list.AddRange(await dbContext.Set<TEntity>()
+                                      .AsNoTracking()
+                                      .Skip((pageNumber - 1) * pageSize)
+                                      .Take(pageSize)
+                                      .ToListAsync(cancellationToken));
+            }
+            return list;
+        }
+
+        public virtual async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
             {
@@ -32,7 +46,7 @@ namespace LibraryApi.Services
             }
         }
 
-        public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
             {
@@ -43,7 +57,7 @@ namespace LibraryApi.Services
             }
         }
 
-        public async Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
+        public virtual async Task DeleteByIdAsync(int id, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
             {
@@ -56,7 +70,7 @@ namespace LibraryApi.Services
             }
         }
 
-        private async Task<LibraryDbContext> CreateDbContextAsync(CancellationToken cancellationToken)
+        protected async Task<LibraryDbContext> CreateDbContextAsync(CancellationToken cancellationToken)
         {
             return await repository.CreateDbContextAsync(cancellationToken);
         }

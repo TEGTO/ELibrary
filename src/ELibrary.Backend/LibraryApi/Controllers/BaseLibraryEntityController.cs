@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LibraryApi.Domain.Dto;
 using LibraryApi.Domain.Entities;
 using LibraryApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TGetResponse>> GetById(string id, CancellationToken cancellationToken)
+        public async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
             var entity = await entityService.GetByIdAsync(id, cancellationToken);
 
@@ -31,6 +32,13 @@ namespace LibraryApi.Controllers
             }
 
             return Ok(mapper.Map<TGetResponse>(entity));
+        }
+
+        [HttpPost("pagination")]
+        public async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(PaginatedRequest request, CancellationToken cancellationToken)
+        {
+            var entities = await entityService.GetPaginatedAsync(request.PageNumber, request.PageSize, cancellationToken);
+            return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
 
         [HttpPost]
@@ -53,7 +61,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteById(string id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
         {
             await entityService.DeleteByIdAsync(id, cancellationToken);
             return Ok();

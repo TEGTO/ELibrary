@@ -6,6 +6,7 @@ using LibraryApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;
+using Shared.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,8 @@ builder.Services.AddDbContextFactory<LibraryDbContext>(options =>
 
 builder.Services.AddSingleton<ILibraryEntityService<Author>, LibraryEntityService<Author>>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
-builder.Services.AddSingleton<ILibraryEntityService<Book>, LibraryEntityService<Book>>();
+builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
+builder.Services.AddSingleton<IDatabaseRepository<LibraryDbContext>, DatabaseRepository<LibraryDbContext>>();
 
 #endregion
 

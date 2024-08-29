@@ -7,7 +7,7 @@ namespace LibraryApi.Validators.Book
     {
         public UpdateBookRequestValidator()
         {
-            RuleFor(x => x.Id).NotNull().NotEmpty().MaximumLength(256);
+            RuleFor(x => x.Id).GreaterThan(0);
             RuleFor(x => x.Title).NotNull().NotEmpty().MaximumLength(256);
             RuleFor(x => x.AuthorId).NotNull().NotEmpty().MaximumLength(256);
             RuleFor(x => x.GenreId).NotNull().NotEmpty().MaximumLength(256);

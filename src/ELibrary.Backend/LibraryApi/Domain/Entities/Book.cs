@@ -8,8 +8,8 @@ namespace LibraryApi.Domain.Entities
         [MaxLength(256)]
         public string Title { get; set; } = default!;
         public DateTime PublicationDate { get; set; }
-        public string AuthorId { get; set; } = default!;
-        public string GenreId { get; set; } = default!;
+        public int AuthorId { get; set; } = default!;
+        public int GenreId { get; set; } = default!;
         public Author Author { get; set; } = default!;
         public Genre Genre { get; set; } = default!;
 

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LibraryApi.Controllers
 {
     [Route("author")]
-    public class AuthorController : BaseLibraryEntityController<Author, GetAuthorByIdResponse, CreateAuthorRequest, CreateAuthorResponse, UpdateAuthorRequest>
+    public class AuthorController : BaseLibraryEntityController<Author, GetAuthorResponse, CreateAuthorRequest, CreateAuthorResponse, UpdateAuthorRequest>
     {
         public AuthorController(ILibraryEntityService<Author> entityService, IMapper mapper) : base(entityService, mapper)
         {

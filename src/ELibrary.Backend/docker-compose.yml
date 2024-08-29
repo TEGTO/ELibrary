@@ -13,6 +13,7 @@ services:
     - backend-net
 
   libraryapi:
+    container_name: elibrary-library-api
     image: ${DOCKER_REGISTRY-}libraryapi
     build:
       context: .

@@ -7,7 +7,7 @@ namespace LibraryApi.Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = default!;
+        public int Id { get; set; }
 
         public abstract void Copy(BaseEntity other);
     }

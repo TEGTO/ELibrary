@@ -1,0 +1,1265 @@
+{
+	"info": {
+		"_postman_id": "864dcc0c-6372-47b8-9084-062dc8a46f04",
+		"name": "ELibraryApis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32714822"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "auth-register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert that the response status code is either 200 or 400\r",
+									"pm.test(\"Register status code is 201 or 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 400]);\r",
+									"});\r",
+									"\r",
+									"// Default to unsuccessful registration\r",
+									"pm.environment.set(\"registration_success\", false);\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    pm.environment.set(\"registration_success\", true);\r",
+									"} else if (pm.response.code === 400) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    var messages = jsonResponse.messages || [];\r",
+									"\r",
+									"    var usernameTaken = messages.some(msg => msg.includes(\"Username 'example' is already taken.\"));\r",
+									"\r",
+									"    pm.test(\"Username already taken\", function () {\r",
+									"        pm.expect(usernameTaken).to.be.true;\r",
+									"    });\r",
+									"\r",
+									"    if (usernameTaken) {\r",
+									"        pm.environment.set(\"registration_success\", true);\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"example\",\r\n  \"password\": \"123456QWERTY\",\r\n  \"confirmPassword\": \"123456QWERTY\",\r\n  \"userInfo\":{\r\n    \"name\":\"name\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"address\":\"address\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/auth/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth-login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"accessToken\", jsonResponse.authToken.accessToken);\r",
+									"    pm.environment.set(\"refreshToken\", jsonResponse.authToken.refreshToken);\r",
+									"    pm.environment.set(\"refreshTokenExpiryDate\", jsonResponse.authToken.refreshTokenExpiryDate);\r",
+									"    pm.environment.set(\"userName\", jsonResponse.userName);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
+									"if (!registrationSuccess) {\r",
+									"     console.error(\"Registration is failed!\")\r",
+									"    pm.execution.skipRequest();\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"example\",\r\n  \"password\": \"123456QWERTY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth-refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Refresh status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"accessToken\", jsonResponse.accessToken);\r",
+									"    pm.environment.set(\"refreshToken\", jsonResponse.refreshToken);\r",
+									"    pm.environment.set(\"refreshTokenExpiryDate\", jsonResponse.refreshTokenExpiryDate);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"accessToken\": \"{{accessToken}}\",\r\n  \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/auth/refresh",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user-info",
+			"item": [
+				{
+					"name": "userinfo-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    \r",
+									"    pm.test(\"User name is correct\", function () {\r",
+									"        pm.expect(jsonResponse.userName).to.equal(pm.environment.get(\"userName\"));\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User info name is correct\", function () {\r",
+									"        pm.expect(jsonResponse.userInfo.name).to.equal(\"name\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User info last name is correct\", function () {\r",
+									"        pm.expect(jsonResponse.userInfo.lastName).to.equal(\"lastName\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User info date of birth is correct\", function () {\r",
+									"        pm.expect(jsonResponse.userInfo.dateOfBirth).to.equal(\"2020-08-03T09:45:45.465625Z\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"User info address is correct\", function () {\r",
+									"        pm.expect(jsonResponse.userInfo.address).to.equal(\"address\");\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/userinfo/user",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"userinfo",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "author",
+			"item": [
+				{
+					"name": "author-get-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/author/{{author_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"author",
+								"{{author_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "author-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is abone 0\", function () {\r",
+									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/author/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"author",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "author-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"author_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"name\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/author",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "author-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"author_id\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/author',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"id\":id,\r",
+									"                    \"name\":\"name\",\r",
+									"                    \"lastName\":\"lastName\",\r",
+									"                    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"{{author_id}}\",\r\n    \"name\":\"newName\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/author",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "author-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/author',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"name\":\"name\",\r",
+									"                    \"lastName\":\"lastName\",\r",
+									"                    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(201);\r",
+									"        });\r",
+									"\r",
+									"        if (rollbackRes.status === 'Created') {\r",
+									"            var jsonResponse = rollbackRes.json();\r",
+									"            pm.environment.set(\"author_id\", jsonResponse.id);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/author/{{author_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"author",
+								"{{author_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "genre",
+			"item": [
+				{
+					"name": "genre-get-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/genre/{{genre_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"genre",
+								"{{genre_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "genre-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is abone 0\", function () {\r",
+									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/genre/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"genre",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "genre-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"genre_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/genre",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"genre"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "genre-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"genre_id\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/genre',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"id\":id,\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"{{genre_id}}\",\r\n    \"name\":\"newName\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/genre",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"genre"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "genre-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/genre',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(201);\r",
+									"        });\r",
+									"\r",
+									"        if (rollbackRes.status === 'Created') {\r",
+									"            var jsonResponse = rollbackRes.json();\r",
+									"            pm.environment.set(\"genre_id\", jsonResponse.id);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/genre/{{genre_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"genre",
+								"{{genre_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "book",
+			"item": [
+				{
+					"name": "book-get-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/book/{{book_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book",
+								"{{book_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is abone 0\", function () {\r",
+									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/book/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"book_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"title\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":\"{{author_id}}\",\r\n    \"genreId\":\"{{genre_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/book",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"book_id\"); \r",
+									"    var author_id = pm.environment.get(\"author_id\");\r",
+									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/genre',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"id\":id,\r",
+									"                    \"title\":\"title\",\r",
+									"                    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"authorId\": author_id,\r",
+									"                    \"genreId\": genre_id\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"{{book_id}}\",\r\n    \"title\":\"newTitle\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":\"{{author_id}}\",\r\n    \"genreId\":\"{{genre_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/book",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var author_id = pm.environment.get(\"author_id\");\r",
+									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/book',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"title\":\"title\",\r",
+									"                    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"authorId\": `${author_id}`,\r",
+									"                    \"genreId\": `${genre_id}`\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(201);\r",
+									"        });\r",
+									"\r",
+									"        if (rollbackRes.status === 'Created') {\r",
+									"            var jsonResponse = rollbackRes.json();\r",
+									"            pm.environment.set(\"book_id\", jsonResponse.id);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/book/{{book_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book",
+								"{{book_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
