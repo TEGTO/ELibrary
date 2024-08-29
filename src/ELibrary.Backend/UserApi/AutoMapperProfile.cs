@@ -1,6 +1,4 @@
 ﻿using Authentication.Models;
-using UserApi.Domain.Dtos;
-using UserApi.Domain.Entities;
 using AutoMapper;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Entities;

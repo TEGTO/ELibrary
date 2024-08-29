@@ -12,7 +12,7 @@ using UserApi.Data;
 namespace UserApi.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    [Migration("20240829131653_InitialMigration")]
+    [Migration("20240829140124_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -261,7 +261,7 @@ namespace UserApi.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserInfo");
+                    b.ToTable("UserInfos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

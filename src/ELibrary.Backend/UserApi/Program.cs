@@ -44,6 +44,7 @@ builder.Services.AddScoped<ITokenHandler, JwtHandler>();
 #region Project Services 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
 #endregion
@@ -53,7 +54,6 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 

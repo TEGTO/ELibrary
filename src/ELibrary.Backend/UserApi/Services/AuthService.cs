@@ -1,6 +1,7 @@
 ﻿using Authentication.Models;
 using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using UserApi.Domain.Entities;
 
@@ -29,7 +30,7 @@ namespace UserApi.Services
 
             if (user == null || !await userManager.CheckPasswordAsync(user, password))
             {
-                throw new UnauthorizedAccessException("Invalid authentication. Login or email address is not correct.");
+                throw new UnauthorizedAccessException("Invalid authentication. Login is not correct.");
             }
 
             var tokenData = CreateNewTokenData(user, refreshTokenExpiryInDays);
@@ -37,15 +38,15 @@ namespace UserApi.Services
 
             return tokenData;
         }
+        public async Task<User?> GetUserAsync(ClaimsPrincipal principal)
+        {
+            var name = principal.FindFirstValue(ClaimTypes.Name);
+            return name.IsNullOrEmpty() ? null : await GetUserByLoginAsync(name);
+        }
         public async Task<User?> GetUserByLoginAsync(string login)
         {
-            var user = await userManager.FindByEmailAsync(login);
-            user = user == null ? await userManager.FindByNameAsync(login) : user;
+            var user = await userManager.FindByNameAsync(login);
             return user;
-        }
-        public async Task<User> GetUserAsync(ClaimsPrincipal principal)
-        {
-            return await userManager.GetUserAsync(principal);
         }
         public async Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, double refreshTokenExpiryInDays)
         {

@@ -1,6 +1,5 @@
 ﻿using Authentication.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos;
 using System.Net;
@@ -68,7 +67,6 @@ namespace UserApi.Controllers
             {
                 AuthToken = tokenDto,
                 UserName = user.UserName,
-                UserInfo = mapper.Map<UserInfoDto>(user.UserInfo)
             };
 
             return Ok(response);
@@ -80,29 +78,6 @@ namespace UserApi.Controllers
             var newToken = await authService.RefreshTokenAsync(tokenData, expiryInDays);
             var tokenDto = mapper.Map<AuthToken>(newToken);
             return Ok(tokenDto);
-        }
-        [Authorize]
-        [HttpGet("user")]
-        public async Task<ActionResult<GetCurrentUserResponse>> GetCurrentUser()
-        {
-            var user = await authService.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return NotFound(new ResponseError
-                {
-                    StatusCode = "404",
-                    Messages = new[] { "User not found." }
-                });
-            }
-
-            var response = new GetCurrentUserResponse()
-            {
-                UserName = user.UserName,
-                UserInfo = mapper.Map<UserInfoDto>(user.UserInfo)
-            };
-
-            return Ok(response);
         }
     }
 }

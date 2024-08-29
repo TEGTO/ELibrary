@@ -12,5 +12,15 @@ services:
     networks:
     - backend-net
 
+  libraryapi:
+    image: ${DOCKER_REGISTRY-}libraryapi
+    build:
+      context: .
+      dockerfile: LibraryApi/Dockerfile
+    ports: 
+      - 7131:8081
+    networks:
+    - backend-net
+
 networks:
   backend-net:

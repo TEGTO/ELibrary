@@ -160,7 +160,7 @@ namespace UserApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserInfo",
+                name: "UserInfos",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -172,9 +172,9 @@ namespace UserApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserInfo", x => x.Id);
+                    table.PrimaryKey("PK_UserInfos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserInfo_AspNetUsers_UserId",
+                        name: "FK_UserInfos_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -219,8 +219,8 @@ namespace UserApi.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserInfo_UserId",
-                table: "UserInfo",
+                name: "IX_UserInfos_UserId",
+                table: "UserInfos",
                 column: "UserId",
                 unique: true);
         }
@@ -244,7 +244,7 @@ namespace UserApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "UserInfo");
+                name: "UserInfos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
