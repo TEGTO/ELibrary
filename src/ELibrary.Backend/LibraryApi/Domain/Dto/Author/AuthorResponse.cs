@@ -1,6 +1,6 @@
 ﻿namespace LibraryApi.Domain.Dto.Author
 {
-    public class CreateAuthorResponse
+    public class AuthorResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }

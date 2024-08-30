@@ -29,10 +29,10 @@ namespace LibraryApi.Controllers
             // Arrange
             var bookId = 1;
             var book = new Book { Id = bookId, Title = "Dune" };
-            var response = new GetBookResponse { Id = bookId, Title = "Dune" };
+            var response = new BookResponse { Id = bookId, Title = "Dune" };
             mockEntityService.Setup(s => s.GetByIdAsync(bookId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(book);
-            mockMapper.Setup(m => m.Map<GetBookResponse>(book))
+            mockMapper.Setup(m => m.Map<BookResponse>(book))
                 .Returns(response);
             // Act
             var result = await controller.GetById(bookId, CancellationToken.None);
@@ -64,18 +64,18 @@ namespace LibraryApi.Controllers
                 new Book { Id = 2, Title = "1984" }
             };
             var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
-            var responses = books.Select(b => new GetBookResponse { Id = b.Id, Title = b.Title }).ToList();
+            var responses = books.Select(b => new BookResponse { Id = b.Id, Title = b.Title }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(books);
-            mockMapper.Setup(m => m.Map<GetBookResponse>(It.IsAny<Book>()))
-                .Returns((Book b) => new GetBookResponse { Id = b.Id, Title = b.Title });
+            mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))
+                .Returns((Book b) => new BookResponse { Id = b.Id, Title = b.Title });
             // Act
             var result = await controller.GetPaginated(request, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
-            Assert.Greater((okResult.Value as IEnumerable<GetBookResponse>).Count(), 1);
+            Assert.Greater((okResult.Value as IEnumerable<BookResponse>).Count(), 1);
         }
         [Test]
         public async Task Create_ValidRequest_ReturnsCreatedResponse()
@@ -83,10 +83,10 @@ namespace LibraryApi.Controllers
             // Arrange
             var createRequest = new CreateBookRequest { Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = "1", GenreId = "1" };
             var book = new Book { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
-            var createResponse = new CreateBookResponse { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = "1", GenreId = "1" };
+            var createResponse = new BookResponse { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1) };
             mockMapper.Setup(m => m.Map<Book>(createRequest)).Returns(book);
             mockEntityService.Setup(s => s.CreateAsync(book, It.IsAny<CancellationToken>())).ReturnsAsync(book);
-            mockMapper.Setup(m => m.Map<CreateBookResponse>(book)).Returns(createResponse);
+            mockMapper.Setup(m => m.Map<BookResponse>(book)).Returns(createResponse);
             // Act
             var result = await controller.Create(createRequest, CancellationToken.None);
             // Assert

@@ -10,7 +10,7 @@ namespace LibraryApi.Controllers
     [Authorize]
     [Route("author")]
     [ApiController]
-    public class AuthorController : BaseLibraryEntityController<Author, GetAuthorResponse, CreateAuthorRequest, CreateAuthorResponse, UpdateAuthorRequest>
+    public class AuthorController : BaseLibraryEntityController<Author, AuthorResponse, CreateAuthorRequest, AuthorResponse, UpdateAuthorRequest>
     {
         public AuthorController(ILibraryEntityService<Author> entityService, IMapper mapper) : base(entityService, mapper)
         {

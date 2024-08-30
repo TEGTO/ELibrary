@@ -10,18 +10,15 @@ namespace LibraryApi
     {
         public AutoMapperProfile()
         {
-            CreateMap<Author, GetAuthorResponse>();
-            CreateMap<Author, CreateAuthorResponse>();
+            CreateMap<Author, AuthorResponse>();
             CreateMap<CreateAuthorRequest, Author>();
             CreateMap<UpdateAuthorRequest, Author>();
 
-            CreateMap<Genre, GetGenreResponse>();
-            CreateMap<Genre, CreateGenreResponse>();
+            CreateMap<Genre, GenreResponse>();
             CreateMap<CreateGenreRequest, Genre>();
             CreateMap<UpdateGenreRequest, Genre>();
 
-            CreateMap<Book, GetBookResponse>();
-            CreateMap<Book, CreateBookResponse>();
+            CreateMap<Book, BookResponse>();
             CreateMap<CreateBookRequest, Book>();
             CreateMap<UpdateBookRequest, Book>();
         }

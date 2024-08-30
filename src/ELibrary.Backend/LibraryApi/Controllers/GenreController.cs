@@ -10,7 +10,7 @@ namespace LibraryApi.Controllers
     [Authorize]
     [Route("genre")]
     [ApiController]
-    public class GenreController : BaseLibraryEntityController<Genre, GetGenreResponse, CreateGenreRequest, CreateGenreResponse, UpdateGenreRequest>
+    public class GenreController : BaseLibraryEntityController<Genre, GenreResponse, CreateGenreRequest, GenreResponse, UpdateGenreRequest>
     {
         public GenreController(ILibraryEntityService<Genre> entityService, IMapper mapper) : base(entityService, mapper)
         {

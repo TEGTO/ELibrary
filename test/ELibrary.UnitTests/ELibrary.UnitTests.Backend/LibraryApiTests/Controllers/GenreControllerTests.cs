@@ -29,10 +29,10 @@ namespace LibraryApi.Controllers
             // Arrange
             var genreId = 1;
             var genre = new Genre { Id = genreId, Name = "Science Fiction" };
-            var response = new GetGenreResponse { Id = genreId, Name = "Science Fiction" };
+            var response = new GenreResponse { Id = genreId, Name = "Science Fiction" };
             mockEntityService.Setup(s => s.GetByIdAsync(genreId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(genre);
-            mockMapper.Setup(m => m.Map<GetGenreResponse>(genre))
+            mockMapper.Setup(m => m.Map<GenreResponse>(genre))
                 .Returns(response);
             // Act
             var result = await controller.GetById(genreId, CancellationToken.None);
@@ -64,18 +64,18 @@ namespace LibraryApi.Controllers
                 new Genre { Id = 2, Name = "Fantasy" }
             };
             var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
-            var responses = genres.Select(g => new GetGenreResponse { Id = g.Id, Name = g.Name }).ToList();
+            var responses = genres.Select(g => new GenreResponse { Id = g.Id, Name = g.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(genres);
-            mockMapper.Setup(m => m.Map<GetGenreResponse>(It.IsAny<Genre>()))
-                .Returns((Genre g) => new GetGenreResponse { Id = g.Id, Name = g.Name });
+            mockMapper.Setup(m => m.Map<GenreResponse>(It.IsAny<Genre>()))
+                .Returns((Genre g) => new GenreResponse { Id = g.Id, Name = g.Name });
             // Act
             var result = await controller.GetPaginated(request, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
-            Assert.Greater((okResult.Value as IEnumerable<GetGenreResponse>).Count(), 1);
+            Assert.Greater((okResult.Value as IEnumerable<GenreResponse>).Count(), 1);
         }
 
         [Test]
@@ -84,10 +84,10 @@ namespace LibraryApi.Controllers
             // Arrange
             var createRequest = new CreateGenreRequest { Name = "Mystery" };
             var genre = new Genre { Id = 1, Name = "Mystery" };
-            var createResponse = new CreateGenreResponse { Id = 1, Name = "Mystery" };
+            var createResponse = new GenreResponse { Id = 1, Name = "Mystery" };
             mockMapper.Setup(m => m.Map<Genre>(createRequest)).Returns(genre);
             mockEntityService.Setup(s => s.CreateAsync(genre, It.IsAny<CancellationToken>())).ReturnsAsync(genre);
-            mockMapper.Setup(m => m.Map<CreateGenreResponse>(genre)).Returns(createResponse);
+            mockMapper.Setup(m => m.Map<GenreResponse>(genre)).Returns(createResponse);
             // Act
             var result = await controller.Create(createRequest, CancellationToken.None);
             // Assert
