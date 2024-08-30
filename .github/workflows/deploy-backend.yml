@@ -1,0 +1,66 @@
+name: Deploy Backend
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/ELibrary.Backend/**'
+
+env:
+  DOTNET_VERSION: '7.0.x'
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        api:
+          - name: "User API"
+            path: "UserApi"
+            azure_app_name: "elibrary-user-api-germanywestcentral-001"
+            publish_secret: USER_API_PUBLISH_SECRET
+          - name: "Library API"
+            path: "LibraryApi"
+            azure_app_name: "elibrary-library-api-germanywestcentral-001"
+            publish_secret: LIBRARY_API_PUBLISH_SECRET
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache .NET packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore src/ELibrary.Backend/${{ matrix.api.path }}
+
+    - name: Run unit tests
+      run: dotnet test --no-build --verbosity normal --configuration Release test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/*
+      continue-on-error: false  # Fail the workflow if any test fails
+
+    - name: Build
+      run: dotnet build src/ELibrary.Backend/${{ matrix.api.path }} --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish src/ELibrary.Backend/${{ matrix.api.path }} --configuration Release --output ./src/ELibrary.Backend/${{ matrix.api.path }}/publish
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ matrix.api.azure_app_name }}
+        slot-name: 'production'
+        publish-profile: ${{ secrets[matrix.api.publish_secret] }}
+        package: ./src/ELibrary.Backend/${{ matrix.api.path }}/publish
