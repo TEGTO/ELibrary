@@ -8,8 +8,8 @@ namespace UserApi.Validators
         public UserInfoDtoValidator()
         {
             RuleFor(x => x.Name).NotNull().NotEmpty().MaximumLength(256);
-            RuleFor(x => x.LastName).NotNull().NotEmpty().MaximumLength(256);
-            RuleFor(x => x.Address).NotNull().NotEmpty().MaximumLength(256);
+            RuleFor(x => x.LastName).NotNull().MaximumLength(256);
+            RuleFor(x => x.Address).NotNull().MaximumLength(256);
         }
     }
 }

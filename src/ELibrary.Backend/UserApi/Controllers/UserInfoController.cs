@@ -22,7 +22,7 @@ namespace UserApi.Controllers
             this.mapper = mapper;
             this.authService = authService;
         }
-
+        [ResponseCache(Duration = 300)]
         [Authorize]
         [HttpGet("user")]
         public async Task<ActionResult<GetCurrentUserResponse>> GetCurrentUser(CancellationToken cancellationToken)

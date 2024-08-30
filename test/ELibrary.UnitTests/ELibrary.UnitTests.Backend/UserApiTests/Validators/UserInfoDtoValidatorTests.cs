@@ -55,16 +55,6 @@ namespace UserApi.Validators
             result.ShouldHaveValidationErrorFor(x => x.LastName);
         }
         [Test]
-        public void Validate_LastNameIsEmpty_HasValidationError()
-        {
-            // Arrange
-            var userInfo = new UserInfoDto { LastName = string.Empty };
-            // Act
-            var result = validator.TestValidate(userInfo);
-            // Assert
-            result.ShouldHaveValidationErrorFor(x => x.LastName);
-        }
-        [Test]
         public void Validate_LastNameTooLong_HasValidationError()
         {
             // Arrange
@@ -79,16 +69,6 @@ namespace UserApi.Validators
         {
             // Arrange
             var userInfo = new UserInfoDto { Address = null };
-            // Act
-            var result = validator.TestValidate(userInfo);
-            // Assert
-            result.ShouldHaveValidationErrorFor(x => x.Address);
-        }
-        [Test]
-        public void Validate_AddressIsEmpty_HasValidationError()
-        {
-            // Arrange
-            var userInfo = new UserInfoDto { Address = string.Empty };
             // Act
             var result = validator.TestValidate(userInfo);
             // Assert

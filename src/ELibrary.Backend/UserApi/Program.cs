@@ -49,6 +49,8 @@ builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, Databa
 
 #endregion
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddSharedFluentValidation(typeof(Program));

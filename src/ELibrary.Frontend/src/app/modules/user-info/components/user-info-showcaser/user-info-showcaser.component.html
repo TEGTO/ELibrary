@@ -1,0 +1,22 @@
+<ng-container *ngIf="userInfo$ | async as userInfo">
+    <form id="userInfoRegistration" class="content__form space-y-1">
+        <div class="flex gap-2">
+            <mat-form-field>
+                <mat-label>First Name</mat-label>
+                <input matInput type="text" [value]="userInfo.name" [readonly]="true">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Last Name</mat-label>
+                <input matInput type="text" [value]="userInfo.lastName" [readonly]="true">
+            </mat-form-field>
+        </div>
+        <mat-form-field>
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [value]="userInfo.dateOfBirth | date:'MM/dd/yyyy'" [readonly]="true">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Address</mat-label>
+            <input matInput type="text" [value]="userInfo.address" [readonly]="true">
+        </mat-form-field>
+    </form>
+</ng-container>

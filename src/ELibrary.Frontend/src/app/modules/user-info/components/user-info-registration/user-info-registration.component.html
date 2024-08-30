@@ -1,0 +1,30 @@
+<form id="userInfoRegistration" class="content__form space-y-1" [formGroup]="parentFormGroup">
+    <div class="flex gap-2">
+        <mat-form-field>
+            <mat-label>First Name</mat-label>
+            <input matInput type="text" autocomplete="given-name" formControlName="firstName" placeholder="John"
+                maxlength="256">
+            <mat-error *ngIf="firstNameInput.hasError('required')">First name is <strong>required</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" autocomplete="last-name" formControlName="lastName" placeholder="Doe"
+                maxlength="256">
+        </mat-form-field>
+    </div>
+    <mat-form-field>
+        <mat-label>Date of Birth</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" placeholder="MM/DD/YYYY">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="dateOfBirthInput.hasError('required')">Date of birth is
+            <strong>required</strong></mat-error>
+        <mat-error *ngIf="dateOfBirthInput.hasError('invalidDateOfBirth')">
+            Date of birth must be <strong>in the past</strong>
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Address</mat-label>
+        <input matInput type="text" formControlName="address" placeholder="123 Main St" maxlength="256">
+    </mat-form-field>
+</form>

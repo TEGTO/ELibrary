@@ -1,0 +1,38 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Sign in</h2>
+
+<mat-dialog-content>
+    <form id="loginForm" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="signInUser()">
+        <mat-form-field>
+            <mat-label>User Name</mat-label>
+            <input matInput type="text" autocomplete="user-login" formControlName="login" placeholder="Hotguy2011"
+                maxlength="256">
+            <mat-error *ngIf="loginInput.hasError('required')">User Name is <strong>required.</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="user-password"
+                formControlName="password" maxlength="256">
+            <span matSuffix class="material-icons me-2" (click)="hidePassword = !hidePassword">
+                {{hidePassword
+                ? 'visibility_off'
+                : 'visibility'
+                }}
+            </span>
+            <mat-error *ngIf="passwordInput.hasError('required')">Password is <strong>required.</strong></mat-error>
+            <mat-error *ngIf="passwordInput.hasError('minlength')">Password must be <strong>at least 8</strong>
+                characters.</mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="actions__bottom-container">
+    <button mat-flat-button id="send-button" form="loginForm" type="submit" color="primary">Login</button>
+    <span>
+        Don't have an account?
+        <a mat-dialog-close id="to-register-link" (click)="openRegisterMenu()">
+            Create a new one.
+        </a>
+    </span>
+</mat-dialog-actions>
