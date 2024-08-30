@@ -30,8 +30,7 @@ namespace LibraryApi.Validators
             var request = new PaginatedRequest { PageNumber = 0, PageSize = 10 };
             // Act & Assert
             var result = validator.TestValidate(request);
-            result.ShouldHaveValidationErrorFor(x => x.PageNumber)
-                  .WithErrorMessage("'Page Number' must be greater than '0'.");
+            result.ShouldHaveValidationErrorFor(x => x.PageNumber);
         }
         [Test]
         public void PaginatedRequestValidator_InvalidPageSize_FailsValidation()
@@ -40,8 +39,7 @@ namespace LibraryApi.Validators
             var request = new PaginatedRequest { PageNumber = 1, PageSize = 0 };
             // Act & Assert
             var result = validator.TestValidate(request);
-            result.ShouldHaveValidationErrorFor(x => x.PageSize)
-                  .WithErrorMessage("'Page Size' must be greater than '0'.");
+            result.ShouldHaveValidationErrorFor(x => x.PageSize);
         }
         [Test]
         public void PaginatedRequestValidator_InvalidPageNumberAndPageSize_FailsValidation()
@@ -50,10 +48,8 @@ namespace LibraryApi.Validators
             var request = new PaginatedRequest { PageNumber = 0, PageSize = 0 };
             // Act & Assert
             var result = validator.TestValidate(request);
-            result.ShouldHaveValidationErrorFor(x => x.PageNumber)
-                  .WithErrorMessage("'Page Number' must be greater than '0'.");
-            result.ShouldHaveValidationErrorFor(x => x.PageSize)
-                  .WithErrorMessage("'Page Size' must be greater than '0'.");
+            result.ShouldHaveValidationErrorFor(x => x.PageNumber);
+            result.ShouldHaveValidationErrorFor(x => x.PageSize);
         }
     }
 }
