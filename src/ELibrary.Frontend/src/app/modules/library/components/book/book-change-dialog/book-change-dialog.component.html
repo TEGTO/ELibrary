@@ -7,24 +7,50 @@
     <form id="bookDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
         <mat-form-field>
             <mat-label>Title</mat-label>
-            <input matInput type="text" autocomplete="book-title" formControlName="title" placeholder="Animar farm"
-                maxlength="256">
+            <input matInput type="text" autocomplete="book-title" formControlName="title" maxlength="256">
             <mat-error *ngIf="titleInput.hasError('required')">Title is <strong>required.</strong></mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Author</mat-label>
+            <mat-select formControlName="author" placeholder="Select Author">
+                <cdk-virtual-scroll-viewport #authorScroller [itemSize]="itemHeight"
+                    [style.height.px]="authorSelectionSize">
+                    <mat-option *cdkVirtualFor="let author of authors" [value]="author.id">
+                        {{ author.name }} {{ author.lastName }}
+                    </mat-option>
+                </cdk-virtual-scroll-viewport>
+            </mat-select>
+            <mat-error *ngIf="authorInput.hasError('required') || authorInput.hasError('min') ">
+                Author must be <strong>selected.</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Genre</mat-label>
+            <mat-select formControlName="genre" placeholder="Select Genre">
+                <cdk-virtual-scroll-viewport #genreScroller [itemSize]="itemHeight"
+                    [style.height.px]="genreSelectionSize">
+                    <mat-option *cdkVirtualFor="let genre of genres" [value]="genre.id">
+                        {{ genre.name }}
+                    </mat-option>
+                </cdk-virtual-scroll-viewport>
+            </mat-select>
+            <mat-error *ngIf="genreInput.hasError('required') || genreInput.hasError('min') ">
+                Genre must be <strong>selected.</strong></mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Publication Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="publicationDate" placeholder="MM/DD/YYYY">
+            <input matInput [matDatepicker]="picker" formControlName="publicationDate">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="publicationDateInput.hasError('required')">
-                Publication Date is <strong>required</strong></mat-error>
-            <mat-error *ngIf="publicationDateInput.hasError('invalidDateOfBirth')">
-                Publication Date must be <strong>in the past</strong>
+                Publication Date is <strong>required.</strong>
             </mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>
-<mat-dialog-actions class="actions__bottom-container flex-col">
-    <button mat-flat-button id="send-button" form="bookDetails" type="submit" color="primary"
-        class="w-full">Confirm</button>
+
+<mat-dialog-actions>
+    <button mat-flat-button id="send-button" form="bookDetails" type="submit" color="primary">
+        Confirm
+    </button>
 </mat-dialog-actions>

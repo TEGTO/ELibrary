@@ -23,7 +23,7 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
 
   openBookDetailsMenu(book: BookResponse): MatDialogRef<any> {
     const dialogRef = this.dialog.open(BookChangeDialogComponent, {
-      height: '440px',
+      height: '460px',
       width: '450px',
       data: book
     });
