@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
-import { AuthorResponse, BaseApiService, CreateAuthorRequest, mapAuthorResponseData, PaginatedRequest, UpdateAuthorRequest } from '../../../..';
+import { AuthorResponse, BaseApiService, CreateAuthorRequest, LibraryEntityApi, mapAuthorData, PaginatedRequest, UpdateAuthorRequest } from '../../../..';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthorApiService extends BaseApiService {
+export class AuthorApiService extends BaseApiService implements LibraryEntityApi<AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest> {
   getById(id: number): Observable<AuthorResponse> {
     return this.httpClient.get<AuthorResponse>(this.combinePathWithAuthorApiUrl(`/${id}`)).pipe(
-      map(resp => mapAuthorResponseData(resp)),
+      map(resp => mapAuthorData(resp)),
       catchError((resp) => this.handleError(resp))
     );
   }
   getPaginated(request: PaginatedRequest): Observable<AuthorResponse[]> {
     return this.httpClient.post<AuthorResponse[]>(this.combinePathWithAuthorApiUrl(`/pagination`), request).pipe(
-      map(resp => resp.map(x => mapAuthorResponseData(x))),
+      map(resp => resp.map(x => mapAuthorData(x))),
       catchError((resp) => this.handleError(resp))
     );
   }
   create(request: CreateAuthorRequest): Observable<AuthorResponse> {
     return this.httpClient.post<AuthorResponse>(this.combinePathWithAuthorApiUrl(``), request).pipe(
-      map(resp => mapAuthorResponseData(resp)),
+      map(resp => mapAuthorData(resp)),
       catchError((resp) => this.handleError(resp))
     );
   }

@@ -18,9 +18,7 @@ export class LocalizedDatePipe implements PipeTransform {
         return date.toLocaleDateString(undefined, {
             day: '2-digit',
             month: '2-digit',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
+            year: 'numeric'
         });
     }
 }

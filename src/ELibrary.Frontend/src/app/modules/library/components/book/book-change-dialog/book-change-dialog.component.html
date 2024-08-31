@@ -1,0 +1,30 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Book</h2>
+
+<mat-dialog-content>
+    <form id="bookDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput type="text" autocomplete="book-title" formControlName="title" placeholder="Animar farm"
+                maxlength="256">
+            <mat-error *ngIf="titleInput.hasError('required')">Title is <strong>required.</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Publication Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="publicationDate" placeholder="MM/DD/YYYY">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="publicationDateInput.hasError('required')">
+                Publication Date is <strong>required</strong></mat-error>
+            <mat-error *ngIf="publicationDateInput.hasError('invalidDateOfBirth')">
+                Publication Date must be <strong>in the past</strong>
+            </mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="actions__bottom-container flex-col">
+    <button mat-flat-button id="send-button" form="bookDetails" type="submit" color="primary"
+        class="w-full">Confirm</button>
+</mat-dialog-actions>

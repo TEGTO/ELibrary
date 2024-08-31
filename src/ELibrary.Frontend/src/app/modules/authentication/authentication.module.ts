@@ -6,8 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { provideEffects } from '@ngrx/effects';
-import { provideState, provideStore } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { AuthInterceptor, AuthenticatedComponent, AuthenticationControllerService, AuthenticationDialogManager, AuthenticationDialogManagerService, AuthenticationService, LoginComponent, RegisterComponent, RegistrationEffects, SignInEffects, authReducer, registrationReducer, userDataReducer } from '.';
 import { UserInfoModule } from "../user-info/user-info.module";
 import { UnauthenticatedComponent } from './components/unauthenticated/unauthenticated.component';
@@ -24,18 +24,15 @@ import { UnauthenticatedComponent } from './components/unauthenticated/unauthent
     MatButtonModule,
     UserInfoModule,
     HttpClientModule,
-    UserInfoModule
+    StoreModule.forFeature('authentication', authReducer),
+    StoreModule.forFeature('registration', registrationReducer),
+    StoreModule.forFeature('userdata', userDataReducer),
+    EffectsModule.forFeature([RegistrationEffects, SignInEffects]),
   ],
   providers: [
     { provide: AuthenticationDialogManager, useClass: AuthenticationDialogManagerService },
     { provide: AuthenticationService, useClass: AuthenticationControllerService },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    provideStore(),
-    provideState({ name: "registration", reducer: registrationReducer }),
-    provideState({ name: "authentication", reducer: authReducer }),
-    provideState({ name: "userdata", reducer: userDataReducer }),
-    provideEffects(RegistrationEffects),
-    provideEffects(SignInEffects),
   ],
   exports: [LoginComponent, UnauthenticatedComponent],
 })

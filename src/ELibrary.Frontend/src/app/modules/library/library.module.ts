@@ -8,8 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorChangeDialogComponent, AuthorTableComponent, BookTableComponent, GenericTableComponent, GenreTableComponent, LibraryDialogManager, LibraryDialogManagerService, LibraryTablesComponent } from '.';
-import { ConfirmMenuComponent } from './components/confirm-menu/confirm-menu.component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { AuthorChangeDialogComponent, AuthorServiceControllerService as AuthorControllerService, AuthorEffects, AuthorService, AuthorTableComponent, BookServiceControllerService as BookControllerService, BookEffects, BookService, BookTableComponent, ConfirmMenuComponent, GenericTableComponent, GenreServiceControllerService as GenreControllerService, GenreEffects, GenreService, GenreTableComponent, LibraryDialogManager, LibraryDialogManagerService, libraryReducer, LibraryTablesComponent } from '.';
+import { GenreChangeDialogComponent } from './components/genre/genre-change-dialog/genre-change-dialog.component';
+import { BookChangeDialogComponent } from './components/book/book-change-dialog/book-change-dialog.component';
 
 const routes: Routes = [
   {
@@ -33,6 +36,8 @@ const routes: Routes = [
     GenericTableComponent,
     AuthorChangeDialogComponent,
     ConfirmMenuComponent,
+    GenreChangeDialogComponent,
+    BookChangeDialogComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -46,9 +51,14 @@ const routes: Routes = [
     MatButtonModule,
     MatPaginatorModule,
     MatDatepickerModule,
+    StoreModule.forFeature('library', libraryReducer),
+    EffectsModule.forFeature([AuthorEffects, BookEffects, GenreEffects]),
   ],
   providers: [
     { provide: LibraryDialogManager, useClass: LibraryDialogManagerService },
+    { provide: BookService, useClass: BookControllerService },
+    { provide: AuthorService, useClass: AuthorControllerService },
+    { provide: GenreService, useClass: GenreControllerService },
   ],
   exports: [LibraryTablesComponent]
 })

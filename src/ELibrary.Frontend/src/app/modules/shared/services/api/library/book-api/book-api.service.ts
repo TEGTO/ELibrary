@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError } from 'rxjs';
-import { BaseApiService, BookResponse, CreateBookRequest, PaginatedRequest, UpdateBookRequest } from '../../../..';
+import { catchError, map, Observable } from 'rxjs';
+import { BaseApiService, BookResponse, CreateBookRequest, LibraryEntityApi, mapBookData, PaginatedRequest, UpdateBookRequest } from '../../../..';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BookApiService extends BaseApiService {
+export class BookApiService extends BaseApiService implements LibraryEntityApi<BookResponse, CreateBookRequest, UpdateBookRequest> {
   getById(id: number): Observable<BookResponse> {
     return this.httpClient.get<BookResponse>(this.combinePathWithBookApiUrl(`/${id}`)).pipe(
+      map(resp => mapBookData(resp)),
       catchError((resp) => this.handleError(resp))
     );
   }
   getPaginated(request: PaginatedRequest): Observable<BookResponse[]> {
     return this.httpClient.post<BookResponse[]>(this.combinePathWithBookApiUrl(`/pagination`), request).pipe(
+      map(resp => resp.map(x => mapBookData(x))),
       catchError((resp) => this.handleError(resp))
     );
   }

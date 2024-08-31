@@ -1,1 +1,4 @@
-<generic-table [items]="items" [columns]="columns" [pageSize]="10"></generic-table>
+<ng-container *ngIf="items$ | async as items">
+    <generic-table [items]="items" [columns]="columns" [pageSize]="pageSize" (createItem)="createNew()"
+        (pageChange)="pageChange($event)" (deleteItem)="delete($event)" (editItem)="update($event)"></generic-table>
+</ng-container>

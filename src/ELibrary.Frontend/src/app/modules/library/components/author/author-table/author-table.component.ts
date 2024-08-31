@@ -1,57 +1,78 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Subject, takeUntil, tap } from 'rxjs';
-import { LibraryDialogManager } from '../../..';
-import { AuthorResponse } from '../../../../shared';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { AuthorService, LibraryDialogManager, TableColumn } from '../../..';
+import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, LocalizedDatePipe, PaginatedRequest } from '../../../../shared';
 
 @Component({
   selector: 'author-table',
   templateUrl: './author-table.component.html',
   styleUrl: './author-table.component.scss'
 })
-export class AuthorTableComponent implements OnDestroy {
+export class AuthorTableComponent implements OnInit, OnDestroy {
+
+  pageSize: number = 10;
+
+  items$!: Observable<AuthorResponse[]>;
   private destroy$ = new Subject<void>();
 
-  items = [
-    { name: 'Steve', lastName: 'Jobs', dateOfBirth: '1955-02-24' },
-    { name: 'Bill', lastName: 'Gates', dateOfBirth: '1955-10-28' },
-    { name: 'Steve', lastName: 'Wozniak', dateOfBirth: '1950-08-11' },
-  ];
-
-  columns = [
+  columns: TableColumn[] = [
     { header: 'Name', field: 'name' },
     { header: 'Last Name', field: 'lastName' },
-    { header: 'Date of Birth', field: 'dateOfBirth' }
+    { header: 'Date of Birth', field: 'dateOfBirth', pipe: new LocalizedDatePipe('en-US') }
   ];
 
-  constructor(private readonly dialogManager: LibraryDialogManager) { }
+  constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: AuthorService) { }
+
+  ngOnInit(): void {
+    this.pageChange(1);
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  createNewAuthor() {
+  pageChange(item: any) {
+    let pageIndex = item as number;
+    let req: PaginatedRequest = {
+      pageNumber: pageIndex,
+      pageSize: this.pageSize
+    }
+    this.items$ = this.libraryEntityService.getAuthorsPaginated(req);
+  }
+  createNew() {
     let author: AuthorResponse = {
       id: 0,
       name: "",
       lastName: "",
       dateOfBirth: new Date()
     }
-    this.dialogManager.openDetailsMenu(author).afterClosed().pipe(
+    this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
       takeUntil(this.destroy$)
-    ).subscribe();
+    ).subscribe(author => {
+      if (author) {
+        let req = authorToCreateRequest(author);
+        this.libraryEntityService.createAuthor(req);
+      }
+    });
   }
-  updateAuthor(item: any) {
+  update(item: any) {
     let author = item as AuthorResponse;
-    this.dialogManager.openDetailsMenu(author).afterClosed().pipe(
+    this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
       takeUntil(this.destroy$)
-    ).subscribe();
+    ).subscribe(author => {
+      if (author) {
+        let req = authorToUpdateRequest(author);
+        this.libraryEntityService.updateAuthor(req);
+      }
+    });
   }
-  deleteAuthor(item: any) {
+  delete(item: any) {
     let author = item as AuthorResponse;
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       tap(result => {
         if (result === true) {
+          this.libraryEntityService.deleteAuthorById(author.id);
         }
       }),
       takeUntil(this.destroy$)
