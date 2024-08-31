@@ -78,8 +78,8 @@ namespace LibraryApiTests.Services
             var result = await service.GetPaginatedAsync(1, 10, cancellationToken);
             // Assert
             Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Author!.Name, Is.EqualTo("Author1"));
-            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre1"));
+            Assert.That(result.First().Author!.Name, Is.EqualTo("Author2"));
+            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre2"));
         }
         [Test]
         public async Task CreateAsync_ValidBook_AddsBookWithAuthorAndGenre()

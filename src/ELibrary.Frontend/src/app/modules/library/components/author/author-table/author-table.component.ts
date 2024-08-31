@@ -9,9 +9,6 @@ import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, Localized
   styleUrl: './author-table.component.scss'
 })
 export class AuthorTableComponent implements OnInit, OnDestroy {
-
-  pageSize: number = 10;
-
   items$!: Observable<AuthorResponse[]>;
   private destroy$ = new Subject<void>();
 
@@ -24,7 +21,7 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
   constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: AuthorService) { }
 
   ngOnInit(): void {
-    this.pageChange(1);
+    this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
   ngOnDestroy(): void {
@@ -33,21 +30,21 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
   }
 
   pageChange(item: any) {
-    let pageIndex = item as number;
+    let pageParams = item as { pageIndex: number, pageSize: number };
     let req: PaginatedRequest = {
-      pageNumber: pageIndex,
-      pageSize: this.pageSize
+      pageNumber: pageParams.pageIndex,
+      pageSize: pageParams.pageSize + 1
     }
     this.items$ = this.libraryEntityService.getAuthorsPaginated(req);
   }
   createNew() {
-    let author: AuthorResponse = {
+    let entity: AuthorResponse = {
       id: 0,
       name: "",
       lastName: "",
       dateOfBirth: new Date()
     }
-    this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
+    this.dialogManager.openAuthorDetailsMenu(entity).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(author => {
       if (author) {
@@ -57,8 +54,8 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
     });
   }
   update(item: any) {
-    let author = item as AuthorResponse;
-    this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
+    let entity = item as AuthorResponse;
+    this.dialogManager.openAuthorDetailsMenu(entity).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(author => {
       if (author) {
@@ -68,11 +65,11 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
     });
   }
   delete(item: any) {
-    let author = item as AuthorResponse;
+    let entity = item as AuthorResponse;
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       tap(result => {
         if (result === true) {
-          this.libraryEntityService.deleteAuthorById(author.id);
+          this.libraryEntityService.deleteAuthorById(entity.id);
         }
       }),
       takeUntil(this.destroy$)

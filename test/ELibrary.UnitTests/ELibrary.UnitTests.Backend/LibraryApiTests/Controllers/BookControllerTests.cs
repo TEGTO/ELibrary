@@ -81,7 +81,7 @@ namespace LibraryApi.Controllers
         public async Task Create_ValidRequest_ReturnsCreatedResponse()
         {
             // Arrange
-            var createRequest = new CreateBookRequest { Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = "1", GenreId = "1" };
+            var createRequest = new CreateBookRequest { Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
             var book = new Book { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
             var createResponse = new BookResponse { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1) };
             mockMapper.Setup(m => m.Map<Book>(createRequest)).Returns(book);
@@ -99,7 +99,7 @@ namespace LibraryApi.Controllers
         public async Task Update_ValidRequest_ReturnsOk()
         {
             // Arrange
-            var updateRequest = new UpdateBookRequest { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = "1", GenreId = "1" };
+            var updateRequest = new UpdateBookRequest { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
             var book = new Book { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
             mockMapper.Setup(m => m.Map<Book>(updateRequest)).Returns(book);
             mockEntityService.Setup(s => s.UpdateAsync(book, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);

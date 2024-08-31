@@ -113,16 +113,16 @@ namespace LibraryApi
             {
                 Title = "Dune",
                 PublicationDate = new DateTime(1965, 8, 1),
-                AuthorId = "1",
-                GenreId = "1"
+                AuthorId = 1,
+                GenreId = 1
             };
             // Act
             var result = mapper.Map<Book>(createRequest);
             // Assert
             Assert.That(result.Title, Is.EqualTo(createRequest.Title));
             Assert.That(result.PublicationDate, Is.EqualTo(createRequest.PublicationDate));
-            Assert.That(result.AuthorId, Is.EqualTo(int.Parse(createRequest.AuthorId)));
-            Assert.That(result.GenreId, Is.EqualTo(int.Parse(createRequest.GenreId)));
+            Assert.That(result.AuthorId, Is.EqualTo(createRequest.AuthorId));
+            Assert.That(result.GenreId, Is.EqualTo(createRequest.GenreId));
         }
     }
 }

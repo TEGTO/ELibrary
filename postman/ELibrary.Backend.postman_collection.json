@@ -500,7 +500,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"{{author_id}}\",\r\n    \"name\":\"newName\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\"\r\n}",
+							"raw": "{\r\n    \"id\":{{author_id}},\r\n    \"name\":\"newName\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -826,7 +826,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"{{genre_id}}\",\r\n    \"name\":\"newName\"\r\n}",
+							"raw": "{\r\n    \"id\":{{genre_id}},\r\n    \"name\":\"newName\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1067,7 +1067,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"title\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":\"{{author_id}}\",\r\n    \"genreId\":\"{{genre_id}}\"\r\n}",
+							"raw": "{\r\n    \"title\":\"title\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":{{author_id}},\r\n    \"genreId\":{{genre_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1155,7 +1155,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"{{book_id}}\",\r\n    \"title\":\"newTitle\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":\"{{author_id}}\",\r\n    \"genreId\":\"{{genre_id}}\"\r\n}",
+							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"title\":\"newTitle\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":{{author_id}},\r\n    \"genreId\":{{genre_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

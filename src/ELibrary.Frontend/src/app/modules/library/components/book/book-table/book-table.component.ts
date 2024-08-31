@@ -9,8 +9,6 @@ import { BookResponse, bookToCreateRequest, bookToUpdateRequest, PaginatedReques
   styleUrl: './book-table.component.scss'
 })
 export class BookTableComponent implements OnInit, OnDestroy {
-  pageSize: number = 10;
-
   items$!: Observable<{
     id: number,
     title: string,
@@ -30,7 +28,7 @@ export class BookTableComponent implements OnInit, OnDestroy {
   constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: BookService) { }
 
   ngOnInit(): void {
-    this.pageChange(1);
+    this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
   ngOnDestroy(): void {
@@ -39,10 +37,10 @@ export class BookTableComponent implements OnInit, OnDestroy {
   }
 
   pageChange(item: any) {
-    let pageIndex = item as number;
+    let pageParams = item as { pageIndex: number, pageSize: number };
     let req: PaginatedRequest = {
-      pageNumber: pageIndex,
-      pageSize: this.pageSize
+      pageNumber: pageParams.pageIndex,
+      pageSize: pageParams.pageSize + 1
     }
     this.items$ = this.libraryEntityService.getBooksPaginated(req).pipe(
       map(books => books.map(x => ({
@@ -72,9 +70,9 @@ export class BookTableComponent implements OnInit, OnDestroy {
     }
     this.dialogManager.openBookDetailsMenu(entity).afterClosed().pipe(
       takeUntil(this.destroy$)
-    ).subscribe(author => {
-      if (author) {
-        let req = bookToCreateRequest(author);
+    ).subscribe(book => {
+      if (book) {
+        let req = bookToCreateRequest(book);
         this.libraryEntityService.createBook(req);
       }
     });
@@ -83,19 +81,19 @@ export class BookTableComponent implements OnInit, OnDestroy {
     let entity = item as BookResponse;
     this.dialogManager.openBookDetailsMenu(entity).afterClosed().pipe(
       takeUntil(this.destroy$)
-    ).subscribe(author => {
-      if (author) {
-        let req = bookToUpdateRequest(author);
+    ).subscribe(book => {
+      if (book) {
+        let req = bookToUpdateRequest(book);
         this.libraryEntityService.updateBook(req);
       }
     });
   }
   delete(item: any) {
-    let author = item as BookResponse;
+    let book = item as BookResponse;
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       tap(result => {
         if (result === true) {
-          this.libraryEntityService.deleteBookById(author.id);
+          this.libraryEntityService.deleteBookById(book.id);
         }
       }),
       takeUntil(this.destroy$)

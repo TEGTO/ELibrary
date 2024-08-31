@@ -15,8 +15,8 @@ namespace LibraryApi.Validators.Book
             {
                 Id = 1,
                 Title = "Valid Book",
-                AuthorId = "1",
-                GenreId = "1",
+                AuthorId = 1,
+                GenreId = 1,
                 PublicationDate = DateTime.Now
             };
             // Act & Assert
@@ -32,8 +32,8 @@ namespace LibraryApi.Validators.Book
             {
                 Id = 0,
                 Title = "",
-                AuthorId = "",
-                GenreId = "",
+                AuthorId = 0,
+                GenreId = 0,
                 PublicationDate = DateTime.Now
             };
             // Act & Assert

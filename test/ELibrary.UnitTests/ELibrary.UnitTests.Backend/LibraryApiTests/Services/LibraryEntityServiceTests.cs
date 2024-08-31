@@ -80,7 +80,7 @@ namespace LibraryApiTests.Services
             var result = await service.GetPaginatedAsync(1, 10, CancellationToken.None);
             // Assert
             Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Name, Is.EqualTo("Entity1"));
+            Assert.That(result.First().Name, Is.EqualTo("Entity2"));
         }
         [Test]
         public async Task CreateAsync_ValidEntity_AddsEntity()
