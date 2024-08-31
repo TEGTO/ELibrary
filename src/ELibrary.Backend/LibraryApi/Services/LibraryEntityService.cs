@@ -37,6 +37,14 @@ namespace LibraryApi.Services
             return list;
         }
 
+        public virtual async Task<int> GetItemTotalAmountAsync(CancellationToken cancellationToken)
+        {
+            using (var dbContext = await CreateDbContextAsync(cancellationToken))
+            {
+                return await dbContext.Set<TEntity>().AsNoTracking().CountAsync(cancellationToken);
+            }
+        }
+
         public virtual async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
@@ -75,5 +83,6 @@ namespace LibraryApi.Services
         {
             return await repository.CreateDbContextAsync(cancellationToken);
         }
+
     }
 }

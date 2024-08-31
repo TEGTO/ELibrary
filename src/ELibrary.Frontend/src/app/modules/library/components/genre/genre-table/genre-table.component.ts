@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { GenreService, LibraryDialogManager } from '../../..';
 import { GenreResponse, genreToCreateRequest, genreToUpdateRequest, PaginatedRequest } from '../../../../shared';
 
@@ -10,6 +10,7 @@ import { GenreResponse, genreToCreateRequest, genreToUpdateRequest, PaginatedReq
 })
 export class GenreTableComponent implements OnDestroy {
   items$!: Observable<GenreResponse[]>;
+  totalAmount$!: Observable<number>;
   private destroy$ = new Subject<void>();
 
   columns = [
@@ -19,6 +20,7 @@ export class GenreTableComponent implements OnDestroy {
   constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: GenreService) { }
 
   ngOnInit(): void {
+    this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();
     this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
@@ -31,9 +33,11 @@ export class GenreTableComponent implements OnDestroy {
     let pageParams = item as { pageIndex: number, pageSize: number };
     let req: PaginatedRequest = {
       pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize + 1
+      pageSize: pageParams.pageSize
     }
-    this.items$ = this.libraryEntityService.getGenresPaginated(req);
+    this.items$ = this.libraryEntityService.getGenresPaginated(req).pipe(
+      map(items => items.slice(0, pageParams.pageSize))
+    );
   }
   createNew() {
     let entity: GenreResponse = {
@@ -63,12 +67,11 @@ export class GenreTableComponent implements OnDestroy {
   delete(item: any) {
     let entity = item as GenreResponse;
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      tap(result => {
-        if (result === true) {
-          this.libraryEntityService.deleteGenreById(entity.id);
-        }
-      }),
       takeUntil(this.destroy$)
-    ).subscribe();
+    ).subscribe(result => {
+      if (result === true) {
+        this.libraryEntityService.deleteGenreById(entity.id);
+      }
+    });
   }
 }

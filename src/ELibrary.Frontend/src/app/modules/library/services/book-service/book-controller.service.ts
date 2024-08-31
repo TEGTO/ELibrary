@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { bookActions, selectBooks } from '../..';
+import { bookActions, selectBookAmount, selectBooks } from '../..';
 import { BookApiService, BookResponse, CreateBookRequest, PaginatedRequest, UpdateBookRequest } from '../../../shared';
 import { BookService } from './book-service';
 
@@ -21,6 +21,10 @@ export class BookServiceControllerService implements BookService {
   getBooksPaginated(request: PaginatedRequest): Observable<BookResponse[]> {
     this.store.dispatch(bookActions.getPaginated({ request }));
     return this.store.select(selectBooks);
+  }
+  getItemTotalAmount(): Observable<number> {
+    this.store.dispatch(bookActions.getTotalAmount());
+    return this.store.select(selectBookAmount);
   }
   createBook(request: CreateBookRequest): void {
     this.store.dispatch(bookActions.create({ request: request }));

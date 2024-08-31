@@ -6,12 +6,18 @@ export interface LibraryState {
     books: BookResponse[],
     authors: AuthorResponse[],
     genres: GenreResponse[],
+    totalBookAmount: number,
+    totalAuthorAmount: number,
+    totalGenreAmount: number,
     error: any
 }
 const initialLibraryState: LibraryState = {
     books: [],
     authors: [],
     genres: [],
+    totalBookAmount: 0,
+    totalAuthorAmount: 0,
+    totalGenreAmount: 0,
     error: null
 };
 
@@ -24,8 +30,14 @@ export const libraryReducer = createReducer(
     on(bookActions.getPaginatedFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
+    on(bookActions.getTotalAmountSuccess, (state, { amount }) =>
+    ({
+        ...state,
+        totalBookAmount: amount,
+        error: null
+    })),
     on(bookActions.createSuccess, (state, { entity }) =>
-        handleCreateSuccess(state, entity, 'books')
+        handleCreateSuccess(state, entity, 'books', 'totalBookAmount')
     ),
     on(bookActions.createFailure, (state, { error }) =>
         handleFailure(state, error)
@@ -47,7 +59,7 @@ export const libraryReducer = createReducer(
         handleFailure(state, error)
     ),
     on(bookActions.deleteByIdSuccess, (state, { id }) =>
-        handleDeleteSuccess(state, id, 'books')
+        handleDeleteSuccess(state, id, 'books', 'totalBookAmount')
     ),
     on(bookActions.deleteByIdFailure, (state, { error }) =>
         handleFailure(state, error)
@@ -59,8 +71,14 @@ export const libraryReducer = createReducer(
     on(authorActions.getPaginatedFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
+    on(authorActions.getTotalAmountSuccess, (state, { amount }) =>
+    ({
+        ...state,
+        totalAuthorAmount: amount,
+        error: null
+    })),
     on(authorActions.createSuccess, (state, { entity }) =>
-        handleCreateSuccess(state, entity, 'authors')
+        handleCreateSuccess(state, entity, 'authors', 'totalAuthorAmount')
     ),
     on(authorActions.createFailure, (state, { error }) =>
         handleFailure(state, error)
@@ -74,7 +92,7 @@ export const libraryReducer = createReducer(
         handleFailure(state, error)
     ),
     on(authorActions.deleteByIdSuccess, (state, { id }) =>
-        handleDeleteSuccess(state, id, 'authors')
+        handleDeleteSuccess(state, id, 'authors', 'totalAuthorAmount')
     ),
     on(authorActions.deleteByIdFailure, (state, { error }) =>
         handleFailure(state, error)
@@ -86,8 +104,14 @@ export const libraryReducer = createReducer(
     on(genreActions.getPaginatedFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
+    on(genreActions.getTotalAmountSuccess, (state, { amount }) =>
+    ({
+        ...state,
+        totalGenreAmount: amount,
+        error: null
+    })),
     on(genreActions.createSuccess, (state, { entity }) =>
-        handleCreateSuccess(state, entity, 'genres')
+        handleCreateSuccess(state, entity, 'genres', 'totalGenreAmount')
     ),
     on(genreActions.createFailure, (state, { error }) =>
         handleFailure(state, error)
@@ -101,7 +125,7 @@ export const libraryReducer = createReducer(
         handleFailure(state, error)
     ),
     on(genreActions.deleteByIdSuccess, (state, { id }) =>
-        handleDeleteSuccess(state, id, 'genres')
+        handleDeleteSuccess(state, id, 'genres', 'totalGenreAmount')
     ),
     on(genreActions.deleteByIdFailure, (state, { error }) =>
         handleFailure(state, error)
@@ -114,9 +138,10 @@ const handlePaginatedSuccess = <T>(state: LibraryState, entities: T[], key: keyo
     error: null
 });
 
-const handleCreateSuccess = <T>(state: LibraryState, entity: T, key: keyof LibraryState): LibraryState => ({
+const handleCreateSuccess = <T>(state: LibraryState, entity: T, key: keyof LibraryState, amountKey: keyof LibraryState): LibraryState => ({
     ...state,
     [key]: [entity, ...(state[key] as T[])],
+    [amountKey]: (state[amountKey] as number) + 1,
     error: null
 });
 
@@ -125,8 +150,9 @@ const handleFailure = (state: LibraryState, error: any): LibraryState => ({
     error
 });
 
-const handleDeleteSuccess = <T extends { id: number }>(state: LibraryState, id: number, key: keyof LibraryState): LibraryState => ({
+const handleDeleteSuccess = <T extends { id: number }>(state: LibraryState, id: number, key: keyof LibraryState, amountKey: keyof LibraryState): LibraryState => ({
     ...state,
     [key]: (state[key] as T[]).filter(entity => entity.id !== id),
+    [amountKey]: (state[amountKey] as number) - 1,
     error: null
 });

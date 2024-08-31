@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { genreActions, selectGenres } from '../..';
+import { genreActions, selectGenreAmount, selectGenres } from '../..';
 import { CreateGenreRequest, GenreApiService, GenreResponse, PaginatedRequest, UpdateGenreRequest } from '../../../shared';
 import { GenreService } from './genre-service';
 
@@ -21,6 +21,10 @@ export class GenreServiceControllerService implements GenreService {
   getGenresPaginated(request: PaginatedRequest): Observable<GenreResponse[]> {
     this.store.dispatch(genreActions.getPaginated({ request }));
     return this.store.select(selectGenres);
+  }
+  getItemTotalAmount(): Observable<number> {
+    this.store.dispatch(genreActions.getTotalAmount());
+    return this.store.select(selectGenreAmount);
   }
   createGenre(request: CreateGenreRequest): void {
     this.store.dispatch(genreActions.create({ request: request }));

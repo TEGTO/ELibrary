@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { BookService, LibraryDialogManager } from '../../..';
 import { BookResponse, bookToCreateRequest, bookToUpdateRequest, PaginatedRequest } from '../../../../shared';
 
@@ -16,6 +16,7 @@ export class BookTableComponent implements OnInit, OnDestroy {
     author: string,
     genre: string
   }[]>;
+  totalAmount$!: Observable<number>;
   private destroy$ = new Subject<void>();
 
   columns = [
@@ -28,6 +29,7 @@ export class BookTableComponent implements OnInit, OnDestroy {
   constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: BookService) { }
 
   ngOnInit(): void {
+    this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();
     this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
@@ -40,10 +42,10 @@ export class BookTableComponent implements OnInit, OnDestroy {
     let pageParams = item as { pageIndex: number, pageSize: number };
     let req: PaginatedRequest = {
       pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize + 1
+      pageSize: pageParams.pageSize
     }
     this.items$ = this.libraryEntityService.getBooksPaginated(req).pipe(
-      map(books => books.map(x => ({
+      map(books => books.slice(0, pageParams.pageSize).map(x => ({
         id: x.id,
         title: x.title,
         publicationDate: x.publicationDate,
@@ -91,12 +93,11 @@ export class BookTableComponent implements OnInit, OnDestroy {
   delete(item: any) {
     let book = item as BookResponse;
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      tap(result => {
-        if (result === true) {
-          this.libraryEntityService.deleteBookById(book.id);
-        }
-      }),
       takeUntil(this.destroy$)
-    ).subscribe();
+    ).subscribe(result => {
+      if (result === true) {
+        this.libraryEntityService.deleteBookById(book.id);
+      }
+    });
   }
 }

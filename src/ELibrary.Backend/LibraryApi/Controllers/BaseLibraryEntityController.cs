@@ -41,6 +41,13 @@ namespace LibraryApi.Controllers
             return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
 
+        [HttpGet("amount")]
+        public async Task<ActionResult<int>> GetItemTotalAmount(CancellationToken cancellationToken)
+        {
+            var amount = await entityService.GetItemTotalAmountAsync(cancellationToken);
+            return Ok(amount);
+        }
+
         [HttpPost]
         public async Task<ActionResult<TCreateResponse>> Create(TCreateRequest request, CancellationToken cancellationToken)
         {

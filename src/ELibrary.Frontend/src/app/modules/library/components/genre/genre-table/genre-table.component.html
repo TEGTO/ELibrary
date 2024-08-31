@@ -1,2 +1,7 @@
-<generic-table [items$]="items$" [columns]="columns" (createItem)="createNew()" (pageChange)="pageChange($event)"
-    (deleteItem)="delete($event)" (editItem)="update($event)"></generic-table>
+<ng-container *ngIf="items$ | async as items">
+    <ng-container *ngIf="totalAmount$ | async as totalAmount">
+        <generic-table [items]="items" [columns]="columns" [totalItemAmount]="totalAmount" (createItem)="createNew()"
+            (pageChange)="pageChange($event)" (deleteItem)="delete($event)" (editItem)="update($event)">
+        </generic-table>
+    </ng-container>
+</ng-container>

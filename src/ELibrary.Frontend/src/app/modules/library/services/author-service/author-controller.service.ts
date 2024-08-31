@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { authorActions, selectAuthors } from '../..';
+import { authorActions, selectAuthorAmount, selectAuthors } from '../..';
 import { AuthorApiService, AuthorResponse, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest } from '../../../shared';
 import { AuthorService } from './author-service';
 
@@ -21,6 +21,10 @@ export class AuthorServiceControllerService implements AuthorService {
   getAuthorsPaginated(request: PaginatedRequest): Observable<AuthorResponse[]> {
     this.store.dispatch(authorActions.getPaginated({ request: request }));
     return this.store.select(selectAuthors);
+  }
+  getItemTotalAmount(): Observable<number> {
+    this.store.dispatch(authorActions.getTotalAmount());
+    return this.store.select(selectAuthorAmount);
   }
   createAuthor(request: CreateAuthorRequest): void {
     this.store.dispatch(authorActions.create({ request: request }));

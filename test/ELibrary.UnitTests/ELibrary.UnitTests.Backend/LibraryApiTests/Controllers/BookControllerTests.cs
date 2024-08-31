@@ -78,6 +78,20 @@ namespace LibraryApi.Controllers
             Assert.Greater((okResult.Value as IEnumerable<BookResponse>).Count(), 1);
         }
         [Test]
+        public async Task GetItemTotalAmount_ReturnsAmount()
+        {
+            // Arrange
+            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(10);
+            // Act
+            var result = await controller.GetItemTotalAmount(CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult.Value, Is.EqualTo(10));
+        }
+        [Test]
         public async Task Create_ValidRequest_ReturnsCreatedResponse()
         {
             // Arrange

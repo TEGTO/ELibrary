@@ -18,6 +18,11 @@ export class AuthorApiService extends BaseApiService implements LibraryEntityApi
       catchError((resp) => this.handleError(resp))
     );
   }
+  getItemTotalAmount(): Observable<number> {
+    return this.httpClient.get<number>(this.combinePathWithAuthorApiUrl(`/amount`)).pipe(
+      catchError((resp) => this.handleError(resp))
+    );
+  }
   create(request: CreateAuthorRequest): Observable<AuthorResponse> {
     return this.httpClient.post<AuthorResponse>(this.combinePathWithAuthorApiUrl(``), request).pipe(
       map(resp => mapAuthorData(resp)),

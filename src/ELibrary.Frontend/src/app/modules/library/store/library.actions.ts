@@ -18,6 +18,18 @@ function createEntityActions<CreateEntityRequest, UpdateEntityRequest, EntityRes
             props<{ error: any }>()
         ),
 
+        getTotalAmount: createAction(
+            `[Library] Get Total ${capitalizedEntityName}s Amount`,
+        ),
+        getTotalAmountSuccess: createAction(
+            `[Library] Get Total ${capitalizedEntityName}s Amount Success`,
+            props<{ amount: number }>()
+        ),
+        getTotalAmountFailure: createAction(
+            `[Library] Get Total ${capitalizedEntityName}s Amount Failure`,
+            props<{ error: any }>()
+        ),
+
         create: createAction(
             `[Library] Create New ${capitalizedEntityName}`,
             props<{ request: CreateEntityRequest }>()

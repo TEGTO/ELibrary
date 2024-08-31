@@ -16,6 +16,11 @@ export class GenreApiService extends BaseApiService implements LibraryEntityApi<
       catchError((resp) => this.handleError(resp))
     );
   }
+  getItemTotalAmount(): Observable<number> {
+    return this.httpClient.get<number>(this.combinePathWithGenreApiUrl(`/amount`)).pipe(
+      catchError((resp) => this.handleError(resp))
+    );
+  }
   create(request: CreateGenreRequest): Observable<GenreResponse> {
     return this.httpClient.post<GenreResponse>(this.combinePathWithGenreApiUrl(``), request).pipe(
       catchError((resp) => this.handleError(resp))

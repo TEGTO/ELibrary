@@ -24,6 +24,18 @@ export abstract class GenericLibraryEntityffects<Response, Create, Update> {
         )
     );
 
+    getTotalAmount$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(this.entityActions.getTotalAmount),
+            mergeMap(() =>
+                this.apiService.getItemTotalAmount().pipe(
+                    map((amount: number) => this.entityActions.getTotalAmountSuccess({ amount: amount })),
+                    catchError((error: any) => of(this.entityActions.getTotalAmountFailure({ error: error.message })))
+                )
+            )
+        )
+    );
+
     create$ = createEffect(() =>
         this.actions$.pipe(
             ofType(this.entityActions.create),

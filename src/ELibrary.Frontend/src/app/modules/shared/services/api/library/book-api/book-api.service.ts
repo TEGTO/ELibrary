@@ -18,6 +18,11 @@ export class BookApiService extends BaseApiService implements LibraryEntityApi<B
       catchError((resp) => this.handleError(resp))
     );
   }
+  getItemTotalAmount(): Observable<number> {
+    return this.httpClient.get<number>(this.combinePathWithBookApiUrl(`/amount`)).pipe(
+      catchError((resp) => this.handleError(resp))
+    );
+  }
   create(request: CreateBookRequest): Observable<BookResponse> {
     return this.httpClient.post<BookResponse>(this.combinePathWithBookApiUrl(``), request).pipe(
       catchError((resp) => this.handleError(resp))

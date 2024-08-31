@@ -14,6 +14,18 @@ export const selectBooks = createSelector(
     selectLibraryState,
     (state: LibraryState) => state.books
 );
+export const selectAuthorAmount = createSelector(
+    selectLibraryState,
+    (state: LibraryState) => state.totalAuthorAmount
+);
+export const selectGenreAmount = createSelector(
+    selectLibraryState,
+    (state: LibraryState) => state.totalGenreAmount
+);
+export const selectBookAmount = createSelector(
+    selectLibraryState,
+    (state: LibraryState) => state.totalBookAmount
+);
 export const selectLibraryError = createSelector(
     selectLibraryState,
     (state: LibraryState) => state.error

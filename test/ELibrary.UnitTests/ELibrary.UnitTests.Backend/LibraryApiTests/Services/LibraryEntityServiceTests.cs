@@ -83,6 +83,25 @@ namespace LibraryApiTests.Services
             Assert.That(result.First().Name, Is.EqualTo("Entity2"));
         }
         [Test]
+        public async Task GetItemTotalAmountAsync_ReturnsCorrectCount()
+        {
+            // Arrange
+            var entities = new List<Author>
+            {
+                new Author { Id = 1, Name = "Entity1" },
+                new Author { Id = 2, Name = "Entity2" },
+                new Author { Id = 3, Name = "Entity3" }
+            };
+            var dbContextMock = CreateMockDbContext();
+            var dbSetMock = GetDbSetMock(entities.AsQueryable());
+            dbContextMock.Setup(db => db.Set<Author>()).Returns(dbSetMock.Object);
+            repositoryMock.Setup(x => x.CreateDbContextAsync(cancellationToken)).ReturnsAsync(dbContextMock.Object);
+            // Act
+            var result = await service.GetItemTotalAmountAsync(CancellationToken.None);
+            // Assert
+            Assert.That(result, Is.EqualTo(entities.Count));
+        }
+        [Test]
         public async Task CreateAsync_ValidEntity_AddsEntity()
         {
             // Arrange
