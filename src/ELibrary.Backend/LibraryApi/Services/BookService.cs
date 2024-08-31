@@ -29,6 +29,7 @@ namespace LibraryApi.Services
                 var paginatedBooks = await dbContext.Set<Book>()
                                                     .Include(b => b.Author)
                                                     .Include(b => b.Genre)
+                                                    .OrderByDescending(b => b.Id)
                                                     .AsNoTracking()
                                                     .Skip((pageNumber - 1) * pageSize)
                                                     .Take(pageSize)

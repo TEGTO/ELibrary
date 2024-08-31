@@ -1,0 +1,36 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Author</h2>
+
+<mat-dialog-content>
+    <form id="auhtorDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput type="text" autocomplete="author-name" formControlName="name" placeholder="Jonh"
+                maxlength="256">
+            <mat-error *ngIf="nameInput.hasError('required')">Name is <strong>required.</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" autocomplete="author-last-name" formControlName="lastName" placeholder="Doe"
+                maxlength="256">
+            <mat-error *ngIf="lastNameInput.hasError('required')">Last name is <strong>required.</strong></mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" placeholder="MM/DD/YYYY">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="dateOfBirthInput.hasError('required')">Date of birth is
+                <strong>required</strong></mat-error>
+            <mat-error *ngIf="dateOfBirthInput.hasError('invalidDateOfBirth')">
+                Date of birth must be <strong>in the past</strong>
+            </mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="actions__bottom-container flex-col">
+    <button mat-flat-button id="send-button" form="auhtorDetails" type="submit" color="primary"
+        class="w-full">Confirm</button>
+</mat-dialog-actions>

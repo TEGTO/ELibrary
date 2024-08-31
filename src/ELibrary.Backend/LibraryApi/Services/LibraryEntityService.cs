@@ -30,6 +30,7 @@ namespace LibraryApi.Services
                 list.AddRange(await dbContext.Set<TEntity>()
                                       .AsNoTracking()
                                       .Skip((pageNumber - 1) * pageSize)
+                                      .OrderByDescending(b => b.Id)
                                       .Take(pageSize)
                                       .ToListAsync(cancellationToken));
             }

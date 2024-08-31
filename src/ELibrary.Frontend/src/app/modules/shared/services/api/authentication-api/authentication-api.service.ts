@@ -24,6 +24,6 @@ export class AuthenticationApiService extends BaseApiService {
     );
   }
   private combinePathWithAuthApiUrl(subpath: string) {
-    return this.urlDefiner.combineWithAuthApiUrl(subpath);
+    return this.urlDefiner.combineWithUserApiUrl("/auth" + subpath);
   }
 }

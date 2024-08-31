@@ -5,10 +5,10 @@ import { environment } from '../../../../../environment/environment';
   providedIn: 'root'
 })
 export class URLDefiner {
-  combineWithAuthApiUrl(subpath: string): string {
-    return environment.userApi + "/auth" + subpath;
+  combineWithUserApiUrl(subpath: string): string {
+    return environment.userApi + subpath;
   }
-  combineWithUserInfoApiUrl(subpath: string): string {
-    return environment.userApi + "/userinfo" + subpath;
+  combineWithLibraryApiUrl(subpath: string): string {
+    return environment.libraryApi + subpath;
   }
 }
