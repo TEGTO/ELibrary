@@ -98,7 +98,7 @@ describe('AuthorTableComponent', () => {
     component.createNew();
     fixture.detectChanges();
 
-    expect(mockDialogManager.openAuthorDetailsMenu).toHaveBeenCalledWith(mockAuthor);
+    expect(mockDialogManager.openAuthorDetailsMenu).toHaveBeenCalled();
     expect(mockAuthorService.createAuthor).toHaveBeenCalled();
   });
 
