@@ -49,7 +49,7 @@ function createEntityActions<CreateEntityRequest, UpdateEntityRequest, EntityRes
         ),
         updateSuccess: createAction(
             `[Library] Update ${capitalizedEntityName} Success`,
-            props<{ entity: UpdateEntityRequest }>()
+            props<{ entity: EntityResponse }>()
         ),
         updateFailure: createAction(
             `[Library] Update ${capitalizedEntityName} Failure`,

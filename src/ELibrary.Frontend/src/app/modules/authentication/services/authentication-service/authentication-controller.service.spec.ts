@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthData, selectIsRefreshSuccessful, signInUser, updateUserData } from '../..';
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest, UserUpdateDataRequest } from '../../../shared';
+import { getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthData, selectIsRefreshSuccessful, signInUser } from '../..';
+import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest } from '../../../shared';
 import { AuthenticationControllerService } from './authentication-controller.service';
 
 describe('AuthenticationControllerService', () => {
@@ -18,7 +18,6 @@ describe('AuthenticationControllerService', () => {
 
   const mockUserData: UserData = {
     userName: 'user',
-    email: 'user@example.com'
   };
 
   beforeEach(() => {
@@ -37,7 +36,19 @@ describe('AuthenticationControllerService', () => {
   });
 
   it('should dispatch registerUser action and return isSuccess observable', (done) => {
-    const userRegistrationData: UserRegistrationRequest = { userName: 'user', email: 'user@example.com', password: 'password', confirmPassword: 'password' };
+    const userRegistrationData: UserRegistrationRequest =
+    {
+      userName: 'user',
+      password: 'password',
+      confirmPassword: 'password',
+      userInfo: {
+        name: "",
+        lastName: "",
+        dateOfBirth: new Date(),
+        address: ""
+      }
+
+    };
     store.select.and.returnValue(of(true));
 
     service.registerUser(userRegistrationData).subscribe(result => {
@@ -121,17 +132,6 @@ describe('AuthenticationControllerService', () => {
     service.getUserData().subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(getAuthData());
       expect(result).toEqual(mockUserData);
-      done();
-    });
-  });
-
-  it('should dispatch updateUserData action and return isUpdateSuccessful observable', (done) => {
-    const updateData: UserUpdateDataRequest = { userName: 'newUser', newEmail: 'new@example.com', oldEmail: 'user@example.com', oldPassword: 'oldPass', newPassword: 'newPass' };
-    store.select.and.returnValue(of(true));
-
-    service.updateUser(updateData).subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(updateUserData({ updateRequest: updateData }));
-      expect(result).toBe(true);
       done();
     });
   });

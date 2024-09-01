@@ -29,7 +29,7 @@ export class BookApiService extends BaseApiService implements LibraryEntityApi<B
     );
   }
   update(request: UpdateBookRequest) {
-    return this.httpClient.put(this.combinePathWithBookApiUrl(``), request).pipe(
+    return this.httpClient.put<BookResponse>(this.combinePathWithBookApiUrl(``), request).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }

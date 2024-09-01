@@ -27,7 +27,7 @@ export class GenreApiService extends BaseApiService implements LibraryEntityApi<
     );
   }
   update(request: UpdateGenreRequest) {
-    return this.httpClient.put(this.combinePathWithGenreApiUrl(``), request).pipe(
+    return this.httpClient.put<GenreResponse>(this.combinePathWithGenreApiUrl(``), request).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }

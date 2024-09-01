@@ -68,7 +68,7 @@ describe('AuthenticationDialogManagerService', () => {
     service.openRegisterMenu();
 
     expect(mockMatDialog.open).toHaveBeenCalledWith(RegisterComponent, {
-      height: '470px',
+      height: '630px',
       width: '450px',
     });
   });

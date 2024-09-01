@@ -30,7 +30,7 @@ export class AuthorApiService extends BaseApiService implements LibraryEntityApi
     );
   }
   update(request: UpdateAuthorRequest) {
-    return this.httpClient.put(this.combinePathWithAuthorApiUrl(``), request).pipe(
+    return this.httpClient.put<AuthorResponse>(this.combinePathWithAuthorApiUrl(``), request).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }

@@ -8,7 +8,7 @@ import { AuthorService } from './author-service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthorServiceControllerService implements AuthorService {
+export class AuthorControllerService implements AuthorService {
 
   constructor(
     private readonly apiService: AuthorApiService,

@@ -53,42 +53,41 @@ namespace LibraryApi.Services
                 return book;
             }
         }
-        public override async Task UpdateAsync(Book entity, CancellationToken cancellationToken)
+        public override async Task<Book> UpdateAsync(Book entity, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
             {
                 var entityInDb = await dbContext.Set<Book>()
                                                  .Include(b => b.Author)
                                                  .Include(b => b.Genre)
-                                                 .FirstOrDefaultAsync(b => b.Id == entity.Id, cancellationToken);
+                                                 .FirstAsync(b => b.Id == entity.Id, cancellationToken);
 
-                if (entityInDb != null)
+                entityInDb.Copy(entity);
+
+                if (entityInDb.AuthorId != entity.AuthorId)
                 {
-                    entityInDb.Copy(entity);
-
-                    if (entityInDb.AuthorId != entity.AuthorId)
+                    var author = await dbContext.Set<Author>().FirstOrDefaultAsync(a => a.Id == entity.AuthorId, cancellationToken);
+                    if (author != null)
                     {
-                        var author = await dbContext.Set<Author>().FirstOrDefaultAsync(a => a.Id == entity.AuthorId, cancellationToken);
-                        if (author != null)
-                        {
-                            entityInDb.AuthorId = entity.AuthorId;
-                            entityInDb.Author = author;
-                        }
+                        entityInDb.AuthorId = entity.AuthorId;
+                        entityInDb.Author = author;
                     }
-
-                    if (entityInDb.GenreId != entity.GenreId)
-                    {
-                        var genre = await dbContext.Set<Genre>().FirstOrDefaultAsync(g => g.Id == entity.GenreId, cancellationToken);
-                        if (genre != null)
-                        {
-                            entityInDb.GenreId = entity.GenreId;
-                            entityInDb.Genre = genre;
-                        }
-                    }
-
-                    dbContext.Set<Book>().Update(entityInDb);
-                    await dbContext.SaveChangesAsync(cancellationToken);
                 }
+
+                if (entityInDb.GenreId != entity.GenreId)
+                {
+                    var genre = await dbContext.Set<Genre>().FirstOrDefaultAsync(g => g.Id == entity.GenreId, cancellationToken);
+                    if (genre != null)
+                    {
+                        entityInDb.GenreId = entity.GenreId;
+                        entityInDb.Genre = genre;
+                    }
+                }
+
+                dbContext.Set<Book>().Update(entityInDb);
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                return entityInDb;
             }
         }
     }

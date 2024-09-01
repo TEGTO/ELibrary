@@ -5,7 +5,7 @@ import { AuthorApiService, AuthorResponse, BookApiService, BookResponse, CreateA
 import { authorActions, bookActions, genreActions } from "./library.actions";
 
 @Injectable()
-export abstract class GenericLibraryEntityffects<Response, Create, Update> {
+export abstract class GenericLibraryEntityEffects<Response, Create, Update> {
     constructor(
         private readonly actions$: Actions,
         private readonly apiService: LibraryEntityApi<Response, Create, Update>,
@@ -53,7 +53,7 @@ export abstract class GenericLibraryEntityffects<Response, Create, Update> {
             ofType(this.entityActions.update),
             mergeMap((action: { request: Update }) =>
                 this.apiService.update(action.request).pipe(
-                    map(() => this.entityActions.updateSuccess({ entity: action.request })),
+                    map((entity: Response) => this.entityActions.updateSuccess({ entity: entity })),
                     catchError((error: any) => of(this.entityActions.updateFailure({ error: error.message })))
                 )
             )
@@ -74,7 +74,7 @@ export abstract class GenericLibraryEntityffects<Response, Create, Update> {
 }
 
 @Injectable()
-export class AuthorEffects extends GenericLibraryEntityffects<AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest> {
+export class AuthorEffects extends GenericLibraryEntityEffects<AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest> {
     constructor(
         actions$: Actions,
         apiService: AuthorApiService
@@ -84,7 +84,7 @@ export class AuthorEffects extends GenericLibraryEntityffects<AuthorResponse, Cr
 }
 
 @Injectable()
-export class BookEffects extends GenericLibraryEntityffects<BookResponse, CreateBookRequest, UpdateBookRequest> {
+export class BookEffects extends GenericLibraryEntityEffects<BookResponse, CreateBookRequest, UpdateBookRequest> {
     constructor(
         actions$: Actions,
         apiService: BookApiService
@@ -94,7 +94,7 @@ export class BookEffects extends GenericLibraryEntityffects<BookResponse, Create
 }
 
 @Injectable()
-export class GenreEffects extends GenericLibraryEntityffects<GenreResponse, CreateGenreRequest, UpdateGenreRequest> {
+export class GenreEffects extends GenericLibraryEntityEffects<GenreResponse, CreateGenreRequest, UpdateGenreRequest> {
     constructor(
         actions$: Actions,
         apiService: GenreApiService

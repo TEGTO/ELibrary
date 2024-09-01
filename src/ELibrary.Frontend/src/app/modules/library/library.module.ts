@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthorChangeDialogComponent, AuthorServiceControllerService as AuthorControllerService, AuthorEffects, AuthorService, AuthorTableComponent, BookServiceControllerService as BookControllerService, BookEffects, BookService, BookTableComponent, ConfirmMenuComponent, GenericTableComponent, GenreServiceControllerService as GenreControllerService, GenreEffects, GenreService, GenreTableComponent, LibraryDialogManager, LibraryDialogManagerService, libraryReducer, LibraryTablesComponent } from '.';
+import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorService, AuthorTableComponent, BookControllerService, BookEffects, BookService, BookTableComponent, ConfirmMenuComponent, GenericTableComponent, GenreControllerService, GenreEffects, GenreService, GenreTableComponent, LibraryDialogManager, LibraryDialogManagerService, libraryReducer, LibraryTablesComponent } from '.';
 import { BookChangeDialogComponent } from './components/book/book-change-dialog/book-change-dialog.component';
 import { GenreChangeDialogComponent } from './components/genre/genre-change-dialog/genre-change-dialog.component';
 

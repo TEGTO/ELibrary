@@ -115,12 +115,17 @@ namespace LibraryApi.Controllers
             // Arrange
             var updateRequest = new UpdateGenreRequest { Id = 1, Name = "Thriller" };
             var genre = new Genre { Id = 1, Name = "Thriller" };
+            var updatedResponse = new GenreResponse { Id = 1, Name = "Mystery" };
             mockMapper.Setup(m => m.Map<Genre>(updateRequest)).Returns(genre);
-            mockEntityService.Setup(s => s.UpdateAsync(genre, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mockEntityService.Setup(s => s.UpdateAsync(genre, It.IsAny<CancellationToken>())).ReturnsAsync(genre);
+            mockMapper.Setup(m => m.Map<GenreResponse>(genre)).Returns(updatedResponse);
             // Act
             var result = await controller.Update(updateRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var updatedResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(updatedResult);
+            Assert.That(updatedResult.Value, Is.EqualTo(updatedResponse));
         }
         [Test]
         public async Task DeleteById_ExistingId_ReturnsOk()

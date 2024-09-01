@@ -115,12 +115,17 @@ namespace LibraryApi.Controllers
             // Arrange
             var updateRequest = new UpdateAuthorRequest { Id = 1, Name = "John", LastName = "Doe" };
             var author = new Author { Id = 1, Name = "John", LastName = "Doe" };
+            var updatedResponse = new AuthorResponse { Id = 1, Name = "John", LastName = "Doe" };
             mockMapper.Setup(m => m.Map<Author>(updateRequest)).Returns(author);
-            mockEntityService.Setup(s => s.UpdateAsync(author, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            mockEntityService.Setup(s => s.UpdateAsync(author, It.IsAny<CancellationToken>())).ReturnsAsync(author);
+            mockMapper.Setup(m => m.Map<AuthorResponse>(author)).Returns(updatedResponse);
             // Act
             var result = await controller.Update(updateRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var updatedResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(updatedResult);
+            Assert.That(updatedResult.Value, Is.EqualTo(updatedResponse));
         }
         [Test]
         public async Task DeleteById_ExistingId_ReturnsOk()

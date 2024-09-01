@@ -14,6 +14,6 @@ export class UserInfoApiService extends BaseApiService {
     );
   }
   private combinePathWithUserInfoApiUrl(subpath: string) {
-    return this.urlDefiner.combineWithUserApiUrl(+ "/userinfo" + subpath);
+    return this.urlDefiner.combineWithUserApiUrl("/userinfo" + subpath);
   }
 }

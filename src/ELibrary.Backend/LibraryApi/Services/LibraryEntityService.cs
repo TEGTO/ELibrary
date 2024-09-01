@@ -29,8 +29,8 @@ namespace LibraryApi.Services
             {
                 list.AddRange(await dbContext.Set<TEntity>()
                                       .AsNoTracking()
-                                      .Skip((pageNumber - 1) * pageSize)
                                       .OrderByDescending(b => b.Id)
+                                      .Skip((pageNumber - 1) * pageSize)
                                       .Take(pageSize)
                                       .ToListAsync(cancellationToken));
             }
@@ -55,7 +55,7 @@ namespace LibraryApi.Services
             }
         }
 
-        public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             using (var dbContext = await CreateDbContextAsync(cancellationToken))
             {
@@ -63,6 +63,7 @@ namespace LibraryApi.Services
                 entityInDb.Copy(entity);
                 dbContext.Set<TEntity>().Update(entityInDb);
                 await dbContext.SaveChangesAsync(cancellationToken);
+                return entityInDb;
             }
         }
 

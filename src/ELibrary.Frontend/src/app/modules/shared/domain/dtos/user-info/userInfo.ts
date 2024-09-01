@@ -5,7 +5,6 @@ export interface UserInfo {
     dateOfBirth: Date;
     address: string;
 }
-
 export function mapUserInfoDate(info: UserInfo): UserInfo {
     return {
         ...info,

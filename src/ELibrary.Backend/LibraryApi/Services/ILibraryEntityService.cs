@@ -9,6 +9,6 @@ namespace LibraryApi.Services
         public Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken);
         public Task<int> GetItemTotalAmountAsync(CancellationToken cancellationToken);
         public Task<IEnumerable<TEntity>> GetPaginatedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
-        public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken);
     }
 }

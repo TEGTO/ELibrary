@@ -2,8 +2,8 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
-import { AuthData, AuthenticationApiService, AuthToken, LocalStorageService, UserAuthenticationRequest, UserAuthenticationResponse, UserData, UserUpdateDataRequest } from "../../../shared";
-import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "./auth.actions";
+import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
+import { AuthData, AuthenticationApiService, AuthToken, LocalStorageService, UserAuthenticationRequest, UserAuthenticationResponse, UserData } from "../../../shared";
 import { RegistrationEffects, SignInEffects } from "./auth.effects";
 
 describe('RegistrationEffects', () => {
@@ -28,7 +28,17 @@ describe('RegistrationEffects', () => {
 
     describe('registerUser$', () => {
         it('should dispatch registerSuccess on successful registerUser', (done) => {
-            const registrationRequest = { userName: 'user', email: 'user@example.com', password: 'password', confirmPassword: 'password' };
+            const registrationRequest = {
+                userName: 'user',
+                password: 'password',
+                confirmPassword: 'password',
+                userInfo: {
+                    name: "",
+                    lastName: "",
+                    dateOfBirth: new Date(),
+                    address: ""
+                }
+            };
             const action = registerUser({ registrationRequest });
             const outcome = registerSuccess();
 
@@ -43,7 +53,17 @@ describe('RegistrationEffects', () => {
         });
 
         it('should dispatch registerFailure on failed registerUser', (done) => {
-            const registrationRequest = { userName: 'user', email: 'user@example.com', password: 'password', confirmPassword: 'password' };
+            const registrationRequest = {
+                userName: 'user',
+                password: 'password',
+                confirmPassword: 'password',
+                userInfo: {
+                    name: "",
+                    lastName: "",
+                    dateOfBirth: new Date(),
+                    address: ""
+                }
+            };
             const action = registerUser({ registrationRequest });
             const error = new Error('Error!');
             const outcome = registerFailure({ error: error.message });
@@ -89,7 +109,6 @@ describe('SignInEffects', () => {
             const response: UserAuthenticationResponse = {
                 authToken: { accessToken: 'accessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() },
                 userName: 'user',
-                email: 'user@example.com'
             };
             const authData: AuthData = {
                 isAuthenticated: true,
@@ -97,7 +116,7 @@ describe('SignInEffects', () => {
                 refreshToken: response.authToken.refreshToken,
                 refreshTokenExpiryDate: response.authToken.refreshTokenExpiryDate
             };
-            const userData: UserData = { userName: response.userName, email: response.email };
+            const userData: UserData = { userName: response.userName };
             const action = signInUser({ authRequest });
             const outcome = signInUserSuccess({ authData, userData });
 
@@ -133,7 +152,7 @@ describe('SignInEffects', () => {
     describe('getAuthUser$', () => {
         it('should dispatch getAuthDataSuccess if auth data is present in local storage', (done) => {
             const authData: AuthData = { isAuthenticated: true, accessToken: 'accessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-            const userData: UserData = { userName: 'user', email: 'user@example.com' };
+            const userData: UserData = { userName: 'user' };
             const action = getAuthData();
             const outcome = getAuthDataSuccess({ authData, userData });
 
@@ -220,53 +239,6 @@ describe('SignInEffects', () => {
                 expect(result).toEqual(outcome);
                 expect(mockApiService.refreshToken).toHaveBeenCalledWith(authToken);
                 expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('authData');
-                done();
-            });
-        });
-    });
-
-    describe('updateUser$', () => {
-        it('should dispatch updateUserDataSuccess on successful updateUser', (done) => {
-            const updateRequest: UserUpdateDataRequest = {
-                userName: 'newUser',
-                newEmail: 'newUser@example.com',
-                oldEmail: 'user@example.com',
-                oldPassword: 'oldPassword',
-                newPassword: 'newPassword'
-            };
-            const userData: UserData = { userName: 'newUser', email: 'newUser@example.com' };
-            const action = updateUserData({ updateRequest });
-            const outcome = updateUserDataSuccess({ userData });
-
-            actions$ = of(action);
-            mockApiService.updateUser.and.returnValue(of({}));
-
-            effects.updateUser$.subscribe(result => {
-                expect(result).toEqual(outcome);
-                expect(mockApiService.updateUser).toHaveBeenCalledWith(updateRequest);
-                expect(mockLocalStorage.setItem).toHaveBeenCalledWith('userData', JSON.stringify(userData));
-                done();
-            });
-        });
-
-        it('should dispatch updateUserDataFailure on failed updateUser', (done) => {
-            const updateRequest: UserUpdateDataRequest = {
-                userName: 'newUser',
-                newEmail: 'newUser@example.com',
-                oldEmail: 'user@example.com',
-                oldPassword: 'oldPassword',
-                newPassword: 'newPassword'
-            };
-            const action = updateUserData({ updateRequest });
-            const error = new Error('Error!');
-            const outcome = updateUserDataFailure({ error: error.message });
-
-            actions$ = of(action);
-            mockApiService.updateUser.and.returnValue(throwError(error));
-
-            effects.updateUser$.subscribe(result => {
-                expect(result).toEqual(outcome);
-                expect(mockApiService.updateUser).toHaveBeenCalledWith(updateRequest);
                 done();
             });
         });

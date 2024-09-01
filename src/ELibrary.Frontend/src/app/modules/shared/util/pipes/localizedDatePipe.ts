@@ -15,7 +15,7 @@ export class LocalizedDatePipe implements PipeTransform {
         if (isNaN(date.getTime())) {
             return null;
         }
-        return date.toLocaleDateString(undefined, {
+        return date.toLocaleDateString(this.locale, {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'

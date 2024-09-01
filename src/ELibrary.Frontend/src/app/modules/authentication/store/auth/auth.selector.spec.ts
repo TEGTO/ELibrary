@@ -1,5 +1,5 @@
 import { AuthState, RegistrationState, UserDataState } from "./auth.reducer";
-import { selectAuthData, selectAuthErrors, selectAuthState, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccessful, selectRegistrationErrors, selectRegistrationState, selectUserDataState, selectUserErrors } from "./auth.selector";
+import { selectAuthData, selectAuthErrors, selectAuthState, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectRegistrationErrors, selectRegistrationState, selectUserDataState, selectUserErrors } from "./auth.selector";
 
 describe('Registration Selectors', () => {
     const initialState: RegistrationState = {
@@ -65,8 +65,6 @@ describe('Authentication Selectors', () => {
 describe('User Data Selectors', () => {
     const initialState: UserDataState = {
         userName: "",
-        email: "",
-        isUpdateSuccess: false,
         error: null
     };
     const errorState: UserDataState = {
@@ -77,10 +75,6 @@ describe('User Data Selectors', () => {
     it('should select a user data state', () => {
         const result = selectUserDataState.projector(initialState);
         expect(result).toEqual(initialState);
-    });
-    it('should select is update successful data', () => {
-        const result = selectIsUpdateSuccessful.projector(initialState);
-        expect(result).toEqual(initialState.isUpdateSuccess);
     });
     it('should select user data errors', () => {
         const result = selectUserErrors.projector(errorState);

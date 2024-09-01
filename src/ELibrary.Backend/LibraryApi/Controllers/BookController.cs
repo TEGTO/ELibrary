@@ -10,7 +10,7 @@ namespace LibraryApi.Controllers
     [Authorize]
     [Route("book")]
     [ApiController]
-    public class BookController : BaseLibraryEntityController<Book, BookResponse, CreateBookRequest, BookResponse, UpdateBookRequest>
+    public class BookController : BaseLibraryEntityController<Book, BookResponse, CreateBookRequest, BookResponse, UpdateBookRequest, BookResponse>
     {
         public BookController(ILibraryEntityService<Book> entityService, IMapper mapper) : base(entityService, mapper)
         {

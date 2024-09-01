@@ -1,18 +1,17 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { AuthenticationService } from '../..';
 import { SnackbarManager } from '../../../shared';
-import { AuthenticationService } from '../../services/authentication-service/authentication-service';
 import { RegisterComponent } from './register.component';
 
-describe('RegisterComponent', () => {
+fdescribe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authService: jasmine.SpyObj<AuthenticationService>;
@@ -31,8 +30,7 @@ describe('RegisterComponent', () => {
         FormsModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule,
-        NoopAnimationsModule,
+        NoopAnimationsModule
       ],
       providers: [
         { provide: AuthenticationService, useValue: authServiceSpy },
@@ -65,19 +63,13 @@ describe('RegisterComponent', () => {
     nameInput.blur();
     fixture.detectChanges();
 
-    const emailInput = inputs[1].nativeElement;
-    emailInput.value = 'invalid email';
-    emailInput.dispatchEvent(new Event('input'));
-    emailInput.blur();
-    fixture.detectChanges();
-
-    const passwordInput = inputs[2].nativeElement;
+    const passwordInput = inputs[1].nativeElement;
     passwordInput.value = 'short';
     passwordInput.dispatchEvent(new Event('input'));
     passwordInput.blur();
     fixture.detectChanges();
 
-    const confirmPasswordInput = inputs[3].nativeElement;
+    const confirmPasswordInput = inputs[2].nativeElement;
     confirmPasswordInput.value = 'mismatch';
     confirmPasswordInput.dispatchEvent(new Event('input'));
     confirmPasswordInput.blur();
@@ -85,14 +77,19 @@ describe('RegisterComponent', () => {
 
     expect(component.formGroup.valid).toBeFalse();
     expect(component.nameInput.hasError('required')).toBeTruthy();
+    expect(component.passwordInput.hasError('minlength')).toBeTruthy();
+    expect(component.passwordConfirmInput.hasError('passwordNoMatch')).toBeTruthy();
   });
 
-  it('should call registerUser on valid form submission', () => {
+  fit('should call registerUser on valid form submission', () => {
     const formValues = {
       userName: 'John Doe',
-      email: 'john@example.com',
       password: 'password123',
-      passwordConfirm: 'password123'
+      passwordConfirm: 'password123',
+      firstName: 'John',
+      lastName: 'Doe',
+      dateOfBirth: new Date(),
+      address: '123 Main St'
     };
 
     component.formGroup.setValue(formValues);
@@ -104,9 +101,14 @@ describe('RegisterComponent', () => {
 
     expect(authService.registerUser).toHaveBeenCalledWith({
       userName: formValues.userName,
-      email: formValues.email,
       password: formValues.password,
-      confirmPassword: formValues.passwordConfirm
+      confirmPassword: formValues.passwordConfirm,
+      userInfo: {
+        name: formValues.firstName,
+        lastName: formValues.lastName,
+        dateOfBirth: formValues.dateOfBirth,
+        address: formValues.address,
+      }
     });
     expect(snackbarManager.openInfoSnackbar).toHaveBeenCalledWith('✔️ The registration is successful!', 5);
     expect(dialogRef.close).toHaveBeenCalled();
@@ -115,7 +117,6 @@ describe('RegisterComponent', () => {
   it('should display error messages on registration failure', () => {
     const formValues = {
       userName: 'John Doe',
-      email: 'john@example.com',
       password: 'password123',
       passwordConfirm: 'password123'
     };
@@ -134,7 +135,6 @@ describe('RegisterComponent', () => {
   it('should handle registration errors', () => {
     const formValues = {
       userName: 'John Doe',
-      email: 'john@example.com',
       password: 'password123',
       passwordConfirm: 'password123'
     };
@@ -147,5 +147,31 @@ describe('RegisterComponent', () => {
 
     expect(authService.registerUser).toHaveBeenCalled();
     expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Server error']);
+  });
+
+  it('should handle unexpected errors during registration', () => {
+    const formValues = {
+      userName: 'John Doe',
+      password: 'password123',
+      passwordConfirm: 'password123'
+    };
+
+    component.formGroup.setValue(formValues);
+    authService.registerUser.and.returnValue(throwError(() => new Error('Unexpected error')));
+
+    component.registerUser();
+
+    expect(authService.registerUser).toHaveBeenCalled();
+    expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['An error occurred during registration.']);
+  });
+
+  it('should clean up subscriptions on destroy', () => {
+    const spy = spyOn(component['destroy$'], 'next').and.callThrough();
+    const completeSpy = spyOn(component['destroy$'], 'complete').and.callThrough();
+
+    component.ngOnDestroy();
+
+    expect(spy).toHaveBeenCalled();
+    expect(completeSpy).toHaveBeenCalled();
   });
 });

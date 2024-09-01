@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { AuthorResponse, BookResponse, GenreResponse, getAuthorFromUpdateRequest, getBookFromUpdateRequest, getGenreFromUpdateRequest } from "../../shared";
+import { AuthorResponse, BookResponse, GenreResponse } from "../../shared";
 import { authorActions, bookActions, genreActions } from "./library.actions";
 
 export interface LibraryState {
@@ -42,19 +42,9 @@ export const libraryReducer = createReducer(
     on(bookActions.createFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
-    on(bookActions.updateSuccess, (state, { entity }) => {
-        let original = state.books.find(b => b.id === entity.id);
-        let author = state.authors.find(x => x.id === entity.authorId);
-        let genre = state.genres.find(x => x.id === entity.genreId);
-        if (original && author && genre) {
-            return {
-                ...state,
-                books: state.books.map(b => b.id === entity.id ? getBookFromUpdateRequest(entity, author, genre) : b),
-                error: null
-            };
-        }
-        return state;
-    }),
+    on(bookActions.updateSuccess, (state, { entity }) =>
+        handleUpdateSuccess(state, entity, 'books')
+    ),
     on(bookActions.updateFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
@@ -83,11 +73,9 @@ export const libraryReducer = createReducer(
     on(authorActions.createFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
-    on(authorActions.updateSuccess, (state, { entity }) => ({
-        ...state,
-        authors: state.authors.map(g => g.id === entity.id ? getAuthorFromUpdateRequest(entity) : g),
-        error: null
-    })),
+    on(authorActions.updateSuccess, (state, { entity }) =>
+        handleUpdateSuccess(state, entity, 'authors')
+    ),
     on(authorActions.updateFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
@@ -116,11 +104,9 @@ export const libraryReducer = createReducer(
     on(genreActions.createFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
-    on(genreActions.updateSuccess, (state, { entity }) => ({
-        ...state,
-        genres: state.genres.map(g => g.id === entity.id ? getGenreFromUpdateRequest(entity) : g),
-        error: null
-    })),
+    on(genreActions.updateSuccess, (state, { entity }) =>
+        handleUpdateSuccess(state, entity, 'genres')
+    ),
     on(genreActions.updateFailure, (state, { error }) =>
         handleFailure(state, error)
     ),
@@ -142,6 +128,12 @@ const handleCreateSuccess = <T>(state: LibraryState, entity: T, key: keyof Libra
     ...state,
     [key]: [entity, ...(state[key] as T[])],
     [amountKey]: (state[amountKey] as number) + 1,
+    error: null
+});
+
+const handleUpdateSuccess = <T extends { id: number }>(state: LibraryState, entity: T, key: keyof LibraryState): LibraryState => ({
+    ...state,
+    [key]: (state[key] as T[]).map(item => item.id === entity.id ? entity : item),
     error: null
 });
 

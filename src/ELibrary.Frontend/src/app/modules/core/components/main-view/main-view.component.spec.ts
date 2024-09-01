@@ -1,91 +1,91 @@
-// import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
-// import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-// import { RouterModule } from '@angular/router';
-// import { BehaviorSubject } from 'rxjs';
-// import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-// import { AuthenticationModule } from '../../../authentication/authentication.module';
-// import { AuthData } from '../../../shared';
-// import { MainViewComponent } from './main-view.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { AuthenticationDialogManager, AuthenticationService, UnauthenticatedComponent } from '../../../authentication';
+import { AuthData } from '../../../shared';
+import { MainViewComponent } from './main-view.component';
 
-// describe('MainViewComponent', () => {
-//   const authData = {
-//     isAuthenticated: true,
-//     accessToken: "",
-//     refreshToken: "",
-//     refreshTokenExpiryDate: new Date(),
-//   };
-//   let component: MainViewComponent;
-//   let fixture: ComponentFixture<MainViewComponent>;
-//   let mockAuthService: jasmine.SpyObj<AuthenticationService>;
-//   let mockAuthDialogManager: jasmine.SpyObj<AuthenticationDialogManager>;
-//   let authDataBehabiourSubject = new BehaviorSubject<AuthData>(authData);
+describe('MainViewComponent', () => {
+    let component: MainViewComponent;
+    let fixture: ComponentFixture<MainViewComponent>;
+    let authService: jasmine.SpyObj<AuthenticationService>;
+    let authDialogManager: jasmine.SpyObj<AuthenticationDialogManager>;
 
-//   beforeEach(async () => {
-//     mockAuthService = jasmine.createSpyObj('AuthenticationService', ['getAuthData']);
-//     mockAuthDialogManager = jasmine.createSpyObj('AuthenticationDialogManager', ['openLoginMenu']);
-//     authDataBehabiourSubject = new BehaviorSubject<AuthData>(authData);
-//     mockAuthService.getAuthData.and.returnValue(authDataBehabiourSubject.asObservable());
+    beforeEach(async () => {
+        const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['getAuthData']);
+        const authDialogManagerSpy = jasmine.createSpyObj('AuthenticationDialogManager', ['openLoginMenu']);
 
-//     await TestBed.configureTestingModule({
-//       declarations: [MainViewComponent],
-//       imports: [RouterModule, AuthenticationModule],
-//       providers: [
-//         { provide: AuthenticationService, useValue: mockAuthService },
-//         { provide: AuthenticationDialogManager, useValue: mockAuthDialogManager }
-//       ],
-//       schemas: [CUSTOM_ELEMENTS_SCHEMA]
-//     }).compileComponents();
-//   });
+        await TestBed.configureTestingModule({
+            declarations: [MainViewComponent, UnauthenticatedComponent],
+            imports: [
+                RouterTestingModule,
+            ],
+            providers: [
+                { provide: AuthenticationService, useValue: authServiceSpy },
+                { provide: AuthenticationDialogManager, useValue: authDialogManagerSpy }
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA,]
+        }).compileComponents();
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(MainViewComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+        authService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
+        authDialogManager = TestBed.inject(AuthenticationDialogManager) as jasmine.SpyObj<AuthenticationDialogManager>;
+    });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(MainViewComponent);
+        component = fixture.componentInstance;
+    });
 
-//   it('should initialize isAuthenticated$ on ngOnInit', () => {
-//     component.ngOnInit();
-//     fixture.detectChanges();
+    it('should create the component', () => {
+        expect(component).toBeTruthy();
+    });
 
-//     component.isAuthenticated$.subscribe(isAuthenticated => {
-//       expect(isAuthenticated).toBeTrue();
-//     });
+    it('should initialize isAuthenticated$ with authentication status', () => {
+        const mockAuthData: AuthData = { isAuthenticated: true, accessToken: 'token', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
+        authService.getAuthData.and.returnValue(of(mockAuthData));
 
-//     expect(mockAuthService.getAuthData).toHaveBeenCalled();
-//   });
+        component.ngOnInit();
+        fixture.detectChanges();
 
-//   it('should call openLoginMenu when button is clicked', () => {
-//     const button = fixture.debugElement.nativeElement.querySelector('button[mat-icon-button]');
-//     button.click();
+        component.isAuthenticated$.subscribe(isAuthenticated => {
+            expect(isAuthenticated).toBeTrue();
+        });
 
-//     expect(mockAuthDialogManager.openLoginMenu).toHaveBeenCalled();
-//   });
+        expect(authService.getAuthData).toHaveBeenCalled();
+    });
 
-//   it('should display authenticated view when user is authenticated', () => {
-//     component.ngOnInit();
-//     fixture.detectChanges();
+    it('should display the authenticated view when the user is authenticated', () => {
+        const mockAuthData: AuthData = { isAuthenticated: true, accessToken: 'token', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
+        authService.getAuthData.and.returnValue(of(mockAuthData));
 
-//     const authenticatedView = fixture.debugElement.nativeElement.querySelector('.root');
-//     expect(authenticatedView).toBeTruthy();
-//   });
+        component.ngOnInit();
+        fixture.detectChanges();
 
-//   it('should display unauthenticated view when user is not authenticated', fakeAsync(() => {
-//     authDataBehabiourSubject.next({
-//       isAuthenticated: false,
-//       accessToken: "",
-//       refreshToken: "",
-//       refreshTokenExpiryDate: new Date(),
-//     });
+        const headerElement = fixture.debugElement.query(By.css('header.root__header'));
+        expect(headerElement).toBeTruthy();
 
-//     component.ngOnInit();
-//     tick();
-//     fixture.detectChanges();
+        const unauthenticatedView = fixture.debugElement.query(By.css('auth-unauthenticated'));
+        expect(unauthenticatedView).toBeNull();
+    });
 
-//     const unauthenticatedView = fixture.debugElement.nativeElement.querySelector('auth-unauthenticated');
-//     expect(unauthenticatedView).toBeTruthy();
-//   }));
-// });
+    it('should display the unauthenticated view when the user is not authenticated', () => {
+        const mockAuthData: AuthData = { isAuthenticated: false, accessToken: '', refreshToken: '', refreshTokenExpiryDate: new Date() };
+        authService.getAuthData.and.returnValue(of(mockAuthData));
+
+        component.ngOnInit();
+        fixture.detectChanges();
+
+        const unauthenticatedView = fixture.debugElement.query(By.css('auth-unauthenticated'));
+        expect(unauthenticatedView).toBeTruthy();
+
+        const headerElement = fixture.debugElement.query(By.css('header.root__header'));
+        expect(headerElement).toBeNull();
+    });
+
+    it('should open the login menu when openLoginMenu is called', () => {
+        component.openLoginMenu();
+        expect(authDialogManager.openLoginMenu).toHaveBeenCalled();
+    });
+});

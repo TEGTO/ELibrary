@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AuthorResponse, dateOfBirthValidator } from '../../../../shared';
+import { AuthorResponse, minDateValidator } from '../../../../shared';
 
 @Component({
   selector: 'author-change-dialog',
@@ -22,7 +22,7 @@ export class AuthorChangeDialogComponent {
       {
         name: new FormControl(this.author.name, [Validators.required, Validators.maxLength(256)]),
         lastName: new FormControl(this.author.lastName, [Validators.required, Validators.maxLength(256)]),
-        dateOfBirth: new FormControl(this.author.dateOfBirth, [Validators.required, dateOfBirthValidator()]),
+        dateOfBirth: new FormControl(this.author.dateOfBirth, [Validators.required, minDateValidator()]),
       });
   }
 

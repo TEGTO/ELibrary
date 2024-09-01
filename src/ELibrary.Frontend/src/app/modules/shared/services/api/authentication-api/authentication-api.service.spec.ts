@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { AuthToken, URLDefiner, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest, UserUpdateDataRequest } from '../../..';
+import { AuthToken, URLDefiner, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest } from '../../..';
 import { AuthenticationApiService } from './authentication-api.service';
 
 describe('AuthenticationApiService', () => {
@@ -9,8 +9,8 @@ describe('AuthenticationApiService', () => {
   let mockUrlDefiner: jasmine.SpyObj<URLDefiner>;
 
   beforeEach(() => {
-    mockUrlDefiner = jasmine.createSpyObj<URLDefiner>('URLDefiner', ['combineWithAuthApiUrl']);
-    mockUrlDefiner.combineWithAuthApiUrl.and.callFake((subpath: string) => `/api/auth${subpath}`);
+    mockUrlDefiner = jasmine.createSpyObj<URLDefiner>('URLDefiner', ['combineWithUserApiUrl']);
+    mockUrlDefiner.combineWithUserApiUrl.and.callFake((subpath: string) => `/api/auth${subpath}`);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -45,7 +45,6 @@ describe('AuthenticationApiService', () => {
         refreshTokenExpiryDate: new Date()
       },
       userName: 'userName',
-      email: 'email@example.com'
     };
 
     service.loginUser(request).subscribe(res => {
@@ -54,7 +53,7 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithAuthApiUrl).toHaveBeenCalledWith('/login');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/login');
     req.flush(response);
   });
 
@@ -62,16 +61,21 @@ describe('AuthenticationApiService', () => {
     const expectedReq = `/api/auth/register`;
     const request: UserRegistrationRequest = {
       userName: 'userName',
-      email: 'email@example.com',
       password: 'password',
-      confirmPassword: 'confirmPassword'
+      confirmPassword: 'confirmPassword',
+      userInfo: {
+        name: "",
+        lastName: "",
+        dateOfBirth: new Date(),
+        address: ""
+      }
     };
 
     service.registerUser(request).subscribe();
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithAuthApiUrl).toHaveBeenCalledWith('/register');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/register');
   });
 
   it('should refresh token', () => {
@@ -93,25 +97,8 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithAuthApiUrl).toHaveBeenCalledWith('/refresh');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/refresh');
     req.flush(response);
-  });
-
-  it('should update user', () => {
-    const expectedReq = `/api/auth/update`;
-    const request: UserUpdateDataRequest = {
-      userName: 'newUserName',
-      oldEmail: 'oldEmail@example.com',
-      newEmail: 'newEmail@example.com',
-      oldPassword: 'oldPassword',
-      newPassword: 'newPassword'
-    };
-
-    service.updateUser(request).subscribe();
-
-    const req = httpTestingController.expectOne(expectedReq);
-    expect(req.request.method).toBe('PUT');
-    expect(mockUrlDefiner.combineWithAuthApiUrl).toHaveBeenCalledWith('/update');
   });
 
   it('should handle error on login', () => {

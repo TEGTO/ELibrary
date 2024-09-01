@@ -19,8 +19,6 @@ namespace LibraryApi.Domain.Entities
             {
                 this.Title = otherBook.Title;
                 this.PublicationDate = otherBook.PublicationDate;
-                this.AuthorId = otherBook.AuthorId;
-                this.GenreId = otherBook.GenreId;
             }
         }
     }

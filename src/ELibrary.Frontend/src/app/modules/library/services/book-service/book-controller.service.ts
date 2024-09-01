@@ -8,7 +8,7 @@ import { BookService } from './book-service';
 @Injectable({
   providedIn: 'root'
 })
-export class BookServiceControllerService implements BookService {
+export class BookControllerService implements BookService {
 
   constructor(
     private readonly apiService: BookApiService,

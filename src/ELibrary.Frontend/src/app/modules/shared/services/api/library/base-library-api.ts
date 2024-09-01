@@ -6,6 +6,6 @@ export interface LibraryEntityApi<Response, Create, Update> {
     getPaginated(request: PaginatedRequest): Observable<Response[]>;
     getItemTotalAmount(): Observable<number>;
     create(request: Create): Observable<Response>;
-    update(request: Update): Observable<Object>;
+    update(request: Update): Observable<Response>;
     deleteById(id: number): Observable<Object>;
 }

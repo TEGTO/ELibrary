@@ -1,5 +1,5 @@
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserUpdateDataRequest } from "../../../shared";
-import { getAuthDataFailure, getAuthDataSuccess, logOutUserSuccess, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "./auth.actions";
+import { getAuthDataFailure, getAuthDataSuccess, logOutUserSuccess, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
+import { AuthData, AuthToken, UserAuthenticationRequest, UserData } from "../../../shared";
 import { AuthState, RegistrationState, UserDataState, authReducer, registrationReducer, userDataReducer } from "./auth.reducer";
 
 describe('RegistrationReducer', () => {
@@ -15,7 +15,17 @@ describe('RegistrationReducer', () => {
     });
 
     it('should handle registerUser', () => {
-        const registrationRequest = { userName: 'user', email: 'user@example.com', password: 'password', confirmPassword: 'password' };
+        const registrationRequest = {
+            userName: 'user',
+            password: 'password',
+            confirmPassword: 'password',
+            userInfo: {
+                name: "",
+                lastName: "",
+                dateOfBirth: new Date(),
+                address: ""
+            }
+        };
         const action = registerUser({ registrationRequest: registrationRequest });
         const state = registrationReducer(initialState, action);
         expect(state).toEqual({
@@ -77,7 +87,7 @@ describe('AuthReducer', () => {
             refreshToken: 'refreshToken',
             refreshTokenExpiryDate: new Date()
         };
-        const userData: UserData = { userName: "userName", email: "email" };
+        const userData: UserData = { userName: "userName" };
         const action = signInUserSuccess({ authData: authData, userData: userData });
         const state = authReducer(initialState, action);
         expect(state).toEqual({
@@ -108,7 +118,7 @@ describe('AuthReducer', () => {
             refreshToken: 'refreshToken',
             refreshTokenExpiryDate: new Date()
         };
-        const userData: UserData = { userName: "userName", email: "email" };
+        const userData: UserData = { userName: "userName" };
         const action = getAuthDataSuccess({ authData: authData, userData: userData });
         const state = authReducer(initialState, action);
         expect(state).toEqual({
@@ -173,8 +183,6 @@ describe('AuthReducer', () => {
 describe('UserDataReducer', () => {
     const initialState: UserDataState = {
         userName: "",
-        email: "",
-        isUpdateSuccess: false,
         error: null
     };
 
@@ -196,14 +204,12 @@ describe('UserDataReducer', () => {
     it('should handle signInUserSuccess', () => {
         const userData: UserData = {
             userName: 'user',
-            email: 'user@example.com'
         };
         const action = signInUserSuccess({ userData, authData: { isAuthenticated: true, accessToken: 'authToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() } });
         const state = userDataReducer(initialState, action);
         expect(state).toEqual({
             ...initialState,
             userName: userData.userName,
-            email: userData.email,
             error: null
         });
     });
@@ -219,14 +225,12 @@ describe('UserDataReducer', () => {
     it('should handle getAuthDataSuccess', () => {
         const userData: UserData = {
             userName: 'user',
-            email: 'user@example.com'
         };
         const action = getAuthDataSuccess({ userData, authData: { isAuthenticated: true, accessToken: 'authToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() } });
         const state = userDataReducer(initialState, action);
         expect(state).toEqual({
             ...initialState,
             userName: userData.userName,
-            email: userData.email,
             error: null
         });
     });
@@ -244,49 +248,6 @@ describe('UserDataReducer', () => {
         const state = userDataReducer(initialState, action);
         expect(state).toEqual({
             ...initialState
-        });
-    });
-
-    it('should handle updateUserData', () => {
-        const updateRequest: UserUpdateDataRequest = {
-            userName: 'newUser',
-            newEmail: 'newUser@example.com',
-            oldEmail: 'user@example.com',
-            oldPassword: 'oldPassword',
-            newPassword: 'newPassword'
-        };
-        const action = updateUserData({ updateRequest: updateRequest });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...state,
-            isUpdateSuccess: false,
-            error: null
-        });
-    });
-
-    it('should handle updateUserDataSuccess', () => {
-        const userData: UserData = {
-            userName: 'newUser',
-            email: 'newUser@example.com'
-        };
-        const action = updateUserDataSuccess({ userData });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...state,
-            userName: userData.userName,
-            email: userData.email,
-            isUpdateSuccess: true,
-            error: null
-        });
-    });
-
-    it('should handle updateUserDataFailure', () => {
-        const action = updateUserDataFailure({ error: 'Error!' });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...state,
-            isUpdateSuccess: false,
-            error: 'Error!'
         });
     });
 

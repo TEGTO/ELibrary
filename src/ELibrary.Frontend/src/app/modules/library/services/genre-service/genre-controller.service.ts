@@ -8,7 +8,7 @@ import { GenreService } from './genre-service';
 @Injectable({
   providedIn: 'root'
 })
-export class GenreServiceControllerService implements GenreService {
+export class GenreControllerService implements GenreService {
 
   constructor(
     private readonly apiService: GenreApiService,

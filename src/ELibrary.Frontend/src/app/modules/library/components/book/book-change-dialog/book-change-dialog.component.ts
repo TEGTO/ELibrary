@@ -17,7 +17,7 @@ export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   readonly itemHeight = 45;
   readonly pageAmount = 12;
-  readonly amountItemsInView = 5;
+  readonly amountItemsInView = 3;
 
   formGroup!: FormGroup;
 
@@ -117,7 +117,7 @@ export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.genreService.getGenresPaginated(req).pipe(
       takeUntil(this.destroy$)
     ).subscribe(genres => {
-      this.genres = [...this.authors, ...this.getUniqueItems(genres, this.fetchedGenreIds)];
+      this.genres = [...this.genres, ...this.getUniqueItems(genres, this.fetchedGenreIds)];
     });
   }
 

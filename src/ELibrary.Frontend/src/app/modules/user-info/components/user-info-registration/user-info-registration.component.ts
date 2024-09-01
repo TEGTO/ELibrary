@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { dateOfBirthValidator } from '../../../shared';
+import { minDateValidator } from '../../../shared';
 
 @Component({
   selector: 'user-info-registration',
@@ -22,7 +22,7 @@ export class UserInfoRegistrationComponent implements OnInit {
   private addUserInfoControls(): void {
     this.parentFormGroup.addControl('firstName', new FormControl('', [Validators.required, Validators.maxLength(256)]));
     this.parentFormGroup.addControl('lastName', new FormControl('', [Validators.maxLength(256)]));
-    this.parentFormGroup.addControl('dateOfBirth', new FormControl(null, [Validators.required, dateOfBirthValidator()]));
+    this.parentFormGroup.addControl('dateOfBirth', new FormControl(null, [Validators.required, minDateValidator()]));
     this.parentFormGroup.addControl('address', new FormControl('', [Validators.maxLength(256)]));
   }
 }
