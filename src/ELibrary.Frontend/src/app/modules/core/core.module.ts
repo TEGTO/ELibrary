@@ -46,7 +46,7 @@ const routes: Routes = [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: ErrorHandler, useClass: CustomErrorHandler },
     { provide: LOCALE_ID, useValue: "en-GB" },
-    { provide: MAT_DATE_LOCALE, useExisting: LOCALE_ID },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
   ],
   bootstrap: [AppComponent]
 })
