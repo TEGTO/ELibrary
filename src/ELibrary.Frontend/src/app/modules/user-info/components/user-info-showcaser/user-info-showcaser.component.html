@@ -1,4 +1,4 @@
-<ng-container *ngIf="userInfo$ | async as userInfo">
+<ng-container *ngIf="userInfo$ | async as userInfo; else loading">
     <form id="userInfoRegistration" class="content__form space-y-1">
         <div class="flex gap-2">
             <mat-form-field>
@@ -20,3 +20,4 @@
         </mat-form-field>
     </form>
 </ng-container>
+<ng-template #loading>Loading...</ng-template>

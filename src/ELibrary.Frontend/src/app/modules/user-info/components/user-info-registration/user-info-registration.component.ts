@@ -1,11 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { minDateValidator } from '../../../shared';
 
 @Component({
   selector: 'user-info-registration',
   templateUrl: './user-info-registration.component.html',
-  styleUrls: ['./user-info-registration.component.scss']
+  styleUrls: ['./user-info-registration.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserInfoRegistrationComponent implements OnInit {
   @Input({ required: true }) parentFormGroup!: FormGroup;

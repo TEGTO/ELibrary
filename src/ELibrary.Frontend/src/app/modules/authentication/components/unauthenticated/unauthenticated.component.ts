@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthenticationDialogManager } from '../..';
 
 @Component({
   selector: 'auth-unauthenticated',
   templateUrl: './unauthenticated.component.html',
-  styleUrl: './unauthenticated.component.scss'
+  styleUrl: './unauthenticated.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UnauthenticatedComponent {
 

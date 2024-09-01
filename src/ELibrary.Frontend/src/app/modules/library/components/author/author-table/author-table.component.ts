@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { AuthorService, LibraryDialogManager, TableColumn } from '../../..';
 import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, LocalizedDatePipe, PaginatedRequest } from '../../../../shared';
@@ -16,10 +16,14 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
   columns: TableColumn[] = [
     { header: 'Name', field: 'name' },
     { header: 'Last Name', field: 'lastName' },
-    { header: 'Date of Birth', field: 'dateOfBirth', pipe: new LocalizedDatePipe('en-US') }
+    { header: 'Date of Birth', field: 'dateOfBirth', pipe: new LocalizedDatePipe(this.locale) }
   ];
 
-  constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: AuthorService) { }
+  constructor(
+    @Inject(LOCALE_ID) private locale: string,
+    private readonly dialogManager: LibraryDialogManager,
+    private readonly libraryEntityService: AuthorService,
+  ) { }
 
   ngOnInit(): void {
     this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();

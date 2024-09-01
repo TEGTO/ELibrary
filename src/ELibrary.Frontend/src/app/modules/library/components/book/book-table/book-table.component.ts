@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { BookService, LibraryDialogManager } from '../../..';
-import { BookResponse, bookToCreateRequest, bookToUpdateRequest, PaginatedRequest } from '../../../../shared';
+import { BookResponse, bookToCreateRequest, bookToUpdateRequest, LocalizedDatePipe, PaginatedRequest } from '../../../../shared';
 
 @Component({
   selector: 'book-table',
@@ -21,12 +21,15 @@ export class BookTableComponent implements OnInit, OnDestroy {
 
   columns = [
     { header: 'Title', field: 'title' },
-    { header: 'Publication Date', field: 'publicationDate' },
+    { header: 'Publication Date', field: 'publicationDate', pipe: new LocalizedDatePipe(this.locale) },
     { header: 'Author', field: 'author' },
     { header: 'Genre', field: 'genre' }
   ];
 
-  constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: BookService) { }
+  constructor(
+    @Inject(LOCALE_ID) private locale: string,
+    private readonly dialogManager: LibraryDialogManager,
+    private readonly libraryEntityService: BookService) { }
 
   ngOnInit(): void {
     this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();

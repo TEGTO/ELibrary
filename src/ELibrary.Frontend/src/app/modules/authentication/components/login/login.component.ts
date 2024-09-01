@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -8,7 +8,8 @@ import { AuthenticationDialogManager, AuthenticationService } from '../../index'
 @Component({
   selector: 'auth-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnDestroy {
   formGroup: FormGroup = new FormGroup(

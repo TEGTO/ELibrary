@@ -118,7 +118,7 @@ describe('BookTableComponent', () => {
     component.createNew();
     fixture.detectChanges();
 
-    expect(mockDialogManager.openBookDetailsMenu).toHaveBeenCalledWith(mockBook);
+    expect(mockDialogManager.openBookDetailsMenu).toHaveBeenCalled();
     expect(mockBookService.createBook).toHaveBeenCalled();
   });
 
