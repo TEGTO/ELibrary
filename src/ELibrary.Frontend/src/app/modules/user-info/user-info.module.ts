@@ -12,7 +12,6 @@ import { UserInfoController, UserInfoRegistrationComponent, UserInfoService, Use
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     MatInputModule,
     MatFormFieldModule,
     MatDatepickerModule,

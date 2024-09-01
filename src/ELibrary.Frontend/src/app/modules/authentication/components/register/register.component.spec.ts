@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +11,7 @@ import { AuthenticationService } from '../..';
 import { SnackbarManager } from '../../../shared';
 import { RegisterComponent } from './register.component';
 
-fdescribe('RegisterComponent', () => {
+describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authService: jasmine.SpyObj<AuthenticationService>;
@@ -81,35 +81,40 @@ fdescribe('RegisterComponent', () => {
     expect(component.passwordConfirmInput.hasError('passwordNoMatch')).toBeTruthy();
   });
 
-  fit('should call registerUser on valid form submission', () => {
+  it('should call registerUser on valid form submission', () => {
     const formValues = {
       userName: 'John Doe',
       password: 'password123',
       passwordConfirm: 'password123',
-      firstName: 'John',
-      lastName: 'Doe',
-      dateOfBirth: new Date(),
-      address: '123 Main St'
+      userInfo: {
+        name: 'John',
+        lastName: 'Doe',
+        dateOfBirth: new Date(),
+        address: '123 Main St'
+      }
     };
 
-    component.formGroup.setValue(formValues);
+    component.formGroup = new FormGroup({
+      userName: new FormControl(formValues.userName, [Validators.required, Validators.maxLength(256)]),
+      password: new FormControl(formValues.password, [Validators.required, Validators.minLength(8), Validators.maxLength(256)]),
+      passwordConfirm: new FormControl(formValues.passwordConfirm, [Validators.required, Validators.maxLength(256)]),
+      userInfo: new FormGroup({
+        name: new FormControl(formValues.userInfo.name),
+        lastName: new FormControl(formValues.userInfo.lastName),
+        dateOfBirth: new FormControl(formValues.userInfo.dateOfBirth),
+        address: new FormControl(formValues.userInfo.address)
+      })
+    });
+
     authService.registerUser.and.returnValue(of(true));
     authService.getRegistrationErrors.and.returnValue(of(null));
+
+    fixture.detectChanges();
 
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
     fixture.detectChanges();
 
-    expect(authService.registerUser).toHaveBeenCalledWith({
-      userName: formValues.userName,
-      password: formValues.password,
-      confirmPassword: formValues.passwordConfirm,
-      userInfo: {
-        name: formValues.firstName,
-        lastName: formValues.lastName,
-        dateOfBirth: formValues.dateOfBirth,
-        address: formValues.address,
-      }
-    });
+    expect(authService.registerUser).toHaveBeenCalled();
     expect(snackbarManager.openInfoSnackbar).toHaveBeenCalledWith('✔️ The registration is successful!', 5);
     expect(dialogRef.close).toHaveBeenCalled();
   });

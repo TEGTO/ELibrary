@@ -10,7 +10,7 @@ describe('AuthenticationApiService', () => {
 
   beforeEach(() => {
     mockUrlDefiner = jasmine.createSpyObj<URLDefiner>('URLDefiner', ['combineWithUserApiUrl']);
-    mockUrlDefiner.combineWithUserApiUrl.and.callFake((subpath: string) => `/api/auth${subpath}`);
+    mockUrlDefiner.combineWithUserApiUrl.and.callFake((subpath: string) => `/api${subpath}`);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -53,7 +53,7 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/login');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/auth/login');
     req.flush(response);
   });
 
@@ -75,7 +75,7 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/register');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/auth/register');
   });
 
   it('should refresh token', () => {
@@ -97,7 +97,7 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/refresh');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/auth/refresh');
     req.flush(response);
   });
 
