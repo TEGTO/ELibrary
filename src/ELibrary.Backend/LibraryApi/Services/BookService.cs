@@ -95,32 +95,19 @@ namespace LibraryShopEntities.Services
 
             return paginatedBooks;
         }
-
         public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
         {
-            var authorQueryable = await repository.GetQueryableAsync<Author>(cancellationToken);
-            var genreQueryable = await repository.GetQueryableAsync<Genre>(cancellationToken);
-            var publisherQueryable = await repository.GetQueryableAsync<Publisher>(cancellationToken);
-            var coverQueryable = await repository.GetQueryableAsync<CoverType>(cancellationToken);
+            book = await repository.AddAsync(book, cancellationToken);
 
-            var authorTask = authorQueryable.FirstAsync(x => x.Id == book.AuthorId);
-            var genreTask = genreQueryable.FirstAsync(x => x.Id == book.GenreId);
-            var publisherTask = publisherQueryable.FirstAsync(x => x.Id == book.PublisherId);
-            var coverTask = coverQueryable.FirstAsync(x => x.Id == book.CoverTypeId);
+            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
-            var taskList = new List<Task>
-            {
-                authorTask, genreTask, publisherTask,coverTask
-            };
-
-            await Task.WhenAll(taskList);
-
-            book.Author = await authorTask;
-            book.Genre = await genreTask;
-            book.Publisher = await publisherTask;
-            book.CoverType = await coverTask;
-
-            return await repository.AddAsync(book, cancellationToken);
+            var entityInDb = await queryable
+                                       .Include(b => b.Author)
+                                       .Include(b => b.Genre)
+                                       .Include(b => b.Publisher)
+                                       .Include(b => b.CoverType)
+                                       .FirstAsync(b => b.Id == book.Id, cancellationToken);
+            return entityInDb;
         }
         public override async Task<Book> UpdateAsync(Book entity, CancellationToken cancellationToken)
         {
@@ -129,6 +116,8 @@ namespace LibraryShopEntities.Services
             var entityInDb = await queryable
                                         .Include(b => b.Author)
                                         .Include(b => b.Genre)
+                                        .Include(b => b.Publisher)
+                                        .Include(b => b.CoverType)
                                         .FirstAsync(b => b.Id == entity.Id, cancellationToken);
 
             entityInDb.Copy(entity);

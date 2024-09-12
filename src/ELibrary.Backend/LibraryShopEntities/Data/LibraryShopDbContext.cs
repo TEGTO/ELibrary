@@ -17,5 +17,12 @@ namespace LibraryShopEntities.Data
         public LibraryShopDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>()
+                .HasMany(e => e.Books)
+                .WithMany();
+        }
     }
 }

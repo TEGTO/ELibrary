@@ -22,6 +22,21 @@ namespace LibraryApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("BookOrder", b =>
+                {
+                    b.Property<int>("BooksId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("BooksId", "OrderId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("BookOrder");
+                });
+
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Author", b =>
                 {
                     b.Property<int>("Id")
@@ -70,9 +85,6 @@ namespace LibraryApi.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("PageAmount")
                         .HasColumnType("integer");
 
@@ -95,8 +107,6 @@ namespace LibraryApi.Migrations
                     b.HasIndex("CoverTypeId");
 
                     b.HasIndex("GenreId");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("PublisherId");
 
@@ -242,6 +252,21 @@ namespace LibraryApi.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("BookOrder", b =>
+                {
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Book", b =>
                 {
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Author", "Author")
@@ -261,10 +286,6 @@ namespace LibraryApi.Migrations
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Order", null)
-                        .WithMany("Books")
-                        .HasForeignKey("OrderId");
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Publisher", "Publisher")
                         .WithMany()
@@ -295,11 +316,6 @@ namespace LibraryApi.Migrations
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Client", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Order", b =>
-                {
-                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

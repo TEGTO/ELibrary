@@ -101,7 +101,7 @@ namespace ShopApi.Controllers
             return Ok(orders.Select(mapper.Map<PaginationRequest>));
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
-        [HttpPut("manager/{id}")]
+        [HttpPut("manager")]
         public async Task<IActionResult> ManagerUpdateOrder([FromBody] UpdateOrderRequest request, CancellationToken cancellationToken)
         {
             var order = mapper.Map<Order>(request);

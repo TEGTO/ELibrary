@@ -26,6 +26,8 @@ namespace ShopApi
             CreateMap<CreateOrderRequest, Order>();
             CreateMap<UpdateOrderRequest, Order>();
             CreateMap<Order, OrderResponse>();
+
+            CreateMap<OrderBook, Book>();
         }
     }
 }

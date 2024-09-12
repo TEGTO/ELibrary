@@ -9,5 +9,6 @@ namespace Shared.Repositories
         public Task<IQueryable<T>> GetQueryableAsync<T>(CancellationToken cancellationToken) where T : class;
         public Task<T> UpdateAsync<T>(T obj, CancellationToken cancellationToken) where T : class;
         public Task DeleteAsync<T>(T obj, CancellationToken cancellationToken) where T : class;
+        public Task<TContext> CreateDbContextAsync(CancellationToken cancelentionToken);
     }
 }

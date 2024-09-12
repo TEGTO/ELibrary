@@ -8,8 +8,8 @@ namespace LibraryShopEntities.Validators
         public BookPaginationRequestValidator()
         {
             RuleFor(x => x.ContainsName).NotNull().MaximumLength(256);
-            RuleFor(x => x.PageNumber).GreaterThan(0);
-            RuleFor(x => x.PageSize).GreaterThan(0);
+            RuleFor(x => x.PageNumber).NotNull().GreaterThan(0);
+            RuleFor(x => x.PageSize).NotNull().GreaterThan(0);
             RuleFor(x => x.PublicationFromUTC).LessThanOrEqualTo(x => x.PublicationToUTC);
             RuleFor(x => x.PublicationToUTC).GreaterThanOrEqualTo(x => x.PublicationFromUTC);
             RuleFor(x => x.MinPrice).LessThanOrEqualTo(x => x.MaxPrice);

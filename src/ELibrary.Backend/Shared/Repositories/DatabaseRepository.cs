@@ -43,12 +43,7 @@ namespace Shared.Repositories
             dbContext.Remove(obj);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        #endregion
-
-        #region Private Helpers
-
-        private async Task<TContext> CreateDbContextAsync(CancellationToken cancelentionToken)
+        public async Task<TContext> CreateDbContextAsync(CancellationToken cancelentionToken)
         {
             return await dbContextFactory.CreateDbContextAsync(cancelentionToken);
         }

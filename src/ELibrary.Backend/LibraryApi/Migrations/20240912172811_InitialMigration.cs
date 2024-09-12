@@ -122,7 +122,6 @@ namespace LibraryApi.Migrations
                     GenreId = table.Column<int>(type: "integer", nullable: false),
                     PublisherId = table.Column<int>(type: "integer", nullable: false),
                     CoverTypeId = table.Column<int>(type: "integer", nullable: false),
-                    OrderId = table.Column<int>(type: "integer", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
@@ -147,17 +146,41 @@ namespace LibraryApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Books_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Books_Publishers_PublisherId",
                         column: x => x.PublisherId,
                         principalTable: "Publishers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "BookOrder",
+                columns: table => new
+                {
+                    BooksId = table.Column<int>(type: "integer", nullable: false),
+                    OrderId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookOrder", x => new { x.BooksId, x.OrderId });
+                    table.ForeignKey(
+                        name: "FK_BookOrder_Books_BooksId",
+                        column: x => x.BooksId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookOrder_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookOrder_OrderId",
+                table: "BookOrder",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_AuthorId",
@@ -173,11 +196,6 @@ namespace LibraryApi.Migrations
                 name: "IX_Books_GenreId",
                 table: "Books",
                 column: "GenreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Books_OrderId",
-                table: "Books",
-                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_PublisherId",
@@ -200,7 +218,13 @@ namespace LibraryApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BookOrder");
+
+            migrationBuilder.DropTable(
                 name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Authors");
@@ -210,9 +234,6 @@ namespace LibraryApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Genres");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Publishers");
