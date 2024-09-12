@@ -1,17 +1,15 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
 using Shared.Dtos;
-using Shared.Repositories;
+using ShopApi.Repositories;
 
 namespace ShopApi.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IShopDatabaseRepository repository;
 
-        public OrderService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public OrderService(IShopDatabaseRepository repository)
         {
             this.repository = repository;
         }
@@ -47,21 +45,8 @@ namespace ShopApi.Services
         }
         public async Task<Order> CreateOrderAsync(Order order, CancellationToken cancellationToken)
         {
-            var dbContext = await repository.CreateDbContextAsync(cancellationToken);
-
-            var queryable = dbContext.Set<Book>().AsQueryable();
-
             var bookIds = order.Books.Select(b => b.Id).ToList();
-            var booksFromDb = await queryable
-                .Where(b => bookIds.Contains(b.Id))
-                .ToListAsync(cancellationToken);
-
-            order.Books = booksFromDb;
-
-            await dbContext.AddAsync(order, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            return order;
+            return await repository.CreateOrderAsync(order, bookIds, cancellationToken);
         }
         public async Task<bool> CheckOrderAsync(string clientId, int id, CancellationToken cancellationToken)
         {
@@ -70,28 +55,15 @@ namespace ShopApi.Services
         }
         public async Task<Order> UpdateOrderAsync(Order order, CancellationToken cancellationToken)
         {
-            var dbContext = await repository.CreateDbContextAsync(cancellationToken);
+            var bookIds = new List<int>();
 
-            var queryableOrders = dbContext.Set<Order>();
-            var orderInDb = await queryableOrders.FirstAsync(x => x.Id == order.Id, cancellationToken);
-
-            orderInDb.Copy(order);
-
-            if (orderInDb.OrderStatus == OrderStatus.InProcessing)
+            if (order.OrderStatus == OrderStatus.InProcessing && order.Books.Count > 0)
             {
-                var queryable = dbContext.Set<Book>().AsQueryable();
-
-                var bookIds = order.Books.Select(b => b.Id).ToList();
-                var booksFromDb = await queryable
-                    .Where(b => bookIds.Contains(b.Id))
-                    .ToListAsync(cancellationToken);
-
-                order.Books = booksFromDb;
+                bookIds.AddRange(order.Books.Select(b => b.Id));
             }
 
-            dbContext.Update(orderInDb);
-            await dbContext.SaveChangesAsync(cancellationToken);
-            return orderInDb;
+            return await repository.UpdateOrderAsync(order, bookIds, cancellationToken);
+
         }
         public async Task DeleteOrderAsync(int id, CancellationToken cancellationToken)
         {

@@ -44,13 +44,13 @@ namespace ShopApi.Controllers
             return Created($"", mapper.Map<ClientResponse>(response));
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateClient([FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ClientResponse>> UpdateClient([FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
             var client = await clientService.GetClientByUserIdAsync(userId, cancellationToken);
             client.Copy(mapper.Map<Client>(request));
-            await clientService.UpdateClientAsync(client, cancellationToken);
-            return Ok();
+            var response = await clientService.UpdateClientAsync(client, cancellationToken);
+            return Ok(mapper.Map<ClientResponse>(response));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteClient(CancellationToken cancellationToken)
@@ -83,12 +83,12 @@ namespace ShopApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPut("admin/{id}")]
-        public async Task<IActionResult> AdminUpdateClient(string id, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ClientResponse>> AdminUpdateClient(string id, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
         {
             var client = await clientService.GetClientByUserIdAsync(id, cancellationToken);
             client.Copy(mapper.Map<Client>(request));
-            await clientService.UpdateClientAsync(client, cancellationToken);
-            return Ok();
+            var response = await clientService.UpdateClientAsync(client, cancellationToken);
+            return Ok(mapper.Map<ClientResponse>(response));
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpDelete("admin/{id}")]

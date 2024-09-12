@@ -1,15 +1,14 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
+using ShopApi.Repositories;
 
 namespace ShopApi.Services
 {
     public class ClientService : IClientService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IShopDatabaseRepository repository;
 
-        public ClientService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public ClientService(IShopDatabaseRepository repository)
         {
             this.repository = repository;
         }

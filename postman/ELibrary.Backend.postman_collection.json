@@ -379,7 +379,14 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"user_id\", jsonResponse.id);\r",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -565,41 +572,122 @@
 			]
 		},
 		{
-			"name": "user-info",
+			"name": "client",
 			"item": [
 				{
-					"name": "userinfo-user",
+					"name": "client-create",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name\",\r\n  \"middleName\": \"middleName\",\r\n  \"lastName\": \"lastName\",\r\n  \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address\",\r\n  \"phone\":\"phone\",\r\n  \"email\":\"example@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name1\",\r\n  \"middleName\": \"middleName1\",\r\n  \"lastName\": \"lastName1\",\r\n  \"dateOfBirth\":\"2021-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address1\",\r\n  \"phone\":\"phone1\",\r\n  \"email\":\"example1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
 									"if (pm.response.code === 200) {\r",
 									"    var jsonResponse = pm.response.json();\r",
-									"    \r",
-									"    pm.test(\"User name is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userName).to.equal(pm.environment.get(\"userName\"));\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info name is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.name).to.equal(\"name\");\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info last name is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.lastName).to.equal(\"lastName\");\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info date of birth is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.dateOfBirth).to.equal(\"2020-08-03T09:45:45.465625Z\");\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info address is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.address).to.equal(\"address\");\r",
-									"    });\r",
+									"    pm.environment.set(\"client_id\", jsonResponse.id);\r",
 									"}"
 								],
 								"type": "text/javascript",
@@ -633,15 +721,605 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/userinfo/user",
+							"raw": "https://localhost:7132/client",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7132",
 							"path": [
-								"userinfo",
-								"user"
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"client_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name\",\r\n  \"middleName\": \"middleName\",\r\n  \"lastName\": \"lastName\",\r\n  \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address\",\r\n  \"phone\":\"phone\",\r\n  \"email\":\"example@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name1\",\r\n  \"middleName\": \"middleName1\",\r\n  \"lastName\": \"lastName1\",\r\n  \"dateOfBirth\":\"2021-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address1\",\r\n  \"phone\":\"phone1\",\r\n  \"email\":\"example1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "order-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"order_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"deliveryAddress\": \"address\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 0,\r\n    \"books\": [\r\n        {\r\n            \"id\": {{book_id}}\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 1,\r\n    \"books\": [\r\n        {\r\n            \"id\": {{book_id}}\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/{{order_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-manager-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/manager/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"manager",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-manager-update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 1,\r\n    \"books\": [\r\n        {\r\n            \"id\": {{book_id}}\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/manager",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-manager-delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/manager/{{order_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"manager",
+								"{{order_id}}"
 							]
 						}
 					},
@@ -780,7 +1458,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -803,7 +1481,7 @@
 					"response": []
 				},
 				{
-					"name": "author-create",
+					"name": "author-manager-create",
 					"event": [
 						{
 							"listen": "test",
@@ -860,7 +1538,7 @@
 					"response": []
 				},
 				{
-					"name": "author-update",
+					"name": "author-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -945,7 +1623,7 @@
 					"response": []
 				},
 				{
-					"name": "author-delete",
+					"name": "author-manager-delete",
 					"event": [
 						{
 							"listen": "test",
@@ -1074,7 +1752,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-get-genre",
+					"name": "genre-get-amount",
 					"event": [
 						{
 							"listen": "test",
@@ -1157,7 +1835,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1180,7 +1858,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-create",
+					"name": "genre-manager-create",
 					"event": [
 						{
 							"listen": "test",
@@ -1237,7 +1915,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-update",
+					"name": "genre-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -1320,7 +1998,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-delete",
+					"name": "genre-manager-delete",
 					"event": [
 						{
 							"listen": "test",
@@ -1400,6 +2078,752 @@
 			]
 		},
 		{
+			"name": "publisher",
+			"item": [
+				{
+					"name": "publisher-get-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/publisher/{{publisher_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher",
+								"{{publisher_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-get-amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    var responseData = parseInt(pm.response.text(), 10); \r",
+									"    pm.expect(responseData).to.be.above(0);  \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/publisher/amount",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is abone 0\", function () {\r",
+									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/publisher/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-manager-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"publisher_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/publisher",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-manager-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"publisher_id\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/publisher',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"id\":id,\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{publisher_id}},\r\n    \"name\":\"newName\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/publisher",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-manager-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/publisher',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(201);\r",
+									"        });\r",
+									"\r",
+									"        if (rollbackRes.status === 'Created') {\r",
+									"            var jsonResponse = rollbackRes.json();\r",
+									"            pm.environment.set(\"publisher_id\", jsonResponse.id);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/publisher/{{publisher_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher",
+								"{{publisher_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cover-type",
+			"item": [
+				{
+					"name": "covertype-get-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/covertype/{{covertype_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"covertype",
+								"{{covertype_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "covertype-get-amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    var responseData = parseInt(pm.response.text(), 10); \r",
+									"    pm.expect(responseData).to.be.above(0);  \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/covertype/amount",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"covertype",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "covertype-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is abone 0\", function () {\r",
+									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\":\"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/covertype/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"covertype",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "covertype-manager-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"covertype_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/covertype",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"covertype"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "covertype-manager-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"covertype_id\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/covertype',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"id\":id,\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{cover_id}},\r\n    \"name\":\"newName\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/covertype",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"covertype"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "covertype-manager-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/covertype',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(201);\r",
+									"        });\r",
+									"\r",
+									"        if (rollbackRes.status === 'Created') {\r",
+									"            var jsonResponse = rollbackRes.json();\r",
+									"            pm.environment.set(\"covertype_id\", jsonResponse.id);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/covertype/{{covertype_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"covertype",
+								"{{covertype_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "book",
 			"item": [
 				{
@@ -1447,7 +2871,7 @@
 					"response": []
 				},
 				{
-					"name": "book-get-genre",
+					"name": "book-get-amount",
 					"event": [
 						{
 							"listen": "test",
@@ -1530,7 +2954,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2,\r\n    \"publicationFromUTC\": \"2019-08-03T09:45:45.4656254Z\",\r\n    \"publicationToUTC\": \"2021-08-03T09:45:45.4656254Z\",\r\n    \"minPrice\": 0,\r\n    \"maxPrice\": 1000\r\n    // \"onlyInStock\": true,\r\n    // \"minPageAmount\": 0,\r\n    // \"maxPageAmount\": 0,\r\n    // \"authorId\": 1,\r\n    // \"genreId\": 1,\r\n    // \"publisherId\": 1,\r\n    // \"coverTypeId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1553,7 +2977,7 @@
 					"response": []
 				},
 				{
-					"name": "book-create",
+					"name": "book-manager-create",
 					"event": [
 						{
 							"listen": "test",
@@ -1588,7 +3012,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"title\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":{{author_id}},\r\n    \"genreId\":{{genre_id}}\r\n}",
+							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}},\r\n    \"coverTypeId\": {{covertype_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1610,7 +3034,7 @@
 					"response": []
 				},
 				{
-					"name": "book-update",
+					"name": "book-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -1626,9 +3050,11 @@
 									"    var id = pm.environment.get(\"book_id\"); \r",
 									"    var author_id = pm.environment.get(\"author_id\");\r",
 									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"    var publisher_id = pm.environment.get(\"publisher_id\");\r",
+									"    var covertype_id = pm.environment.get(\"covertype_id\"); \r",
 									"\r",
 									"    pm.sendRequest({\r",
-									"        url: 'https://localhost:7131/genre',\r",
+									"        url: 'https://localhost:7131/book',\r",
 									"        method: 'PUT',\r",
 									"        header: {\r",
 									"            'Content-Type': 'application/json',\r",
@@ -1638,10 +3064,15 @@
 									"            mode: 'raw',\r",
 									"            raw: JSON.stringify({\r",
 									"                    \"id\":id,\r",
-									"                    \"title\":\"title\",\r",
-									"                    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"name\": \"title\",\r",
+									"                    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"price\": 500,\r",
+									"                    \"pageAmount\": 500,\r",
+									"                    \"stockAmount\": 20,\r",
 									"                    \"authorId\": author_id,\r",
-									"                    \"genreId\": genre_id\r",
+									"                    \"genreId\": genre_id,\r",
+									"                    \"publisherId\": publisher_id,\r",
+									"                    \"coverTypeId\": covertype_id\r",
 									"            })\r",
 									"        }\r",
 									"    }, function (err, rollbackRes) {\r",
@@ -1676,7 +3107,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"title\":\"newTitle\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":{{author_id}},\r\n    \"genreId\":{{genre_id}}\r\n}",
+							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}},\r\n    \"coverTypeId\": {{covertype_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1698,7 +3129,7 @@
 					"response": []
 				},
 				{
-					"name": "book-delete",
+					"name": "book-manager-delete",
 					"event": [
 						{
 							"listen": "test",
@@ -1711,8 +3142,11 @@
 									"if (pm.response.code === 200) {\r",
 									"    \r",
 									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"book_id\"); \r",
 									"    var author_id = pm.environment.get(\"author_id\");\r",
 									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"    var publisher_id = pm.environment.get(\"publisher_id\");\r",
+									"    var covertype_id = pm.environment.get(\"covertype_id\"); \r",
 									"\r",
 									"    pm.sendRequest({\r",
 									"        url: 'https://localhost:7131/book',\r",
@@ -1724,10 +3158,15 @@
 									"        body: {\r",
 									"            mode: 'raw',\r",
 									"            raw: JSON.stringify({\r",
-									"                    \"title\":\"title\",\r",
-									"                    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r",
-									"                    \"authorId\": `${author_id}`,\r",
-									"                    \"genreId\": `${genre_id}`\r",
+									"                    \"name\": \"title\",\r",
+									"                    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"price\": 500,\r",
+									"                    \"pageAmount\": 500,\r",
+									"                    \"stockAmount\": 20,\r",
+									"                    \"authorId\": author_id,\r",
+									"                    \"genreId\": genre_id,\r",
+									"                    \"publisherId\": publisher_id,\r",
+									"                    \"coverTypeId\": covertype_id\r",
 									"            })\r",
 									"        }\r",
 									"    }, function (err, rollbackRes) {\r",
