@@ -1,8 +1,8 @@
 using Authentication;
-using LibraryApi;
-using LibraryApi.Data;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+using LibraryShopEntities;
+using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;
@@ -17,19 +17,26 @@ builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigin
 
 #endregion
 
-builder.Services.AddDbContextFactory<LibraryDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING)));
+builder.Services.AddDbContextFactory<LibraryShopDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING),
+        b => b.MigrationsAssembly("LibraryApi")));
 
-#region Project Services
+#region Identity & Authentication
 
-builder.Services.AddSingleton<ILibraryEntityService<Author>, LibraryEntityService<Author>>();
-builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
-builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
-builder.Services.AddSingleton<IDatabaseRepository<LibraryDbContext>, DatabaseRepository<LibraryDbContext>>();
+builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 #endregion
 
-builder.Services.ConfigureIdentityServices(builder.Configuration);
+#region Project Services
+
+builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
+builder.Services.AddSingleton<ILibraryEntityService<Author>, LibraryEntityService<Author>>();
+builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
+builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
+builder.Services.AddSingleton<ILibraryEntityService<CoverType>, LibraryEntityService<CoverType>>();
+builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
+
+#endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -37,17 +44,16 @@ builder.Services.AddSharedFluentValidation(typeof(Program));
 
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
-builder.Services.AddControllers();
-
 var app = builder.Build();
 
 if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
 {
-    await app.ConfigureDatabaseAsync<LibraryDbContext>(CancellationToken.None);
+    await app.ConfigureDatabaseAsync<LibraryShopDbContext>(CancellationToken.None);
 }
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseExceptionMiddleware();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

@@ -1,15 +1,22 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dto.Author;
-using LibraryApi.Domain.Dto.Book;
-using LibraryApi.Domain.Dto.Genre;
-using LibraryApi.Domain.Entities;
+using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.Library.Author;
+using LibraryShopEntities.Domain.Dtos.Library.Book;
+using LibraryShopEntities.Domain.Dtos.Library.CoverType;
+using LibraryShopEntities.Domain.Dtos.Library.Genre;
+using LibraryShopEntities.Domain.Dtos.Library.Publisher;
+using LibraryShopEntities.Domain.Entities.Library;
 
-namespace LibraryApi
+namespace LibraryShopEntities
 {
     public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
         {
+            CreateMap<Book, BookResponse>();
+            CreateMap<CreateBookRequest, Book>();
+            CreateMap<UpdateBookRequest, Book>();
+
             CreateMap<Author, AuthorResponse>();
             CreateMap<CreateAuthorRequest, Author>();
             CreateMap<UpdateAuthorRequest, Author>();
@@ -18,9 +25,13 @@ namespace LibraryApi
             CreateMap<CreateGenreRequest, Genre>();
             CreateMap<UpdateGenreRequest, Genre>();
 
-            CreateMap<Book, BookResponse>();
-            CreateMap<CreateBookRequest, Book>();
-            CreateMap<UpdateBookRequest, Book>();
+            CreateMap<Publisher, PublisherResponse>();
+            CreateMap<CreatePublisherRequest, Publisher>();
+            CreateMap<UpdatePublisherRequest, Publisher>();
+
+            CreateMap<CoverType, CoverTypeResponse>();
+            CreateMap<CreateCoverTypeRequest, CoverType>();
+            CreateMap<UpdateCoverTypeRequest, CoverType>();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LibraryApi.Domain.Dto.Author;
+using LibraryShopEntities.Domain.Dtos.Library.Author;
 
-namespace LibraryApi.Validators.Author
+namespace LibraryShopEntities.Validators.Author
 {
     public class CreateAuthorRequestValidator : AbstractValidator<CreateAuthorRequest>
     {

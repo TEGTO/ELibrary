@@ -7,10 +7,10 @@
 	},
 	"item": [
 		{
-			"name": "auth",
+			"name": "user",
 			"item": [
 				{
-					"name": "auth-register",
+					"name": "user-register",
 					"event": [
 						{
 							"listen": "test",
@@ -51,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"example\",\r\n  \"password\": \"123456QWERTY\",\r\n  \"confirmPassword\": \"123456QWERTY\",\r\n  \"userInfo\":{\r\n    \"name\":\"name\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"address\":\"address\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -59,14 +59,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/register",
+							"raw": "https://localhost:7130/user/register",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"auth",
+								"user",
 								"register"
 							]
 						}
@@ -74,7 +74,7 @@
 					"response": []
 				},
 				{
-					"name": "auth-login",
+					"name": "user-login",
 					"event": [
 						{
 							"listen": "test",
@@ -116,7 +116,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"login\": \"example\",\r\n  \"password\": \"123456QWERTY\"\r\n}",
+							"raw": "{\r\n  \"login\": \"example@gmail.com\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -124,14 +124,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/login",
+							"raw": "https://localhost:7130/user/login",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"auth",
+								"user",
 								"login"
 							]
 						}
@@ -139,7 +139,68 @@
 					"response": []
 				},
 				{
-					"name": "auth-refresh",
+					"name": "user-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"oldPassword\": \"123456;QWERTY\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-refresh",
 					"event": [
 						{
 							"listen": "test",
@@ -174,15 +235,328 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/refresh",
+							"raw": "https://localhost:7130/user/refresh",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"auth",
+								"user",
 								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/delete",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"example1@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\",\r\n  \"roles\":[\"CLient\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/example1@gmail.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"example1@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"currentLogin\": \"example1@gmail.com\",\r\n  \"email\": \"example2@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\",\r\n  \"roles\":[\"Manager\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/delete/example1@gmail.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"delete",
+								"example1@gmail.com"
 							]
 						}
 					},

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LibraryApi.Domain.Dto.Genre;
+using LibraryShopEntities.Domain.Dtos.Library.Genre;
 
-namespace LibraryApi.Validators.Genre
+namespace LibraryShopEntities.Validators.Genre
 {
     public class UpdateGenreRequestValidator : AbstractValidator<UpdateGenreRequest>
     {

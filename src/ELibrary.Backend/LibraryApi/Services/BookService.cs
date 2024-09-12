@@ -1,94 +1,183 @@
-﻿using LibraryApi.Data;
-using LibraryApi.Domain.Entities;
+﻿using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Dtos;
+using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
-namespace LibraryApi.Services
+namespace LibraryShopEntities.Services
 {
     public class BookService : LibraryEntityService<Book>
     {
-        public BookService(IDatabaseRepository<LibraryDbContext> repository) : base(repository)
+        public BookService(IDatabaseRepository<LibraryShopDbContext> repository) : base(repository)
         {
         }
 
         public override async Task<Book?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            using (var dbContext = await CreateDbContextAsync(cancellationToken))
-            {
-                return await dbContext.Set<Book>()
-                                      .Include(b => b.Author)
-                                      .Include(b => b.Genre)
-                                      .AsNoTracking()
-                                      .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
-            }
-        }
-        public override async Task<IEnumerable<Book>> GetPaginatedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
-        {
-            using (var dbContext = await CreateDbContextAsync(cancellationToken))
-            {
-                var paginatedBooks = await dbContext.Set<Book>()
-                                                    .Include(b => b.Author)
-                                                    .Include(b => b.Genre)
-                                                    .OrderByDescending(b => b.Id)
-                                                    .AsNoTracking()
-                                                    .Skip((pageNumber - 1) * pageSize)
-                                                    .Take(pageSize)
-                                                    .ToListAsync(cancellationToken);
+            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
-                return paginatedBooks;
-            }
+            return await queryable
+                    .Include(b => b.Author)
+                    .Include(b => b.Genre)
+                    .Include(b => b.Publisher)
+                    .Include(b => b.CoverType)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
-        public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryPaginationRequest paginationParams, CancellationToken cancellationToken)
         {
-            using (var dbContext = await CreateDbContextAsync(cancellationToken))
+            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
+            List<Book> paginatedBooks = new List<Book>();
+
+            if (paginationParams is BookPaginationRequest bookPaginationParams)
             {
-                if (book.Author == null || book.Genre == null)
+                var query = queryable
+                    .Include(b => b.Author)
+                    .Include(b => b.Genre)
+                    .Include(b => b.Publisher)
+                    .Include(b => b.CoverType)
+                    .AsNoTracking();
+
+                if (bookPaginationParams.OnlyInStock)
                 {
-                    book.Author = dbContext.Authors.First(x => x.Id == book.AuthorId);
-                    book.Genre = dbContext.Genres.First(x => x.Id == book.GenreId);
+                    query = query.Where(b => b.StockAmount > 0);
+                }
+                if (!string.IsNullOrEmpty(bookPaginationParams.ContainsName))
+                {
+                    query = query.Where(b => b.Name.Contains(bookPaginationParams.ContainsName));
+                }
+                if (bookPaginationParams.AuthorId.HasValue)
+                {
+                    query = query.Where(b => b.AuthorId == bookPaginationParams.AuthorId.Value);
+                }
+                if (bookPaginationParams.GenreId.HasValue)
+                {
+                    query = query.Where(b => b.GenreId == bookPaginationParams.GenreId.Value);
+                }
+                if (bookPaginationParams.PublisherId.HasValue)
+                {
+                    query = query.Where(b => b.PublisherId == bookPaginationParams.PublisherId.Value);
+                }
+                if (bookPaginationParams.CoverTypeId.HasValue)
+                {
+                    query = query.Where(b => b.CoverTypeId == bookPaginationParams.CoverTypeId.Value);
                 }
 
-                await dbContext.Set<Book>().AddAsync(book, cancellationToken);
-                await dbContext.SaveChangesAsync(cancellationToken);
-                return book;
+                query = query.Where(b => b.PublicationDate >= bookPaginationParams.PublicationFromUTC
+                                         && b.PublicationDate <= bookPaginationParams.PublicationToUTC);
+
+                query = query.Where(b => b.Price >= bookPaginationParams.MinPrice
+                                         && b.Price <= bookPaginationParams.MaxPrice);
+
+                query = query.Where(b => b.PageAmount >= bookPaginationParams.MinPageAmount
+                                         && b.PageAmount <= bookPaginationParams.MaxPageAmount);
+
+                paginatedBooks.AddRange(await query
+                    .OrderByDescending(b => b.Id)
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize)
+                    .ToListAsync(cancellationToken));
             }
+            else
+            {
+                paginatedBooks.AddRange(await queryable
+                                          .Include(b => b.Author)
+                                          .Include(b => b.Genre)
+                                          .Include(b => b.Publisher)
+                                          .Include(b => b.CoverType)
+                                          .Where(b => b.Name.Contains(paginationParams.ContainsName))
+                                          .OrderByDescending(b => b.Id)
+                                          .AsNoTracking()
+                                          .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                                          .Take(paginationParams.PageSize)
+                                          .ToListAsync(cancellationToken));
+            }
+
+            return paginatedBooks;
+        }
+
+        public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
+        {
+            var authorQueryable = await repository.GetQueryableAsync<Author>(cancellationToken);
+            var genreQueryable = await repository.GetQueryableAsync<Genre>(cancellationToken);
+            var publisherQueryable = await repository.GetQueryableAsync<Publisher>(cancellationToken);
+            var coverQueryable = await repository.GetQueryableAsync<CoverType>(cancellationToken);
+
+            var authorTask = authorQueryable.FirstAsync(x => x.Id == book.AuthorId);
+            var genreTask = genreQueryable.FirstAsync(x => x.Id == book.GenreId);
+            var publisherTask = publisherQueryable.FirstAsync(x => x.Id == book.PublisherId);
+            var coverTask = coverQueryable.FirstAsync(x => x.Id == book.CoverTypeId);
+
+            var taskList = new List<Task>
+            {
+                authorTask, genreTask, publisherTask,coverTask
+            };
+
+            await Task.WhenAll(taskList);
+
+            book.Author = await authorTask;
+            book.Genre = await genreTask;
+            book.Publisher = await publisherTask;
+            book.CoverType = await coverTask;
+
+            return await repository.AddAsync(book, cancellationToken);
         }
         public override async Task<Book> UpdateAsync(Book entity, CancellationToken cancellationToken)
         {
-            using (var dbContext = await CreateDbContextAsync(cancellationToken))
+            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
+
+            var entityInDb = await queryable
+                                        .Include(b => b.Author)
+                                        .Include(b => b.Genre)
+                                        .FirstAsync(b => b.Id == entity.Id, cancellationToken);
+
+            entityInDb.Copy(entity);
+
+            if (entityInDb.AuthorId != entity.AuthorId)
             {
-                var entityInDb = await dbContext.Set<Book>()
-                                                 .Include(b => b.Author)
-                                                 .Include(b => b.Genre)
-                                                 .FirstAsync(b => b.Id == entity.Id, cancellationToken);
-
-                entityInDb.Copy(entity);
-
-                if (entityInDb.AuthorId != entity.AuthorId)
+                var authorQueryable = await repository.GetQueryableAsync<Author>(cancellationToken);
+                var author = await authorQueryable.FirstOrDefaultAsync(a => a.Id == entity.AuthorId, cancellationToken);
+                if (author != null)
                 {
-                    var author = await dbContext.Set<Author>().FirstOrDefaultAsync(a => a.Id == entity.AuthorId, cancellationToken);
-                    if (author != null)
-                    {
-                        entityInDb.AuthorId = entity.AuthorId;
-                        entityInDb.Author = author;
-                    }
+                    entityInDb.AuthorId = entity.AuthorId;
+                    entityInDb.Author = author;
                 }
-
-                if (entityInDb.GenreId != entity.GenreId)
-                {
-                    var genre = await dbContext.Set<Genre>().FirstOrDefaultAsync(g => g.Id == entity.GenreId, cancellationToken);
-                    if (genre != null)
-                    {
-                        entityInDb.GenreId = entity.GenreId;
-                        entityInDb.Genre = genre;
-                    }
-                }
-
-                dbContext.Set<Book>().Update(entityInDb);
-                await dbContext.SaveChangesAsync(cancellationToken);
-
-                return entityInDb;
             }
+
+            if (entityInDb.GenreId != entity.GenreId)
+            {
+                var genreQueryable = await repository.GetQueryableAsync<Genre>(cancellationToken);
+                var genre = await genreQueryable.FirstOrDefaultAsync(g => g.Id == entity.GenreId, cancellationToken);
+                if (genre != null)
+                {
+                    entityInDb.GenreId = entity.GenreId;
+                    entityInDb.Genre = genre;
+                }
+            }
+
+            if (entityInDb.PublisherId != entity.PublisherId)
+            {
+                var publisherQueryable = await repository.GetQueryableAsync<Publisher>(cancellationToken);
+                var publisher = await publisherQueryable.FirstOrDefaultAsync(g => g.Id == entity.PublisherId, cancellationToken);
+                if (publisher != null)
+                {
+                    entityInDb.PublisherId = entity.PublisherId;
+                    entityInDb.Publisher = publisher;
+                }
+            }
+
+            if (entityInDb.CoverTypeId != entity.CoverTypeId)
+            {
+                var coverQueryable = await repository.GetQueryableAsync<CoverType>(cancellationToken);
+                var cover = await coverQueryable.FirstOrDefaultAsync(g => g.Id == entity.CoverTypeId, cancellationToken);
+                if (cover != null)
+                {
+                    entityInDb.CoverTypeId = entity.CoverTypeId;
+                    entityInDb.CoverType = cover;
+                }
+            }
+
+            return await repository.UpdateAsync(entityInDb, cancellationToken);
         }
     }
 }

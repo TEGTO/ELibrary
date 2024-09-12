@@ -1,7 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryApi.Domain.Dto.Author;
+using LibraryShopEntities.Domain.Dto.Author;
 
-namespace LibraryApi.Validators.Author
+namespace LibraryShopEntities.Validators.Author
 {
     [TestFixture]
     internal class CreateAuthorRequestValidatorTests

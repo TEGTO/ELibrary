@@ -1,6 +1,6 @@
-﻿using LibraryApi.Data;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+﻿using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -44,7 +44,7 @@ namespace LibraryApiTests.Services
             var book = new Book
             {
                 Id = 1,
-                Title = "Book1",
+                Name = "Book1",
                 Author = new Author { Id = 1, Name = "Author1" },
                 Genre = new Genre { Id = 1, Name = "Genre1" }
             };
@@ -67,8 +67,8 @@ namespace LibraryApiTests.Services
             // Arrange
             var books = new List<Book>
             {
-                new Book { Id = 1, Title = "Book1", Author = new Author { Id = 1, Name = "Author1" }, Genre = new Genre { Id = 1, Name = "Genre1" } },
-                new Book { Id = 2, Title = "Book2", Author = new Author { Id = 2, Name = "Author2" }, Genre = new Genre { Id = 2, Name = "Genre2" } }
+                new Book { Id = 1, Name = "Book1", Author = new Author { Id = 1, Name = "Author1" }, Genre = new Genre { Id = 1, Name = "Genre1" } },
+                new Book { Id = 2, Name = "Book2", Author = new Author { Id = 2, Name = "Author2" }, Genre = new Genre { Id = 2, Name = "Genre2" } }
             }.AsQueryable();
             var dbContextMock = CreateMockDbContext();
             var dbSetMock = GetDbSetMock(books);
@@ -88,7 +88,7 @@ namespace LibraryApiTests.Services
             var book = new Book
             {
                 Id = 1,
-                Title = "Book1",
+                Name = "Book1",
                 AuthorId = 1,
                 GenreId = 1
             };
@@ -117,7 +117,7 @@ namespace LibraryApiTests.Services
             var bookInDb = new Book
             {
                 Id = 1,
-                Title = "Book1",
+                Name = "Book1",
                 AuthorId = 1,
                 GenreId = 1,
                 Author = new Author { Id = 1, Name = "Author1" },
@@ -126,7 +126,7 @@ namespace LibraryApiTests.Services
             var updatedBook = new Book
             {
                 Id = 1,
-                Title = "UpdatedBook1",
+                Name = "UpdatedBook1",
                 AuthorId = 2,
                 GenreId = 2
             };
@@ -145,7 +145,7 @@ namespace LibraryApiTests.Services
             // Assert
             bookDbSetMock.Verify(d => d.Update(It.IsAny<Book>()), Times.Once);
             dbContextMock.Verify(d => d.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-            Assert.That(bookInDb.Title, Is.EqualTo("UpdatedBook1"));
+            Assert.That(bookInDb.Name, Is.EqualTo("UpdatedBook1"));
             Assert.That(bookInDb.AuthorId, Is.EqualTo(2));
             Assert.That(bookInDb.GenreId, Is.EqualTo(2));
         }
@@ -156,7 +156,7 @@ namespace LibraryApiTests.Services
             var book = new Book
             {
                 Id = 1,
-                Title = "Book1",
+                Name = "Book1",
                 Author = new Author { Id = 1, Name = "Author1" },
                 Genre = new Genre { Id = 1, Name = "Genre1" }
             };

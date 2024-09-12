@@ -1,4 +1,5 @@
 ﻿using Authentication.Configuration;
+using Authentication.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +20,13 @@ namespace Authentication
                 ExpiryInMinutes = Convert.ToDouble(configuration[JwtConfiguration.JWT_SETTINGS_EXPIRY_IN_MINUTES]!),
             };
             services.AddSingleton(jwtSettings);
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.REQUIRE_MANAGER_ROLE,
+                    policy => policy.RequireRole(Roles.MANAGER, Roles.ADMINISTRATOR));
+                options.AddPolicy(Policy.REQUIRE_ADMIN_ROLE,
+                    policy => policy.RequireRole(Roles.ADMINISTRATOR));
+            });
             services.AddCustomJwtAuthentication(jwtSettings);
         }
         public static void AddCustomJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)

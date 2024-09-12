@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dto;
-using LibraryApi.Domain.Dto.Author;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dto;
+using LibraryShopEntities.Domain.Dto.Author;
+using LibraryShopEntities.Domain.Dto.Library.Author;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryApi.Controllers
+namespace LibraryShopEntities.Controllers
 {
     [TestFixture]
     internal class AuthorControllerTests
@@ -63,7 +64,7 @@ namespace LibraryApi.Controllers
                 new Author { Id = 1, Name = "John", LastName = "Doe" },
                 new Author { Id = 2, Name = "Jane", LastName = "Doe" }
             };
-            var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
+            var request = new PaginationRequest { PageNumber = 1, PageSize = 2 };
             var responses = authors.Select(a => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authors);

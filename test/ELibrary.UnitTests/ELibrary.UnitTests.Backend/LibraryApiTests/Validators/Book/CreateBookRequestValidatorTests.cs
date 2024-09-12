@@ -1,7 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryApi.Domain.Dto.Book;
+using LibraryShopEntities.Domain.Dto.Book;
 
-namespace LibraryApi.Validators.Book
+namespace LibraryShopEntities.Validators.Book
 {
     [TestFixture]
     internal class CreateBookRequestValidatorTests
@@ -36,7 +36,7 @@ namespace LibraryApi.Validators.Book
             };
             // Act & Assert
             var result = validator.TestValidate(request);
-            result.ShouldHaveValidationErrorFor(x => x.Title);
+            result.ShouldHaveValidationErrorFor(x => x.Name);
             result.ShouldHaveValidationErrorFor(x => x.AuthorId);
             result.ShouldHaveValidationErrorFor(x => x.GenreId);
         }

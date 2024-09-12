@@ -1,5 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using UserApi.Domain.Dtos;
+using UserApi.Validators.Auth;
 
 namespace UserApi.Validators
 {

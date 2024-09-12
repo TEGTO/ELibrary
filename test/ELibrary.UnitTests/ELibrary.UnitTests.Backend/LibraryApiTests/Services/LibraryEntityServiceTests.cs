@@ -1,6 +1,6 @@
-﻿using LibraryApi.Data;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+﻿using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;

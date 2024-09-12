@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dto;
-using LibraryApi.Domain.Dto.Book;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dto;
+using LibraryShopEntities.Domain.Dto.Book;
+using LibraryShopEntities.Domain.Dto.Library.Book;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryApi.Controllers
+namespace LibraryShopEntities.Controllers
 {
     [TestFixture]
     internal class BookControllerTests
@@ -28,8 +29,8 @@ namespace LibraryApi.Controllers
         {
             // Arrange
             var bookId = 1;
-            var book = new Book { Id = bookId, Title = "Dune" };
-            var response = new BookResponse { Id = bookId, Title = "Dune" };
+            var book = new Book { Id = bookId, Name = "Dune" };
+            var response = new BookResponse { Id = bookId, Name = "Dune" };
             mockEntityService.Setup(s => s.GetByIdAsync(bookId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(book);
             mockMapper.Setup(m => m.Map<BookResponse>(book))
@@ -60,15 +61,15 @@ namespace LibraryApi.Controllers
             // Arrange
             var books = new List<Book>
             {
-                new Book { Id = 1, Title = "Dune" },
-                new Book { Id = 2, Title = "1984" }
+                new Book { Id = 1, Name = "Dune" },
+                new Book { Id = 2, Name = "1984" }
             };
-            var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
-            var responses = books.Select(b => new BookResponse { Id = b.Id, Title = b.Title }).ToList();
+            var request = new PaginationRequest { PageNumber = 1, PageSize = 2 };
+            var responses = books.Select(b => new BookResponse { Id = b.Id, Name = b.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(books);
             mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))
-                .Returns((Book b) => new BookResponse { Id = b.Id, Title = b.Title });
+                .Returns((Book b) => new BookResponse { Id = b.Id, Name = b.Name });
             // Act
             var result = await controller.GetPaginated(request, CancellationToken.None);
             // Assert
@@ -95,9 +96,9 @@ namespace LibraryApi.Controllers
         public async Task Create_ValidRequest_ReturnsCreatedResponse()
         {
             // Arrange
-            var createRequest = new CreateBookRequest { Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
-            var book = new Book { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
-            var createResponse = new BookResponse { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1) };
+            var createRequest = new CreateBookRequest { Name = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
+            var book = new Book { Id = 1, Name = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
+            var createResponse = new BookResponse { Id = 1, Name = "Dune", PublicationDate = new DateTime(1965, 8, 1) };
             mockMapper.Setup(m => m.Map<Book>(createRequest)).Returns(book);
             mockEntityService.Setup(s => s.CreateAsync(book, It.IsAny<CancellationToken>())).ReturnsAsync(book);
             mockMapper.Setup(m => m.Map<BookResponse>(book)).Returns(createResponse);
@@ -113,9 +114,9 @@ namespace LibraryApi.Controllers
         public async Task Update_ValidRequest_ReturnsOk()
         {
             // Arrange
-            var updateRequest = new UpdateBookRequest { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
-            var book = new Book { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
-            var updatedResponse = new BookResponse { Id = 1, Title = "Dune", PublicationDate = new DateTime(1965, 8, 1) };
+            var updateRequest = new UpdateBookRequest { Id = 1, Name = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
+            var book = new Book { Id = 1, Name = "Dune", PublicationDate = new DateTime(1965, 8, 1), AuthorId = 1, GenreId = 1 };
+            var updatedResponse = new BookResponse { Id = 1, Name = "Dune", PublicationDate = new DateTime(1965, 8, 1) };
             mockMapper.Setup(m => m.Map<Book>(updateRequest)).Returns(book);
             mockEntityService.Setup(s => s.UpdateAsync(book, It.IsAny<CancellationToken>())).ReturnsAsync(book);
             mockMapper.Setup(m => m.Map<BookResponse>(book)).Returns(updatedResponse);

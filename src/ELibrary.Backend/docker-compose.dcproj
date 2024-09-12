@@ -10,7 +10,8 @@
     <DockerServiceName>elibrary-backend</DockerServiceName>
     <DockerComposeProjectName>elibrary-backend-dev</DockerComposeProjectName>
     <AdditionalComposeFilePaths>docker-compose-databases.yml;docker-compose-databases.override.yml;</AdditionalComposeFilePaths>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/weatherforecast</DockerServiceUrl>
+    <DockerServiceUrl>
+    </DockerServiceUrl>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".env" />

@@ -7,8 +7,9 @@ using Moq;
 using Shared.Dtos;
 using System.Net;
 using UserApi.Controllers;
-using UserApi.Domain.Dtos;
-using UserApi.Domain.Dtos.Responses;
+using UserApi.Domain.Dtos.Auth;
+using UserApi.Domain.Dtos.Auth.Requests;
+using UserApi.Domain.Dtos.Auth.Responses;
 using UserApi.Domain.Entities;
 using UserApi.Services;
 
@@ -22,7 +23,7 @@ namespace AuthenticationApiTests.Controllers
         private Mock<IMapper> mapperMock;
         private Mock<IAuthService> authServiceMock;
         private Mock<IConfiguration> configurationMock;
-        private AuthController authController;
+        private UserController authController;
 
         [SetUp]
         public void SetUp()
@@ -31,14 +32,14 @@ namespace AuthenticationApiTests.Controllers
             authServiceMock = new Mock<IAuthService>();
             configurationMock = new Mock<IConfiguration>();
             configurationMock.Setup(config => config["AuthSettings:RefreshExpiryInDays"]).Returns(EXPIRY_IN_DAYS.ToString());
-            authController = new AuthController(mapperMock.Object, authServiceMock.Object, configurationMock.Object);
+            authController = new UserController(mapperMock.Object, authServiceMock.Object, configurationMock.Object);
         }
 
         [Test]
         public async Task Register_ValidRequest_ReturnsCreated()
         {
             // Arrange
-            var registrationRequest = new UserRegistrationRequest { UserName = "testuser", Password = "Password123", ConfirmPassword = "Password123" };
+            var registrationRequest = new UserRegistrationRequest { Email = "testuser", Password = "Password123", ConfirmPassword = "Password123" };
             var user = new User { Id = "1", UserName = "testuser", Email = "testuser@example.com" };
             var identityResult = IdentityResult.Success;
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
@@ -66,7 +67,7 @@ namespace AuthenticationApiTests.Controllers
         public async Task Register_FailedRegistration_ReturnsBadRequestWithErrors()
         {
             // Arrange
-            var registrationRequest = new UserRegistrationRequest { UserName = "testuser", Password = "Password123", ConfirmPassword = "Password123" };
+            var registrationRequest = new UserRegistrationRequest { Email = "testuser", Password = "Password123", ConfirmPassword = "Password123" };
             var user = new User { Id = "1", UserName = "testuser", Email = "testuser@example.com" };
             var identityResult = IdentityResult.Failed(new IdentityError { Description = "Error" });
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
@@ -98,7 +99,7 @@ namespace AuthenticationApiTests.Controllers
             var okResult = result.Result as OkObjectResult;
             var response = okResult.Value as UserAuthenticationResponse;
             Assert.That(response.AuthToken, Is.EqualTo(tokenDto));
-            Assert.That(response.UserName, Is.EqualTo(user.UserName));
+            Assert.That(response.Email, Is.EqualTo(user.UserName));
         }
         [Test]
         public async Task Refresh_ValidRequest_ReturnsOk()

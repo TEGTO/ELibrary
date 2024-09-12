@@ -1,7 +1,8 @@
 ﻿using Authentication.Models;
 using AutoMapper;
 using UserApi;
-using UserApi.Domain.Dtos;
+using UserApi.Domain.Dtos.Auth;
+using UserApi.Domain.Dtos.Auth.Requests;
 using UserApi.Domain.Entities;
 
 namespace UserApiTests
@@ -38,7 +39,7 @@ namespace UserApiTests
             // Act
             var result = mapper.Map<UserRegistrationRequest>(user);
             // Assert
-            Assert.That(result.UserName, Is.EqualTo(user.UserName));
+            Assert.That(result.Email, Is.EqualTo(user.UserName));
             Assert.That(result.UserInfo.Name, Is.EqualTo(user.UserInfo.Name));
             Assert.That(result.UserInfo.LastName, Is.EqualTo(user.UserInfo.LastName));
             Assert.That(result.UserInfo.DateOfBirth, Is.EqualTo(user.UserInfo.DateOfBirth));

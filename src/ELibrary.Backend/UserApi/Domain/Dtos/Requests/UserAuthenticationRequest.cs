@@ -1,4 +1,4 @@
-﻿namespace UserApi.Domain.Dtos
+﻿namespace UserApi.Domain.Dtos.Requests
 {
     public class UserAuthenticationRequest
     {

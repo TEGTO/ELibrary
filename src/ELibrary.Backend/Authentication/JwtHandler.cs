@@ -18,10 +18,10 @@ namespace Authentication.Services
             this.jwtSettings = jwtSettings;
         }
 
-        public AccessTokenData CreateToken(IdentityUser user)
+        public AccessTokenData CreateToken<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
         {
             var signingCredentials = GetSigningCredentials();
-            var claims = GetClaims(user);
+            var claims = GetClaims(user, roles);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             var refreshToken = GenerateRefreshToken();
@@ -33,12 +33,18 @@ namespace Authentication.Services
             var secretKey = new SymmetricSecurityKey(key);
             return new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
         }
-        private List<Claim> GetClaims(IdentityUser user)
+        private List<Claim> GetClaims<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             return claims;
         }
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)

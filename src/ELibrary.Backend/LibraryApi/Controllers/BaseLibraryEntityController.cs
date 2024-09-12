@@ -1,16 +1,24 @@
-﻿using AutoMapper;
-using LibraryApi.Domain.Dto;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+﻿using Authentication.Identity;
+using AutoMapper;
+using LibraryShopEntities.Domain.Dtos;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryApi.Controllers
+namespace LibraryShopEntities.Controllers
 {
     [Authorize]
     [ApiController]
-    public abstract class BaseLibraryEntityController<TEntity, TGetResponse, TCreateRequest, TCreateResponse, TUpdateRequest, TUpdateResponse> : ControllerBase
-     where TEntity : BaseEntity
+    public abstract class BaseLibraryEntityController<
+        TEntity,
+        TGetResponse,
+        TCreateRequest,
+        TCreateResponse,
+        TUpdateRequest,
+        TUpdateResponse,
+        TPaginationRequest> : ControllerBase
+     where TEntity : BaseLibraryEntity where TPaginationRequest : LibraryPaginationRequest
     {
         protected readonly ILibraryEntityService<TEntity> entityService;
         protected readonly IMapper mapper;
@@ -21,8 +29,10 @@ namespace LibraryApi.Controllers
             this.mapper = mapper;
         }
 
+        #region Endpoints
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
             var entity = await entityService.GetByIdAsync(id, cancellationToken);
 
@@ -33,23 +43,26 @@ namespace LibraryApi.Controllers
 
             return Ok(mapper.Map<TGetResponse>(entity));
         }
-
         [HttpPost("pagination")]
-        public async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(PaginatedRequest request, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TPaginationRequest request, CancellationToken cancellationToken)
         {
-            var entities = await entityService.GetPaginatedAsync(request.PageNumber, request.PageSize, cancellationToken);
+            var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
             return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
-
         [HttpGet("amount")]
-        public async Task<ActionResult<int>> GetItemTotalAmount(CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<int>> GetItemTotalAmount(CancellationToken cancellationToken)
         {
             var amount = await entityService.GetItemTotalAmountAsync(cancellationToken);
             return Ok(amount);
         }
 
+        #endregion
+
+        #region Manager Endpoints
+
+        [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost]
-        public async Task<ActionResult<TCreateResponse>> Create(TCreateRequest request, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<TCreateResponse>> Create(TCreateRequest request, CancellationToken cancellationToken)
         {
             var entityToCreate = mapper.Map<TEntity>(request);
             var entityResponse = await entityService.CreateAsync(entityToCreate, cancellationToken);
@@ -58,9 +71,9 @@ namespace LibraryApi.Controllers
 
             return Created(string.Empty, response);
         }
-
+        [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPut]
-        public async Task<ActionResult<TUpdateResponse>> Update(TUpdateRequest request, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<TUpdateResponse>> Update(TUpdateRequest request, CancellationToken cancellationToken)
         {
             var entityToUpdate = mapper.Map<TEntity>(request);
             var entityResponse = await entityService.UpdateAsync(entityToUpdate, cancellationToken);
@@ -69,12 +82,14 @@ namespace LibraryApi.Controllers
 
             return Ok(response);
         }
-
+        [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
+        public virtual async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
         {
             await entityService.DeleteByIdAsync(id, cancellationToken);
             return Ok();
         }
+
+        #endregion
     }
 }

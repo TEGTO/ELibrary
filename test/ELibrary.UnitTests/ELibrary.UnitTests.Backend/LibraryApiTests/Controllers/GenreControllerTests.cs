@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dto;
-using LibraryApi.Domain.Dto.Genre;
-using LibraryApi.Domain.Entities;
-using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dto;
+using LibraryShopEntities.Domain.Dto.Genre;
+using LibraryShopEntities.Domain.Dto.Library.Genre;
+using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryApi.Controllers
+namespace LibraryShopEntities.Controllers
 {
     [TestFixture]
     internal class GenreControllerTests
@@ -63,7 +64,7 @@ namespace LibraryApi.Controllers
                 new Genre { Id = 1, Name = "Science Fiction" },
                 new Genre { Id = 2, Name = "Fantasy" }
             };
-            var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
+            var request = new PaginationRequest { PageNumber = 1, PageSize = 2 };
             var responses = genres.Select(g => new GenreResponse { Id = g.Id, Name = g.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(genres);

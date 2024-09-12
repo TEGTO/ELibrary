@@ -50,7 +50,7 @@ namespace UserApi.Services
             dbContextMock.Setup(x => x.UserInfos).Returns(dbSetMock.Object);
             repositoryMock.Setup(x => x.CreateDbContextAsync(cancellationToken)).ReturnsAsync(dbContextMock.Object);
             // Act
-            var result = await userInfoService.GetUserInfoAsync(userId, CancellationToken.None);
+            var result = await userInfoService.GetAsync(userId, CancellationToken.None);
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.UserId, Is.EqualTo(userId));
@@ -69,7 +69,7 @@ namespace UserApi.Services
             dbContextMock.Setup(x => x.UserInfos).Returns(dbSetMock.Object);
             repositoryMock.Setup(x => x.CreateDbContextAsync(cancellationToken)).ReturnsAsync(dbContextMock.Object);
             // Act
-            var result = await userInfoService.GetUserInfoAsync(userId, CancellationToken.None);
+            var result = await userInfoService.GetAsync(userId, CancellationToken.None);
             // Assert
             Assert.IsNull(result);
         }
@@ -82,7 +82,7 @@ namespace UserApi.Services
                           .ThrowsAsync(new Exception("Database error"));
             userInfoService = new UserInfoService(repositoryMock.Object);
             // Act & Assert
-            Assert.ThrowsAsync<Exception>(async () => await userInfoService.GetUserInfoAsync("user-id", CancellationToken.None));
+            Assert.ThrowsAsync<Exception>(async () => await userInfoService.GetAsync("user-id", CancellationToken.None));
         }
     }
 }
