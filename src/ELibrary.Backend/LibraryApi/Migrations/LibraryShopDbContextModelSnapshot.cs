@@ -203,6 +203,9 @@ namespace LibraryApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Clients");
                 });
 

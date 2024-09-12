@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LibraryShopEntities.Controllers
 {
     [Authorize]
-    [Route("cover")]
+    [Route("covertype")]
     [ApiController]
     public class CoverTypeController : BaseLibraryEntityController<
         CoverType,

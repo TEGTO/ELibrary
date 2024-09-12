@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryShopEntities.Domain.Entities.Shop
 {
+    [Index(nameof(UserId), IsUnique = true)]
     public class Client
     {
         [Key]

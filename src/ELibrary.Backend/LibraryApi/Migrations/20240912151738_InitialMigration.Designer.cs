@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryApi.Migrations
 {
     [DbContext(typeof(LibraryShopDbContext))]
-    [Migration("20240912122654_InitialMigration")]
+    [Migration("20240912151738_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -205,6 +205,9 @@ namespace LibraryApi.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Clients");
                 });

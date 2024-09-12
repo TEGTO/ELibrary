@@ -185,6 +185,12 @@ namespace LibraryApi.Migrations
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clients_UserId",
+                table: "Clients",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_ClientId",
                 table: "Orders",
                 column: "ClientId");
