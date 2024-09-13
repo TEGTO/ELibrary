@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LibraryShopEntities.Domain.Dtos;
+using LibraryApi.Domain.Dtos;
 
 namespace LibraryApi.Validators
 {

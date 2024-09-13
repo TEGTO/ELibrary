@@ -1,10 +1,11 @@
 ﻿using Authentication.Configuration;
+using Authentication.Identity;
 using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 
-namespace AuthenticationTests
+namespace Authentication.Tests
 {
     [TestFixture]
     internal class JwtHandlerTests
@@ -42,11 +43,12 @@ namespace AuthenticationTests
             // Arrange
             var user = new IdentityUser
             {
+                Email = "test@example.com",
                 UserName = "testuser"
             };
             var jwtHandler = this.CreateJwtHandler();
             // Act
-            var accessTokenData = jwtHandler.CreateToken(user);
+            var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
             // Assert
             Assert.IsNotNull(accessTokenData.AccessToken);
             Assert.IsNotNull(accessTokenData.RefreshToken);
@@ -60,10 +62,11 @@ namespace AuthenticationTests
             // Arrange
             var user = new IdentityUser
             {
+                Email = "test@example.com",
                 UserName = "testuser"
             };
             var jwtHandler = this.CreateJwtHandler();
-            var accessTokenData = jwtHandler.CreateToken(user);
+            var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
             // Act
             var principal = jwtHandler.GetPrincipalFromExpiredToken(accessTokenData.AccessToken);
             // Assert

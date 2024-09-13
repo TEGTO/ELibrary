@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+using LibraryApi.Domain.Dtos.Library.Author;
+using LibraryApi.Domain.Dtos.Library.Book;
+using LibraryApi.Domain.Dtos.Library.CoverType;
+using LibraryApi.Domain.Dtos.Library.Genre;
+using LibraryApi.Domain.Dtos.Library.Publisher;
 using LibraryShopEntities.Domain.Dtos.Library;
-using LibraryShopEntities.Domain.Dtos.Library.Author;
-using LibraryShopEntities.Domain.Dtos.Library.Book;
-using LibraryShopEntities.Domain.Dtos.Library.CoverType;
-using LibraryShopEntities.Domain.Dtos.Library.Genre;
 using LibraryShopEntities.Domain.Dtos.Library.Publisher;
 using LibraryShopEntities.Domain.Entities.Library;
 
-namespace LibraryShopEntities
+namespace LibraryApi
 {
     public class AutoMapperProfile : Profile
     {

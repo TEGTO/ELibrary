@@ -1,8 +1,8 @@
 using Authentication;
-using LibraryShopEntities;
+using LibraryApi;
+using LibraryApi.Services;
 using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;

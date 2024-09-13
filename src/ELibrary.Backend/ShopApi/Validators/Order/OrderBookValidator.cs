@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using LibraryShopEntities.Domain.Dtos.Library;
 using ShopApi.Domain.Dtos.Order;
 
 namespace ShopApi.Validators.Order

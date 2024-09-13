@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopApi", "ShopApi\ShopApi.
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{22576602-AE6C-4768-9CD2-A38A824F4EBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopApiTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\ShopApiTests\ShopApiTests.csproj", "{6D4A400B-DE39-431B-B89E-56CD90850B9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{22576602-AE6C-4768-9CD2-A38A824F4EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22576602-AE6C-4768-9CD2-A38A824F4EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22576602-AE6C-4768-9CD2-A38A824F4EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D4A400B-DE39-431B-B89E-56CD90850B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D4A400B-DE39-431B-B89E-56CD90850B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D4A400B-DE39-431B-B89E-56CD90850B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D4A400B-DE39-431B-B89E-56CD90850B9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{B9A49A70-8701-47B2-97B5-A7CEC9D721F8} = {F6EC37C3-7BC7-4096-9D71-89EA73C68532}
 		{6181464A-B0E8-4FF2-ABA3-52502DF8FB63} = {F6EC37C3-7BC7-4096-9D71-89EA73C68532}
 		{354A75F2-61AD-4A01-BF72-CF90774F153A} = {74326A07-A141-4EB0-A6A0-5BA2D1CC2E16}
+		{6D4A400B-DE39-431B-B89E-56CD90850B9E} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46CD49B7-9462-4D60-AD15-25B9C962F44B}

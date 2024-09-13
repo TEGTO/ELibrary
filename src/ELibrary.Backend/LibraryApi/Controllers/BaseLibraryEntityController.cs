@@ -1,12 +1,12 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
-using LibraryShopEntities.Domain.Dtos;
+using LibraryApi.Domain.Dtos;
+using LibraryApi.Services;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryShopEntities.Controllers
+namespace LibraryApi.Controllers
 {
     [Authorize]
     [ApiController]

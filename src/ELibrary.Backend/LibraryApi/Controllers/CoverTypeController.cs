@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using LibraryShopEntities.Domain.Dtos;
+using LibraryApi.Domain.Dtos;
+using LibraryApi.Domain.Dtos.Library.CoverType;
+using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
-using LibraryShopEntities.Domain.Dtos.Library.CoverType;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryShopEntities.Controllers
+namespace LibraryApi.Controllers
 {
     [Authorize]
     [Route("covertype")]

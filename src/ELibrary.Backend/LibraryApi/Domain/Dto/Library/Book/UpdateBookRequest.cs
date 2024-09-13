@@ -1,4 +1,4 @@
-﻿namespace LibraryShopEntities.Domain.Dtos.Library.Book
+﻿namespace LibraryApi.Domain.Dtos.Library.Book
 {
     public class UpdateBookRequest
     {

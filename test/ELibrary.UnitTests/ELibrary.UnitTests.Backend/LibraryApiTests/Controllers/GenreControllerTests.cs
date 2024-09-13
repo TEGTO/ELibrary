@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using LibraryShopEntities.Domain.Dto;
-using LibraryShopEntities.Domain.Dto.Genre;
-using LibraryShopEntities.Domain.Dto.Library.Genre;
+using LibraryApi.Domain.Dtos;
+using LibraryApi.Domain.Dtos.Library.Genre;
+using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryShopEntities.Controllers
+namespace LibraryApi.Controllers.Tests
 {
     [TestFixture]
     internal class GenreControllerTests
@@ -64,9 +64,9 @@ namespace LibraryShopEntities.Controllers
                 new Genre { Id = 1, Name = "Science Fiction" },
                 new Genre { Id = 2, Name = "Fantasy" }
             };
-            var request = new PaginationRequest { PageNumber = 1, PageSize = 2 };
+            var request = new LibraryPaginationRequest { PageNumber = 1, PageSize = 2 };
             var responses = genres.Select(g => new GenreResponse { Id = g.Id, Name = g.Name }).ToList();
-            mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(genres);
             mockMapper.Setup(m => m.Map<GenreResponse>(It.IsAny<Genre>()))
                 .Returns((Genre g) => new GenreResponse { Id = g.Id, Name = g.Name });

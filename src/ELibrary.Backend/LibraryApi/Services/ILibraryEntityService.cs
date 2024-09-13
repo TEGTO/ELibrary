@@ -1,7 +1,7 @@
-﻿using LibraryShopEntities.Domain.Dtos;
+﻿using LibraryApi.Domain.Dtos;
 using LibraryShopEntities.Domain.Entities.Library;
 
-namespace LibraryShopEntities.Services
+namespace LibraryApi.Services
 {
     public interface ILibraryEntityService<TEntity> where TEntity : BaseLibraryEntity
     {

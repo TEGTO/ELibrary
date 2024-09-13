@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LibraryShopEntities.Domain.Dtos.Library.Publisher;
+using LibraryApi.Domain.Dtos.Library.Publisher;
 
-namespace LibraryShopEntities.Validators.Publisher
+namespace LibraryApi.Validators.Publisher
 {
     public class UpdatePublisherRequestValidator : AbstractValidator<UpdatePublisherRequest>
     {
