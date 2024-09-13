@@ -5,6 +5,13 @@ on:
   push:
     branches:
       - main
+      - develop-release-1
+    paths:
+      - 'src/ELibrary.Frontend/**'
+  pull_request:
+    branches:
+      - main
+      - develop-release-1
     paths:
       - 'src/ELibrary.Frontend/**'
 
