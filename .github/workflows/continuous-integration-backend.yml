@@ -2,9 +2,17 @@ name: Continuous Integration Backend
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop-release-1
+    paths:
+      - 'src/ELibrary.Backend/**'
+      - 'test/**'
   pull_request:
     branches:
       - main
+      - develop-release-1
     paths:
       - 'src/ELibrary.Backend/**'
       - 'test/**'
@@ -17,7 +25,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.x'
+          dotnet-version: '8.x'
         
       - name: Cache .NET packages
         uses: actions/cache@v3
@@ -29,32 +37,15 @@ jobs:
 
       - name: Restore dependencies
         run: |
-          dotnet restore src/ELibrary.Backend/Authentication/Authentication.csproj
-          dotnet restore src/ELibrary.Backend/Shared/Shared.csproj
-          dotnet restore src/ELibrary.Backend/LibraryApi/LibraryApi.csproj
-          dotnet restore src/ELibrary.Backend/UserApi/UserApi.csproj
-          dotnet restore test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/AuthenticationTests/AuthenticationTests.csproj
-          dotnet restore test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/SharedTests/SharedTests.csproj
-          dotnet restore test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/LibraryApiTests/LibraryApiTests.csproj
-          dotnet restore test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/UserApiTests/UserApiTests.csproj
+          dotnet restore src/ELibrary.Backend/ELibrary.Backend.sln
 
       - name: Build projects
         run: |
-          dotnet build src/ELibrary.Backend/Authentication/Authentication.csproj --configuration Release
-          dotnet build src/ELibrary.Backend/Shared/Shared.csproj --configuration Release
-          dotnet build src/ELibrary.Backend/LibraryApi/LibraryApi.csproj --configuration Release
-          dotnet build src/ELibrary.Backend/UserApi/UserApi.csproj --configuration Release
-          dotnet build test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/AuthenticationTests/AuthenticationTests.csproj --configuration Release
-          dotnet build test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/SharedTests/SharedTests.csproj --configuration Release
-          dotnet build test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/LibraryApiTests/LibraryApiTests.csproj --configuration Release
-          dotnet build test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/UserApiTests/UserApiTests.csproj --configuration Release
+          dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
 
       - name: Run unit tests
         run: |
-          dotnet test test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/AuthenticationTests/AuthenticationTests.csproj --verbosity normal --configuration Release
-          dotnet test test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/SharedTests/SharedTests.csproj --verbosity normal --configuration Release
-          dotnet test test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/LibraryApiTests/LibraryApiTests.csproj --verbosity normal --configuration Release
-          dotnet test test/ELibrary.UnitTests/ELibrary.UnitTests.Backend/UserApiTests/UserApiTests.csproj --verbosity normal --configuration Release
+          dotnet test src/ELibrary.Backend/ELibrary.Backend.sln
 
       - name: Check results
         run: |
