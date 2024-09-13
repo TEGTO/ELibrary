@@ -1,10 +1,10 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Dtos;
+﻿using LibraryApi.Domain.Dtos;
+using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
-namespace LibraryShopEntities.Services
+namespace LibraryApi.Services
 {
     public class LibraryEntityService<TEntity> : ILibraryEntityService<TEntity> where TEntity : BaseLibraryEntity
     {

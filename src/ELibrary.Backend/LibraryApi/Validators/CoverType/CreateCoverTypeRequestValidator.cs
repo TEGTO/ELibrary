@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LibraryShopEntities.Domain.Dtos.Library.CoverType;
+using LibraryApi.Domain.Dtos.Library.CoverType;
 
-namespace LibraryShopEntities.Validators.CoverType
+namespace LibraryApi.Validators.CoverType
 {
     public class CreateCoverTypeRequestValidator : AbstractValidator<CreateCoverTypeRequest>
     {

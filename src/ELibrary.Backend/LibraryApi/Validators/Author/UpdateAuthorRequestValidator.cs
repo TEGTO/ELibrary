@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LibraryShopEntities.Domain.Dtos.Library.Author;
+using LibraryApi.Domain.Dtos.Library.Author;
 
-namespace LibraryShopEntities.Validators.Author
+namespace LibraryApi.Validators.Author
 {
     public class UpdateAuthorRequestValidator : AbstractValidator<UpdateAuthorRequest>
     {
@@ -10,6 +10,7 @@ namespace LibraryShopEntities.Validators.Author
             RuleFor(x => x.Id).NotNull().GreaterThan(0);
             RuleFor(x => x.Name).NotNull().NotEmpty().MaximumLength(256);
             RuleFor(x => x.LastName).NotNull().NotEmpty().MaximumLength(256);
+            RuleFor(x => x.DateOfBirth).LessThanOrEqualTo(DateTime.UtcNow);
         }
     }
 }

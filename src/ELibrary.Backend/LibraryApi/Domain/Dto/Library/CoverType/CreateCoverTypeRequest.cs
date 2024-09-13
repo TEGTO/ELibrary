@@ -1,4 +1,4 @@
-﻿namespace LibraryShopEntities.Domain.Dtos.Library.CoverType
+﻿namespace LibraryApi.Domain.Dtos.Library.CoverType
 {
     public class CreateCoverTypeRequest
     {

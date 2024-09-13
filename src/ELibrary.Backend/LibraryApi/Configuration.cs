@@ -1,4 +1,4 @@
-﻿namespace LibraryShopEntities
+﻿namespace LibraryApi
 {
     public static class Configuration
     {

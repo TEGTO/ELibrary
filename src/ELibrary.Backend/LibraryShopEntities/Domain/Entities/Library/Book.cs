@@ -32,6 +32,10 @@ namespace LibraryShopEntities.Domain.Entities.Library
                 this.Price = otherBook.Price;
                 this.PageAmount = otherBook.PageAmount;
                 this.StockAmount = otherBook.StockAmount;
+                this.AuthorId = otherBook.AuthorId;
+                this.GenreId = otherBook.GenreId;
+                this.PublisherId = otherBook.PublisherId;
+                this.CoverTypeId = otherBook.CoverTypeId;
             }
         }
     }

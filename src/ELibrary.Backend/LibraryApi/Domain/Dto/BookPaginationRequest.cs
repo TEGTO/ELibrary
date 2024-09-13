@@ -1,4 +1,4 @@
-﻿namespace LibraryShopEntities.Domain.Dtos
+﻿namespace LibraryApi.Domain.Dtos
 {
     public class BookPaginationRequest : LibraryPaginationRequest
     {

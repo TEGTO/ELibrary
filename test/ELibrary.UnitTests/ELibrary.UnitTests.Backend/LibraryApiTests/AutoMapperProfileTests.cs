@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using LibraryShopEntities.Domain.Dto.Author;
-using LibraryShopEntities.Domain.Dto.Book;
-using LibraryShopEntities.Domain.Dto.Library.Author;
-using LibraryShopEntities.Domain.Dto.Library.Book;
-using LibraryShopEntities.Domain.Dto.Library.Genre;
+using LibraryApi.Domain.Dtos.Library.Author;
+using LibraryApi.Domain.Dtos.Library.Book;
+using LibraryApi.Domain.Dtos.Library.Genre;
+using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
 
-namespace LibraryShopEntities
+namespace LibraryApi.Tests
 {
     [TestFixture]
     internal class AutoMapperProfileTests

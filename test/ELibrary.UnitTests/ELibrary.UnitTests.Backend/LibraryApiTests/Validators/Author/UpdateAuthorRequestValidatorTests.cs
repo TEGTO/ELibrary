@@ -1,7 +1,8 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryShopEntities.Domain.Dto.Author;
+using LibraryApi.Domain.Dtos.Library.Author;
+using LibraryApi.Validators.Author;
 
-namespace LibraryShopEntities.Validators.Author
+namespace LibraryApi.Validators.Author.Tests
 {
     [TestFixture]
     internal class UpdateAuthorRequestValidatorTests
@@ -32,13 +33,14 @@ namespace LibraryShopEntities.Validators.Author
                 Id = 0,
                 Name = "",
                 LastName = "",
-                DateOfBirth = new DateTime(1980, 1, 1)
+                DateOfBirth = new DateTime(3000, 1, 1)
             };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.Id);
             result.ShouldHaveValidationErrorFor(x => x.Name);
             result.ShouldHaveValidationErrorFor(x => x.LastName);
+            result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
         }
     }
 }

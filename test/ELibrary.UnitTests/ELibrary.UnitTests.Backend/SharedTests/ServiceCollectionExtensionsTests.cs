@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Shared;
 
-namespace SharedTests
+namespace Shared.Tests
 {
     [TestFixture]
     internal class ServiceCollectionExtensionsTests

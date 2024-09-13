@@ -1,4 +1,4 @@
-﻿namespace LibraryShopEntities.Domain.Dtos.Library.Publisher
+﻿namespace LibraryApi.Domain.Dtos.Library.Publisher
 {
     public class UpdatePublisherRequest
     {

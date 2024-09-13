@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using LibraryShopEntities.Domain.Dtos;
+using LibraryApi.Domain.Dtos;
 
-namespace LibraryShopEntities.Validators
+namespace LibraryApi.Validators
 {
     public class BookPaginationRequestValidator : AbstractValidator<BookPaginationRequest>
     {

@@ -12,7 +12,7 @@ namespace ShopApi.Validators.Order
             RuleFor(x => x.DeliveryAddress).NotNull().NotEmpty().MaximumLength(512);
             RuleFor(x => x.DeliveryTime).NotNull().GreaterThanOrEqualTo(DateTime.UtcNow);
             RuleFor(x => x.OrderStatus).NotNull().NotEqual(OrderStatus.Delivered);
-            RuleFor(x => x.Books).NotNull();
+            RuleFor(x => x.Books).NotNull().NotEmpty();
         }
     }
 }

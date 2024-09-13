@@ -51,16 +51,16 @@ namespace UserApi.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserAuthenticationResponse>> Login([FromBody] UserAuthenticationRequest request)
         {
+            var user = await authService.GetUserByLoginAsync(request.Login);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var loginParams = new LoginUserParams(request.Login, request.Password, expiryInDays);
             var token = await authService.LoginUserAsync(loginParams);
 
             var tokenDto = mapper.Map<AuthToken>(token);
-            var user = await authService.GetUserByLoginAsync(request.Login);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
 
             var roles = await authService.GetUserRolesAsync(user);
 

@@ -1,7 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryShopEntities.Domain.Dto.Genre;
+using LibraryApi.Domain.Dtos.Library.Genre;
 
-namespace LibraryShopEntities.Validators.Genre
+namespace LibraryApi.Validators.Genre.Tests
 {
     [TestFixture]
     internal class CreateGenreRequestValidatorTests

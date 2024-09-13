@@ -1,10 +1,10 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Dtos;
+﻿using LibraryApi.Domain.Dtos;
+using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
-namespace LibraryShopEntities.Services
+namespace LibraryApi.Services
 {
     public class BookService : LibraryEntityService<Book>
     {
@@ -113,60 +113,19 @@ namespace LibraryShopEntities.Services
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
-            var entityInDb = await queryable
-                                        .Include(b => b.Author)
-                                        .Include(b => b.Genre)
-                                        .Include(b => b.Publisher)
-                                        .Include(b => b.CoverType)
-                                        .FirstAsync(b => b.Id == entity.Id, cancellationToken);
+            var entityInDb = await queryable.FirstAsync(b => b.Id == entity.Id, cancellationToken);
 
             entityInDb.Copy(entity);
 
-            if (entityInDb.AuthorId != entity.AuthorId)
-            {
-                var authorQueryable = await repository.GetQueryableAsync<Author>(cancellationToken);
-                var author = await authorQueryable.FirstOrDefaultAsync(a => a.Id == entity.AuthorId, cancellationToken);
-                if (author != null)
-                {
-                    entityInDb.AuthorId = entity.AuthorId;
-                    entityInDb.Author = author;
-                }
-            }
+            await repository.UpdateAsync(entityInDb, cancellationToken);
 
-            if (entityInDb.GenreId != entity.GenreId)
-            {
-                var genreQueryable = await repository.GetQueryableAsync<Genre>(cancellationToken);
-                var genre = await genreQueryable.FirstOrDefaultAsync(g => g.Id == entity.GenreId, cancellationToken);
-                if (genre != null)
-                {
-                    entityInDb.GenreId = entity.GenreId;
-                    entityInDb.Genre = genre;
-                }
-            }
-
-            if (entityInDb.PublisherId != entity.PublisherId)
-            {
-                var publisherQueryable = await repository.GetQueryableAsync<Publisher>(cancellationToken);
-                var publisher = await publisherQueryable.FirstOrDefaultAsync(g => g.Id == entity.PublisherId, cancellationToken);
-                if (publisher != null)
-                {
-                    entityInDb.PublisherId = entity.PublisherId;
-                    entityInDb.Publisher = publisher;
-                }
-            }
-
-            if (entityInDb.CoverTypeId != entity.CoverTypeId)
-            {
-                var coverQueryable = await repository.GetQueryableAsync<CoverType>(cancellationToken);
-                var cover = await coverQueryable.FirstOrDefaultAsync(g => g.Id == entity.CoverTypeId, cancellationToken);
-                if (cover != null)
-                {
-                    entityInDb.CoverTypeId = entity.CoverTypeId;
-                    entityInDb.CoverType = cover;
-                }
-            }
-
-            return await repository.UpdateAsync(entityInDb, cancellationToken);
+            entityInDb = await queryable
+                                         .Include(b => b.Author)
+                                         .Include(b => b.Genre)
+                                         .Include(b => b.Publisher)
+                                         .Include(b => b.CoverType)
+                                         .FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
+            return entityInDb;
         }
     }
 }

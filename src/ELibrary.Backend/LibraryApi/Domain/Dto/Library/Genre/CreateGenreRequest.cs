@@ -1,4 +1,4 @@
-﻿namespace LibraryShopEntities.Domain.Dtos.Library.Genre
+﻿namespace LibraryApi.Domain.Dtos.Library.Genre
 {
     public class CreateGenreRequest
     {

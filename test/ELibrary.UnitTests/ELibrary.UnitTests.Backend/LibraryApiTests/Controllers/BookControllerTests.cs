@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using LibraryShopEntities.Domain.Dto;
-using LibraryShopEntities.Domain.Dto.Book;
-using LibraryShopEntities.Domain.Dto.Library.Book;
+using LibraryApi.Domain.Dtos;
+using LibraryApi.Domain.Dtos.Library.Book;
+using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryShopEntities.Controllers
+namespace LibraryApi.Controllers.Tests
 {
     [TestFixture]
     internal class BookControllerTests
@@ -64,9 +64,9 @@ namespace LibraryShopEntities.Controllers
                 new Book { Id = 1, Name = "Dune" },
                 new Book { Id = 2, Name = "1984" }
             };
-            var request = new PaginationRequest { PageNumber = 1, PageSize = 2 };
+            var request = new BookPaginationRequest { PageNumber = 1, PageSize = 2 };
             var responses = books.Select(b => new BookResponse { Id = b.Id, Name = b.Name }).ToList();
-            mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(books);
             mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))
                 .Returns((Book b) => new BookResponse { Id = b.Id, Name = b.Name });
