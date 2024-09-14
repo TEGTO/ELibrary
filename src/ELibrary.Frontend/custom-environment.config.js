@@ -3,6 +3,7 @@ const path = require('path');
 
 const userApiUrl = process.env.USER_API || 'https://localhost:7130';
 const libraryApiUrl = process.env.LIBRARY_API || 'https://localhost:7131';
+const shopApiUrl = process.env.SHOP_API || 'https://localhost:7132';
 
 const replaceInFile = (filePath, param, value) => {
     const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -19,4 +20,5 @@ const environmentFiles = [
 environmentFiles.forEach(filePath => {
     replaceInFile(filePath, 'userApi', userApiUrl);
     replaceInFile(filePath, 'libraryApi', libraryApiUrl);
+    replaceInFile(filePath, 'shopApi', shopApiUrl);
 });

@@ -1,10 +1,10 @@
 import { UserAuthenticationResponse } from "../../dtos/auth/userAuthenticationResponse";
 
 export interface UserData {
-    userName: string;
+    email: string;
 }
 export function getUserFromAuthResponse(response: UserAuthenticationResponse): UserData {
     return {
-        userName: response.userName,
+        email: response.email,
     }
 }

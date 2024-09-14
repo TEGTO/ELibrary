@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { catchError, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { SnackbarManager, UserRegistrationRequest } from '../../../shared';
-import { AuthenticationService, confirmPasswordValidator } from '../../index';
+import { UserRegistrationRequest } from '../../../shared';
+import { AuthenticationCommand, AuthenticationCommandType, AuthenticationValidationMessage, confirmPasswordValidator, passwordValidator } from '../../index';
 
 @Component({
   selector: 'app-register',
@@ -11,68 +10,42 @@ import { AuthenticationService, confirmPasswordValidator } from '../../index';
   styleUrl: './register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterComponent implements OnInit {
   formGroup!: FormGroup;
   hidePassword: boolean = true;
-  private destroy$ = new Subject<void>();
 
-  get nameInput() { return this.formGroup.get('userName')!; }
+  get emailInput() { return this.formGroup.get('email')!; }
   get passwordInput() { return this.formGroup.get('password')!; }
   get passwordConfirmInput() { return this.formGroup.get('passwordConfirm')!; }
 
+  get validateEmailInput() { return this.validateInput.getEmailValidationMessage(this.emailInput); }
+  get validatePassword() { return this.validateInput.getPasswordValidationMessage(this.passwordInput); }
+  get validateConfirmPassword() { return this.validateInput.getConfirmPasswordValidationMessage(this.passwordConfirmInput); }
+
   constructor(
-    private readonly authService: AuthenticationService,
+    private readonly authCommand: AuthenticationCommand,
     private readonly dialogRef: MatDialogRef<RegisterComponent>,
-    private readonly snackbarManager: SnackbarManager
+    private readonly validateInput: AuthenticationValidationMessage
   ) { }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup(
       {
-        userName: new FormControl('', [Validators.required, Validators.maxLength(256)]),
-        password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(256)]),
+        email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(256)]),
+        password: new FormControl('', [Validators.required, passwordValidator, Validators.maxLength(256)]),
         passwordConfirm: new FormControl('', [Validators.required, confirmPasswordValidator, Validators.maxLength(256)])
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   registerUser() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const userData: UserRegistrationRequest = {
-        userName: formValues.userName,
+      const req: UserRegistrationRequest = {
+        email: formValues.email,
         password: formValues.password,
-        confirmPassword: formValues.passwordConfirm,
-        userInfo: {
-          name: formValues.firstName,
-          lastName: formValues.lastName,
-          dateOfBirth: formValues.dateOfBirth,
-          address: formValues.address
-        }
+        confirmPassword: formValues.passwordConfirm
       };
-      this.authService.registerUser(userData).pipe(
-        takeUntil(this.destroy$),
-        tap(isSuccess => {
-          if (isSuccess) {
-            this.snackbarManager.openInfoSnackbar('✔️ The registration is successful!', 5);
-            this.dialogRef.close();
-          }
-        }),
-        switchMap(isSuccess => isSuccess ? of(null) : this.authService.getRegistrationErrors()),
-        tap(errors => {
-          if (errors) {
-            this.snackbarManager.openErrorSnackbar(errors.split('\n'));
-          }
-        }),
-        catchError(err => {
-          this.snackbarManager.openErrorSnackbar(['An error occurred during registration.']);
-          return of(null);
-        })
-      ).subscribe();
+      this.authCommand.dispatchCommand(AuthenticationCommandType.SignUp, this, req, this.dialogRef);
     }
   }
 }

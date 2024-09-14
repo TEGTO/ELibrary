@@ -8,9 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthInterceptor, AuthenticatedComponent, AuthenticationControllerService, AuthenticationDialogManager, AuthenticationDialogManagerService, AuthenticationService, LoginComponent, RegisterComponent, RegistrationEffects, SignInEffects, authReducer, registrationReducer, userDataReducer } from '.';
-import { UserInfoModule } from "../user-info/user-info.module";
-import { UnauthenticatedComponent } from './components/unauthenticated/unauthenticated.component';
+import { AuthEffects, AuthInterceptor, AuthenticatedComponent, AuthenticationCommand, AuthenticationCommandService, AuthenticationControllerService, AuthenticationDialogManager, AuthenticationDialogManagerService, AuthenticationService, AuthenticationValidationMessage, AuthenticationValidationMessageService, LoginComponent, RegisterComponent, UnauthenticatedComponent, authReducer, registrationReducer, userDataReducer } from '.';
 
 @NgModule({
   declarations: [LoginComponent, RegisterComponent, AuthenticatedComponent, UnauthenticatedComponent],
@@ -22,14 +20,15 @@ import { UnauthenticatedComponent } from './components/unauthenticated/unauthent
     MatFormFieldModule,
     ReactiveFormsModule,
     MatButtonModule,
-    UserInfoModule,
     HttpClientModule,
     StoreModule.forFeature('authentication', authReducer),
     StoreModule.forFeature('registration', registrationReducer),
     StoreModule.forFeature('userdata', userDataReducer),
-    EffectsModule.forFeature([RegistrationEffects, SignInEffects]),
+    EffectsModule.forFeature([AuthEffects]),
   ],
   providers: [
+    { provide: AuthenticationCommand, useClass: AuthenticationCommandService },
+    { provide: AuthenticationValidationMessage, useClass: AuthenticationValidationMessageService },
     { provide: AuthenticationDialogManager, useClass: AuthenticationDialogManagerService },
     { provide: AuthenticationService, useClass: AuthenticationControllerService },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

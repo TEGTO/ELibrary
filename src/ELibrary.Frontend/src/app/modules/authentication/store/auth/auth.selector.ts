@@ -20,7 +20,8 @@ export const selectAuthData: MemoizedSelector<object, AuthData> = createSelector
         isAuthenticated: state.isAuthenticated,
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
-        refreshTokenExpiryDate: state.refreshTokenExpiryDate
+        refreshTokenExpiryDate: state.refreshTokenExpiryDate,
+        roles: state.roles
     })
 );
 export const selectIsRefreshSuccessful = createSelector(
@@ -36,8 +37,12 @@ export const selectUserDataState = createFeatureSelector<UserDataState>('userdat
 export const selectUserData: MemoizedSelector<object, UserData> = createSelector(
     selectUserDataState,
     (state: UserData) => ({
-        userName: state.userName,
+        email: state.email,
     })
+);
+export const selectIsUpdateSuccess = createSelector(
+    selectUserDataState,
+    (state: UserDataState) => state.isUpdateSuccess
 );
 export const selectUserErrors = createSelector(
     selectUserDataState,

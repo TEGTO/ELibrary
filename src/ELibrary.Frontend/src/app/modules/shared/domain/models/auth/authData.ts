@@ -1,17 +1,28 @@
-import { AuthToken } from "../../dtos/auth/authToken";
+import { AuthToken, UserAuthenticationResponse } from "../../..";
 
 export interface AuthData {
     isAuthenticated: boolean;
     accessToken: string;
     refreshToken: string;
     refreshTokenExpiryDate: Date;
+    roles: string[];
 }
 
-export function getAuthDataFromAuthToken(authToken: AuthToken): AuthData {
+export function getAuthDataFromAuthResponse(response: UserAuthenticationResponse): AuthData {
     return {
         isAuthenticated: true,
+        accessToken: response.authToken.accessToken,
+        refreshToken: response.authToken.refreshToken,
+        refreshTokenExpiryDate: response.authToken.refreshTokenExpiryDate,
+        roles: response.roles
+    };
+}
+export function copyAuthTokenToAuthData(authData: AuthData, authToken: AuthToken): AuthData {
+    return {
+        isAuthenticated: authData.isAuthenticated,
         accessToken: authToken.accessToken,
         refreshToken: authToken.refreshToken,
-        refreshTokenExpiryDate: authToken.refreshTokenExpiryDate
+        refreshTokenExpiryDate: authToken.refreshTokenExpiryDate,
+        roles: authData.roles
     };
 }

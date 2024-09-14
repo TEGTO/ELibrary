@@ -22,7 +22,7 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
     var dialogRef: MatDialogRef<any, any>;
     if (this.isAuthenticated) {
       dialogRef = this.dialog.open(AuthenticatedComponent, {
-        height: '455px',
+        height: '355px',
         width: '450px',
       });
     }
@@ -36,7 +36,7 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
   }
   openRegisterMenu(): MatDialogRef<any, any> {
     const dialogRef = this.dialog.open(RegisterComponent, {
-      height: '630px',
+      height: '390px',
       width: '450px',
     });
     return dialogRef;

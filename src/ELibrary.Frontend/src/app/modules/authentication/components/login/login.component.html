@@ -6,10 +6,10 @@
 <mat-dialog-content>
     <form id="loginForm" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="signInUser()">
         <mat-form-field>
-            <mat-label>User Name</mat-label>
-            <input matInput type="text" autocomplete="user-login" formControlName="login" placeholder="Hotguy2011"
-                maxlength="256">
-            <mat-error *ngIf="loginInput.hasError('required')">User Name is <strong>required.</strong></mat-error>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" autocomplete="user-login" formControlName="login"
+                placeholder="example@gmail.com" maxlength="256">
+            <mat-error *ngIf="validateLoginInput.hasError">{{validateLoginInput.message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Password</mat-label>
@@ -21,9 +21,7 @@
                 : 'visibility'
                 }}
             </span>
-            <mat-error *ngIf="passwordInput.hasError('required')">Password is <strong>required.</strong></mat-error>
-            <mat-error *ngIf="passwordInput.hasError('minlength')">Password must be <strong>at least 8</strong>
-                characters.</mat-error>
+            <mat-error *ngIf="validatePassword.hasError">{{validatePassword.message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>

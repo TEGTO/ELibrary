@@ -2,7 +2,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Injectable } from '@angular/core';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { BehaviorSubject, filter, Observable, switchMap, take, throwError } from 'rxjs';
-import { AuthenticationService } from '../..';
+import { AuthenticationCommand, AuthenticationCommandType, AuthenticationService } from '../..';
 import { AuthData, AuthToken } from '../../../shared';
 
 @Injectable({
@@ -15,7 +15,8 @@ export class AuthInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
-    private readonly authService: AuthenticationService
+    private readonly authService: AuthenticationService,
+    private readonly authCommand: AuthenticationCommand
   ) {
     this.authService.getAuthData().subscribe(
       data => {
@@ -75,7 +76,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return clonedRequest;
   }
   private logOutUserWithError(errorMessage: string): Observable<never> {
-    this.authService.logOutUser();
+    this.authCommand.dispatchCommand(AuthenticationCommandType.LogOut, this);
     return throwError(() => new Error(errorMessage));
   }
   private isTokenExpired(): boolean {

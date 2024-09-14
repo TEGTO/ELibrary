@@ -49,7 +49,7 @@ describe('MainViewComponent', () => {
         component.ngOnInit();
         fixture.detectChanges();
 
-        component.isAuthenticated$.subscribe(isAuthenticated => {
+        component.authData$.subscribe(isAuthenticated => {
             expect(isAuthenticated).toBeTrue();
         });
 

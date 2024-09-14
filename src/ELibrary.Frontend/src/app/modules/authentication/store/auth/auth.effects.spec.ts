@@ -4,7 +4,7 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
 import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
 import { AuthData, AuthenticationApiService, AuthToken, LocalStorageService, UserAuthenticationRequest, UserAuthenticationResponse, UserData } from "../../../shared";
-import { RegistrationEffects, SignInEffects } from "./auth.effects";
+import { AuthEffects, RegistrationEffects } from "./auth.effects";
 
 describe('RegistrationEffects', () => {
     let actions$: Observable<any>;
@@ -82,7 +82,7 @@ describe('RegistrationEffects', () => {
 
 describe('SignInEffects', () => {
     let actions$: Observable<any>;
-    let effects: SignInEffects;
+    let effects: AuthEffects;
     let mockApiService: jasmine.SpyObj<AuthenticationApiService>;
     let mockLocalStorage: jasmine.SpyObj<LocalStorageService>;
 
@@ -93,14 +93,14 @@ describe('SignInEffects', () => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [
-                SignInEffects,
+                AuthEffects,
                 provideMockActions(() => actions$),
                 { provide: AuthenticationApiService, useValue: mockApiService },
                 { provide: LocalStorageService, useValue: mockLocalStorage }
             ]
         });
 
-        effects = TestBed.inject(SignInEffects);
+        effects = TestBed.inject(AuthEffects);
     });
 
     describe('signInUser$', () => {
@@ -108,7 +108,7 @@ describe('SignInEffects', () => {
             const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
             const response: UserAuthenticationResponse = {
                 authToken: { accessToken: 'accessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() },
-                userName: 'user',
+                email: 'user',
             };
             const authData: AuthData = {
                 isAuthenticated: true,
@@ -116,7 +116,7 @@ describe('SignInEffects', () => {
                 refreshToken: response.authToken.refreshToken,
                 refreshTokenExpiryDate: response.authToken.refreshTokenExpiryDate
             };
-            const userData: UserData = { userName: response.userName };
+            const userData: UserData = { email: response.email };
             const action = signInUser({ authRequest });
             const outcome = signInUserSuccess({ authData, userData });
 
@@ -152,7 +152,7 @@ describe('SignInEffects', () => {
     describe('getAuthUser$', () => {
         it('should dispatch getAuthDataSuccess if auth data is present in local storage', (done) => {
             const authData: AuthData = { isAuthenticated: true, accessToken: 'accessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-            const userData: UserData = { userName: 'user' };
+            const userData: UserData = { email: 'user' };
             const action = getAuthData();
             const outcome = getAuthDataSuccess({ authData, userData });
 
@@ -211,7 +211,7 @@ describe('SignInEffects', () => {
         it('should dispatch refreshAccessTokenSuccess on successful refreshToken', (done) => {
             const authToken: AuthToken = { accessToken: 'newAccessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
             const action = refreshAccessToken({ authToken: authToken });
-            const outcome = refreshAccessTokenSuccess({ authData: authToken });
+            const outcome = refreshAccessTokenSuccess({ authToken: authToken });
 
             mockLocalStorage.getItem.and.returnValue(JSON.stringify({ isAuthenticated: true, accessToken: 'oldAccessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() }));
 

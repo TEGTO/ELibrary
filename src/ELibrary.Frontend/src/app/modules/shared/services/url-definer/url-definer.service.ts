@@ -11,4 +11,7 @@ export class URLDefiner {
   combineWithLibraryApiUrl(subpath: string): string {
     return environment.libraryApi + subpath;
   }
+  combineWithShopApiUrl(subpath: string): string {
+    return environment.shopApi + subpath;
+  }
 }

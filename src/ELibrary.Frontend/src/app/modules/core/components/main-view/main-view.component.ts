@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
+import { AuthData, checkAdminPolicy, checkManagerPolicy } from '../../../shared';
 
 @Component({
   selector: 'app-main-view',
@@ -9,20 +10,24 @@ import { AuthenticationDialogManager, AuthenticationService } from '../../../aut
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainViewComponent implements OnInit {
-  isAuthenticated$!: Observable<boolean>;
+  authData$!: Observable<AuthData>;
 
   constructor(
     private readonly authService: AuthenticationService,
     private readonly authDialogManager: AuthenticationDialogManager
   ) { }
 
+  ngOnInit(): void {
+    this.authData$ = this.authService.getAuthData();
+  }
+
   openLoginMenu() {
     this.authDialogManager.openLoginMenu();
   }
-
-  ngOnInit(): void {
-    this.isAuthenticated$ = this.authService.getAuthData().pipe(
-      map(data => data.isAuthenticated)
-    );
+  checkManagerPolicy(roles: string[]) {
+    return checkManagerPolicy(roles);
+  }
+  checkAdminPolicy(roles: string[]) {
+    return checkAdminPolicy(roles);
   }
 }

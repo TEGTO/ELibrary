@@ -33,7 +33,7 @@ namespace UserApi.Controllers
         #region Endpoints
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegistrationRequest request)
+        public async Task<ActionResult<UserAuthenticationResponse>> Register(UserRegistrationRequest request)
         {
             var user = mapper.Map<User>(request);
 
@@ -46,7 +46,21 @@ namespace UserApi.Controllers
             errors.AddRange(await authService.SetUserRolesAsync(user, new() { Roles.CLIENT }));
             if (Utilities.HasErrors(errors, out errorResponse)) return errorResponse;
 
-            return Created($"", null);
+            var loginParams = new LoginUserParams(request.Email, request.Password, expiryInDays);
+            var token = await authService.LoginUserAsync(loginParams);
+
+            var tokenDto = mapper.Map<AuthToken>(token);
+
+            var roles = await authService.GetUserRolesAsync(user);
+
+            var response = new UserAuthenticationResponse()
+            {
+                AuthToken = tokenDto,
+                Email = user.Email,
+                Roles = roles
+            };
+
+            return CreatedAtAction(nameof(Register), new { id = user.Id }, response);
         }
         [HttpPost("login")]
         public async Task<ActionResult<UserAuthenticationResponse>> Login([FromBody] UserAuthenticationRequest request)
@@ -82,16 +96,6 @@ namespace UserApi.Controllers
             var user = await authService.GetUserAsync(User);
             var identityErrors = await authService.UpdateUserAsync(user, updateData, false);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) return errorResponse;
-
-            return Ok();
-        }
-        [Authorize]
-        [HttpDelete("delete")]
-        public async Task<IActionResult> Delete()
-        {
-            var user = await authService.GetUserAsync(User);
-            var result = await authService.DeleteUserAsync(user);
-            if (Utilities.HasErrors(result.Errors.ToList(), out var errorResponse)) return errorResponse;
 
             return Ok();
         }
