@@ -42,7 +42,7 @@ describe('AuthenticatedComponent', () => {
 
     expect(authService.getUserData).toHaveBeenCalled();
     component.userData$.subscribe((data) => {
-      expect(data.userName).toEqual('John Doe');
+      expect(data.email).toEqual('John Doe');
     });
   });
 

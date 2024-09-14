@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthData, selectAuthErrors, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectRegistrationErrors, selectUserData, selectUserErrors, signInUser } from '../..';
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest } from '../../../shared';
+import { deleteUser, getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthData, selectAuthErrors, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccess, selectRegistrationErrors, selectUserData, selectUserErrors, signInUser, updateUserData } from '../..';
+import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
 import { AuthenticationService } from './authentication-service';
 
 @Injectable({
@@ -40,10 +40,17 @@ export class AuthenticationControllerService implements AuthenticationService {
     this.store.dispatch(refreshAccessToken({ authToken: authToken }));
     return this.store.select(selectIsRefreshSuccessful);
   }
-  //User 
+  deleteUser(): void {
+    this.store.dispatch(deleteUser());
+  }
+  //User Data
   getUserData(): Observable<UserData> {
     this.store.dispatch(getAuthData());
     return this.store.select(selectUserData);
+  }
+  updateUserData(req: UserUpdateRequest): Observable<boolean> {
+    this.store.dispatch(updateUserData({ updateRequest: req }));
+    return this.store.select(selectIsUpdateSuccess);
   }
   getUserErrors(): Observable<any> {
     return this.store.select(selectUserErrors);

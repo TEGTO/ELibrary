@@ -58,7 +58,7 @@ describe('Authentication Actions', () => {
             };
             const userData: UserData =
             {
-                userName: "userName",
+                email: "userName",
             };
             const action = signInUserSuccess({ authData: authData, userData: userData });
             expect(action.type).toBe('[Auth] Sing In By User Data Success');
@@ -87,7 +87,7 @@ describe('Authentication Actions', () => {
             };
             const userData: UserData =
             {
-                userName: "userName",
+                email: "userName",
             };
             const action = getAuthDataSuccess({ authData: authData, userData: userData });
             expect(action.type).toBe('[Auth] Get Authenticated Data Success');
@@ -129,9 +129,9 @@ describe('Authentication Actions', () => {
                     refreshToken: "refreshToken",
                     refreshTokenExpiryDate: new Date()
                 }
-                const action = refreshAccessTokenSuccess({ authData: accessToken });
+                const action = refreshAccessTokenSuccess({ authToken: accessToken });
                 expect(action.type).toBe('[Auth] Refresh Access Token Success');
-                expect(action.authData).toBe(accessToken);
+                expect(action.authToken).toBe(accessToken);
             });
             it('should create refreshAccessTokenFailure action', () => {
                 const action = refreshAccessTokenFailure({ error });

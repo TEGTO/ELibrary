@@ -19,7 +19,7 @@ const routes: Routes = [
   {
     path: "", component: MainViewComponent,
     children: [
-      { path: "", loadChildren: () => import('../library/library.module').then(m => m.LibraryModule) }
+      // { path: "", loadChildren: () => import('../library/library.module').then(m => m.LibraryModule) }
     ],
   },
 ];

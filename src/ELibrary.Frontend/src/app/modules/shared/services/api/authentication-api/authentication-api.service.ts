@@ -1,6 +1,7 @@
+import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
-import { AuthToken, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest } from '../../..';
+import { AuthToken, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest, UserUpdateRequest } from '../../..';
 import { BaseApiService } from '../base-api/base-api.service';
 
 @Injectable({
@@ -8,22 +9,37 @@ import { BaseApiService } from '../base-api/base-api.service';
 })
 export class AuthenticationApiService extends BaseApiService {
 
-  loginUser(userAuthData: UserAuthenticationRequest): Observable<UserAuthenticationResponse> {
-    return this.httpClient.post<UserAuthenticationResponse>(this.combinePathWithAuthApiUrl(`/login`), userAuthData).pipe(
+  loginUser(req: UserAuthenticationRequest): Observable<UserAuthenticationResponse> {
+    return this.httpClient.post<UserAuthenticationResponse>(this.combinePathWithAuthApiUrl(`/login`), req).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
-  registerUser(userRegistrationData: UserRegistrationRequest) {
-    return this.httpClient.post(this.combinePathWithAuthApiUrl(`/register`), userRegistrationData).pipe(
+
+  registerUser(req: UserRegistrationRequest): Observable<UserAuthenticationResponse> {
+    return this.httpClient.post<UserAuthenticationResponse>(this.combinePathWithAuthApiUrl(`/register`), req).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
+
   refreshToken(tokenData: AuthToken): Observable<AuthToken> {
     return this.httpClient.post<AuthToken>(this.combinePathWithAuthApiUrl(`/refresh`), tokenData).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
-  private combinePathWithAuthApiUrl(subpath: string) {
-    return this.urlDefiner.combineWithUserApiUrl("/auth" + subpath);
+
+  updateUser(req: UserUpdateRequest): Observable<HttpResponse<void>> {
+    return this.httpClient.put<void>(this.combinePathWithAuthApiUrl(`/update`), req, { observe: 'response' }).pipe(
+      catchError((resp) => this.handleError(resp))
+    );
+  }
+
+  deleteUser(): Observable<HttpResponse<void>> {
+    return this.httpClient.delete<void>(this.combinePathWithAuthApiUrl(`/delete`), { observe: 'response' }).pipe(
+      catchError((resp) => this.handleError(resp))
+    );
+  }
+
+  private combinePathWithAuthApiUrl(subpath: string): string {
+    return this.urlDefiner.combineWithUserApiUrl("/user" + subpath);
   }
 }

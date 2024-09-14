@@ -64,7 +64,7 @@ describe('Authentication Selectors', () => {
 
 describe('User Data Selectors', () => {
     const initialState: UserDataState = {
-        userName: "",
+        email: "",
         error: null
     };
     const errorState: UserDataState = {

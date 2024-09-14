@@ -76,7 +76,7 @@ describe('RegisterComponent', () => {
     fixture.detectChanges();
 
     expect(component.formGroup.valid).toBeFalse();
-    expect(component.nameInput.hasError('required')).toBeTruthy();
+    expect(component.emailInput.hasError('required')).toBeTruthy();
     expect(component.passwordInput.hasError('minlength')).toBeTruthy();
     expect(component.passwordConfirmInput.hasError('passwordNoMatch')).toBeTruthy();
   });

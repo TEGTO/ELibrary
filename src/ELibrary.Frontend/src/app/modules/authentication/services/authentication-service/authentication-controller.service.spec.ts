@@ -17,7 +17,7 @@ describe('AuthenticationControllerService', () => {
   };
 
   const mockUserData: UserData = {
-    userName: 'user',
+    email: 'user',
   };
 
   beforeEach(() => {

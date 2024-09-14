@@ -6,12 +6,11 @@
 <mat-dialog-content>
     <form id="registrationForm" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="registerUser()">
         <mat-form-field>
-            <mat-label>User Name</mat-label>
-            <input matInput type="text" autocomplete="user-name" formControlName="userName" placeholder="Coolguy2010"
-                maxlength="256">
-            <mat-error *ngIf="nameInput.hasError('required')">Name is <strong>required.</strong></mat-error>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" autocomplete="user-email" formControlName="email"
+                placeholder="example@gmail.com" maxlength="256">
+            <mat-error *ngIf="validateEmailInput.hasError">{{validateEmailInput.message}}</mat-error>
         </mat-form-field>
-        <user-info-registration [parentFormGroup]="formGroup"></user-info-registration>
         <mat-form-field>
             <mat-label>Password</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="user-password"
@@ -22,16 +21,13 @@
                 : 'visibility'
                 }}
             </span>
-            <mat-error *ngIf="passwordInput.hasError('required')">Password is <strong>required.</strong></mat-error>
-            <mat-error *ngIf="passwordInput.hasError('minlength')">Password must be <strong>at least 8</strong>
-                characters.</mat-error>
+            <mat-error *ngIf="validatePassword.hasError">{{validatePassword.message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Confirm Password</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="user-confirm-password"
                 formControlName="passwordConfirm" maxlength="256">
-            <mat-error *ngIf="passwordConfirmInput.hasError('required')"><strong>Confirm password.</strong></mat-error>
-            <mat-error *ngIf="passwordConfirmInput.hasError('passwordNoMatch')">Passwords don't match.</mat-error>
+            <mat-error *ngIf="validateConfirmPassword.hasError">{{validateConfirmPassword.message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>

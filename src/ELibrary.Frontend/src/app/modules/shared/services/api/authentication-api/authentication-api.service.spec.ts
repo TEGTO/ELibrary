@@ -44,7 +44,7 @@ describe('AuthenticationApiService', () => {
         refreshToken: 'refreshToken',
         refreshTokenExpiryDate: new Date()
       },
-      userName: 'userName',
+      email: 'userName',
     };
 
     service.loginUser(request).subscribe(res => {

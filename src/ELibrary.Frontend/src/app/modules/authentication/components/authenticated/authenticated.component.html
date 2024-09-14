@@ -1,20 +1,38 @@
-<ng-container *ngIf="userData$ | async as userData; else loading">
-    <button mat-icon-button mat-dialog-close class="close-button">
-        <span class="material-icons">close</span>
-    </button>
-    <h2 mat-dialog-title>Account</h2>
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Edit Account</h2>
 
-    <mat-dialog-content>
-        <form id="accountDetails" class="content__form space-y-1">
+<mat-dialog-content>
+    <form id="updateForm" [formGroup]="formGroup" class="content__form space-y-1">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input type="email" autocomplete="user-email" matInput formControlName="email"
+                placeholder="example@example.com" maxlength="256">
+            <mat-error *ngIf="validateEmailInput.hasError">{{validateEmailInput.message}}</mat-error>
+        </mat-form-field>
+        <div class="flex gap-2">
             <mat-form-field>
-                <mat-label>User Name</mat-label>
-                <input matInput type="text" [value]="userData.userName" [readonly]="true">
+                <mat-label>Old Password</mat-label>
+                <input [type]="'password'" autocomplete="off" matInput formControlName="oldPassword" maxlength="256">
+                <mat-error *ngIf="validateOldPassword.hasError">{{validateOldPassword.message}}</mat-error>
             </mat-form-field>
-            <user-info-showcaser></user-info-showcaser>
-        </form>
-    </mat-dialog-content>
-    <mat-dialog-actions class="actions__bottom-container">
-        <button mat-flat-button mat-dialog-close id="logout-button" color="warn" (click)="logOutUser()">Log Out</button>
-    </mat-dialog-actions>
-</ng-container>
-<ng-template #loading>Loading...</ng-template>
+            <mat-form-field>
+                <mat-label>New Password</mat-label>
+                <input [type]="hideNewPassword ? 'password' : 'text'" autocomplete="off" matInput
+                    formControlName="newPassword" maxlength="256">
+                <span class="material-icons me-2" matSuffix (click)="hideNewPassword = !hideNewPassword">
+                    {{hideNewPassword
+                    ? 'visibility_off'
+                    : 'visibility'
+                    }}
+                </span>
+                <mat-error *ngIf="validatePassword.hasError">{{validatePassword.message}}</mat-error>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="actions__bottom-container">
+    <button mat-flat-button id="send-button" type="submit" form="updateForm" (click)="updateUser()">Save</button>
+    <button mat-flat-button mat-dialog-close id="logout-button" color="warn" (click)="logOutUser()">Log Out</button>
+</mat-dialog-actions>

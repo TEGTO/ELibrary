@@ -48,7 +48,7 @@ namespace UserApi.Controllers.Tests
             // Act
             var result = await userController.Register(registrationRequest);
             // Assert
-            Assert.IsInstanceOf<CreatedResult>(result);
+            Assert.IsInstanceOf<CreatedAtActionResult>(result.Result);
         }
         [Test]
         public async Task Register_FailedRegistration_ReturnsBadRequestWithErrors()
@@ -62,8 +62,8 @@ namespace UserApi.Controllers.Tests
             // Act
             var result = await userController.Register(registrationRequest);
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            var badRequestResult = result as BadRequestObjectResult;
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
+            var badRequestResult = result.Result as BadRequestObjectResult;
             var responseError = badRequestResult.Value as ResponseError;
             Assert.That(responseError.Messages[0], Is.EqualTo("Error during registration"));
         }
@@ -137,35 +137,6 @@ namespace UserApi.Controllers.Tests
             Assert.That(responseError.Messages[0], Is.EqualTo("Update failed"));
         }
         [Test]
-        public async Task Delete_ValidRequest_ReturnsOk()
-        {
-            // Arrange
-            var user = new User { Email = "testuser@example.com" };
-            var identityResult = IdentityResult.Success;
-            authServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.DeleteUserAsync(user)).ReturnsAsync(identityResult);
-            // Act
-            var result = await userController.Delete();
-            // Assert
-            Assert.IsInstanceOf<OkResult>(result);
-        }
-        [Test]
-        public async Task Delete_FailedDeletion_ReturnsBadRequestWithErrors()
-        {
-            // Arrange
-            var user = new User { Email = "testuser@example.com" };
-            var identityErrors = IdentityResult.Failed(new IdentityError { Description = "Delete failed" });
-            authServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.DeleteUserAsync(user)).ReturnsAsync(identityErrors);
-            // Act
-            var result = await userController.Delete();
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            var badRequestResult = result as BadRequestObjectResult;
-            var responseError = badRequestResult.Value as ResponseError;
-            Assert.That(responseError.Messages[0], Is.EqualTo("Delete failed"));
-        }
-        [Test]
         public async Task AdminRegister_ValidRequest_ReturnsCreated()
         {
             // Arrange
@@ -201,6 +172,104 @@ namespace UserApi.Controllers.Tests
             var badRequestResult = result.Result as BadRequestObjectResult;
             var responseError = badRequestResult.Value as ResponseError;
             Assert.That(responseError.Messages[0], Is.EqualTo("Registration failed"));
+        }
+        [Test]
+        public async Task AdminGetUserByLogin_ValidUser_ReturnsOk()
+        {
+            // Arrange
+            var login = "adminuser";
+            var user = new User { UserName = login, Email = "adminuser@example.com" };
+            var adminUserResponse = new AdminUserResponse { Id = "1", UserName = login, Email = "adminuser@example.com" };
+            mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminUserResponse);
+            authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.GetUserRolesAsync(It.IsAny<User>())).ReturnsAsync(new List<string> { "Admin" });
+            // Act
+            var result = await userController.AdminGetUserByLogin(login);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            var response = okResult.Value as AdminUserResponse;
+            Assert.That(response.Email, Is.EqualTo("adminuser@example.com"));
+        }
+        [Test]
+        public async Task AdminGetUserByLogin_NonExistentUser_ReturnsNotFound()
+        {
+            // Arrange
+            var login = "nonexistentuser";
+            authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync((User)null);
+            // Act
+            var result = await userController.AdminGetUserByLogin(login);
+            // Assert
+            Assert.IsInstanceOf<NotFoundResult>(result.Result);
+        }
+        [Test]
+        public async Task AdminUpdate_ValidRequest_ReturnsOk()
+        {
+            // Arrange
+            var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "adminuser", Password = "newpass", Roles = new List<string> { "Admin" } };
+            var updateData = new UserUpdateData { Password = "newpass" };
+            var user = new User { UserName = "adminuser", Email = "adminuser@example.com" };
+            var identityResult = IdentityResult.Success;
+            mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(updateData);
+            authServiceMock.Setup(a => a.GetUserByLoginAsync(updateRequest.CurrentLogin)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, true)).ReturnsAsync(identityResult.Errors.ToList());
+            authServiceMock.Setup(a => a.SetUserRolesAsync(user, updateRequest.Roles)).ReturnsAsync(identityResult.Errors.ToList());
+            // Act
+            var result = await userController.AdminUpdate(updateRequest, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public async Task AdminUpdate_FailedUpdate_ReturnsBadRequestWithErrors()
+        {
+            // Arrange
+            var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "adminuser", Password = "newpass", Roles = new List<string> { "Admin" } };
+            var updateData = new UserUpdateData { Password = "newpass" };
+            var user = new User { UserName = "adminuser", Email = "adminuser@example.com" };
+            var identityErrors = IdentityResult.Failed(new IdentityError { Description = "Update failed" });
+            mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(updateData);
+            authServiceMock.Setup(a => a.GetUserByLoginAsync(updateRequest.CurrentLogin)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, true)).ReturnsAsync(identityErrors.Errors.ToList());
+            // Act
+            var result = await userController.AdminUpdate(updateRequest, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            var badRequestResult = result as BadRequestObjectResult;
+            var responseError = badRequestResult.Value as ResponseError;
+            Assert.That(responseError.Messages[0], Is.EqualTo("Update failed"));
+        }
+        [Test]
+        public async Task AdminDelete_ValidUser_ReturnsOk()
+        {
+            // Arrange
+            var login = "adminuser";
+            var user = new User { UserName = login, Email = "adminuser@example.com" };
+            var deleteResult = IdentityResult.Success;
+            authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.DeleteUserAsync(user)).ReturnsAsync(deleteResult);
+            // Act
+            var result = await userController.AdminDelete(login);
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+        [Test]
+        public async Task AdminDelete_FailedDeletion_ReturnsBadRequestWithErrors()
+        {
+            // Arrange
+            var login = "adminuser";
+            var user = new User { UserName = login, Email = "adminuser@example.com" };
+            var identityErrors = IdentityResult.Failed(new IdentityError { Description = "Delete failed" });
+
+            authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.DeleteUserAsync(user)).ReturnsAsync(identityErrors);
+            // Act
+            var result = await userController.AdminDelete(login);
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            var badRequestResult = result as BadRequestObjectResult;
+            var responseError = badRequestResult.Value as ResponseError;
+            Assert.That(responseError.Messages[0], Is.EqualTo("Delete failed"));
         }
     }
 }

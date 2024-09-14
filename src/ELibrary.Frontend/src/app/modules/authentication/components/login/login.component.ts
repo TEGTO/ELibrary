@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { SnackbarManager, UserAuthenticationRequest } from '../../../shared';
-import { AuthenticationDialogManager, AuthenticationService } from '../../index';
+import { Subject } from 'rxjs';
+import { UserAuthenticationRequest } from '../../../shared';
+import { AuthenticationCommand, AuthenticationCommandType, AuthenticationDialogManager, AuthenticationValidationMessage } from '../../index';
 
 @Component({
   selector: 'auth-login',
@@ -11,25 +11,31 @@ import { AuthenticationDialogManager, AuthenticationService } from '../../index'
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnDestroy {
-  formGroup: FormGroup = new FormGroup(
-    {
-      login: new FormControl('', [Validators.required, Validators.maxLength(256)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(256)]),
-    });
+export class LoginComponent implements OnInit, OnDestroy {
+  formGroup!: FormGroup;
   hidePassword: boolean = true;
   private destroy$ = new Subject<void>();
 
   get loginInput() { return this.formGroup.get('login')!; }
   get passwordInput() { return this.formGroup.get('password')!; }
 
+  get validateLoginInput() { return this.validateInput.getEmailValidationMessage(this.loginInput); }
+  get validatePassword() { return this.validateInput.getPasswordValidationMessage(this.passwordInput); }
+
   constructor(
     private readonly authDialogManager: AuthenticationDialogManager,
-    private readonly authService: AuthenticationService,
+    private readonly authCommand: AuthenticationCommand,
     private readonly dialogRef: MatDialogRef<LoginComponent>,
-    private readonly snackbarManager: SnackbarManager
+    private readonly validateInput: AuthenticationValidationMessage
   ) { }
 
+  ngOnInit(): void {
+    this.formGroup = new FormGroup(
+      {
+        login: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(256)]),
+        password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(256)]),
+      });
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -41,27 +47,11 @@ export class LoginComponent implements OnDestroy {
   signInUser() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const userData: UserAuthenticationRequest = {
+      const req: UserAuthenticationRequest = {
         login: formValues.login,
         password: formValues.password,
       };
-      this.authService.singInUser(userData);
-      this.authService.getAuthData().pipe(
-        takeUntil(this.destroy$),
-        tap(authData => {
-          if (authData.isAuthenticated) {
-            this.dialogRef.close();
-          }
-        }),
-        filter(authData => !authData.isAuthenticated),
-        switchMap(() => this.authService.getAuthErrors()),
-        takeUntil(this.destroy$),
-        tap(errors => {
-          if (errors) {
-            this.snackbarManager.openErrorSnackbar(errors.split("\n"));
-          }
-        })
-      ).subscribe();
+      this.authCommand.dispatchCommand(AuthenticationCommandType.SignIn, this, req, this.dialogRef);
     }
   }
 }

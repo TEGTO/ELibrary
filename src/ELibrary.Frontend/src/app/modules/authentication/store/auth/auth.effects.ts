@@ -1,32 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
-import { AuthData, AuthenticationApiService, getAuthDataFromAuthToken, getUserFromAuthResponse, LocalStorageService, UserData } from "../../../shared";
+import { deleteUser, deleteUserFailure, deleteUserSuccess, getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
+import { AuthData, AuthenticationApiService, copyAuthTokenToAuthData, getAuthDataFromAuthResponse, getUserFromAuthResponse, LocalStorageService, UserData } from "../../../shared";
 
-//Registration
 @Injectable()
-export class RegistrationEffects {
-    constructor(
-        private readonly actions$: Actions,
-        private readonly apiService: AuthenticationApiService
-    ) { }
-
-    registerUser$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(registerUser),
-            mergeMap((action) =>
-                this.apiService.registerUser(action.registrationRequest).pipe(
-                    map(() => registerSuccess()),
-                    catchError(error => of(registerFailure({ error: error.message })))
-                )
-            )
-        )
-    );
-}
-//Auth
-@Injectable()
-export class SignInEffects {
+export class AuthEffects {
     readonly storageAuthDataKey: string = "authData";
     readonly storageUserDataKey: string = "userData";
 
@@ -36,13 +15,30 @@ export class SignInEffects {
         private readonly localStorage: LocalStorageService
     ) { }
 
+    registerUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(registerUser),
+            mergeMap((action) =>
+                this.apiService.registerUser(action.registrationRequest).pipe(
+                    map((response) => {
+                        let authData: AuthData = getAuthDataFromAuthResponse(response);
+                        let userData: UserData = getUserFromAuthResponse(response);
+                        this.localStorage.setItem(this.storageAuthDataKey, JSON.stringify(authData));
+                        this.localStorage.setItem(this.storageUserDataKey, JSON.stringify(userData));
+                        return registerSuccess({ authData: authData, userData: userData });
+                    }),
+                    catchError(error => of(registerFailure({ error: error.message })))
+                )
+            )
+        )
+    );
     singInUser$ = createEffect(() =>
         this.actions$.pipe(
             ofType(signInUser),
             mergeMap((action) =>
                 this.apiService.loginUser(action.authRequest).pipe(
                     map((response) => {
-                        let authData: AuthData = getAuthDataFromAuthToken(response.authToken);
+                        let authData: AuthData = getAuthDataFromAuthResponse(response);
                         let userData: UserData = getUserFromAuthResponse(response);
                         this.localStorage.setItem(this.storageAuthDataKey, JSON.stringify(authData));
                         this.localStorage.setItem(this.storageUserDataKey, JSON.stringify(userData));
@@ -86,13 +82,45 @@ export class SignInEffects {
             mergeMap((action) =>
                 this.apiService.refreshToken(action.authToken).pipe(
                     map((response) => {
-                        let authData: AuthData = getAuthDataFromAuthToken(response);
+                        const jsonAuthData = this.localStorage.getItem(this.storageAuthDataKey);
+                        let authData: AuthData = JSON.parse(jsonAuthData!);
+                        authData = copyAuthTokenToAuthData(authData, response);
                         this.localStorage.setItem(this.storageAuthDataKey, JSON.stringify(authData));
-                        return refreshAccessTokenSuccess({ authData: response });
+                        return refreshAccessTokenSuccess({ authToken: response });
                     }),
                     catchError(error => {
                         this.localStorage.removeItem(this.storageAuthDataKey);
                         return of(refreshAccessTokenFailure({ error: error.message }));
+                    })
+                )
+            )
+        )
+    );
+    updateUserData$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(updateUserData),
+            mergeMap((action) =>
+                this.apiService.updateUser(action.updateRequest).pipe(
+                    map(() => {
+                        return updateUserDataSuccess({ updateRequest: action.updateRequest });
+                    }),
+                    catchError(error => {
+                        return of(updateUserDataFailure({ error: error.message }));
+                    })
+                )
+            )
+        )
+    );
+    deleteUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(deleteUser),
+            mergeMap((action) =>
+                this.apiService.deleteUser().pipe(
+                    map(() => {
+                        return deleteUserSuccess();
+                    }),
+                    catchError(error => {
+                        return of(deleteUserFailure({ error: error.message }));
                     })
                 )
             )

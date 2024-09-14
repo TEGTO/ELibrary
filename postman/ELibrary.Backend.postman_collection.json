@@ -250,67 +250,6 @@
 					"response": []
 				},
 				{
-					"name": "user-delete",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7130/user/delete",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7130",
-							"path": [
-								"user",
-								"delete"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "user-admin-register",
 					"event": [
 						{
