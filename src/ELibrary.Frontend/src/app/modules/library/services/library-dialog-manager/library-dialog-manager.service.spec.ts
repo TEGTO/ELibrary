@@ -41,7 +41,7 @@ describe('LibraryDialogManagerService', () => {
   it('should open book details menu dialog', () => {
     const book: BookResponse = {
       id: 1,
-      title: 'Book Title',
+      name: 'Book Title',
       publicationDate: new Date(),
       author: { id: 1, name: 'Author Name', lastName: 'Author LastName', dateOfBirth: new Date() },
       genre: { id: 1, name: 'Genre Name' }

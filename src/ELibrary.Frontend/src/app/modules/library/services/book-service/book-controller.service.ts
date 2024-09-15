@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { bookActions, selectBookAmount, selectBooks } from '../..';
-import { BookApiService, BookResponse, CreateBookRequest, PaginatedRequest, UpdateBookRequest } from '../../../shared';
+import { BookApiService, BookFilterRequest, BookResponse, CreateBookRequest, UpdateBookRequest } from '../../../shared';
 import { BookService } from './book-service';
 
 @Injectable({
@@ -15,24 +15,24 @@ export class BookControllerService implements BookService {
     private readonly store: Store,
   ) { }
 
-  getBookById(id: number): Observable<BookResponse> {
+  getById(id: number): Observable<BookResponse> {
     return this.apiService.getById(id);
   }
-  getBooksPaginated(request: PaginatedRequest): Observable<BookResponse[]> {
-    this.store.dispatch(bookActions.getPaginated({ request }));
+  getPaginated(request: BookFilterRequest): Observable<BookResponse[]> {
+    this.store.dispatch(bookActions.getPaginated({ request: request }));
     return this.store.select(selectBooks);
   }
-  getItemTotalAmount(): Observable<number> {
-    this.store.dispatch(bookActions.getTotalAmount());
+  getItemTotalAmount(request: BookFilterRequest): Observable<number> {
+    this.store.dispatch(bookActions.getTotalAmount({ request: request }));
     return this.store.select(selectBookAmount);
   }
-  createBook(request: CreateBookRequest): void {
+  create(request: CreateBookRequest): void {
     this.store.dispatch(bookActions.create({ request: request }));
   }
-  updateBook(request: UpdateBookRequest): void {
+  update(request: UpdateBookRequest): void {
     this.store.dispatch(bookActions.update({ request: request }));
   }
-  deleteBookById(id: number): void {
+  deleteById(id: number): void {
     this.store.dispatch(bookActions.deleteById({ id: id }));
   }
 }

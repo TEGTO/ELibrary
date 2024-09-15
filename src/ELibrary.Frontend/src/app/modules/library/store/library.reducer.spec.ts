@@ -14,7 +14,7 @@ describe('Library Reducer', () => {
     };
 
     it('should handle getPaginatedSuccess for books', () => {
-        const books: BookResponse[] = [{ id: 1, title: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }];
+        const books: BookResponse[] = [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }];
         const action = bookActions.getPaginatedSuccess({ entities: books });
         const newState = libraryReducer(initialState, action);
 
@@ -40,7 +40,7 @@ describe('Library Reducer', () => {
     });
 
     it('should handle createSuccess for books', () => {
-        const newBook: BookResponse = { id: 2, title: 'Book 2', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } };
+        const newBook: BookResponse = { id: 2, name: 'Book 2', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } };
         const action = bookActions.createSuccess({ entity: newBook });
         const newState = libraryReducer(initialState, action);
 
@@ -52,11 +52,11 @@ describe('Library Reducer', () => {
     it('should handle updateSuccess for books', () => {
         const initialStateWithBooks: LibraryState = {
             ...initialState,
-            books: [{ id: 1, title: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
+            books: [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
         };
         const updatedBook: BookResponse = {
             id: 1,
-            title: 'Updated Book 1',
+            name: 'Updated Book 1',
             publicationDate: new Date(),
             author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() },
             genre: { id: 1, name: 'Genre 1' }
@@ -64,14 +64,14 @@ describe('Library Reducer', () => {
         const action = bookActions.updateSuccess({ entity: updatedBook });
         const newState = libraryReducer(initialStateWithBooks, action);
 
-        expect(newState.books[0].title).toEqual(updatedBook.title);
+        expect(newState.books[0].name).toEqual(updatedBook.name);
         expect(newState.error).toBeNull();
     });
 
     it('should handle deleteByIdSuccess for books', () => {
         const initialStateWithBooks: LibraryState = {
             ...initialState,
-            books: [{ id: 1, title: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
+            books: [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
             totalBookAmount: 1
         };
         const action = bookActions.deleteByIdSuccess({ id: 1 });

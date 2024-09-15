@@ -24,7 +24,7 @@ describe('BookChangeDialogComponent', () => {
 
   const mockBook: BookResponse = {
     id: 1,
-    title: 'Mock Book',
+    name: 'Mock Book',
     publicationDate: new Date('2020-01-01'),
     author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1970-01-01') },
     genre: { id: 1, name: 'Fiction' }
@@ -74,8 +74,8 @@ describe('BookChangeDialogComponent', () => {
   });
 
   beforeEach(() => {
-    authorService.getAuthorsPaginated.and.returnValue(of(mockAuthors));
-    genreService.getGenresPaginated.and.returnValue(of(mockGenres));
+    authorService.getPaginated.and.returnValue(of(mockAuthors));
+    genreService.getPaginated.and.returnValue(of(mockGenres));
 
     fixture = TestBed.createComponent(BookChangeDialogComponent);
     component = fixture.componentInstance;
@@ -88,7 +88,7 @@ describe('BookChangeDialogComponent', () => {
 
   it('should initialize form with dialog data', () => {
     expect(component.formGroup).toBeDefined();
-    expect(component.titleInput.value).toBe(mockBook.title);
+    expect(component.titleInput.value).toBe(mockBook.name);
     expect(component.publicationDateInput.value).toEqual(mockBook.publicationDate);
     expect(component.authorInput.value).toBe(mockBook.author.id);
     expect(component.genreInput.value).toBe(mockBook.genre.id);
@@ -158,8 +158,8 @@ describe('BookChangeDialogComponent', () => {
   });
 
   it('should load authors and genres on initialization', () => {
-    expect(authorService.getAuthorsPaginated).toHaveBeenCalled();
-    expect(genreService.getGenresPaginated).toHaveBeenCalled();
+    expect(authorService.getPaginated).toHaveBeenCalled();
+    expect(genreService.getPaginated).toHaveBeenCalled();
   });
 
   it('should close the dialog when the close button is clicked', () => {

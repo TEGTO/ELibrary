@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
-import { GenreService, LibraryDialogManager } from '../../..';
-import { GenreResponse, genreToCreateRequest, genreToUpdateRequest, PaginatedRequest } from '../../../../shared';
+import { map, Observable, Subject } from 'rxjs';
+import { GenreService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../..';
+import { defaultLibraryFilterRequest, GenreResponse, LibraryFilterRequest } from '../../../../shared';
 
 @Component({
   selector: 'genre-table',
@@ -17,10 +17,13 @@ export class GenreTableComponent implements OnDestroy {
     { header: 'Name', field: 'name' },
   ];
 
-  constructor(private readonly dialogManager: LibraryDialogManager, private readonly libraryEntityService: GenreService) { }
+  constructor(
+    private readonly genreService: GenreService,
+    private readonly libraryCommand: LibraryCommand
+  ) { }
 
   ngOnInit(): void {
-    this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();
+    this.totalAmount$ = this.genreService.getItemTotalAmount(defaultLibraryFilterRequest());
     this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
@@ -31,47 +34,24 @@ export class GenreTableComponent implements OnDestroy {
 
   pageChange(item: any) {
     let pageParams = item as { pageIndex: number, pageSize: number };
-    let req: PaginatedRequest = {
+    let req: LibraryFilterRequest = {
+      ...defaultLibraryFilterRequest(),
       pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize
+      pageSize: pageParams.pageSize,
     }
-    this.items$ = this.libraryEntityService.getGenresPaginated(req).pipe(
+    this.items$ = this.genreService.getPaginated(req).pipe(
       map(items => items.slice(0, pageParams.pageSize))
     );
   }
   createNew() {
-    let entity: GenreResponse = {
-      id: 0,
-      name: "",
-    }
-    this.dialogManager.openGenreDetailsMenu(entity).afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(genre => {
-      if (genre) {
-        let req = genreToCreateRequest(genre);
-        this.libraryEntityService.createGenre(req);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Create, this);
   }
   update(item: any) {
     let entity = item as GenreResponse;
-    this.dialogManager.openGenreDetailsMenu(entity).afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(genre => {
-      if (genre) {
-        let req = genreToUpdateRequest(genre);
-        this.libraryEntityService.updateGenre(req);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Update, this, entity);
   }
   delete(item: any) {
     let entity = item as GenreResponse;
-    this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(result => {
-      if (result === true) {
-        this.libraryEntityService.deleteGenreById(entity.id);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Delete, this, entity);
   }
 }

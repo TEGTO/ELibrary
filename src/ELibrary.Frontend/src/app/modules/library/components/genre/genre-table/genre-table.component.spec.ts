@@ -30,7 +30,7 @@ describe('GenreTableComponent', () => {
     ]);
 
     mockGenreService.getItemTotalAmount.and.returnValue(of(mockAmount));
-    mockGenreService.getGenresPaginated.and.returnValue(of(mockItems));
+    mockGenreService.getPaginated.and.returnValue(of(mockItems));
 
     await TestBed.configureTestingModule({
       declarations: [GenreTableComponent, GenericTableComponent],
@@ -72,7 +72,7 @@ describe('GenreTableComponent', () => {
 
   it('should handle pageChange and update items$', () => {
     const mockItems = [{ id: 1, name: 'Fiction' }, { id: 2, name: 'Non-Fiction' }];
-    mockGenreService.getGenresPaginated.and.returnValue(of(mockItems));
+    mockGenreService.getPaginated.and.returnValue(of(mockItems));
 
     component.pageChange({ pageIndex: 1, pageSize: 10 });
     fixture.detectChanges();
@@ -93,7 +93,7 @@ describe('GenreTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openGenreDetailsMenu).toHaveBeenCalledWith(mockGenre);
-    expect(mockGenreService.createGenre).toHaveBeenCalled();
+    expect(mockGenreService.create).toHaveBeenCalled();
   });
 
   it('should open update dialog and call updateGenre on confirmation', () => {
@@ -107,7 +107,7 @@ describe('GenreTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openGenreDetailsMenu).toHaveBeenCalledWith(mockGenre);
-    expect(mockGenreService.updateGenre).toHaveBeenCalled();
+    expect(mockGenreService.update).toHaveBeenCalled();
   });
 
   it('should open confirmation dialog and call deleteGenreById on confirmation', () => {
@@ -121,7 +121,7 @@ describe('GenreTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
-    expect(mockGenreService.deleteGenreById).toHaveBeenCalledWith(mockGenre.id);
+    expect(mockGenreService.deleteById).toHaveBeenCalledWith(mockGenre.id);
   });
 
   it('should clean up subscriptions on destroy', () => {

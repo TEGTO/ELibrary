@@ -68,7 +68,7 @@ export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   initializeForm(): void {
     this.formGroup = new FormGroup({
-      title: new FormControl(this.book.title, [Validators.required, Validators.maxLength(256)]),
+      title: new FormControl(this.book.name, [Validators.required, Validators.maxLength(256)]),
       publicationDate: new FormControl(this.book.publicationDate, [Validators.required]),
       author: new FormControl(this.book.author.id, [Validators.required, Validators.min(1)]),
       genre: new FormControl(this.book.genre.id, [Validators.required, Validators.min(1)])
@@ -83,7 +83,7 @@ export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestr
 
       const updatedBook: BookResponse = {
         id: this.book.id,
-        title: formValues.title,
+        name: formValues.title,
         publicationDate: formValues.publicationDate,
         author: this.findItemById(this.authors, authorId, this.book.author),
         genre: this.findItemById(this.genres, genreId, this.book.genre),
@@ -100,7 +100,7 @@ export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestr
       pageSize: this.pageAmount
     };
 
-    this.authorService.getAuthorsPaginated(req).pipe(
+    this.authorService.getPaginated(req).pipe(
       takeUntil(this.destroy$)
     ).subscribe(authors => {
       this.authors = [...this.authors, ...this.getUniqueItems(authors, this.fetchedAuthorIds)];
@@ -114,7 +114,7 @@ export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestr
       pageSize: this.pageAmount
     };
 
-    this.genreService.getGenresPaginated(req).pipe(
+    this.genreService.getPaginated(req).pipe(
       takeUntil(this.destroy$)
     ).subscribe(genres => {
       this.genres = [...this.genres, ...this.getUniqueItems(genres, this.fetchedGenreIds)];

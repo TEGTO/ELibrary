@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LibraryApi.Domain.Dtos.Library.Publisher;
+using LibraryApi.Domain.Dto.Publisher;
 
 namespace LibraryApi.Validators.Publisher
 {

@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dtos.Library.Author;
-using LibraryApi.Domain.Dtos.Library.Book;
-using LibraryApi.Domain.Dtos.Library.CoverType;
-using LibraryApi.Domain.Dtos.Library.Genre;
-using LibraryApi.Domain.Dtos.Library.Publisher;
+using LibraryApi.Domain.Dto.Author;
+using LibraryApi.Domain.Dto.Book;
+using LibraryApi.Domain.Dto.Genre;
+using LibraryApi.Domain.Dto.Publisher;
 using LibraryShopEntities.Domain.Dtos.Library;
-using LibraryShopEntities.Domain.Dtos.Library.Publisher;
 using LibraryShopEntities.Domain.Entities.Library;
 
 namespace LibraryApi
@@ -29,10 +27,6 @@ namespace LibraryApi
             CreateMap<Publisher, PublisherResponse>();
             CreateMap<CreatePublisherRequest, Publisher>();
             CreateMap<UpdatePublisherRequest, Publisher>();
-
-            CreateMap<CoverType, CoverTypeResponse>();
-            CreateMap<CreateCoverTypeRequest, CoverType>();
-            CreateMap<UpdateCoverTypeRequest, CoverType>();
         }
     }
 }

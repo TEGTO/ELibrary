@@ -21,26 +21,26 @@ namespace LibraryApi.Services
 
             return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
-        public virtual async Task<IEnumerable<TEntity>> GetPaginatedAsync(LibraryPaginationRequest pagination, CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<TEntity>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             var list = new List<TEntity>();
             var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
 
             list.AddRange(await queryable
                                      .AsNoTracking()
-                                     .Where(x => x.Name.Contains(pagination.ContainsName))
+                                     .Where(x => x.Name.Contains(req.ContainsName))
                                      .OrderByDescending(b => b.Id)
-                                     .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-                                     .Take(pagination.PageSize)
+                                     .Skip((req.PageNumber - 1) * req.PageSize)
+                                     .Take(req.PageSize)
                                      .ToListAsync(cancellationToken));
 
             return list;
         }
-        public virtual async Task<int> GetItemTotalAmountAsync(CancellationToken cancellationToken)
+        public virtual async Task<int> GetItemTotalAmountAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
 
-            return await queryable.AsNoTracking().CountAsync(cancellationToken);
+            return await queryable.AsNoTracking().Where(x => x.Name.Contains(req.ContainsName)).CountAsync(cancellationToken);
         }
         public virtual async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
         {

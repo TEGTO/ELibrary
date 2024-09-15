@@ -1,7 +1,7 @@
 import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
-import { AuthorService, LibraryDialogManager, TableColumn } from '../../..';
-import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, LocalizedDatePipe, PaginatedRequest } from '../../../../shared';
+import { map, Observable, Subject } from 'rxjs';
+import { AuthorService, LibraryCommand, LibraryCommandObject, LibraryCommandType, TableColumn } from '../../..';
+import { AuthorResponse, defaultLibraryFilterRequest, LibraryFilterRequest, LocalizedDatePipe } from '../../../../shared';
 
 @Component({
   selector: 'author-table',
@@ -21,12 +21,12 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(LOCALE_ID) private locale: string,
-    private readonly dialogManager: LibraryDialogManager,
-    private readonly libraryEntityService: AuthorService,
+    private readonly authorService: AuthorService,
+    private readonly libraryCommand: LibraryCommand
   ) { }
 
   ngOnInit(): void {
-    this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();
+    this.totalAmount$ = this.authorService.getItemTotalAmount(defaultLibraryFilterRequest());
     this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
@@ -37,49 +37,24 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
 
   pageChange(item: any) {
     let pageParams = item as { pageIndex: number, pageSize: number };
-    let req: PaginatedRequest = {
+    let req: LibraryFilterRequest = {
+      ...defaultLibraryFilterRequest(),
       pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize
+      pageSize: pageParams.pageSize,
     }
-    this.items$ = this.libraryEntityService.getAuthorsPaginated(req).pipe(
+    this.items$ = this.authorService.getPaginated(req).pipe(
       map(items => items.slice(0, pageParams.pageSize))
     );
   }
   createNew() {
-    let entity: AuthorResponse = {
-      id: 0,
-      name: "",
-      lastName: "",
-      dateOfBirth: new Date()
-    }
-    this.dialogManager.openAuthorDetailsMenu(entity).afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(author => {
-      if (author) {
-        let req = authorToCreateRequest(author);
-        this.libraryEntityService.createAuthor(req);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Create, this);
   }
   update(item: any) {
     let entity = item as AuthorResponse;
-    this.dialogManager.openAuthorDetailsMenu(entity).afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(author => {
-      if (author) {
-        let req = authorToUpdateRequest(author);
-        this.libraryEntityService.updateAuthor(req);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Update, this, entity);
   }
   delete(item: any) {
     let entity = item as AuthorResponse;
-    this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(result => {
-      if (result === true) {
-        this.libraryEntityService.deleteAuthorById(entity.id);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Delete, this, entity);
   }
 }

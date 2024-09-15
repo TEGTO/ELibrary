@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dtos;
-using LibraryApi.Domain.Dtos.Library.Book;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
@@ -64,7 +64,7 @@ namespace LibraryApi.Controllers.Tests
                 new Book { Id = 1, Name = "Dune" },
                 new Book { Id = 2, Name = "1984" }
             };
-            var request = new BookPaginationRequest { PageNumber = 1, PageSize = 2 };
+            var request = new BookFilterRequest { PageNumber = 1, PageSize = 2 };
             var responses = books.Select(b => new BookResponse { Id = b.Id, Name = b.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(books);
@@ -82,10 +82,10 @@ namespace LibraryApi.Controllers.Tests
         public async Task GetItemTotalAmount_ReturnsAmount()
         {
             // Arrange
-            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<LibraryFilterRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(10);
             // Act
-            var result = await controller.GetItemTotalAmount(CancellationToken.None);
+            var result = await controller.GetItemTotalAmount(new BookFilterRequest() { ContainsName = "" }, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;

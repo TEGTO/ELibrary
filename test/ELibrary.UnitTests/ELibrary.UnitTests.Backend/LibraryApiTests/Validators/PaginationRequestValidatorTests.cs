@@ -18,7 +18,7 @@ namespace LibraryApi.Validators.Tests
         public void PaginatedRequestValidator_ValidData_PassesValidation()
         {
             // Arrange
-            var request = new LibraryPaginationRequest { PageNumber = 1, PageSize = 10 };
+            var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 10 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldNotHaveAnyValidationErrors();
@@ -27,7 +27,7 @@ namespace LibraryApi.Validators.Tests
         public void PaginatedRequestValidator_InvalidPageNumber_FailsValidation()
         {
             // Arrange
-            var request = new LibraryPaginationRequest { PageNumber = 0, PageSize = 10 };
+            var request = new LibraryFilterRequest { PageNumber = 0, PageSize = 10 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.PageNumber);
@@ -36,7 +36,7 @@ namespace LibraryApi.Validators.Tests
         public void PaginatedRequestValidator_InvalidPageSize_FailsValidation()
         {
             // Arrange
-            var request = new LibraryPaginationRequest { PageNumber = 1, PageSize = 0 };
+            var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 0 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.PageSize);
@@ -45,7 +45,7 @@ namespace LibraryApi.Validators.Tests
         public void PaginatedRequestValidator_InvalidPageNumberAndPageSize_FailsValidation()
         {
             // Arrange
-            var request = new LibraryPaginationRequest { PageNumber = 0, PageSize = 0 };
+            var request = new LibraryFilterRequest { PageNumber = 0, PageSize = 0 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.PageNumber);

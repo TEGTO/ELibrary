@@ -49,7 +49,7 @@ describe('AuthorControllerService', () => {
     const expectedAuthor: AuthorResponse = { id: authorId, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') };
     apiService.getById.and.returnValue(of(expectedAuthor));
 
-    service.getAuthorById(authorId).subscribe(result => {
+    service.getById(authorId).subscribe(result => {
       expect(apiService.getById).toHaveBeenCalledWith(authorId);
       expect(result).toEqual(expectedAuthor);
       done();
@@ -60,7 +60,7 @@ describe('AuthorControllerService', () => {
     const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
     store.select.and.returnValue(of(mockAuthorData));
 
-    service.getAuthorsPaginated(request).subscribe(result => {
+    service.getPaginated(request).subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(authorActions.getPaginated({ request: request }));
       expect(result).toEqual(mockAuthorData);
       done();
@@ -80,7 +80,7 @@ describe('AuthorControllerService', () => {
   it('should dispatch create action for a new author', () => {
     const newAuthor: CreateAuthorRequest = { name: 'Alice', lastName: 'Johnson', dateOfBirth: new Date('1995-03-03') };
 
-    service.createAuthor(newAuthor);
+    service.create(newAuthor);
 
     expect(store.dispatch).toHaveBeenCalledWith(authorActions.create({ request: newAuthor }));
   });
@@ -88,7 +88,7 @@ describe('AuthorControllerService', () => {
   it('should dispatch update action for an existing author', () => {
     const updatedAuthor: UpdateAuthorRequest = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') };
 
-    service.updateAuthor(updatedAuthor);
+    service.update(updatedAuthor);
 
     expect(store.dispatch).toHaveBeenCalledWith(authorActions.update({ request: updatedAuthor }));
   });
@@ -96,7 +96,7 @@ describe('AuthorControllerService', () => {
   it('should dispatch deleteById action for an author by ID', () => {
     const authorId = 1;
 
-    service.deleteAuthorById(authorId);
+    service.deleteById(authorId);
 
     expect(store.dispatch).toHaveBeenCalledWith(authorActions.deleteById({ id: authorId }));
   });

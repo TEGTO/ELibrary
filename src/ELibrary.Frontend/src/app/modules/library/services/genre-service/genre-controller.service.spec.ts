@@ -50,7 +50,7 @@ describe('GenreControllerService', () => {
     const expectedGenre: GenreResponse = { id: genreId, name: 'Action' };
     apiService.getById.and.returnValue(of(expectedGenre));
 
-    service.getGenreById(genreId).subscribe(result => {
+    service.getById(genreId).subscribe(result => {
       expect(apiService.getById).toHaveBeenCalledWith(genreId);
       expect(result).toEqual(expectedGenre);
       done();
@@ -61,7 +61,7 @@ describe('GenreControllerService', () => {
     const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
     store.select.and.returnValue(of(mockGenreData));
 
-    service.getGenresPaginated(request).subscribe(result => {
+    service.getPaginated(request).subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(genreActions.getPaginated({ request }));
       expect(result).toEqual(mockGenreData);
       done();
@@ -81,7 +81,7 @@ describe('GenreControllerService', () => {
   it('should dispatch create action for a new genre', () => {
     const newGenre: CreateGenreRequest = { name: 'Drama' };
 
-    service.createGenre(newGenre);
+    service.create(newGenre);
 
     expect(store.dispatch).toHaveBeenCalledWith(genreActions.create({ request: newGenre }));
   });
@@ -89,7 +89,7 @@ describe('GenreControllerService', () => {
   it('should dispatch update action for an existing genre', () => {
     const updatedGenre: UpdateGenreRequest = { id: 1, name: 'Adventure' };
 
-    service.updateGenre(updatedGenre);
+    service.update(updatedGenre);
 
     expect(store.dispatch).toHaveBeenCalledWith(genreActions.update({ request: updatedGenre }));
   });
@@ -97,7 +97,7 @@ describe('GenreControllerService', () => {
   it('should dispatch deleteById action for a genre by ID', () => {
     const genreId = 1;
 
-    service.deleteGenreById(genreId);
+    service.deleteById(genreId);
 
     expect(store.dispatch).toHaveBeenCalledWith(genreActions.deleteById({ id: genreId }));
   });

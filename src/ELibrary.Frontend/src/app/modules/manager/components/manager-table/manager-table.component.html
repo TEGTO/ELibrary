@@ -1,0 +1,30 @@
+<nav class="w-full">
+    <div class="wrapper bg-zinc-50/60 max-w-screen-lg flex-row items-center justify-between gap-3 mx-auto p-4">
+        <div class="wrapper__header">
+            <a routerLink="books" routerLinkActive="selected"
+                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border rounded shadow">
+                Books
+            </a>
+            <a routerLink="authors" routerLinkActive="selected"
+                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border rounded shadow">
+                Authors
+            </a>
+            <a routerLink="genres" routerLinkActive="selected"
+                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border rounded shadow">
+                Genres
+            </a>
+            <a routerLink="publishers" routerLinkActive="selected"
+                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border rounded shadow">
+                Publishers
+            </a>
+            <a routerLink="publishers" routerLinkActive="selected"
+                class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border rounded shadow">
+                Orders
+            </a>
+        </div>
+
+        <div class="wrapper__body w-full">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</nav>

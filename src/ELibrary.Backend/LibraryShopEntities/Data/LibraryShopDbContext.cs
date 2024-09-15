@@ -10,7 +10,6 @@ namespace LibraryShopEntities.Data
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Publisher> Publishers { get; set; }
-        public virtual DbSet<CoverType> CoverTypes { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
 

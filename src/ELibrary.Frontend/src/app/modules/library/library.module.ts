@@ -9,26 +9,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterModule, Routes } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorService, AuthorTableComponent, BookControllerService, BookEffects, BookService, BookTableComponent, ConfirmMenuComponent, GenericTableComponent, GenreControllerService, GenreEffects, GenreService, GenreTableComponent, LibraryDialogManager, LibraryDialogManagerService, libraryReducer, LibraryTablesComponent } from '.';
-import { BookChangeDialogComponent } from './components/book/book-change-dialog/book-change-dialog.component';
-import { GenreChangeDialogComponent } from './components/genre/genre-change-dialog/genre-change-dialog.component';
+import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, authorReducer, AuthorService, AuthorTableComponent, BookChangeDialogComponent, BookControllerService, BookEffects, bookReducer, BookService, BookTableComponent, ConfirmMenuComponent, GenericTableComponent, GenreChangeDialogComponent, GenreControllerService, GenreEffects, genreReducer, GenreService, GenreTableComponent, LibraryCommand, LibraryCommandService, LibraryDialogManager, LibraryDialogManagerService, LibraryTablesComponent, PublisherControllerService, PublisherEffects, publisherReducer, PublisherService } from '.';
 
-const routes: Routes = [
-  {
-    path: "", component: LibraryTablesComponent,
-    children: [
-      {
-        path: "", redirectTo: "books", pathMatch: "full"
-      },
-      { path: "books", component: BookTableComponent },
-      { path: "genres", component: GenreTableComponent },
-      { path: "authors", component: AuthorTableComponent }
-    ]
-  }
-];
 @NgModule({
   declarations: [
     LibraryTablesComponent,
@@ -42,7 +26,6 @@ const routes: Routes = [
     BookChangeDialogComponent,
   ],
   imports: [
-    RouterModule.forChild(routes),
     MatDialogModule,
     MatInputModule,
     FormsModule,
@@ -55,14 +38,19 @@ const routes: Routes = [
     MatButtonModule,
     MatPaginatorModule,
     MatDatepickerModule,
-    StoreModule.forFeature('library', libraryReducer),
-    EffectsModule.forFeature([AuthorEffects, BookEffects, GenreEffects]),
+    StoreModule.forFeature('author', authorReducer),
+    StoreModule.forFeature('genre', genreReducer),
+    StoreModule.forFeature('publisher', publisherReducer),
+    StoreModule.forFeature('book', bookReducer),
+    EffectsModule.forFeature([AuthorEffects, GenreEffects, PublisherEffects, BookEffects]),
   ],
   providers: [
     { provide: LibraryDialogManager, useClass: LibraryDialogManagerService },
     { provide: BookService, useClass: BookControllerService },
     { provide: AuthorService, useClass: AuthorControllerService },
     { provide: GenreService, useClass: GenreControllerService },
+    { provide: PublisherService, useClass: PublisherControllerService },
+    { provide: LibraryCommand, useClass: LibraryCommandService },
   ],
   exports: [LibraryTablesComponent]
 })

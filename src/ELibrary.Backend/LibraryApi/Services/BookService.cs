@@ -20,80 +20,37 @@ namespace LibraryApi.Services
                     .Include(b => b.Author)
                     .Include(b => b.Genre)
                     .Include(b => b.Publisher)
-                    .Include(b => b.CoverType)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
-        public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryPaginationRequest paginationParams, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
             List<Book> paginatedBooks = new List<Book>();
 
-            if (paginationParams is BookPaginationRequest bookPaginationParams)
-            {
-                var query = queryable
-                    .Include(b => b.Author)
-                    .Include(b => b.Genre)
-                    .Include(b => b.Publisher)
-                    .Include(b => b.CoverType)
-                    .AsNoTracking();
+            var query = queryable
+                 .Include(b => b.Author)
+                 .Include(b => b.Genre)
+                 .Include(b => b.Publisher)
+                 .AsNoTracking();
 
-                if (bookPaginationParams.OnlyInStock)
-                {
-                    query = query.Where(b => b.StockAmount > 0);
-                }
-                if (!string.IsNullOrEmpty(bookPaginationParams.ContainsName))
-                {
-                    query = query.Where(b => b.Name.Contains(bookPaginationParams.ContainsName));
-                }
-                if (bookPaginationParams.AuthorId.HasValue)
-                {
-                    query = query.Where(b => b.AuthorId == bookPaginationParams.AuthorId.Value);
-                }
-                if (bookPaginationParams.GenreId.HasValue)
-                {
-                    query = query.Where(b => b.GenreId == bookPaginationParams.GenreId.Value);
-                }
-                if (bookPaginationParams.PublisherId.HasValue)
-                {
-                    query = query.Where(b => b.PublisherId == bookPaginationParams.PublisherId.Value);
-                }
-                if (bookPaginationParams.CoverTypeId.HasValue)
-                {
-                    query = query.Where(b => b.CoverTypeId == bookPaginationParams.CoverTypeId.Value);
-                }
+            query = ApplyFilter(query, req);
 
-                query = query.Where(b => b.PublicationDate >= bookPaginationParams.PublicationFromUTC
-                                         && b.PublicationDate <= bookPaginationParams.PublicationToUTC);
-
-                query = query.Where(b => b.Price >= bookPaginationParams.MinPrice
-                                         && b.Price <= bookPaginationParams.MaxPrice);
-
-                query = query.Where(b => b.PageAmount >= bookPaginationParams.MinPageAmount
-                                         && b.PageAmount <= bookPaginationParams.MaxPageAmount);
-
-                paginatedBooks.AddRange(await query
-                    .OrderByDescending(b => b.Id)
-                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                    .Take(paginationParams.PageSize)
-                    .ToListAsync(cancellationToken));
-            }
-            else
-            {
-                paginatedBooks.AddRange(await queryable
-                                          .Include(b => b.Author)
-                                          .Include(b => b.Genre)
-                                          .Include(b => b.Publisher)
-                                          .Include(b => b.CoverType)
-                                          .Where(b => b.Name.Contains(paginationParams.ContainsName))
-                                          .OrderByDescending(b => b.Id)
-                                          .AsNoTracking()
-                                          .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                                          .Take(paginationParams.PageSize)
-                                          .ToListAsync(cancellationToken));
-            }
+            paginatedBooks.AddRange(await query
+                  .OrderByDescending(b => b.Id)
+                  .Skip((req.PageNumber - 1) * req.PageSize)
+                  .Take(req.PageSize)
+                  .ToListAsync(cancellationToken));
 
             return paginatedBooks;
+        }
+        public override async Task<int> GetItemTotalAmountAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
+        {
+            var query = (await repository.GetQueryableAsync<Book>(cancellationToken)).AsNoTracking();
+
+            query = ApplyFilter(query, req);
+
+            return await query.CountAsync(cancellationToken);
         }
         public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
         {
@@ -105,7 +62,6 @@ namespace LibraryApi.Services
                                        .Include(b => b.Author)
                                        .Include(b => b.Genre)
                                        .Include(b => b.Publisher)
-                                       .Include(b => b.CoverType)
                                        .FirstAsync(b => b.Id == book.Id, cancellationToken);
             return entityInDb;
         }
@@ -123,9 +79,54 @@ namespace LibraryApi.Services
                                          .Include(b => b.Author)
                                          .Include(b => b.Genre)
                                          .Include(b => b.Publisher)
-                                         .Include(b => b.CoverType)
                                          .FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
             return entityInDb;
+        }
+
+        private IQueryable<Book> ApplyFilter(IQueryable<Book> query, LibraryFilterRequest req)
+        {
+            if (req is BookFilterRequest bookFilter)
+            {
+                if (bookFilter.OnlyInStock)
+                {
+                    query = query.Where(b => b.StockAmount > 0);
+                }
+                if (!string.IsNullOrEmpty(bookFilter.ContainsName))
+                {
+                    query = query.Where(b => b.Name.Contains(bookFilter.ContainsName));
+                }
+                if (bookFilter.AuthorId.HasValue)
+                {
+                    query = query.Where(b => b.AuthorId == bookFilter.AuthorId.Value);
+                }
+                if (bookFilter.GenreId.HasValue)
+                {
+                    query = query.Where(b => b.GenreId == bookFilter.GenreId.Value);
+                }
+                if (bookFilter.PublisherId.HasValue)
+                {
+                    query = query.Where(b => b.PublisherId == bookFilter.PublisherId.Value);
+                }
+                if (bookFilter.CoverType != CoverType.Any)
+                {
+                    query = query.Where(b => b.CoverType == bookFilter.CoverType);
+                }
+
+                query = query.Where(b => b.PublicationDate >= bookFilter.PublicationFromUTC
+                                         && b.PublicationDate <= bookFilter.PublicationToUTC);
+
+                query = query.Where(b => b.Price >= bookFilter.MinPrice
+                                         && b.Price <= bookFilter.MaxPrice);
+
+                query = query.Where(b => b.PageAmount >= bookFilter.MinPageAmount
+                                         && b.PageAmount <= bookFilter.MaxPageAmount);
+
+                return query;
+            }
+            else
+            {
+                return query.Where(b => b.Name.Contains(req.ContainsName));
+            }
         }
     }
 }

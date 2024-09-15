@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Library;
-using LibraryShopEntities.Domain.Dtos.Library.Publisher;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
@@ -17,7 +16,6 @@ namespace ShopApi
             CreateMap<Author, AuthorResponse>();
             CreateMap<Genre, GenreResponse>();
             CreateMap<Publisher, PublisherResponse>();
-            CreateMap<CoverType, CoverTypeResponse>();
 
             CreateMap<CreateClientRequest, Client>();
             CreateMap<UpdateClientRequest, Client>();

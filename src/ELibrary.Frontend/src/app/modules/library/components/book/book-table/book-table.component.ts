@@ -1,7 +1,7 @@
 import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
-import { BookService, LibraryDialogManager } from '../../..';
-import { BookResponse, bookToCreateRequest, bookToUpdateRequest, LocalizedDatePipe, PaginatedRequest } from '../../../../shared';
+import { map, Observable, Subject } from 'rxjs';
+import { BookService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../..';
+import { BookFilterRequest, BookResponse, defaultBookFilterRequest, LocalizedDatePipe } from '../../../../shared';
 
 @Component({
   selector: 'book-table',
@@ -28,11 +28,12 @@ export class BookTableComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(LOCALE_ID) private locale: string,
-    private readonly dialogManager: LibraryDialogManager,
-    private readonly libraryEntityService: BookService) { }
+    private readonly bookService: BookService,
+    private readonly libraryCommand: LibraryCommand
+  ) { }
 
   ngOnInit(): void {
-    this.totalAmount$ = this.libraryEntityService.getItemTotalAmount();
+    this.totalAmount$ = this.bookService.getItemTotalAmount(defaultBookFilterRequest());
     this.pageChange({ pageIndex: 1, pageSize: 10 });
   }
 
@@ -43,14 +44,15 @@ export class BookTableComponent implements OnInit, OnDestroy {
 
   pageChange(item: any) {
     let pageParams = item as { pageIndex: number, pageSize: number };
-    let req: PaginatedRequest = {
+    let req: BookFilterRequest = {
+      ...defaultBookFilterRequest(),
       pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize
+      pageSize: pageParams.pageSize,
     }
-    this.items$ = this.libraryEntityService.getBooksPaginated(req).pipe(
+    this.items$ = this.bookService.getPaginated(req).pipe(
       map(books => books.slice(0, pageParams.pageSize).map(x => ({
         id: x.id,
-        title: x.title,
+        title: x.name,
         publicationDate: x.publicationDate,
         author: `${x.author.name} ${x.author.lastName}`,
         genre: x.genre.name
@@ -58,49 +60,14 @@ export class BookTableComponent implements OnInit, OnDestroy {
     );
   }
   createNew() {
-    let entity: BookResponse = {
-      id: 0,
-      title: "",
-      publicationDate: new Date(),
-      author: {
-        id: 0,
-        name: "",
-        lastName: "",
-        dateOfBirth: new Date(),
-      },
-      genre: {
-        id: 0,
-        name: ""
-      }
-    }
-    this.dialogManager.openBookDetailsMenu(entity).afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(book => {
-      if (book) {
-        let req = bookToCreateRequest(book);
-        this.libraryEntityService.createBook(req);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Create, this);
   }
   update(item: any) {
     let entity = item as BookResponse;
-    this.dialogManager.openBookDetailsMenu(entity).afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(book => {
-      if (book) {
-        let req = bookToUpdateRequest(book);
-        this.libraryEntityService.updateBook(req);
-      }
-    });
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Update, this, entity);
   }
   delete(item: any) {
-    let book = item as BookResponse;
-    this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(result => {
-      if (result === true) {
-        this.libraryEntityService.deleteBookById(book.id);
-      }
-    });
+    let entity = item as BookResponse;
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Delete, this, entity);
   }
 }

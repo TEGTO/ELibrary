@@ -11,8 +11,8 @@ describe('BookControllerService', () => {
   let apiService: jasmine.SpyObj<BookApiService>;
 
   const mockBookData: BookResponse[] = [
-    { id: 1, title: 'Book One', publicationDate: new Date('2022-01-01'), author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') }, genre: { id: 1, name: 'Action' } },
-    { id: 2, title: 'Book Two', publicationDate: new Date('2022-02-02'), author: { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-02-02') }, genre: { id: 2, name: 'Comedy' } }
+    { id: 1, name: 'Book One', publicationDate: new Date('2022-01-01'), author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') }, genre: { id: 1, name: 'Action' } },
+    { id: 2, name: 'Book Two', publicationDate: new Date('2022-02-02'), author: { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-02-02') }, genre: { id: 2, name: 'Comedy' } }
   ];
 
   const mockTotalAmount: number = 15;
@@ -49,7 +49,7 @@ describe('BookControllerService', () => {
     const expectedBook: BookResponse = mockBookData[0];
     apiService.getById.and.returnValue(of(expectedBook));
 
-    service.getBookById(bookId).subscribe(result => {
+    service.getById(bookId).subscribe(result => {
       expect(apiService.getById).toHaveBeenCalledWith(bookId);
       expect(result).toEqual(expectedBook);
       done();
@@ -60,7 +60,7 @@ describe('BookControllerService', () => {
     const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
     store.select.and.returnValue(of(mockBookData));
 
-    service.getBooksPaginated(request).subscribe(result => {
+    service.getPaginated(request).subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(bookActions.getPaginated({ request }));
       expect(result).toEqual(mockBookData);
       done();
@@ -78,17 +78,17 @@ describe('BookControllerService', () => {
   });
 
   it('should dispatch create action for a new book', () => {
-    const newBook: CreateBookRequest = { title: 'New Book', publicationDate: new Date('2023-03-03'), authorId: 3, genreId: 3 };
+    const newBook: CreateBookRequest = { name: 'New Book', publicationDate: new Date('2023-03-03'), authorId: 3, genreId: 3 };
 
-    service.createBook(newBook);
+    service.create(newBook);
 
     expect(store.dispatch).toHaveBeenCalledWith(bookActions.create({ request: newBook }));
   });
 
   it('should dispatch update action for an existing book', () => {
-    const updatedBook: UpdateBookRequest = { id: 1, title: 'Updated Book', publicationDate: new Date('2023-03-03'), authorId: 3, genreId: 3 };
+    const updatedBook: UpdateBookRequest = { id: 1, name: 'Updated Book', publicationDate: new Date('2023-03-03'), authorId: 3, genreId: 3 };
 
-    service.updateBook(updatedBook);
+    service.update(updatedBook);
 
     expect(store.dispatch).toHaveBeenCalledWith(bookActions.update({ request: updatedBook }));
   });
@@ -96,7 +96,7 @@ describe('BookControllerService', () => {
   it('should dispatch deleteById action for a book by ID', () => {
     const bookId = 1;
 
-    service.deleteBookById(bookId);
+    service.deleteById(bookId);
 
     expect(store.dispatch).toHaveBeenCalledWith(bookActions.deleteById({ id: bookId }));
   });

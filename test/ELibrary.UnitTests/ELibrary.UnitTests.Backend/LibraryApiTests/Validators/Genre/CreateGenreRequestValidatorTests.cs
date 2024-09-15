@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryApi.Domain.Dtos.Library.Genre;
+using LibraryApi.Domain.Dto.Genre;
 
 namespace LibraryApi.Validators.Genre.Tests
 {

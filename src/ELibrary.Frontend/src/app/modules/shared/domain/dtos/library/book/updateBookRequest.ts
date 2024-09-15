@@ -2,7 +2,7 @@ import { BookResponse } from "../../../..";
 
 export interface UpdateBookRequest {
     id: number;
-    title: string;
+    name: string;
     publicationDate: Date;
     authorId: number;
     genreId: number;
@@ -10,7 +10,7 @@ export interface UpdateBookRequest {
 export function bookToUpdateRequest(book: BookResponse): UpdateBookRequest {
     return {
         id: book.id,
-        title: book.title,
+        name: book.name,
         publicationDate: book.publicationDate,
         authorId: book.author.id,
         genreId: book.genre.id,

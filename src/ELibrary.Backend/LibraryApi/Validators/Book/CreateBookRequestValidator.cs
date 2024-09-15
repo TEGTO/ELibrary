@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-using LibraryApi.Domain.Dtos.Library.Book;
+using LibraryApi.Domain.Dto.Book;
+using LibraryShopEntities.Domain.Entities.Library;
 
 namespace LibraryApi.Validators.Book
 {
@@ -12,10 +13,10 @@ namespace LibraryApi.Validators.Book
             RuleFor(x => x.Price).NotNull().GreaterThanOrEqualTo(0);
             RuleFor(x => x.PageAmount).NotNull().GreaterThan(0);
             RuleFor(x => x.StockAmount).NotNull().GreaterThanOrEqualTo(0);
+            RuleFor(x => x.CoverType).NotNull().NotEqual(CoverType.Any);
             RuleFor(x => x.AuthorId).NotNull().NotNull().GreaterThan(0);
             RuleFor(x => x.GenreId).NotNull().NotNull().GreaterThan(0);
             RuleFor(x => x.PublisherId).NotNull().GreaterThan(0);
-            RuleFor(x => x.CoverTypeId).NotNull().GreaterThan(0);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using LibraryShopEntities.Domain.Dtos.Library.Publisher;
+﻿using LibraryShopEntities.Domain.Entities.Library;
 
 namespace LibraryShopEntities.Domain.Dtos.Library
 {
@@ -8,11 +8,11 @@ namespace LibraryShopEntities.Domain.Dtos.Library
         public string Name { get; set; }
         public DateTime PublicationDate { get; set; }
         public decimal Price { get; set; }
+        public CoverType CoverType { get; set; }
         public int PageAmount { get; set; }
         public int StockAmount { get; set; }
         public AuthorResponse Author { get; set; }
         public GenreResponse Genre { get; set; }
         public PublisherResponse Publisher { get; set; }
-        public CoverTypeResponse CoverType { get; set; }
     }
 }

@@ -13,8 +13,8 @@ describe('BookTableComponent', () => {
   let mockBookService: jasmine.SpyObj<BookService>;
 
   const mockItems: BookResponse[] = [
-    { id: 1, title: 'Book One', publicationDate: new Date('2022-01-01'), author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() }, genre: { id: 1, name: 'Fiction' } },
-    { id: 2, title: 'Book Two', publicationDate: new Date('2023-01-01'), author: { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date() }, genre: { id: 2, name: 'Non-Fiction' } }
+    { id: 1, name: 'Book One', publicationDate: new Date('2022-01-01'), author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() }, genre: { id: 1, name: 'Fiction' } },
+    { id: 2, name: 'Book Two', publicationDate: new Date('2023-01-01'), author: { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date() }, genre: { id: 2, name: 'Non-Fiction' } }
   ];
   const mockAmount = 2;
 
@@ -33,7 +33,7 @@ describe('BookTableComponent', () => {
     ]);
 
     mockBookService.getItemTotalAmount.and.returnValue(of(mockAmount));
-    mockBookService.getBooksPaginated.and.returnValue(of(mockItems));
+    mockBookService.getPaginated.and.returnValue(of(mockItems));
 
     await TestBed.configureTestingModule({
       declarations: [BookTableComponent, GenericTableComponent],
@@ -64,7 +64,7 @@ describe('BookTableComponent', () => {
   it('should bind data to generic-table component', () => {
     component.items$ = of(mockItems.map(item => ({
       id: item.id,
-      title: item.title,
+      title: item.name,
       publicationDate: item.publicationDate,
       author: `${item.author.name} ${item.author.lastName}`,
       genre: item.genre.name
@@ -77,7 +77,7 @@ describe('BookTableComponent', () => {
     const componentInstance = genericTable.componentInstance as GenericTableComponent;
     expect(componentInstance.items).toEqual(mockItems.map(item => ({
       id: item.id,
-      title: item.title,
+      title: item.name,
       publicationDate: item.publicationDate,
       author: `${item.author.name} ${item.author.lastName}`,
       genre: item.genre.name
@@ -86,7 +86,7 @@ describe('BookTableComponent', () => {
   });
 
   it('should handle pageChange and update items$', () => {
-    mockBookService.getBooksPaginated.and.returnValue(of(mockItems));
+    mockBookService.getPaginated.and.returnValue(of(mockItems));
 
     component.pageChange({ pageIndex: 1, pageSize: 10 });
     fixture.detectChanges();
@@ -94,7 +94,7 @@ describe('BookTableComponent', () => {
     component.items$.subscribe(items => {
       expect(items).toEqual(mockItems.slice(0, 10).map(x => ({
         id: x.id,
-        title: x.title,
+        title: x.name,
         publicationDate: x.publicationDate,
         author: `${x.author.name} ${x.author.lastName}`,
         genre: x.genre.name
@@ -105,7 +105,7 @@ describe('BookTableComponent', () => {
   it('should open create dialog and call createBook on confirmation', () => {
     const mockBook: BookResponse = {
       id: 0,
-      title: '',
+      name: '',
       publicationDate: new Date(),
       author: { id: 0, name: '', lastName: '', dateOfBirth: new Date() },
       genre: { id: 0, name: '' }
@@ -119,13 +119,13 @@ describe('BookTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openBookDetailsMenu).toHaveBeenCalled();
-    expect(mockBookService.createBook).toHaveBeenCalled();
+    expect(mockBookService.create).toHaveBeenCalled();
   });
 
   it('should open update dialog and call updateBook on confirmation', () => {
     const mockBook: BookResponse = {
       id: 1,
-      title: 'Updated Title',
+      name: 'Updated Title',
       publicationDate: new Date('2023-01-01'),
       author: { id: 1, name: 'Updated Name', lastName: 'Updated LastName', dateOfBirth: new Date() },
       genre: { id: 1, name: 'Updated Genre' }
@@ -139,7 +139,7 @@ describe('BookTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openBookDetailsMenu).toHaveBeenCalledWith(mockBook);
-    expect(mockBookService.updateBook).toHaveBeenCalled();
+    expect(mockBookService.update).toHaveBeenCalled();
   });
 
   it('should open confirmation dialog and call deleteBookById on confirmation', () => {
@@ -153,7 +153,7 @@ describe('BookTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
-    expect(mockBookService.deleteBookById).toHaveBeenCalledWith(mockBook.id);
+    expect(mockBookService.deleteById).toHaveBeenCalledWith(mockBook.id);
   });
 
   it('should clean up subscriptions on destroy', () => {

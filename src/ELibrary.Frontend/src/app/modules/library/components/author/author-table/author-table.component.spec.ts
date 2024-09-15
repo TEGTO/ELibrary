@@ -33,7 +33,7 @@ describe('AuthorTableComponent', () => {
     ]);
 
     mockAuthorService.getItemTotalAmount.and.returnValue(of(mockAmount));
-    mockAuthorService.getAuthorsPaginated.and.returnValue(of(mockItems));
+    mockAuthorService.getPaginated.and.returnValue(of(mockItems));
 
     await TestBed.configureTestingModule({
       declarations: [AuthorTableComponent, GenericTableComponent],
@@ -78,7 +78,7 @@ describe('AuthorTableComponent', () => {
       { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') },
       { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-01-01') }
     ];
-    mockAuthorService.getAuthorsPaginated.and.returnValue(of(mockItems));
+    mockAuthorService.getPaginated.and.returnValue(of(mockItems));
 
     component.pageChange({ pageIndex: 1, pageSize: 10 });
     fixture.detectChanges();
@@ -99,7 +99,7 @@ describe('AuthorTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openAuthorDetailsMenu).toHaveBeenCalled();
-    expect(mockAuthorService.createAuthor).toHaveBeenCalled();
+    expect(mockAuthorService.create).toHaveBeenCalled();
   });
 
   it('should open update dialog and call updateAuthor on confirmation', () => {
@@ -113,7 +113,7 @@ describe('AuthorTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openAuthorDetailsMenu).toHaveBeenCalledWith(mockAuthor);
-    expect(mockAuthorService.updateAuthor).toHaveBeenCalled();
+    expect(mockAuthorService.update).toHaveBeenCalled();
   });
 
   it('should open confirmation dialog and call deleteAuthorById on confirmation', () => {
@@ -127,7 +127,7 @@ describe('AuthorTableComponent', () => {
     fixture.detectChanges();
 
     expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
-    expect(mockAuthorService.deleteAuthorById).toHaveBeenCalledWith(mockAuthor.id);
+    expect(mockAuthorService.deleteById).toHaveBeenCalledWith(mockAuthor.id);
   });
 
   it('should clean up subscriptions on destroy', () => {

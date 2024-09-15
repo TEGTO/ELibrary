@@ -83,7 +83,7 @@ namespace LibraryApi.Services.Tests
             var dbSetMock = GetDbSetMock(books);
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
                .ReturnsAsync(dbSetMock.Object);
-            var paginationRequest = new BookPaginationRequest() { PageNumber = 1, PageSize = 10 };
+            var paginationRequest = new BookFilterRequest() { PageNumber = 1, PageSize = 10 };
             // Act
             var result = await service.GetPaginatedAsync(paginationRequest, cancellationToken);
             // Assert

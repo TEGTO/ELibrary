@@ -13,15 +13,22 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent, MainViewComponent } from '.';
 import { AuthInterceptor } from '../authentication';
 import { AuthenticationModule } from '../authentication/authentication.module';
-import { CustomErrorHandler, ErrorHandler } from '../shared';
+import { CustomErrorHandler, ErrorHandler, PolicyType, RoleGuard } from '../shared';
 
 const routes: Routes = [
   {
     path: "", component: MainViewComponent,
     children: [
       // { path: "", loadChildren: () => import('../library/library.module').then(m => m.LibraryModule) }
+      {
+        path: "manager",
+        loadChildren: () => import('../manager/manager.module').then(m => m.ManagerModule),
+        canActivate: [RoleGuard],
+        data: { policy: [PolicyType.ManagerPolicy] }
+      }
     ],
   },
+  { path: '**', redirectTo: '' }
 ];
 @NgModule({
   declarations: [

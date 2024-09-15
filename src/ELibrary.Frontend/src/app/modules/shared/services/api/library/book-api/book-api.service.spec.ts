@@ -37,7 +37,7 @@ describe('BookApiService', () => {
     const expectedReq = `/api/book/1`;
     const response: BookResponse = {
       id: 1,
-      title: 'The Great Gatsby',
+      name: 'The Great Gatsby',
       publicationDate: new Date('1925-04-10'),
       author: { id: 1, name: 'F. Scott Fitzgerald', lastName: 'Fitzgerald', dateOfBirth: new Date('1896-09-24') },
       genre: { id: 1, name: 'Classic' }
@@ -57,8 +57,8 @@ describe('BookApiService', () => {
     const expectedReq = `/api/book/pagination`;
     const request = { pageNumber: 1, pageSize: 10 };
     const response: BookResponse[] = [
-      { id: 1, title: 'The Great Gatsby', publicationDate: new Date('1925-04-10'), author: { id: 1, name: 'F. Scott Fitzgerald', lastName: 'Fitzgerald', dateOfBirth: new Date('1896-09-24') }, genre: { id: 1, name: 'Classic' } },
-      { id: 2, title: 'Moby Dick', publicationDate: new Date('1851-11-14'), author: { id: 2, name: 'Herman Melville', lastName: 'Melville', dateOfBirth: new Date('1819-08-01') }, genre: { id: 2, name: 'Adventure' } }
+      { id: 1, name: 'The Great Gatsby', publicationDate: new Date('1925-04-10'), author: { id: 1, name: 'F. Scott Fitzgerald', lastName: 'Fitzgerald', dateOfBirth: new Date('1896-09-24') }, genre: { id: 1, name: 'Classic' } },
+      { id: 2, name: 'Moby Dick', publicationDate: new Date('1851-11-14'), author: { id: 2, name: 'Herman Melville', lastName: 'Melville', dateOfBirth: new Date('1819-08-01') }, genre: { id: 2, name: 'Adventure' } }
     ];
 
     service.getPaginated(request).subscribe(res => {
@@ -88,14 +88,14 @@ describe('BookApiService', () => {
   it('should create a new book', () => {
     const expectedReq = `/api/book`;
     const request: CreateBookRequest = {
-      title: '1984',
+      name: '1984',
       publicationDate: new Date('1949-06-08'),
       authorId: 1,
       genreId: 1
     };
     const response: BookResponse = {
       id: 1,
-      title: '1984',
+      name: '1984',
       publicationDate: new Date('1949-06-08'),
       author: { id: 1, name: 'George Orwell', lastName: 'Orwell', dateOfBirth: new Date('1903-06-25') },
       genre: { id: 1, name: 'Dystopian' }
@@ -115,14 +115,14 @@ describe('BookApiService', () => {
     const expectedReq = `/api/book`;
     const request: UpdateBookRequest = {
       id: 1,
-      title: '1984',
+      name: '1984',
       publicationDate: new Date('1949-06-08'),
       authorId: 1,
       genreId: 1
     };
     const response: BookResponse = {
       id: 1,
-      title: '1984',
+      name: '1984',
       publicationDate: new Date('1949-06-08'),
       author: { id: 1, name: 'George Orwell', lastName: 'Orwell', dateOfBirth: new Date('1903-06-25') },
       genre: { id: 1, name: 'Dystopian' }

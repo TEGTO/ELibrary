@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { CreateGenreRequest, GenreResponse, PaginatedRequest, UpdateGenreRequest } from "../../../shared";
+import { CreateGenreRequest, GenreResponse, LibraryFilterRequest, UpdateGenreRequest } from "../../../shared";
 
 @Injectable({
     providedIn: 'root'
 })
 export abstract class GenreService {
-    abstract getGenreById(id: number): Observable<GenreResponse>;
-    abstract getGenresPaginated(request: PaginatedRequest): Observable<GenreResponse[]>;
-    abstract getItemTotalAmount(): Observable<number>;
-    abstract createGenre(request: CreateGenreRequest): void;
-    abstract updateGenre(request: UpdateGenreRequest): void;
-    abstract deleteGenreById(id: number): void;
+    abstract getById(id: number): Observable<GenreResponse>;
+    abstract getPaginated(request: LibraryFilterRequest): Observable<GenreResponse[]>;
+    abstract getItemTotalAmount(request: LibraryFilterRequest): Observable<number>;
+    abstract create(request: CreateGenreRequest): void;
+    abstract update(request: UpdateGenreRequest): void;
+    abstract deleteById(id: number): void;
 }

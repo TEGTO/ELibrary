@@ -1,23 +1,24 @@
+import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
-import { BaseApiService, CreateGenreRequest, GenreResponse, LibraryEntityApi, PaginatedRequest, UpdateGenreRequest } from '../../../..';
+import { BaseApiService, CreateGenreRequest, GenreResponse, LibraryEntityApi, LibraryFilterRequest, UpdateGenreRequest } from '../../../..';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GenreApiService extends BaseApiService implements LibraryEntityApi<GenreResponse, CreateGenreRequest, UpdateGenreRequest> {
+export class GenreApiService extends BaseApiService implements LibraryEntityApi<GenreResponse, CreateGenreRequest, UpdateGenreRequest, LibraryFilterRequest> {
   getById(id: number): Observable<GenreResponse> {
     return this.httpClient.get<GenreResponse>(this.combinePathWithGenreApiUrl(`/${id}`)).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
-  getPaginated(request: PaginatedRequest): Observable<GenreResponse[]> {
+  getPaginated(request: LibraryFilterRequest): Observable<GenreResponse[]> {
     return this.httpClient.post<GenreResponse[]>(this.combinePathWithGenreApiUrl(`/pagination`), request).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
-  getItemTotalAmount(): Observable<number> {
-    return this.httpClient.get<number>(this.combinePathWithGenreApiUrl(`/amount`)).pipe(
+  getItemTotalAmount(request: LibraryFilterRequest): Observable<number> {
+    return this.httpClient.post<number>(this.combinePathWithGenreApiUrl(`/amount`), request).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
@@ -26,13 +27,13 @@ export class GenreApiService extends BaseApiService implements LibraryEntityApi<
       catchError((resp) => this.handleError(resp))
     );
   }
-  update(request: UpdateGenreRequest) {
+  update(request: UpdateGenreRequest): Observable<GenreResponse> {
     return this.httpClient.put<GenreResponse>(this.combinePathWithGenreApiUrl(``), request).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
-  deleteById(id: number) {
-    return this.httpClient.delete(this.combinePathWithGenreApiUrl(`/${id}`)).pipe(
+  deleteById(id: number): Observable<HttpResponse<void>> {
+    return this.httpClient.delete<void>(this.combinePathWithGenreApiUrl(`/${id}`), { observe: 'response' }).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }
