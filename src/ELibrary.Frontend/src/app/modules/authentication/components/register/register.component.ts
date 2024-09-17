@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { UserRegistrationRequest } from '../../../shared';
-import { AuthenticationCommand, AuthenticationCommandType, AuthenticationValidationMessage, confirmPasswordValidator, passwordValidator } from '../../index';
+import { UserRegistrationRequest, ValidationMessage } from '../../../shared';
+import { AuthenticationCommand, AuthenticationCommandType, confirmPasswordValidator, passwordValidator } from '../../index';
 
 @Component({
   selector: 'app-register',
@@ -12,20 +12,16 @@ import { AuthenticationCommand, AuthenticationCommandType, AuthenticationValidat
 })
 export class RegisterComponent implements OnInit {
   formGroup!: FormGroup;
-  hidePassword: boolean = true;
+  hidePassword = true;
 
   get emailInput() { return this.formGroup.get('email')!; }
   get passwordInput() { return this.formGroup.get('password')!; }
   get passwordConfirmInput() { return this.formGroup.get('passwordConfirm')!; }
 
-  get validateEmailInput() { return this.validateInput.getEmailValidationMessage(this.emailInput); }
-  get validatePassword() { return this.validateInput.getPasswordValidationMessage(this.passwordInput); }
-  get validateConfirmPassword() { return this.validateInput.getConfirmPasswordValidationMessage(this.passwordConfirmInput); }
-
   constructor(
     private readonly authCommand: AuthenticationCommand,
     private readonly dialogRef: MatDialogRef<RegisterComponent>,
-    private readonly validateInput: AuthenticationValidationMessage
+    private readonly validateInput: ValidationMessage
   ) { }
 
   ngOnInit(): void {
@@ -37,6 +33,16 @@ export class RegisterComponent implements OnInit {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validateInputField(input: AbstractControl<any, any>) {
+    return this.validateInput.getValidationMessage(input);
+  }
+  hidePasswordOnKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.hidePassword = !this.hidePassword;
+    }
+  }
   registerUser() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };

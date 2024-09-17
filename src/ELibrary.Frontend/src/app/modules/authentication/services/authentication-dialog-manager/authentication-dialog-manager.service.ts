@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticatedComponent, AuthenticationService, LoginComponent, RegisterComponent } from '../..';
@@ -7,7 +8,7 @@ import { AuthenticationDialogManager } from './authentication-dialog-manager';
   providedIn: 'root'
 })
 export class AuthenticationDialogManagerService implements AuthenticationDialogManager {
-  isAuthenticated: boolean = false;
+  isAuthenticated = false;
 
   constructor(
     private readonly authService: AuthenticationService,
@@ -19,10 +20,10 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
   }
 
   openLoginMenu(): MatDialogRef<any, any> {
-    var dialogRef: MatDialogRef<any, any>;
+    let dialogRef: MatDialogRef<any, any>;
     if (this.isAuthenticated) {
       dialogRef = this.dialog.open(AuthenticatedComponent, {
-        height: '355px',
+        height: '440px',
         width: '450px',
       });
     }

@@ -9,19 +9,19 @@
             <mat-label>Email</mat-label>
             <input matInput type="text" autocomplete="user-login" formControlName="login"
                 placeholder="example@gmail.com" maxlength="256">
-            <mat-error *ngIf="validateLoginInput.hasError">{{validateLoginInput.message}}</mat-error>
+            <mat-error
+                *ngIf="validateInputField(loginInput).hasError">{{validateInputField(loginInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Password</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="user-password"
                 formControlName="password" maxlength="256">
-            <span matSuffix class="material-icons me-2" (click)="hidePassword = !hidePassword">
-                {{hidePassword
-                ? 'visibility_off'
-                : 'visibility'
-                }}
+            <span class="material-icons me-2" matSuffix tabindex="0" role="button"
+                (click)="hidePassword = !hidePassword" (keydown)="hidePasswordOnKeydown($event)">
+                {{ hidePassword ? 'visibility_off' : 'visibility' }}
             </span>
-            <mat-error *ngIf="validatePassword.hasError">{{validatePassword.message}}</mat-error>
+            <mat-error
+                *ngIf="validateInputField(passwordInput).hasError">{{validateInputField(passwordInput).message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>
@@ -29,7 +29,8 @@
     <button mat-flat-button id="send-button" form="loginForm" type="submit" color="primary">Login</button>
     <span>
         Don't have an account?
-        <a mat-dialog-close id="to-register-link" (click)="openRegisterMenu()">
+        <a mat-dialog-close id="to-register-link" tabindex="1" role="button" (click)="openRegisterMenu()"
+            (keydown)="openRegisterMenuOnKeydown($event)">
             Create a new one.
         </a>
     </span>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
 import { AuthorResponse, BookFilterRequest, BookResponse, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, GenreResponse, LibraryFilterRequest, PublisherResponse, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
 
@@ -76,6 +77,6 @@ export const authorActions = createEntityActions<CreateAuthorRequest, UpdateAuth
 
 export const genreActions = createEntityActions<CreateGenreRequest, UpdateGenreRequest, GenreResponse, LibraryFilterRequest>('genre');
 
-export const publisherActions = createEntityActions<CreatePublisherRequest, UpdatePublisherRequest, PublisherResponse, LibraryFilterRequest>('genre');
+export const publisherActions = createEntityActions<CreatePublisherRequest, UpdatePublisherRequest, PublisherResponse, LibraryFilterRequest>('publisher');
 
 export const bookActions = createEntityActions<CreateBookRequest, UpdateBookRequest, BookResponse, BookFilterRequest>('book');

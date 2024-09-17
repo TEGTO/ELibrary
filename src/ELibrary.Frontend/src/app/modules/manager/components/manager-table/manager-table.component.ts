@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'manager-table',
+  selector: 'app-manager-table',
   templateUrl: './manager-table.component.html',
   styleUrl: './manager-table.component.scss'
 })

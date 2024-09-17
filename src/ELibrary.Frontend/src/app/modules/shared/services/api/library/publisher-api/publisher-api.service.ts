@@ -38,6 +38,6 @@ export class PublisherApiService extends BaseApiService implements LibraryEntity
     );
   }
   private combinePathWithPublisherApiUrl(subpath: string) {
-    return this.urlDefiner.combineWithLibraryApiUrl("/puiblisher" + subpath);
+    return this.urlDefiner.combineWithLibraryApiUrl("/publisher" + subpath);
   }
 }

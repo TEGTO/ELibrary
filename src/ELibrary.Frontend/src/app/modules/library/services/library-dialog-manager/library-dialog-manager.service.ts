@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AuthorChangeDialogComponent, BookChangeDialogComponent, ConfirmMenuComponent, GenreChangeDialogComponent } from '../..';
-import { AuthorResponse, BookResponse, GenreResponse } from '../../../shared';
+import { AuthorChangeDialogComponent, BookChangeDialogComponent, ConfirmMenuComponent, GenreChangeDialogComponent, PublisherChangeDialogComponent } from '../..';
+import { AuthorResponse, BookResponse, GenreResponse, PublisherResponse } from '../../../shared';
 import { LibraryDialogManager } from './library-dialog-manager';
 
 @Injectable({
@@ -13,22 +14,13 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
   ) { }
 
   openConfirmMenu(): MatDialogRef<any> {
-    var dialogRef: MatDialogRef<any, any>;
-    dialogRef = this.dialog.open(ConfirmMenuComponent, {
+    const dialogRef = this.dialog.open(ConfirmMenuComponent, {
       height: '200px',
       width: '450px',
     });
     return dialogRef;
   }
 
-  openBookDetailsMenu(book: BookResponse): MatDialogRef<any> {
-    const dialogRef = this.dialog.open(BookChangeDialogComponent, {
-      height: '460px',
-      width: '450px',
-      data: book
-    });
-    return dialogRef;
-  }
   openAuthorDetailsMenu(author: AuthorResponse): MatDialogRef<any> {
     const dialogRef = this.dialog.open(AuthorChangeDialogComponent, {
       height: '400px',
@@ -39,9 +31,25 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
   }
   openGenreDetailsMenu(genre: GenreResponse): MatDialogRef<any> {
     const dialogRef = this.dialog.open(GenreChangeDialogComponent, {
-      height: '220px',
+      height: '230px',
       width: '450px',
       data: genre
+    });
+    return dialogRef;
+  }
+  openPublisherDetailsMenu(publisher: PublisherResponse): MatDialogRef<any> {
+    const dialogRef = this.dialog.open(PublisherChangeDialogComponent, {
+      height: '230px',
+      width: '450px',
+      data: publisher
+    });
+    return dialogRef;
+  }
+  openBookDetailsMenu(book: BookResponse): MatDialogRef<any> {
+    const dialogRef = this.dialog.open(BookChangeDialogComponent, {
+      height: '660px',
+      width: '650px',
+      data: book
     });
     return dialogRef;
   }

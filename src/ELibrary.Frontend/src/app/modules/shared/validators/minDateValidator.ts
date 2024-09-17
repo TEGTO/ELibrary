@@ -5,7 +5,7 @@ export function minDateValidator(): ValidatorFn {
         const selectedDate = new Date(control.value);
         const today = new Date();
         if (selectedDate >= today) {
-            return { invalidDateOfBirth: 'Date must be in the past' };
+            return { invalidMinDate: 'Date must be in the past' };
         }
         return null;
     };

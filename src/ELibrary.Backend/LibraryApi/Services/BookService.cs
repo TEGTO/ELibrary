@@ -87,7 +87,8 @@ namespace LibraryApi.Services
         {
             if (req is BookFilterRequest bookFilter)
             {
-                if (bookFilter.OnlyInStock)
+                bookFilter.ApplyDefaults();
+                if (bookFilter.OnlyInStock.HasValue && bookFilter.OnlyInStock.Value)
                 {
                     query = query.Where(b => b.StockAmount > 0);
                 }

@@ -9,27 +9,26 @@
             <mat-label>Email</mat-label>
             <input type="email" autocomplete="user-email" matInput formControlName="email"
                 placeholder="example@example.com" maxlength="256">
-            <mat-error *ngIf="validateEmailInput.hasError">{{validateEmailInput.message}}</mat-error>
+            <mat-error
+                *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
         </mat-form-field>
-        <div class="flex gap-2">
-            <mat-form-field>
-                <mat-label>Old Password</mat-label>
-                <input [type]="'password'" autocomplete="off" matInput formControlName="oldPassword" maxlength="256">
-                <mat-error *ngIf="validateOldPassword.hasError">{{validateOldPassword.message}}</mat-error>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>New Password</mat-label>
-                <input [type]="hideNewPassword ? 'password' : 'text'" autocomplete="off" matInput
-                    formControlName="newPassword" maxlength="256">
-                <span class="material-icons me-2" matSuffix (click)="hideNewPassword = !hideNewPassword">
-                    {{hideNewPassword
-                    ? 'visibility_off'
-                    : 'visibility'
-                    }}
-                </span>
-                <mat-error *ngIf="validatePassword.hasError">{{validatePassword.message}}</mat-error>
-            </mat-form-field>
-        </div>
+        <mat-form-field>
+            <mat-label>Old Password</mat-label>
+            <input [type]="'password'" autocomplete="off" matInput formControlName="oldPassword" maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(oldPasswordInput).hasError">{{validateInputField(oldPasswordInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>New Password</mat-label>
+            <input [type]="hideNewPassword ? 'password' : 'text'" autocomplete="off" matInput formControlName="password"
+                maxlength="256">
+            <span class="material-icons me-2" matSuffix tabindex="0" role="button"
+                (click)="hideNewPassword = !hideNewPassword" (keydown)="hidePasswordOnKeydown($event)">
+                {{ hideNewPassword ? 'visibility_off' : 'visibility' }}
+            </span>
+            <mat-error
+                *ngIf="validateInputField(passwordInput).hasError">{{validateInputField(passwordInput).message}}</mat-error>
+        </mat-form-field>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions class="actions__bottom-container">

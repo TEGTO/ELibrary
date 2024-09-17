@@ -9,7 +9,8 @@
             <mat-label>Name</mat-label>
             <input matInput type="text" autocomplete="genre-name" formControlName="name" placeholder="Horror"
                 maxlength="256">
-            <mat-error *ngIf="nameInput.hasError('required')">Name is <strong>required.</strong></mat-error>
+            <mat-error
+                *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>

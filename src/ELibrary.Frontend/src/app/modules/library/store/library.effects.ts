@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
 import { AuthorApiService, AuthorResponse, BookApiService, BookFilterRequest, BookResponse, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, GenreApiService, GenreResponse, LibraryEntityApi, LibraryFilterRequest, PublisherApiService, PublisherResponse, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
-import { authorActions, bookActions, genreActions } from "./library.actions";
+import { authorActions, bookActions, genreActions, publisherActions } from "./library.actions";
 
 @Injectable()
 export abstract class GenericLibraryEntityEffects<Response, Create, Update, Filter> {
@@ -17,7 +18,7 @@ export abstract class GenericLibraryEntityEffects<Response, Create, Update, Filt
             ofType(this.entityActions.getPaginated),
             mergeMap((action: { request: Filter }) =>
                 this.apiService.getPaginated(action.request).pipe(
-                    map((entities: Response[]) => this.entityActions.getPaginatedSuccess({ entities })),
+                    map((entities: Response[]) => { return this.entityActions.getPaginatedSuccess({ entities }) }),
                     catchError((error: any) => of(this.entityActions.getPaginatedFailure({ error: error.message })))
                 )
             )
@@ -99,7 +100,7 @@ export class PublisherEffects extends GenericLibraryEntityEffects<PublisherRespo
         actions$: Actions,
         apiService: PublisherApiService
     ) {
-        super(actions$, apiService, genreActions);
+        super(actions$, apiService, publisherActions);
     }
 }
 

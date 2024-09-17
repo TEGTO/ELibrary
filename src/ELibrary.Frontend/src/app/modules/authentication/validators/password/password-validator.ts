@@ -17,9 +17,9 @@ export const passwordValidator: ValidatorFn = (control: AbstractControl): Valida
     const isValid = hasMinLength && hasNonAlphanumeric && hasDigit && hasUppercase;
 
     return isValid ? null : {
-        minLength: hasMinLength,
-        nonAlphanumeric: hasNonAlphanumeric,
-        digit: hasDigit,
-        uppercase: hasUppercase,
+        minlength: !hasMinLength,
+        nonAlphanumeric: !hasNonAlphanumeric,
+        digit: !hasDigit,
+        uppercase: !hasUppercase,
     };
 };

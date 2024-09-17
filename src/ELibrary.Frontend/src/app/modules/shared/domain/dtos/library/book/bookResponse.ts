@@ -1,7 +1,7 @@
 import { AuthorResponse, GenreResponse, mapAuthorData, PublisherResponse } from "../../../..";
 
 export enum CoverType {
-    All = 0, Hard, Soft
+    Hard = 1, Soft = 2
 }
 export interface BookResponse {
     id: number;
@@ -20,5 +20,30 @@ export function mapBookData(resp: BookResponse): BookResponse {
         ...resp,
         publicationDate: new Date(resp.publicationDate),
         author: mapAuthorData(resp.author)
+    }
+}
+export function getDefaultBookResponse(): BookResponse {
+    return {
+        id: 0,
+        name: "",
+        publicationDate: new Date(),
+        price: 0,
+        coverType: 1,
+        pageAmount: 0,
+        stockAmount: 0,
+        author: {
+            id: 0,
+            name: "",
+            lastName: "",
+            dateOfBirth: new Date(),
+        },
+        genre: {
+            id: 0,
+            name: ""
+        },
+        publisher: {
+            id: 0,
+            name: ""
+        }
     }
 }

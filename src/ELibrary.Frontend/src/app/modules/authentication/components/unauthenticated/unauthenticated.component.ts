@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthenticationDialogManager } from '../..';
 
 @Component({
-  selector: 'auth-unauthenticated',
+  selector: 'app-auth-unauthenticated',
   templateUrl: './unauthenticated.component.html',
   styleUrl: './unauthenticated.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -14,6 +14,6 @@ export class UnauthenticatedComponent {
   ) { }
 
   openLoginMenu() {
-    const dialogRef = this.authDialogManager.openLoginMenu();
+    this.authDialogManager.openLoginMenu();
   }
 }

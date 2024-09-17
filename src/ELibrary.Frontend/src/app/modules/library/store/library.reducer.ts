@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReducer, on } from "@ngrx/store";
 import { AuthorResponse, BookResponse, GenreResponse, PublisherResponse } from "../../shared";
 import { authorActions, bookActions, genreActions, publisherActions } from "./library.actions";

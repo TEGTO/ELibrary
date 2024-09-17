@@ -1,0 +1,13 @@
+<mat-form-field>
+    <mat-label>Author</mat-label>
+    <input type="text" placeholder="Select Author" matInput [formControl]="control" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
+        <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" [style.height.px]="selectionSize">
+            <mat-option *cdkVirtualFor="let author of authors" [value]="author">
+                {{ author.name }} {{ author.lastName }}
+            </mat-option>
+        </cdk-virtual-scroll-viewport>
+    </mat-autocomplete>
+    <mat-error *ngIf="validateInputField(input).hasError">{{ validateInputField(input).message
+        }}</mat-error>
+</mat-form-field>

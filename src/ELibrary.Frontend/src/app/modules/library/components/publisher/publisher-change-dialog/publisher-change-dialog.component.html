@@ -1,0 +1,20 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Publisher</h2>
+
+<mat-dialog-content>
+    <form id="authorDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput type="text" autocomplete="author-name" formControlName="name" placeholder="Jonh"
+                maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="actions__bottom-container flex-col">
+    <button mat-flat-button id="send-button" form="authorDetails" type="submit" color="primary"
+        class="w-full">Confirm</button>
+</mat-dialog-actions>

@@ -30,7 +30,7 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 #region Project Services
 
 builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
-builder.Services.AddSingleton<ILibraryEntityService<Author>, LibraryEntityService<Author>>();
+builder.Services.AddSingleton<ILibraryEntityService<Author>, AuthorService>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();

@@ -1,154 +1,73 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { filter, map, pairwise, Subject, takeUntil, throttleTime } from 'rxjs';
-import { AuthorService, GenreService } from '../../..';
-import { AuthorResponse, BookResponse, GenreResponse } from '../../../../shared';
+import { Subject } from 'rxjs';
+import { BookResponse, ValidationMessage } from '../../../../shared';
 
 @Component({
-  selector: 'book-change-dialog',
+  selector: 'app-book-change-dialog',
   templateUrl: './book-change-dialog.component.html',
   styleUrl: './book-change-dialog.component.scss'
 })
-export class BookChangeDialogComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('authorScroller') authorScroller!: CdkVirtualScrollViewport;
-  @ViewChild('genreScroller') genreScroller!: CdkVirtualScrollViewport;
-
-  readonly itemHeight = 45;
-  readonly pageAmount = 12;
-  readonly amountItemsInView = 3;
-
+export class BookChangeDialogComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
-
-  authors: AuthorResponse[] = [];
-  genres: GenreResponse[] = [];
-
-  authorPageIndex = 0;
-  genrePageIndex = 0;
-
-  private fetchedAuthorIds = new Set<number>();
-  private fetchedGenreIds = new Set<number>();
 
   private destroy$ = new Subject<void>();
 
-  get titleInput() { return this.formGroup.get('title')!; }
-  get authorInput() { return this.formGroup.get('author')!; }
-  get genreInput() { return this.formGroup.get('genre')!; }
+  get nameInput() { return this.formGroup.get('name')!; }
   get publicationDateInput() { return this.formGroup.get('publicationDate')!; }
-  get authorSelectionSize() {
-    return this.calculateSelectionSize(this.authors.length);
-  }
-  get genreSelectionSize() {
-    return this.calculateSelectionSize(this.genres.length);
-  }
+  get priceInput() { return this.formGroup.get('price')!; }
+  get coverTypeInput() { return this.formGroup.get('coverType')!; }
+  get pageAmountInput() { return this.formGroup.get('pageAmount')!; }
+  get stockAmountInput() { return this.formGroup.get('stockAmount')!; }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private readonly book: BookResponse,
     private readonly dialogRef: MatDialogRef<BookChangeDialogComponent>,
-    private readonly authorService: AuthorService,
-    private readonly genreService: GenreService
+    private readonly validateInput: ValidationMessage
   ) { }
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadAuthors();
-    this.loadGenres();
   }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  ngAfterViewInit(): void {
-    this.setupScrollListeners(this.authorScroller, () => this.loadAuthors());
-    this.setupScrollListeners(this.genreScroller, () => this.loadGenres());
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validateInputField(input: AbstractControl<any, any>) {
+    return this.validateInput.getValidationMessage(input);
   }
-
   initializeForm(): void {
     this.formGroup = new FormGroup({
-      title: new FormControl(this.book.name, [Validators.required, Validators.maxLength(256)]),
+      name: new FormControl(this.book.name, [Validators.required, Validators.maxLength(256)]),
       publicationDate: new FormControl(this.book.publicationDate, [Validators.required]),
-      author: new FormControl(this.book.author.id, [Validators.required, Validators.min(1)]),
-      genre: new FormControl(this.book.genre.id, [Validators.required, Validators.min(1)])
+      price: new FormControl(this.book.price, [Validators.required, Validators.min(0)]),
+      coverType: new FormControl(this.book.coverType, [Validators.required]),
+      pageAmount: new FormControl(this.book.pageAmount, [Validators.required, Validators.min(1)]),
+      stockAmount: new FormControl(this.book.stockAmount, [Validators.required, Validators.min(0)]),
     });
   }
 
   sendDetails(): void {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const authorId = formValues.author;
-      const genreId = formValues.genre;
 
       const updatedBook: BookResponse = {
         id: this.book.id,
-        name: formValues.title,
+        name: formValues.name,
         publicationDate: formValues.publicationDate,
-        author: this.findItemById(this.authors, authorId, this.book.author),
-        genre: this.findItemById(this.genres, genreId, this.book.genre),
+        price: formValues.price,
+        coverType: formValues.coverType,
+        pageAmount: formValues.pageAmount,
+        stockAmount: formValues.stockAmount,
+        author: formValues.author,
+        genre: formValues.genre,
+        publisher: formValues.genre,
       };
 
       this.dialogRef.close(updatedBook);
     }
-  }
-
-  loadAuthors(): void {
-    this.authorPageIndex++;
-    const req = {
-      pageNumber: this.authorPageIndex,
-      pageSize: this.pageAmount
-    };
-
-    this.authorService.getPaginated(req).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(authors => {
-      this.authors = [...this.authors, ...this.getUniqueItems(authors, this.fetchedAuthorIds)];
-    });
-  }
-
-  loadGenres(): void {
-    this.genrePageIndex++;
-    const req = {
-      pageNumber: this.genrePageIndex,
-      pageSize: this.pageAmount
-    };
-
-    this.genreService.getPaginated(req).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(genres => {
-      this.genres = [...this.genres, ...this.getUniqueItems(genres, this.fetchedGenreIds)];
-    });
-  }
-
-  setupScrollListeners(scroller: CdkVirtualScrollViewport, loadMoreCallback: () => void): void {
-    scroller.elementScrolled().pipe(
-      map(() => scroller.measureScrollOffset('bottom')),
-      pairwise(),
-      filter(([previous, current]) => current < previous && current < 2 * this.itemHeight),
-      throttleTime(200),
-      takeUntil(this.destroy$)
-    ).subscribe(() => loadMoreCallback());
-  }
-
-  getUniqueItems<T extends { id: number }>(items: T[], fetchedIds: Set<number>): T[] {
-    const uniqueItems: T[] = [];
-    items.forEach(item => {
-      if (!fetchedIds.has(item.id)) {
-        fetchedIds.add(item.id);
-        uniqueItems.push(item);
-      }
-    });
-    return uniqueItems;
-  }
-
-  calculateSelectionSize(length: number): number {
-    return length > this.amountItemsInView
-      ? this.amountItemsInView * this.itemHeight
-      : length * this.itemHeight + 5; //small margin for empty
-  }
-
-  findItemById<T>(items: T[], id: number, fallback: T): T {
-    return items.find(item => (item as any).id === id) || fallback;
   }
 }

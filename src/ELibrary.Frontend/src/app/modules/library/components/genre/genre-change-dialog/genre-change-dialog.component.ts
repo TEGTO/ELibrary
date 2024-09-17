@@ -1,19 +1,23 @@
-import { Component, Inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { GenreResponse } from '../../../../shared';
+import { GenreResponse, ValidationMessage } from '../../../../shared';
 
 @Component({
-  selector: 'genre-change-dialog',
+  selector: 'app-genre-change-dialog',
   templateUrl: './genre-change-dialog.component.html',
   styleUrl: './genre-change-dialog.component.scss'
 })
-export class GenreChangeDialogComponent {
+export class GenreChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
 
   get nameInput() { return this.formGroup.get('name')!; }
 
-  constructor(@Inject(MAT_DIALOG_DATA) public genre: GenreResponse, private dialogRef: MatDialogRef<GenreChangeDialogComponent>) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public genre: GenreResponse,
+    private dialogRef: MatDialogRef<GenreChangeDialogComponent>,
+    private readonly validateInput: ValidationMessage
+  ) { }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup(
@@ -22,6 +26,10 @@ export class GenreChangeDialogComponent {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validateInputField(input: AbstractControl<any, any>) {
+    return this.validateInput.getValidationMessage(input);
+  }
   sendDetails() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };

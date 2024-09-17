@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthorService, BookService, GenreService, LibraryDialogManager } from '../..';
-import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, BookResponse, bookToCreateRequest, bookToUpdateRequest, GenreResponse, genreToCreateRequest, genreToUpdateRequest } from '../../../shared';
+import { AuthorService, BookService, GenreService, LibraryDialogManager, PublisherService } from '../..';
+import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, BookResponse, bookToCreateRequest, bookToUpdateRequest, GenreResponse, genreToCreateRequest, genreToUpdateRequest, getDefaultAuthorResponse, getDefaultBookResponse, getDefaultGenreResponse, getDefaultPublisherResponse, PublisherResponse, publisherToCreateRequest, publisherToUpdateRequest } from '../../../shared';
 import { LibraryCommand, LibraryCommandObject, LibraryCommandType } from './library-command';
 
 @Injectable({
@@ -16,6 +18,7 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
     private readonly authorService: AuthorService,
     private readonly genreService: GenreService,
     private readonly bookService: BookService,
+    private readonly publisherService: PublisherService,
   ) { }
 
   ngOnDestroy(): void {
@@ -62,10 +65,13 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
       case LibraryCommandObject.Publisher:
         switch (commandType) {
           case LibraryCommandType.Create:
+            this.createPublisher(dispatchedFrom, params);
             break;
           case LibraryCommandType.Update:
+            this.updatePublisher(dispatchedFrom, params[0], params);
             break;
           case LibraryCommandType.Delete:
+            this.deletePublisher(dispatchedFrom, params[0], params);
             break;
           default:
             break;
@@ -95,18 +101,13 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#region  Author
 
   private createAuthor(dispatchedFrom: any, params: any[]) {
-    let author: AuthorResponse = {
-      id: 0,
-      name: "",
-      lastName: "",
-      dateOfBirth: new Date()
-    }
+    const author: AuthorResponse = getDefaultAuthorResponse();
 
     this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(author => {
       if (author) {
-        let req = authorToCreateRequest(author);
+        const req = authorToCreateRequest(author);
         this.authorService.create(req);
       }
       this.cleanUp();
@@ -117,7 +118,7 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(author => {
       if (author) {
-        let req = authorToUpdateRequest(author);
+        const req = authorToUpdateRequest(author);
         this.authorService.update(req);
       }
       this.cleanUp();
@@ -139,16 +140,13 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#region Genre
 
   private createGenre(dispatchedFrom: any, params: any[]) {
-    let genre: GenreResponse = {
-      id: 0,
-      name: "",
-    }
+    const genre: GenreResponse = getDefaultGenreResponse();
 
     this.dialogManager.openGenreDetailsMenu(genre).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(genre => {
       if (genre) {
-        let req = genreToCreateRequest(genre);
+        const req = genreToCreateRequest(genre);
         this.genreService.create(req);
       }
       this.cleanUp();
@@ -159,7 +157,7 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(genre => {
       if (genre) {
-        let req = genreToUpdateRequest(genre);
+        const req = genreToUpdateRequest(genre);
         this.genreService.update(req);
       }
       this.cleanUp();
@@ -178,38 +176,55 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
 
   //#endregion
 
+  //#region  Publisher
+
+  private createPublisher(dispatchedFrom: any, params: any[]) {
+    const publisher: PublisherResponse = getDefaultPublisherResponse();
+
+    this.dialogManager.openPublisherDetailsMenu(publisher).afterClosed().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(publusher => {
+      if (publusher) {
+        const req = publisherToCreateRequest(publusher);
+        this.publisherService.create(req);
+      }
+      this.cleanUp();
+    });
+  }
+  private updatePublisher(dispatchedFrom: any, publisher: PublisherResponse, params: any[]) {
+    this.dialogManager.openPublisherDetailsMenu(publisher).afterClosed().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(publisher => {
+      if (publisher) {
+        const req = publisherToUpdateRequest(publisher);
+        this.publisherService.update(req);
+      }
+      this.cleanUp();
+    });
+  }
+  private deletePublisher(dispatchedFrom: any, publisher: PublisherResponse, params: any[]) {
+    this.dialogManager.openConfirmMenu().afterClosed().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(result => {
+      if (result === true) {
+        this.publisherService.deleteById(publisher.id);
+      }
+      this.cleanUp();
+    });
+  }
+
+  //#endregion
+
   //#region  Book
 
   private createBook(dispatchedFrom: any, params: any[]) {
-    let book: BookResponse = {
-      id: 0,
-      name: "",
-      publicationDate: new Date(),
-      price: 0,
-      coverType: 0,
-      pageAmount: 0,
-      stockAmount: 0,
-      author: {
-        id: 0,
-        name: "",
-        lastName: "",
-        dateOfBirth: new Date(),
-      },
-      genre: {
-        id: 0,
-        name: ""
-      },
-      publisher: {
-        id: 0,
-        name: ""
-      }
-    }
+    const book: BookResponse = getDefaultBookResponse();
 
     this.dialogManager.openBookDetailsMenu(book).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(book => {
       if (book) {
-        let req = bookToCreateRequest(book);
+        const req = bookToCreateRequest(book);
         this.bookService.create(req);
       }
       this.cleanUp();
@@ -220,7 +235,7 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(book => {
       if (book) {
-        let req = bookToUpdateRequest(book);
+        const req = bookToUpdateRequest(book);
         this.bookService.update(req);
       }
       this.cleanUp();
@@ -240,10 +255,11 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#endregion
 
   private closeDialogIfPresent(params: any[]): void {
-    for (var i = 0; i < params.length; i++) {
-      if (params[i] instanceof MatDialogRef) {
-        params[i].close();
+    params.forEach(param => {
+      if (param instanceof MatDialogRef) {
+        param.close();
       }
     }
+    );
   }
 }

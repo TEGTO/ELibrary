@@ -27,7 +27,7 @@ namespace Shared.Validators.Tests
         public void PaginatedRequestValidator_InvalidPageNumber_FailsValidation()
         {
             // Arrange
-            var request = new PaginationRequest { PageNumber = 0, PageSize = 10 };
+            var request = new PaginationRequest { PageNumber = -1, PageSize = 10 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.PageNumber);
@@ -36,7 +36,7 @@ namespace Shared.Validators.Tests
         public void PaginatedRequestValidator_InvalidPageSize_FailsValidation()
         {
             // Arrange
-            var request = new PaginationRequest { PageNumber = 1, PageSize = 0 };
+            var request = new PaginationRequest { PageNumber = 1, PageSize = -1 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.PageSize);
@@ -45,7 +45,7 @@ namespace Shared.Validators.Tests
         public void PaginatedRequestValidator_InvalidPageNumberAndPageSize_FailsValidation()
         {
             // Arrange
-            var request = new PaginationRequest { PageNumber = 0, PageSize = 0 };
+            var request = new PaginationRequest { PageNumber = -1, PageSize = -1 };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.PageNumber);

@@ -10,3 +10,9 @@ export function getGenreFromUpdateRequest(request: UpdateGenreRequest): GenreRes
         name: request.name,
     }
 }
+export function getDefaultGenreResponse(): GenreResponse {
+    return {
+        id: 0,
+        name: "",
+    }
+}
