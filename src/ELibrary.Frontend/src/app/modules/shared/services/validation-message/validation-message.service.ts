@@ -36,6 +36,27 @@ export class ValidationMessageService implements ValidationMessage {
     else if (input.hasError('min')) {
       return { hasError: true, message: "Field must be bigger." };
     }
+    else if (input.hasError('max')) {
+      return { hasError: true, message: 'Field must be smaller.' };
+    }
+    else if (input.hasError('dateRangeFromInvalid')) {
+      return { hasError: true, message: '"From" date must be before or equal to "To" date.' };
+    }
+    else if (input.hasError('dateRangeToInvalid')) {
+      return { hasError: true, message: '"To" date must be after or equal to "From" date.' };
+    }
+    else if (input.hasError('priceRangeMinInvalid')) {
+      return { hasError: true, message: '"Min" Price must be less than or equal to "Max".' };
+    }
+    else if (input.hasError('priceRangeMaxInvalid')) {
+      return { hasError: true, message: '"Max" Price must be greater than or equal to "Min".' };
+    }
+    else if (input.hasError('pageAmountRangeMinInvalid')) {
+      return { hasError: true, message: '"Min" Amount must be less than or equal to "Max".' };
+    }
+    else if (input.hasError('pageAmountRangeMaxInvalid')) {
+      return { hasError: true, message: '"Max" Amount must be greater than or equal to "Min".' };
+    }
     return { hasError: false, message: "" };
   }
 }

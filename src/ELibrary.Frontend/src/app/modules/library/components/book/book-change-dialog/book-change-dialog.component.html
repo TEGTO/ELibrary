@@ -37,7 +37,7 @@
             <mat-error
                 *ngIf="validateInputField(stockAmountInput).hasError">{{validateInputField(stockAmountInput).message}}</mat-error>
         </mat-form-field>
-        <div>
+        <div class="form__cover-type">
             <label for="cover">Cover Type</label>
             <div>
                 <mat-radio-group id="cover" formControlName="coverType">

@@ -1,27 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { BookService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { BookFilterRequest, BookResponse, defaultBookFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { BookFilterRequest, BookResponse, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe } from '../../../../../shared';
 
+interface BookItem {
+  id: number;
+  name: string;
+  publicationDate: Date;
+  author: string;
+  genre: string;
+  publisher: string;
+}
 @Component({
   selector: 'app-book-table',
   templateUrl: './book-table.component.html',
   styleUrl: './book-table.component.scss'
 })
-export class BookTableComponent implements OnInit, OnDestroy {
-  items$!: Observable<{
-    id: number,
-    name: string,
-    publicationDate: Date,
-    author: string,
-    genre: string,
-    publisher: string,
-  }[]>;
-  totalAmount$!: Observable<number>;
-  private destroy$ = new Subject<void>();
+export class BookTableComponent implements OnInit {
+  @ViewChild(GenericTableComponent) table!: GenericTableComponent;
 
+  items$!: Observable<BookItem[]>;
+  totalAmount$!: Observable<number>;
+
+  private filterReq: BookFilterRequest = defaultBookFilterRequest();
+  private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Name', field: 'name' },
     { header: 'Publication Date', field: 'publicationDate', pipe: new LocalizedDatePipe(this.localeService.getLocale()) },
@@ -39,23 +43,25 @@ export class BookTableComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.totalAmount$ = this.bookService.getItemTotalAmount(defaultBookFilterRequest());
-    this.pageChange({ pageIndex: 1, pageSize: 10 });
-  }
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.fetchTotalAmount();
+    this.fetchPaginatedItems(this.defaultPagination);
   }
 
-  pageChange(item: any) {
-    const pageParams = item as { pageIndex: number, pageSize: number };
-    const req: BookFilterRequest = {
-      ...defaultBookFilterRequest(),
-      pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize,
-    }
-    this.items$ = this.bookService.getPaginated(req).pipe(
-      map(books => books.slice(0, pageParams.pageSize).map(x => ({
+  private updateFilterPagination(pagination: { pageIndex: number, pageSize: number }): void {
+    this.filterReq = {
+      ...this.filterReq,
+      pageNumber: pagination.pageIndex,
+      pageSize: pagination.pageSize
+    };
+  }
+
+  private fetchTotalAmount(): void {
+    this.totalAmount$ = this.bookService.getItemTotalAmount(this.filterReq);
+  }
+  private fetchPaginatedItems(pagination: { pageIndex: number, pageSize: number }): void {
+    this.updateFilterPagination(pagination);
+    this.items$ = this.bookService.getPaginated(this.filterReq).pipe(
+      map(books => books.slice(0, pagination.pageSize).map(x => ({
         id: x.id,
         name: x.name,
         publicationDate: x.publicationDate,
@@ -69,6 +75,20 @@ export class BookTableComponent implements OnInit, OnDestroy {
       })))
     );
   }
+
+  onPageChange(pagination: { pageIndex: number, pageSize: number }): void {
+    this.fetchPaginatedItems(pagination);
+  }
+
+  filterChange(req: BookFilterRequest): void {
+    if (this.table) {
+      this.table.resetPagination();
+    }
+    this.filterReq = { ...req };
+    this.fetchTotalAmount();
+    this.fetchPaginatedItems(this.defaultPagination);
+  }
+
   createNew() {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Create, this);
   }

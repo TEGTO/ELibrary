@@ -1,19 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { AuthorService, LibraryCommand, LibraryCommandObject, LibraryCommandType, TableColumn } from '../../../../../library';
-import { AuthorResponse, defaultLibraryFilterRequest, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { AuthorResponse, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
 
 @Component({
   selector: 'app-author-table',
   templateUrl: './author-table.component.html',
   styleUrl: './author-table.component.scss'
 })
-export class AuthorTableComponent implements OnInit, OnDestroy {
+export class AuthorTableComponent implements OnInit {
+  @ViewChild(GenericTableComponent) table!: GenericTableComponent;
+
   items$!: Observable<AuthorResponse[]>;
   totalAmount$!: Observable<number>;
-  private destroy$ = new Subject<void>();
 
+  private filterReq: LibraryFilterRequest = defaultLibraryFilterRequest();
+  private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns: TableColumn[] = [
     { header: 'Name', field: 'name' },
     { header: 'Last Name', field: 'lastName' },
@@ -27,35 +30,50 @@ export class AuthorTableComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.totalAmount$ = this.authorService.getItemTotalAmount(defaultLibraryFilterRequest());
-    this.pageChange({ pageIndex: 1, pageSize: 10 });
+    this.fetchTotalAmount();
+    this.fetchPaginatedItems(this.defaultPagination);
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  private updateFilterPagination(pagination: { pageIndex: number, pageSize: number }): void {
+    this.filterReq = {
+      ...this.filterReq,
+      pageNumber: pagination.pageIndex,
+      pageSize: pagination.pageSize
+    };
   }
 
-  pageChange(item: any) {
-    const pageParams = item as { pageIndex: number, pageSize: number };
-    const req: LibraryFilterRequest = {
-      ...defaultLibraryFilterRequest(),
-      pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize,
-    }
-    this.items$ = this.authorService.getPaginated(req).pipe(
-      map(items => items.slice(0, pageParams.pageSize))
+  private fetchTotalAmount(): void {
+    this.totalAmount$ = this.authorService.getItemTotalAmount(this.filterReq);
+  }
+  private fetchPaginatedItems(pagination: { pageIndex: number, pageSize: number }): void {
+    this.updateFilterPagination(pagination);
+    this.items$ = this.authorService.getPaginated(this.filterReq).pipe(
+      map(items => items.slice(0, pagination.pageSize))
     );
   }
-  createNew() {
+
+  onPageChange(pagination: { pageIndex: number, pageSize: number }): void {
+    this.fetchPaginatedItems(pagination);
+  }
+
+  filterChange(req: LibraryFilterRequest): void {
+    if (this.table) {
+      this.table.resetPagination();
+    }
+    this.filterReq = { ...req };
+    this.fetchTotalAmount();
+    this.fetchPaginatedItems(this.defaultPagination);
+  }
+
+  createNew(): void {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Create, this);
   }
-  update(item: any) {
-    const entity = item as AuthorResponse;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Update, this, entity);
+
+  update(item: AuthorResponse): void {
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Update, this, item);
   }
-  delete(item: any) {
-    const entity = item as AuthorResponse;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Delete, this, entity);
+
+  delete(item: AuthorResponse): void {
+    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Delete, this, item);
   }
 }

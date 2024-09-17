@@ -1,6 +1,4 @@
 <ng-container *ngIf="authData$ | async as authData">
-    @if(authData.isAuthenticated)
-    {
     <div class="root">
         <header class="root__header">
             <nav class="w-full shadow-lg bg-zinc-50/90">
@@ -8,9 +6,12 @@
                     class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 shadow-lg bg-slate-200/20">
                     <a routerLink="" class="text-gray-800 font-semibold text-4xl">ELibrary</a>
                     <div class="flex gap-2">
+                        @if (authData.isAuthenticated)
+                        {
                         <button mat-icon-button>
                             <span class="material-icons">shopping_cart</span>
                         </button>
+                        }
                         @if (checkManagerPolicy(authData.roles)) {
                         <a mat-icon-button [href]="'manager'">
                             <span class="material-icons">storefront</span>
@@ -33,8 +34,4 @@
             <router-outlet></router-outlet>
         </body>
     </div>
-    }
-    @else {
-    <app-auth-unauthenticated></app-auth-unauthenticated>
-    }
 </ng-container>

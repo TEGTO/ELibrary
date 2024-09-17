@@ -1,19 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { GenreService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { defaultLibraryFilterRequest, GenreResponse, LibraryFilterRequest } from '../../../../../shared';
+import { defaultLibraryFilterRequest, GenericTableComponent, GenreResponse, LibraryFilterRequest } from '../../../../../shared';
 
 @Component({
   selector: 'app-genre-table',
   templateUrl: './genre-table.component.html',
   styleUrl: './genre-table.component.scss'
 })
-export class GenreTableComponent implements OnDestroy, OnInit {
+export class GenreTableComponent implements OnInit {
+  @ViewChild(GenericTableComponent) table!: GenericTableComponent;
+
   items$!: Observable<GenreResponse[]>;
   totalAmount$!: Observable<number>;
-  private destroy$ = new Subject<void>();
 
+  private filterReq: LibraryFilterRequest = defaultLibraryFilterRequest();
+  private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Name', field: 'name' },
   ];
@@ -24,25 +27,41 @@ export class GenreTableComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.totalAmount$ = this.genreService.getItemTotalAmount(defaultLibraryFilterRequest());
-    this.pageChange({ pageIndex: 1, pageSize: 10 });
-  }
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.fetchTotalAmount();
+    this.fetchPaginatedItems(this.defaultPagination);
   }
 
-  pageChange(item: any) {
-    const pageParams = item as { pageIndex: number, pageSize: number };
-    const req: LibraryFilterRequest = {
-      ...defaultLibraryFilterRequest(),
-      pageNumber: pageParams.pageIndex,
-      pageSize: pageParams.pageSize,
-    }
-    this.items$ = this.genreService.getPaginated(req).pipe(
-      map(items => items.slice(0, pageParams.pageSize))
+  private updateFilterPagination(pagination: { pageIndex: number, pageSize: number }): void {
+    this.filterReq = {
+      ...this.filterReq,
+      pageNumber: pagination.pageIndex,
+      pageSize: pagination.pageSize
+    };
+  }
+
+  private fetchTotalAmount(): void {
+    this.totalAmount$ = this.genreService.getItemTotalAmount(this.filterReq);
+  }
+  private fetchPaginatedItems(pagination: { pageIndex: number, pageSize: number }): void {
+    this.updateFilterPagination(pagination);
+    this.items$ = this.genreService.getPaginated(this.filterReq).pipe(
+      map(items => items.slice(0, pagination.pageSize))
     );
   }
+
+  onPageChange(pagination: { pageIndex: number, pageSize: number }): void {
+    this.fetchPaginatedItems(pagination);
+  }
+
+  filterChange(req: LibraryFilterRequest): void {
+    if (this.table) {
+      this.table.resetPagination();
+    }
+    this.filterReq = { ...req };
+    this.fetchTotalAmount();
+    this.fetchPaginatedItems(this.defaultPagination);
+  }
+
   createNew() {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Create, this);
   }

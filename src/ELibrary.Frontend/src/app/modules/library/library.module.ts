@@ -4,17 +4,20 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorInputComponent, authorReducer, AuthorService, BookChangeDialogComponent, BookControllerService, BookEffects, bookReducer, BookService, GenreChangeDialogComponent, GenreControllerService, GenreEffects, GenreInputComponent, genreReducer, GenreService, LibraryCommand, LibraryCommandService, LibraryDialogManager, LibraryDialogManagerService, PublisherChangeDialogComponent, PublisherControllerService, PublisherEffects, PublisherInputComponent, publisherReducer, PublisherService } from '.';
+import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorInputComponent, authorReducer, AuthorService, BookChangeDialogComponent, BookControllerService, BookEffects, BookFilterComponent, bookReducer, BookService, GenreChangeDialogComponent, GenreControllerService, GenreEffects, GenreInputComponent, genreReducer, GenreService, LibraryCommand, LibraryCommandService, LibraryDialogManager, LibraryDialogManagerService, LibraryFilterComponent, PublisherChangeDialogComponent, PublisherControllerService, PublisherEffects, PublisherInputComponent, publisherReducer, PublisherService } from '.';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,9 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     AuthorInputComponent,
     GenreInputComponent,
     PublisherInputComponent,
+    BookFilterComponent,
+    LibraryFilterComponent,
+
   ],
   imports: [
     MatDialogModule,
@@ -38,8 +44,11 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     CommonModule,
     MatButtonModule,
     MatPaginatorModule,
+    MatSliderModule,
+    MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatExpansionModule,
     MatRadioModule,
     MatAutocompleteModule,
     StoreModule.forFeature('author', authorReducer),
@@ -56,6 +65,6 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     { provide: PublisherService, useClass: PublisherControllerService },
     { provide: LibraryCommand, useClass: LibraryCommandService },
   ],
-  exports: [AuthorChangeDialogComponent, GenreChangeDialogComponent, BookChangeDialogComponent]
+  exports: [AuthorChangeDialogComponent, GenreChangeDialogComponent, BookChangeDialogComponent, BookFilterComponent, LibraryFilterComponent]
 })
 export class LibraryModule { }

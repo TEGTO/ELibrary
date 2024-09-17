@@ -38,6 +38,23 @@ html {
     overflow-y: hidden !important;
 }
 
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #ffffff !important;
+    box-shadow: 2px 2px 7px 1px rgba(0, 0, 0, 0.1);
+}
+
+.cdk-overlay-pane:not(.mat-mdc-autocomplete-panel-above) div.mat-mdc-autocomplete-panel {
+    background-color: #ffffff !important;
+}
+
+// .mat-expansion-panel-header:not([aria-disabled=true]) {
+//     background-color: #ffffff !important;
+// }
+
+// .mat-expansion-panel-body {
+//     background-color: #ffffff !important;
+// }
+
 ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.105);
     border-radius: 20px;

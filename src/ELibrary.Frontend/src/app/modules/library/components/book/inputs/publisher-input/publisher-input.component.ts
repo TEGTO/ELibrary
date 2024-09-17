@@ -14,18 +14,17 @@ export class PublisherInputComponent implements OnInit, OnDestroy, AfterViewInit
   @Input({ required: true }) formGroup!: FormGroup;
   @ViewChild('scroller') publisherScroller!: CdkVirtualScrollViewport;
 
-  readonly itemHeight = 45;
+  readonly itemHeight = 48;
   readonly pageAmount = 12;
   readonly amountItemsInView = 3;
 
-  control = new FormControl();
   publishers: PublisherResponse[] = [];
   publisherPageIndex = 0;
   private fetchedPublisherIds = new Set<number>();
 
   private destroy$ = new Subject<void>();
 
-  get input() { return this.formGroup.get('publisher')!; }
+  get input() { return this.formGroup.get('publisher')! as FormControl; }
   get selectionSize() {
     return this.calculateSelectionSize(this.publishers.length);
   }
@@ -36,8 +35,8 @@ export class PublisherInputComponent implements OnInit, OnDestroy, AfterViewInit
   ) { }
 
   ngOnInit(): void {
-    this.initValueChange();
     this.initializeForm();
+    this.initValueChange();
     this.loadPublishers();
   }
   ngOnDestroy(): void {
@@ -53,34 +52,39 @@ export class PublisherInputComponent implements OnInit, OnDestroy, AfterViewInit
     return this.validateInput.getValidationMessage(input);
   }
   private initValueChange() {
-    this.control.valueChanges.pipe(
+    this.input.valueChanges.pipe(
       takeUntil(this.destroy$),
       debounceTime(50),
       switchMap(value => {
+        const containsName = typeof value === 'string' ? value : '';
         const req = {
           ...defaultLibraryFilterRequest(),
           pageNumber: 1,
           pageSize: this.pageAmount,
-          containsName: value || ''
+          containsName: containsName || ''
         };
         return this.publisherService.getPaginated(req);
       })
     ).subscribe(publishers => {
       this.fetchedPublisherIds = new Set<number>();
+      this.publisherPageIndex = 0;
       this.publishers = this.getUniqueItems(publishers, this.fetchedPublisherIds);
     });
   }
   private initializeForm(): void {
-    this.formGroup.addControl('publisher', new FormControl("", [Validators.required,]));
+    if (!this.formGroup.contains('publisher')) {
+      this.formGroup.addControl('publisher', new FormControl("", [Validators.required]));
+    }
   }
 
   private loadPublishers(): void {
     this.publisherPageIndex++;
+    const containsName = typeof this.input.value === 'string' ? this.input.value : '';
     const req = {
       ...defaultLibraryFilterRequest(),
       pageNumber: this.publisherPageIndex,
       pageSize: this.pageAmount,
-      containsName: this.control.value || ''
+      containsName: containsName || ''
     };
 
     this.publisherService.getPaginated(req).pipe(

@@ -1,7 +1,7 @@
 import { AuthorResponse, GenreResponse, mapAuthorData, PublisherResponse } from "../../../..";
 
 export enum CoverType {
-    Hard = 1, Soft = 2
+    Any = 0, Hard = 1, Soft = 2
 }
 export interface BookResponse {
     id: number;

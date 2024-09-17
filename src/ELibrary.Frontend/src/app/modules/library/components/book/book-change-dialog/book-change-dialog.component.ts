@@ -1,7 +1,6 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
 import { BookResponse, ValidationMessage } from '../../../../shared';
 
 @Component({
@@ -9,10 +8,8 @@ import { BookResponse, ValidationMessage } from '../../../../shared';
   templateUrl: './book-change-dialog.component.html',
   styleUrl: './book-change-dialog.component.scss'
 })
-export class BookChangeDialogComponent implements OnInit, OnDestroy {
+export class BookChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
-
-  private destroy$ = new Subject<void>();
 
   get nameInput() { return this.formGroup.get('name')!; }
   get publicationDateInput() { return this.formGroup.get('publicationDate')!; }
@@ -29,10 +26,6 @@ export class BookChangeDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeForm();
-  }
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

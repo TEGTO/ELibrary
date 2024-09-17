@@ -14,18 +14,17 @@ export class AuthorInputComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input({ required: true }) formGroup!: FormGroup;
   @ViewChild('scroller') authorScroller!: CdkVirtualScrollViewport;
 
-  readonly itemHeight = 45;
+  readonly itemHeight = 48;
   readonly pageAmount = 12;
   readonly amountItemsInView = 3;
 
-  control = new FormControl();
   authors: AuthorResponse[] = [];
   authorPageIndex = 0;
   private fetchedAuthorIds = new Set<number>();
 
   private destroy$ = new Subject<void>();
 
-  get input() { return this.formGroup.get('author')!; }
+  get input() { return this.formGroup.get('author')! as FormControl; }
   get selectionSize() {
     return this.calculateSelectionSize(this.authors.length);
   }
@@ -36,8 +35,8 @@ export class AuthorInputComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.initValueChange();
     this.initializeForm();
+    this.initValueChange();
     this.loadAuthors();
   }
   ngOnDestroy(): void {
@@ -53,36 +52,40 @@ export class AuthorInputComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.validateInput.getValidationMessage(input);
   }
   private initValueChange() {
-    this.control.valueChanges.pipe(
+    this.input.valueChanges.pipe(
       takeUntil(this.destroy$),
       debounceTime(50),
       switchMap(value => {
+        const containsName = typeof value === 'string' ? value : '';
         const req = {
           ...defaultLibraryFilterRequest(),
           pageNumber: 1,
           pageSize: this.pageAmount,
-          containsName: value || ''
+          containsName: containsName
         };
         return this.authorService.getPaginated(req);
       })
     ).subscribe(authors => {
       this.fetchedAuthorIds = new Set<number>();
+      this.authorPageIndex = 0;
       this.authors = this.getUniqueItems(authors, this.fetchedAuthorIds);
     });
   }
   private initializeForm(): void {
-    this.formGroup.addControl('author', new FormControl("", [Validators.required,]));
+    if (!this.formGroup.contains('author')) {
+      this.formGroup.addControl('author', new FormControl("", [Validators.required]));
+    }
   }
 
   private loadAuthors(): void {
     this.authorPageIndex++;
+    const containsName = typeof this.input.value === 'string' ? this.input.value : '';
     const req = {
       ...defaultLibraryFilterRequest(),
       pageNumber: this.authorPageIndex,
       pageSize: this.pageAmount,
-      containsName: this.control.value || ''
+      containsName: containsName || ''
     };
-
     this.authorService.getPaginated(req).pipe(
       takeUntil(this.destroy$)
     ).subscribe(authors => {
@@ -117,6 +120,6 @@ export class AuthorInputComponent implements OnInit, OnDestroy, AfterViewInit {
       : length * this.itemHeight + 5;
   }
   displayWith(author?: AuthorResponse): string {
-    return author ? `${author.name} ${author.lastName}` : '';
+    return author && author?.name && author?.lastName ? `${author.name} ${author.lastName}` : '';
   }
 }

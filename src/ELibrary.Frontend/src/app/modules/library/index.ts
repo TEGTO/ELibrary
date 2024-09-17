@@ -5,10 +5,12 @@ export * from "../shared/components/confirm-menu/confirm-menu.component";
 export * from "../shared/util/tableColumn";
 export * from "./components/author/author-change-dialog/author-change-dialog.component";
 export * from "./components/book/book-change-dialog/book-change-dialog.component";
+export * from "./components/book/book-filter/book-filter.component";
 export * from "./components/book/inputs/author-input/author-input.component";
 export * from "./components/book/inputs/genre-input/genre-input.component";
 export * from "./components/book/inputs/publisher-input/publisher-input.component";
 export * from "./components/genre/genre-change-dialog/genre-change-dialog.component";
+export * from "./components/library-filter/library-filter.component";
 export * from "./components/publisher/publisher-change-dialog/publisher-change-dialog.component";
 export * from "./services/library-command/library-command";
 export * from "./services/library-command/library-command.service";
@@ -28,4 +30,5 @@ export * from "./store/library.actions";
 export * from "./store/library.effects";
 export * from "./store/library.reducer";
 export * from "./store/library.selector";
+export * from "./validators/book/bookValidators";
 

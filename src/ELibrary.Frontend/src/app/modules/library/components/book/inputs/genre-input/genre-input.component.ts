@@ -14,18 +14,17 @@ export class GenreInputComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input({ required: true }) formGroup!: FormGroup;
   @ViewChild('scroller') genreScroller!: CdkVirtualScrollViewport;
 
-  readonly itemHeight = 45;
+  readonly itemHeight = 48;
   readonly pageAmount = 12;
   readonly amountItemsInView = 3;
 
-  control = new FormControl();
   genres: GenreResponse[] = [];
   genrePageIndex = 0;
   private fetchedGenreIds = new Set<number>();
 
   private destroy$ = new Subject<void>();
 
-  get input() { return this.formGroup.get('genre')!; }
+  get input() { return this.formGroup.get('genre')! as FormControl; }
   get selectionSize() {
     return this.calculateSelectionSize(this.genres.length);
   }
@@ -36,8 +35,8 @@ export class GenreInputComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.initValueChange();
     this.initializeForm();
+    this.initValueChange();
     this.loadGenres();
   }
   ngOnDestroy(): void {
@@ -53,34 +52,39 @@ export class GenreInputComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.validateInput.getValidationMessage(input);
   }
   private initValueChange() {
-    this.control.valueChanges.pipe(
+    this.input.valueChanges.pipe(
       takeUntil(this.destroy$),
       debounceTime(50),
       switchMap(value => {
+        const containsName = typeof value === 'string' ? value : '';
         const req = {
           ...defaultLibraryFilterRequest(),
           pageNumber: 1,
           pageSize: this.pageAmount,
-          containsName: value || ''
+          containsName: containsName || ''
         };
         return this.genreService.getPaginated(req);
       })
     ).subscribe(genres => {
       this.fetchedGenreIds = new Set<number>();
+      this.genrePageIndex = 0;
       this.genres = this.getUniqueItems(genres, this.fetchedGenreIds);
     });
   }
   private initializeForm(): void {
-    this.formGroup.addControl('genre', new FormControl("", [Validators.required,]));
+    if (!this.formGroup.contains('genre')) {
+      this.formGroup.addControl('genre', new FormControl("", [Validators.required]));
+    }
   }
 
   private loadGenres(): void {
     this.genrePageIndex++;
+    const containsName = typeof this.input.value === 'string' ? this.input.value : '';
     const req = {
       ...defaultLibraryFilterRequest(),
       pageNumber: this.genrePageIndex,
       pageSize: this.pageAmount,
-      containsName: this.control.value || ''
+      containsName: containsName || ''
     };
 
     this.genreService.getPaginated(req).pipe(

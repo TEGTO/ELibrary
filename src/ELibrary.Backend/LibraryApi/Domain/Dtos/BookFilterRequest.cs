@@ -27,7 +27,7 @@ namespace LibraryApi.Domain.Dtos
             MinPrice = MinPrice ?? decimal.MinValue;
             MaxPrice = MaxPrice ?? decimal.MaxValue;
             CoverType = CoverType ?? LibraryShopEntities.Domain.Entities.Library.CoverType.Any;
-            OnlyInStock = OnlyInStock ?? true;
+            OnlyInStock = OnlyInStock ?? false;
             MinPageAmount = MinPageAmount ?? int.MinValue;
             MaxPageAmount = MaxPageAmount ?? int.MaxValue;
         }
