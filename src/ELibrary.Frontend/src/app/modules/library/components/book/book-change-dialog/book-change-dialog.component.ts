@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BookResponse, ValidationMessage } from '../../../../shared';
+import { BookResponse, CoverType, getDefaultBookResponse, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-change-dialog',
@@ -10,6 +10,7 @@ import { BookResponse, ValidationMessage } from '../../../../shared';
 })
 export class BookChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
+  hasBeenTriedSubmitted = false;
 
   get nameInput() { return this.formGroup.get('name')!; }
   get publicationDateInput() { return this.formGroup.get('publicationDate')!; }
@@ -19,7 +20,7 @@ export class BookChangeDialogComponent implements OnInit {
   get stockAmountInput() { return this.formGroup.get('stockAmount')!; }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private readonly book: BookResponse,
+    @Inject(MAT_DIALOG_DATA) private readonly book: BookResponse | null,
     private readonly dialogRef: MatDialogRef<BookChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -34,12 +35,15 @@ export class BookChangeDialogComponent implements OnInit {
   }
   initializeForm(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(this.book.name, [Validators.required, Validators.maxLength(256)]),
-      publicationDate: new FormControl(this.book.publicationDate, [Validators.required]),
-      price: new FormControl(this.book.price, [Validators.required, Validators.min(0)]),
-      coverType: new FormControl(this.book.coverType, [Validators.required]),
-      pageAmount: new FormControl(this.book.pageAmount, [Validators.required, Validators.min(1)]),
-      stockAmount: new FormControl(this.book.stockAmount, [Validators.required, Validators.min(0)]),
+      name: new FormControl(this.book?.name, [Validators.required, Validators.maxLength(256)]),
+      publicationDate: new FormControl(this.book?.publicationDate ?? new Date(), [Validators.required]),
+      price: new FormControl(this.book?.price, [Validators.required, Validators.min(0)]),
+      coverType: new FormControl(this.book?.coverType ?? CoverType.Hard, [Validators.required]),
+      pageAmount: new FormControl(this.book?.pageAmount, [Validators.required, Validators.min(1)]),
+      stockAmount: new FormControl(this.book?.stockAmount, [Validators.required, Validators.min(0)]),
+      author: new FormControl(this.book?.author, [Validators.required]),
+      genre: new FormControl(this.book?.genre, [Validators.required]),
+      publisher: new FormControl(this.book?.publisher, [Validators.required]),
     });
   }
 
@@ -47,8 +51,8 @@ export class BookChangeDialogComponent implements OnInit {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
 
-      const updatedBook: BookResponse = {
-        id: this.book.id,
+      const book: BookResponse = {
+        id: this.book ? this.book.id : getDefaultBookResponse().id,
         name: formValues.name,
         publicationDate: formValues.publicationDate,
         price: formValues.price,
@@ -60,7 +64,8 @@ export class BookChangeDialogComponent implements OnInit {
         publisher: formValues.genre,
       };
 
-      this.dialogRef.close(updatedBook);
+      this.dialogRef.close(book);
     }
+    this.hasBeenTriedSubmitted = true;
   }
 }

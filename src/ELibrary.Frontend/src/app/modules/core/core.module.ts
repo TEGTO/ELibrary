@@ -22,13 +22,16 @@ const routes: Routes = [
   {
     path: "", component: MainViewComponent,
     children: [
-      // { path: "", loadChildren: () => import('../library/library.module').then(m => m.LibraryModule) }
       {
         path: "manager",
         loadChildren: () => import('../manager/manager.module').then(m => m.ManagerModule),
         canActivate: [RoleGuard],
         data: { policy: [PolicyType.ManagerPolicy] }
-      }
+      },
+      {
+        path: "",
+        loadChildren: () => import('../client/client.module').then(m => m.ClientModule),
+      },
     ],
   },
   { path: '**', redirectTo: '' }

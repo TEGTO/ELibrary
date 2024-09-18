@@ -8,7 +8,7 @@ import { AuthorResponse, BookResponse, GenreResponse, PublisherResponse } from "
 })
 export abstract class LibraryDialogManager {
     abstract openConfirmMenu(): MatDialogRef<any>;
-    abstract openBookDetailsMenu(book: BookResponse): MatDialogRef<any>;
+    abstract openBookDetailsMenu(book: BookResponse | null): MatDialogRef<any>;
     abstract openAuthorDetailsMenu(author: AuthorResponse): MatDialogRef<any>;
     abstract openGenreDetailsMenu(genre: GenreResponse): MatDialogRef<any>;
     abstract openPublisherDetailsMenu(publisher: PublisherResponse): MatDialogRef<any>;

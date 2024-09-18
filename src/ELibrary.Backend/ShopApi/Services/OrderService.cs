@@ -16,6 +16,11 @@ namespace ShopApi.Services
 
         #region IOrderService Members
 
+        public async Task<Order?> GetOrderByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
+            return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
         public async Task<IEnumerable<Order>> GetPaginatedAsync(PaginationRequest pagination, CancellationToken cancellationToken)
         {
             List<Order> orders = new List<Order>();
@@ -57,7 +62,7 @@ namespace ShopApi.Services
         {
             var bookIds = new List<int>();
 
-            if (order.OrderStatus == OrderStatus.InProcessing && order.Books.Count > 0)
+            if (order.Books.Count > 0)
             {
                 bookIds.AddRange(order.Books.Select(b => b.Id));
             }

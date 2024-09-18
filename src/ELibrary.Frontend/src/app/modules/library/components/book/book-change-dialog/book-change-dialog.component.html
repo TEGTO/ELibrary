@@ -43,9 +43,12 @@
                 <mat-radio-group id="cover" formControlName="coverType">
                     <mat-radio-button [value]="1">Hard</mat-radio-button>
                     <mat-radio-button [value]="2">Soft</mat-radio-button>
+                    <mat-error
+                        *ngIf="(coverTypeInput).hasError">{{validateInputField(coverTypeInput).message}}</mat-error>
                 </mat-radio-group>
             </div>
         </div>
+        <mat-error *ngIf="hasBeenTriedSubmitted">Make sure the Author, Genre, and Publisher fields are set.</mat-error>
         <app-author-input [formGroup]="formGroup"></app-author-input>
         <app-genre-input [formGroup]="formGroup"></app-genre-input>
         <app-publisher-input [formGroup]="formGroup"></app-publisher-input>

@@ -9,6 +9,8 @@ export * from "./services/authentication-dialog-manager/authentication-dialog-ma
 export * from "./services/authentication-dialog-manager/authentication-dialog-manager.service";
 export * from "./services/authentication-service/authentication-controller.service";
 export * from "./services/authentication-service/authentication-service";
+export * from "./services/authentication-validation-message/authentication-validation-message";
+export * from "./services/authentication-validation-message/authentication-validation-message.service";
 export * from "./store/auth/auth.actions";
 export * from "./store/auth/auth.effects";
 export * from "./store/auth/auth.reducer";

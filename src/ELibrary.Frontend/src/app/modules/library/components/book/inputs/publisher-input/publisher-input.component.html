@@ -3,8 +3,8 @@
     <input type="text" placeholder="Select Publisher" matInput [formControl]="input" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
         <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" [style.height.px]="selectionSize">
-            <mat-option *cdkVirtualFor="let publisher of publishers" [value]="publisher">
-                {{ publisher.name }}
+            <mat-option *cdkVirtualFor="let item of items; trackBy: trackByPublisher" [value]="item">
+                {{ item.name }}
             </mat-option>
         </cdk-virtual-scroll-viewport>
     </mat-autocomplete>

@@ -87,7 +87,6 @@ namespace LibraryApi.Services
         {
             if (req is BookFilterRequest bookFilter)
             {
-                bookFilter.ApplyDefaults();
                 if (bookFilter.OnlyInStock.HasValue && bookFilter.OnlyInStock.Value)
                 {
                     query = query.Where(b => b.StockAmount > 0);
@@ -108,20 +107,34 @@ namespace LibraryApi.Services
                 {
                     query = query.Where(b => b.PublisherId == bookFilter.PublisherId.Value);
                 }
-                if (bookFilter.CoverType != CoverType.Any)
+                if (bookFilter.CoverType.HasValue && bookFilter.CoverType != CoverType.Any)
                 {
                     query = query.Where(b => b.CoverType == bookFilter.CoverType);
                 }
-
-                query = query.Where(b => b.PublicationDate >= bookFilter.PublicationFromUTC
-                                         && b.PublicationDate <= bookFilter.PublicationToUTC);
-
-                query = query.Where(b => b.Price >= bookFilter.MinPrice
-                                         && b.Price <= bookFilter.MaxPrice);
-
-                query = query.Where(b => b.PageAmount >= bookFilter.MinPageAmount
-                                         && b.PageAmount <= bookFilter.MaxPageAmount);
-
+                if (bookFilter.PublicationFromUTC.HasValue)
+                {
+                    query = query.Where(b => b.PublicationDate >= bookFilter.PublicationFromUTC);
+                }
+                if (bookFilter.PublicationToUTC.HasValue)
+                {
+                    query = query.Where(b => b.PublicationDate <= bookFilter.PublicationToUTC);
+                }
+                if (bookFilter.MinPrice.HasValue)
+                {
+                    query = query.Where(b => b.Price >= bookFilter.MinPrice);
+                }
+                if (bookFilter.MaxPrice.HasValue)
+                {
+                    query = query.Where(b => b.Price <= bookFilter.MaxPrice);
+                }
+                if (bookFilter.MinPageAmount.HasValue)
+                {
+                    query = query.Where(b => b.PageAmount >= bookFilter.MinPageAmount);
+                }
+                if (bookFilter.MaxPageAmount.HasValue)
+                {
+                    query = query.Where(b => b.PageAmount <= bookFilter.MaxPageAmount);
+                }
                 return query;
             }
             else

@@ -116,13 +116,17 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var client = new Client { Id = "test-client-id" };
-            var updateRequest = new UpdateOrderRequest { Id = 1, DeliveryAddress = "Updated Address" };
+            var updateRequest = new PatchOrderRequest { Id = 1, DeliveryAddress = "Updated Address" };
             var order = new Order { Id = 1, ClientId = "test-client-id", DeliveryAddress = "Updated Address" };
+            var expectedResponse = new OrderResponse { Id = 1, DeliveryAddress = "Updated Address" };
             mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(client);
             mockOrderService.Setup(os => os.CheckOrderAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
+            mockOrderService.Setup(os => os.GetOrderByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(order);
             mockMapper.Setup(m => m.Map<Order>(updateRequest)).Returns(order);
+            mockMapper.Setup(m => m.Map<OrderResponse>(It.IsAny<Order>())).Returns(expectedResponse);
             mockOrderService.Setup(os => os.UpdateOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(order);
             // Act
@@ -130,7 +134,7 @@ namespace ShopApi.Controllers.Tests
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(order));
+            Assert.That(okResult?.Value, Is.EqualTo(expectedResponse));
         }
         [Test]
         public async Task UpdateOrder_ReturnsBadRequest_WhenOrderNotFound()
@@ -142,7 +146,7 @@ namespace ShopApi.Controllers.Tests
             mockOrderService.Setup(os => os.CheckOrderAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
             // Act
-            var result = await orderController.UpdateOrder(new UpdateOrderRequest { Id = 1 }, CancellationToken.None);
+            var result = await orderController.UpdateOrder(new PatchOrderRequest { Id = 1 }, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
             var badRequestResult = result.Result as BadRequestObjectResult;

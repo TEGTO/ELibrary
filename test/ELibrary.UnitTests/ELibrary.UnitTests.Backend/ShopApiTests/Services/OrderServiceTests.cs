@@ -25,6 +25,37 @@ namespace ShopApi.Services.Tests
         }
 
         [Test]
+        public async Task GetOrderByIdAsync_ReturnsOrder_WhenOrderExists()
+        {
+            // Arrange
+            var orderId = 1;
+            var orders = GetDbSetMock(new List<Order>
+            {
+                new Order { Id = orderId, DeliveryAddress = "Address 1" }
+            });
+            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(orders);
+            // Act
+            var result = await orderService.GetOrderByIdAsync(orderId, CancellationToken.None);
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Id, Is.EqualTo(orderId));
+            Assert.That(result.DeliveryAddress, Is.EqualTo("Address 1"));
+        }
+        [Test]
+        public async Task GetOrderByIdAsync_ReturnsNull_WhenOrderDoesNotExist()
+        {
+            // Arrange
+            var orderId = 1;
+            var orders = GetDbSetMock(new List<Order>());
+            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
+                          .ReturnsAsync(orders);
+            // Act
+            var result = await orderService.GetOrderByIdAsync(orderId, CancellationToken.None);
+            // Assert
+            Assert.IsNull(result);
+        }
+        [Test]
         public async Task GetPaginatedAsync_ReturnsPaginatedOrders()
         {
             // Arrange

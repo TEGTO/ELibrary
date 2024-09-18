@@ -1,0 +1,48 @@
+<ng-template #book let-name="name" let-author="author" let-price="price">
+    <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
+        <div class="flex flex-col items-center group">
+            <div class="book__cover transform transition-transform duration-300 ease-in-out group-hover:scale-105">
+                <img class="h-42 w-24" src="../../../../../assets/book_cover_placeholder.png" alt="Book cover"
+                    onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+            </div>
+            <div class="duration-50 ease-in-out group-hover:scale-105 ">
+                <div class="book__name text-gray-700 font-bold truncate-big">
+                    {{ name }}
+                </div>
+                <div class="book__author text-gray-400 truncate-small">
+                    {{ author }}
+                </div>
+            </div>
+        </div>
+        <div class="book__buy w-full flex items-center justify-between">
+            <div class="text-red-500 truncate-small font-bold">
+                {{ applyCurrencyPipe(price) }}
+            </div>
+            <button class="hover:bg-gray-200 py-1 px-1 rounded inline-flex items-center">
+                <span class="material-icons text-green-600">shopping_cart</span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<div class="wrapper bg-zinc-50/60 max-w-screen-lg gap-3 mx-auto p-4">
+    <div class="wrapper__body w-full">
+        <app-book-filter (filterChange)="filterChange($event)"></app-book-filter>
+        <div class="bg-zinc-50 body__products">
+            <ng-container *ngIf="items$ | async as items">
+                <ng-container *ngIf="totalAmount$ | async as totalAmount">
+                    <div class="products-grid">
+                        <ng-container *ngFor="let item of items">
+                            <div
+                                *ngTemplateOutlet="book; context: { name: item.name, author: item.author.name + ' '+ item.author.lastName, price: item.price}">
+                            </div>
+                        </ng-container>
+                    </div>
+                    <mat-paginator class="!bg-zinc-50" [length]="totalAmount" [pageSize]="pageSize"
+                        [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
+                    </mat-paginator>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>

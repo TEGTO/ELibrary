@@ -61,8 +61,8 @@ namespace ShopApi.Controllers
 
             return Created($"", mapper.Map<OrderResponse>(response));
         }
-        [HttpPut]
-        public async Task<ActionResult<OrderResponse>> UpdateOrder([FromBody] UpdateOrderRequest request, CancellationToken cancellationToken)
+        [HttpPatch]
+        public async Task<ActionResult<OrderResponse>> UpdateOrder([FromBody] PatchOrderRequest request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
@@ -72,8 +72,11 @@ namespace ShopApi.Controllers
             }
 
             var order = mapper.Map<Order>(request);
+            var orderInService = await orderService.GetOrderByIdAsync(order.Id, cancellationToken);
+            order.OrderStatus = orderInService!.OrderStatus;
+
             var response = await orderService.UpdateOrderAsync(order, cancellationToken);
-            return Ok(response);
+            return Ok(mapper.Map<OrderResponse>(response));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id, CancellationToken cancellationToken)
@@ -102,11 +105,11 @@ namespace ShopApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPut("manager")]
-        public async Task<IActionResult> ManagerUpdateOrder([FromBody] UpdateOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderResponse>> ManagerUpdateOrder([FromBody] UpdateOrderRequest request, CancellationToken cancellationToken)
         {
             var order = mapper.Map<Order>(request);
             var response = await orderService.UpdateOrderAsync(order, cancellationToken);
-            return Ok(response);
+            return Ok(mapper.Map<OrderResponse>(response));
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpDelete("manager/{id}")]

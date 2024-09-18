@@ -55,6 +55,12 @@ html {
 //     background-color: #ffffff !important;
 // }
 
+.wrapper {
+    border: rgba(255, 255, 255, 0.1) 10px solid !important;
+    border-radius: 10px !important;
+    box-shadow: 4px 4px 16px 8px rgba(0, 0, 0, 0.2);
+}
+
 ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.105);
     border-radius: 20px;

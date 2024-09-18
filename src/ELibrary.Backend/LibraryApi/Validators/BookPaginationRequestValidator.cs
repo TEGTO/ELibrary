@@ -10,8 +10,8 @@ namespace LibraryApi.Validators
             RuleFor(x => x.ContainsName).NotNull().MaximumLength(256);
             RuleFor(x => x.PageNumber).NotNull().GreaterThanOrEqualTo(0);
             RuleFor(x => x.PageSize).NotNull().GreaterThanOrEqualTo(0);
-            RuleFor(x => x.PublicationFromUTC).LessThanOrEqualTo(x => x.PublicationToUTC).When(x => x.PublicationFromUTC != null && x.PublicationFromUTC != null);
-            RuleFor(x => x.PublicationToUTC).GreaterThanOrEqualTo(x => x.PublicationFromUTC).When(x => x.PublicationFromUTC != null && x.PublicationFromUTC != null);
+            RuleFor(x => x.PublicationFromUTC).LessThanOrEqualTo(x => x.PublicationToUTC).When(x => x.PublicationFromUTC != null && x.PublicationToUTC != null);
+            RuleFor(x => x.PublicationToUTC).GreaterThanOrEqualTo(x => x.PublicationFromUTC).When(x => x.PublicationFromUTC != null && x.PublicationToUTC != null);
             RuleFor(x => x.MinPrice).LessThanOrEqualTo(x => x.MaxPrice).When(x => x.MinPrice != null && x.MaxPrice != null);
             RuleFor(x => x.MinPrice).GreaterThanOrEqualTo(0).When(x => x.MinPrice != null);
             RuleFor(x => x.MaxPrice).GreaterThanOrEqualTo(x => x.MinPrice).When(x => x.MinPrice != null && x.MaxPrice != null);

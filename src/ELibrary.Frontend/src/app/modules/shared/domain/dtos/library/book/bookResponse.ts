@@ -1,4 +1,4 @@
-import { AuthorResponse, GenreResponse, mapAuthorData, PublisherResponse } from "../../../..";
+import { AuthorResponse, GenreResponse, getDefaultAuthorResponse, getDefaultGenreResponse, getDefaultPublisherResponse, mapAuthorData, PublisherResponse } from "../../../..";
 
 export enum CoverType {
     Any = 0, Hard = 1, Soft = 2
@@ -28,22 +28,11 @@ export function getDefaultBookResponse(): BookResponse {
         name: "",
         publicationDate: new Date(),
         price: 0,
-        coverType: 1,
+        coverType: CoverType.Hard,
         pageAmount: 0,
         stockAmount: 0,
-        author: {
-            id: 0,
-            name: "",
-            lastName: "",
-            dateOfBirth: new Date(),
-        },
-        genre: {
-            id: 0,
-            name: ""
-        },
-        publisher: {
-            id: 0,
-            name: ""
-        }
+        author: getDefaultAuthorResponse(),
+        genre: getDefaultGenreResponse(),
+        publisher: getDefaultPublisherResponse()
     }
 }

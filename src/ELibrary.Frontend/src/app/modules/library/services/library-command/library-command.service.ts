@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { AuthorService, BookService, GenreService, LibraryDialogManager, PublisherService } from '../..';
-import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, BookResponse, bookToCreateRequest, bookToUpdateRequest, GenreResponse, genreToCreateRequest, genreToUpdateRequest, getDefaultAuthorResponse, getDefaultBookResponse, getDefaultGenreResponse, getDefaultPublisherResponse, PublisherResponse, publisherToCreateRequest, publisherToUpdateRequest } from '../../../shared';
+import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, BookResponse, bookToCreateRequest, bookToUpdateRequest, GenreResponse, genreToCreateRequest, genreToUpdateRequest, getDefaultAuthorResponse, getDefaultGenreResponse, getDefaultPublisherResponse, PublisherResponse, publisherToCreateRequest, publisherToUpdateRequest } from '../../../shared';
 import { LibraryCommand, LibraryCommandObject, LibraryCommandType } from './library-command';
 
 @Injectable({
@@ -218,12 +218,11 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#region  Book
 
   private createBook(dispatchedFrom: any, params: any[]) {
-    const book: BookResponse = getDefaultBookResponse();
-
-    this.dialogManager.openBookDetailsMenu(book).afterClosed().pipe(
+    this.dialogManager.openBookDetailsMenu(null).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(book => {
       if (book) {
+        console.log(book);
         const req = bookToCreateRequest(book);
         this.bookService.create(req);
       }
@@ -231,8 +230,12 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
     });
   }
   private updateBook(dispatchedFrom: any, book: BookResponse, params: any[]) {
-    this.dialogManager.openBookDetailsMenu(book).afterClosed().pipe(
-      takeUntil(this.destroy$)
+
+    this.bookService.getById(book.id).pipe(
+      takeUntil(this.destroy$),
+      switchMap((response) => {
+        return this.dialogManager.openBookDetailsMenu(response).afterClosed();
+      })
     ).subscribe(book => {
       if (book) {
         const req = bookToUpdateRequest(book);

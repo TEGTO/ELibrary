@@ -15,21 +15,5 @@ namespace LibraryApi.Domain.Dtos
         public int? AuthorId { get; set; }
         public int? GenreId { get; set; }
         public int? PublisherId { get; set; }
-
-        public BookFilterRequest()
-        {
-            ApplyDefaults();
-        }
-        public void ApplyDefaults()
-        {
-            PublicationFromUTC = PublicationFromUTC ?? DateTime.MinValue;
-            PublicationToUTC = PublicationToUTC ?? DateTime.MaxValue;
-            MinPrice = MinPrice ?? decimal.MinValue;
-            MaxPrice = MaxPrice ?? decimal.MaxValue;
-            CoverType = CoverType ?? LibraryShopEntities.Domain.Entities.Library.CoverType.Any;
-            OnlyInStock = OnlyInStock ?? false;
-            MinPageAmount = MinPageAmount ?? int.MinValue;
-            MaxPageAmount = MaxPageAmount ?? int.MaxValue;
-        }
     }
 }
