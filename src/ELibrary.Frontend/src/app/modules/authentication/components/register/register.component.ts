@@ -18,10 +18,6 @@ export class RegisterComponent implements OnInit {
   get passwordInput() { return this.formGroup.get('password')!; }
   get passwordConfirmInput() { return this.formGroup.get('passwordConfirm')!; }
 
-  get validateEmailInput() { return this.validateInput.getEmailValidationMessage(this.emailInput); }
-  get validatePassword() { return this.validateInput.getPasswordValidationMessage(this.passwordInput); }
-  get validateConfirmPassword() { return this.validateInput.getConfirmPasswordValidationMessage(this.passwordConfirmInput); }
-
   constructor(
     private readonly authCommand: AuthenticationCommand,
     private readonly dialogRef: MatDialogRef<RegisterComponent>,

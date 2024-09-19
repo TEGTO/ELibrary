@@ -19,9 +19,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   get loginInput() { return this.formGroup.get('login')!; }
   get passwordInput() { return this.formGroup.get('password')!; }
 
-  get validateLoginInput() { return this.validateInput.getEmailValidationMessage(this.loginInput); }
-  get validatePassword() { return this.validateInput.getPasswordValidationMessage(this.passwordInput); }
-
   constructor(
     private readonly authDialogManager: AuthenticationDialogManager,
     private readonly authCommand: AuthenticationCommand,
