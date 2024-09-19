@@ -8,7 +8,7 @@ export interface AuthData {
     roles: string[];
 }
 
-export function getAuthDataFromAuthResponse(response: UserAuthenticationResponse): AuthData {
+export function mapAuthResponseToAuthData(response: UserAuthenticationResponse): AuthData {
     return {
         isAuthenticated: true,
         accessToken: response.authToken.accessToken,

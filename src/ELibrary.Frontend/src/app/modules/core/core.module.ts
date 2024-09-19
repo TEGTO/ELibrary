@@ -15,6 +15,7 @@ import { AppComponent, MainViewComponent } from '.';
 import { AuthInterceptor } from '../authentication';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { CustomErrorHandler, ErrorHandler, PolicyType, RoleGuard, ValidationMessage, ValidationMessageService } from '../shared';
+import { ShopModule } from '../shop/shop.module';
 
 registerLocaleData(localeUa, 'uk-UA');
 
@@ -50,6 +51,7 @@ const routes: Routes = [
     MatButtonModule,
     MatDialogModule,
     AuthenticationModule,
+    ShopModule,
     MatDialogModule,
     HttpClientModule,
     StoreModule.forRoot({}, {}),

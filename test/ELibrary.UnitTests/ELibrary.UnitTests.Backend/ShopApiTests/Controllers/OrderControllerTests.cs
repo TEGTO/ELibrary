@@ -4,6 +4,7 @@ using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Dtos;
 using ShopApi.Domain.Dtos.Order;
 using ShopApi.Services;
 using System.Security.Claims;
@@ -116,7 +117,7 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var client = new Client { Id = "test-client-id" };
-            var updateRequest = new PatchOrderRequest { Id = 1, DeliveryAddress = "Updated Address" };
+            var updateRequest = new ClientUpdateOrderRequest { Id = 1, DeliveryAddress = "Updated Address" };
             var order = new Order { Id = 1, ClientId = "test-client-id", DeliveryAddress = "Updated Address" };
             var expectedResponse = new OrderResponse { Id = 1, DeliveryAddress = "Updated Address" };
             mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -146,14 +147,14 @@ namespace ShopApi.Controllers.Tests
             mockOrderService.Setup(os => os.CheckOrderAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
             // Act
-            var result = await orderController.UpdateOrder(new PatchOrderRequest { Id = 1 }, CancellationToken.None);
+            var result = await orderController.UpdateOrder(new ClientUpdateOrderRequest { Id = 1 }, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
             var badRequestResult = result.Result as BadRequestObjectResult;
             Assert.That(badRequestResult?.Value, Is.EqualTo("Order is not found!"));
         }
         [Test]
-        public async Task DeleteOrder_ReturnsOk_WhenOrderExists()
+        public async Task ManagerDeleteOrder_ReturnsOk_WhenOrderExists()
         {
             // Arrange
             var client = new Client { Id = "test-client-id" };
@@ -162,25 +163,50 @@ namespace ShopApi.Controllers.Tests
             mockOrderService.Setup(os => os.CheckOrderAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
             // Act
-            var result = await orderController.DeleteOrder(1, CancellationToken.None);
+            var result = await orderController.ManagerDeleteOrder(1, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
         }
         [Test]
-        public async Task DeleteOrder_ReturnsBadRequest_WhenOrderNotFound()
+        public async Task ManagerGetPaginatedOrders_ReturnsOkWithPaginatedOrders()
         {
             // Arrange
-            var client = new Client { Id = "test-client-id" };
-            mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(client);
-            mockOrderService.Setup(os => os.CheckOrderAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
+            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
+            var orders = new List<Order>
+            {
+                new Order { Id = 1, ClientId = "test-client-id", DeliveryAddress = "Address 1" }
+            };
+            var orderResponses = new List<OrderResponse>
+            {
+                new OrderResponse { Id = 1, DeliveryAddress = "Address 1" }
+            };
+            mockOrderService.Setup(os => os.GetPaginatedAsync(It.IsAny<PaginationRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(orders);
+            mockMapper.Setup(m => m.Map<OrderResponse>(It.IsAny<Order>())).Returns(orderResponses.First());
             // Act
-            var result = await orderController.DeleteOrder(1, CancellationToken.None);
+            var result = await orderController.GetPaginatedOrders(paginationRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            var badRequestResult = result as BadRequestObjectResult;
-            Assert.That(badRequestResult?.Value, Is.EqualTo("Order is not found!"));
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(orderResponses));
+        }
+        [Test]
+        public async Task ManagerUpdateOrder_ReturnsOkWithUpdatedOrder()
+        {
+            // Arrange
+            var updateRequest = new ManagerUpdateOrderRequest { Id = 1, DeliveryAddress = "Updated Address" };
+            var order = new Order { Id = 1, ClientId = "test-client-id", DeliveryAddress = "Updated Address" };
+            var orderResponse = new OrderResponse { Id = 1, DeliveryAddress = "Updated Address" };
+            mockMapper.Setup(m => m.Map<Order>(updateRequest)).Returns(order);
+            mockOrderService.Setup(os => os.UpdateOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(order);
+            mockMapper.Setup(m => m.Map<OrderResponse>(order)).Returns(orderResponse);
+            // Act
+            var result = await orderController.ManagerUpdateOrder(updateRequest, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(orderResponse));
         }
     }
 }

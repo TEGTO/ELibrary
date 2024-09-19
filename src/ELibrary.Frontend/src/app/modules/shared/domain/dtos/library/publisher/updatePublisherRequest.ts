@@ -1,12 +1,12 @@
-import { PublisherResponse } from "../../../..";
+import { Publisher } from "../../../..";
 
 export interface UpdatePublisherRequest {
     id: number;
     name: string;
 }
-export function publisherToUpdateRequest(genre: PublisherResponse): UpdatePublisherRequest {
+export function mapPublisherToUpdatePublisherRequest(publisher: Publisher): UpdatePublisherRequest {
     return {
-        id: genre.id,
-        name: genre.name
+        id: publisher.id,
+        name: publisher.name
     }
 }

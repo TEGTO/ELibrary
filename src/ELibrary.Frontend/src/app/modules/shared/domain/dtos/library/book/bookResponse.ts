@@ -1,8 +1,5 @@
-import { AuthorResponse, GenreResponse, getDefaultAuthorResponse, getDefaultGenreResponse, getDefaultPublisherResponse, mapAuthorData, PublisherResponse } from "../../../..";
+import { AuthorResponse, Book, CoverType, GenreResponse, mapAuthorResponseToAuthor, mapGenreResponseToGenre, mapPublisherResponseToPublisher, PublisherResponse } from "../../../..";
 
-export enum CoverType {
-    Any = 0, Hard = 1, Soft = 2
-}
 export interface BookResponse {
     id: number;
     name: string;
@@ -15,24 +12,17 @@ export interface BookResponse {
     genre: GenreResponse;
     publisher: PublisherResponse;
 }
-export function mapBookData(resp: BookResponse): BookResponse {
+export function mapBookResponseToBook(response: BookResponse): Book {
     return {
-        ...resp,
-        publicationDate: new Date(resp.publicationDate),
-        author: mapAuthorData(resp.author)
-    }
-}
-export function getDefaultBookResponse(): BookResponse {
-    return {
-        id: 0,
-        name: "",
-        publicationDate: new Date(),
-        price: 0,
-        coverType: CoverType.Hard,
-        pageAmount: 0,
-        stockAmount: 0,
-        author: getDefaultAuthorResponse(),
-        genre: getDefaultGenreResponse(),
-        publisher: getDefaultPublisherResponse()
+        id: response.id,
+        name: response.name,
+        publicationDate: new Date(response.publicationDate),
+        price: response.price,
+        coverType: response.coverType,
+        pageAmount: response.pageAmount,
+        stockAmount: response.stockAmount,
+        author: mapAuthorResponseToAuthor(response.author),
+        genre: mapGenreResponseToGenre(response.genre),
+        publisher: mapPublisherResponseToPublisher(response.publisher),
     }
 }

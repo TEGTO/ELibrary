@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CreateGenreRequest, GenreResponse, UpdateGenreRequest, URLDefiner } from '../../../..';
+import { CreateGenreRequest, Genre, UpdateGenreRequest, URLDefiner } from '../../../..';
 import { GenreApiService } from './genre-api.service';
 
 describe('GenreApiService', () => {
@@ -35,7 +35,7 @@ describe('GenreApiService', () => {
 
   it('should get genre by id', () => {
     const expectedReq = `/api/genre/1`;
-    const response: GenreResponse = {
+    const response: Genre = {
       id: 1,
       name: 'Fantasy'
     };
@@ -53,7 +53,7 @@ describe('GenreApiService', () => {
   it('should get paginated genres', () => {
     const expectedReq = `/api/genre/pagination`;
     const request = { pageNumber: 1, pageSize: 10 };
-    const response: GenreResponse[] = [
+    const response: Genre[] = [
       { id: 1, name: 'Fantasy' },
       { id: 2, name: 'Science Fiction' }
     ];
@@ -87,7 +87,7 @@ describe('GenreApiService', () => {
     const request: CreateGenreRequest = {
       name: 'Mystery'
     };
-    const response: GenreResponse = {
+    const response: Genre = {
       id: 1,
       name: 'Mystery'
     };
@@ -108,7 +108,7 @@ describe('GenreApiService', () => {
       id: 1,
       name: 'Historical Fiction'
     };
-    const response: GenreResponse = {
+    const response: Genre = {
       id: 1,
       name: 'Mystery'
     };

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class CartAddedMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,18 @@ namespace LibraryApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Authors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,6 +91,8 @@ namespace LibraryApi.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    OrderAmount = table.Column<int>(type: "integer", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
                     DeliveryAddress = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
                     DeliveryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     OrderStatus = table.Column<int>(type: "integer", nullable: false),
@@ -135,33 +149,56 @@ namespace LibraryApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookOrder",
+                name: "CartBooks",
                 columns: table => new
                 {
-                    BooksId = table.Column<int>(type: "integer", nullable: false),
-                    OrderId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    BookAmount = table.Column<int>(type: "integer", nullable: false),
+                    BookId = table.Column<int>(type: "integer", nullable: false),
+                    CartId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookOrder", x => new { x.BooksId, x.OrderId });
+                    table.PrimaryKey("PK_CartBooks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookOrder_Books_BooksId",
-                        column: x => x.BooksId,
+                        name: "FK_CartBooks_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookOrder_Orders_OrderId",
+                        name: "FK_CartBooks_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderBooks",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    BookAmount = table.Column<int>(type: "integer", nullable: false),
+                    BookId = table.Column<int>(type: "integer", nullable: false),
+                    OrderId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderBooks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderBooks_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderBooks_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookOrder_OrderId",
-                table: "BookOrder",
-                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_AuthorId",
@@ -179,10 +216,30 @@ namespace LibraryApi.Migrations
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartBooks_BookId",
+                table: "CartBooks",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartBooks_CartId",
+                table: "CartBooks",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Clients_UserId",
                 table: "Clients",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderBooks_BookId",
+                table: "OrderBooks",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderBooks_OrderId",
+                table: "OrderBooks",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ClientId",
@@ -194,7 +251,13 @@ namespace LibraryApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookOrder");
+                name: "CartBooks");
+
+            migrationBuilder.DropTable(
+                name: "OrderBooks");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Books");

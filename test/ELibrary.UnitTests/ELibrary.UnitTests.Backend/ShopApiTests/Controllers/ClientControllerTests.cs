@@ -123,5 +123,58 @@ namespace ShopApi.Controllers.Tests
             var okResult = result.Result as OkObjectResult;
             Assert.That(okResult.Value, Is.EqualTo(clientResponse));
         }
+        [Test]
+        public async Task AdminCreateClient_ReturnsCreatedWithClientResponse()
+        {
+            // Arrange
+            var createRequest = new CreateClientRequest { Name = "Admin Client" };
+            var client = new Client { UserId = "admin-user-id" };
+            var clientResponse = new ClientResponse { Id = "admin-client-id" };
+            mockMapper.Setup(m => m.Map<Client>(createRequest)).Returns(client);
+            mockClientService.Setup(cs => cs.CreateClientAsync(It.IsAny<Client>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(client);
+            mockMapper.Setup(m => m.Map<ClientResponse>(client)).Returns(clientResponse);
+            // Act
+            var result = await clientController.AdminCreateClient("admin-user-id", createRequest, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<CreatedResult>(result.Result);
+            var createdResult = result.Result as CreatedResult;
+            Assert.That(createdResult.Value, Is.EqualTo(clientResponse));
+        }
+        [Test]
+        public async Task AdminUpdateClient_ReturnsOkWithUpdatedClientResponse()
+        {
+            // Arrange
+            var updateRequest = new UpdateClientRequest { Name = "Updated Admin Client" };
+            var existingClient = new Client { UserId = "admin-user-id" };
+            var updatedClientResponse = new ClientResponse { Id = "admin-client-id" };
+
+            mockMapper.Setup(m => m.Map<Client>(updateRequest)).Returns(existingClient);
+            mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingClient);
+            mockClientService.Setup(cs => cs.UpdateClientAsync(It.IsAny<Client>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingClient);
+            mockMapper.Setup(m => m.Map<ClientResponse>(existingClient)).Returns(updatedClientResponse);
+            // Act
+            var result = await clientController.AdminUpdateClient("admin-user-id", updateRequest, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult.Value, Is.EqualTo(updatedClientResponse));
+        }
+        [Test]
+        public async Task AdminDeleteClient_ReturnsOk()
+        {
+            // Arrange
+            var client = new Client { Id = "admin-client-id", UserId = "admin-user-id" };
+            mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(client);
+            mockClientService.Setup(cs => cs.DeleteClientAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            // Act
+            var result = await clientController.AdminDeleteClient("admin-user-id", CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { BookResponse, CoverType } from "../../../..";
+import { Book, CoverType } from "../../../..";
 
 export interface CreateBookRequest {
     name: string;
@@ -11,7 +11,7 @@ export interface CreateBookRequest {
     genreId: number;
     publisherId: number;
 }
-export function bookToCreateRequest(book: BookResponse): CreateBookRequest {
+export function mapBookToCreateBookRequest(book: Book): CreateBookRequest {
     return {
         name: book.name,
         publicationDate: book.publicationDate,

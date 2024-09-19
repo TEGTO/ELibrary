@@ -1,9 +1,9 @@
-import { UserAuthenticationResponse } from "../../dtos/auth/userAuthenticationResponse";
+import { UserAuthenticationResponse } from "../../dtos/auth/responses/userAuthenticationResponse";
 
 export interface UserData {
     email: string;
 }
-export function getUserFromAuthResponse(response: UserAuthenticationResponse): UserData {
+export function mapAuthResponseToUserData(response: UserAuthenticationResponse): UserData {
     return {
         email: response.email,
     }

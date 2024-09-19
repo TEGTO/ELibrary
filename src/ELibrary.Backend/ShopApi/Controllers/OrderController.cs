@@ -62,7 +62,7 @@ namespace ShopApi.Controllers
             return Created($"", mapper.Map<OrderResponse>(response));
         }
         [HttpPatch]
-        public async Task<ActionResult<OrderResponse>> UpdateOrder([FromBody] PatchOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderResponse>> UpdateOrder([FromBody] ClientUpdateOrderRequest request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
@@ -78,19 +78,6 @@ namespace ShopApi.Controllers
             var response = await orderService.UpdateOrderAsync(order, cancellationToken);
             return Ok(mapper.Map<OrderResponse>(response));
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id, CancellationToken cancellationToken)
-        {
-            var client = await GetClientAsync(cancellationToken);
-
-            if (client == null || !await orderService.CheckOrderAsync(client.Id, id, cancellationToken))
-            {
-                return BadRequest("Order is not found!");
-            }
-
-            await orderService.DeleteOrderAsync(id, cancellationToken);
-            return Ok();
-        }
 
         #endregion
 
@@ -105,7 +92,7 @@ namespace ShopApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPut("manager")]
-        public async Task<ActionResult<OrderResponse>> ManagerUpdateOrder([FromBody] UpdateOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderResponse>> ManagerUpdateOrder([FromBody] ManagerUpdateOrderRequest request, CancellationToken cancellationToken)
         {
             var order = mapper.Map<Order>(request);
             var response = await orderService.UpdateOrderAsync(order, cancellationToken);

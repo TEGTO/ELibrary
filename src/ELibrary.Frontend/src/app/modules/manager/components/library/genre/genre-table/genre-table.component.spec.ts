@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { GenericTableComponent, GenreService, LibraryDialogManager } from '../../../../../library';
-import { GenreResponse } from '../../../../../shared';
+import { Genre } from '../../../../../shared';
 import { GenreTableComponent } from './genre-table.component';
 
 describe('GenreTableComponent', () => {
@@ -83,7 +83,7 @@ describe('GenreTableComponent', () => {
   });
 
   it('should open create dialog and call createGenre on confirmation', () => {
-    const mockGenre: GenreResponse = { id: 0, name: '' };
+    const mockGenre: Genre = { id: 0, name: '' };
     const dialogRef = { afterClosed: () => of(mockGenre) };
     mockDialogManager.openGenreDetailsMenu.and.returnValue(dialogRef as any);
 
@@ -97,7 +97,7 @@ describe('GenreTableComponent', () => {
   });
 
   it('should open update dialog and call updateGenre on confirmation', () => {
-    const mockGenre: GenreResponse = { id: 1, name: 'Updated Name' };
+    const mockGenre: Genre = { id: 1, name: 'Updated Name' };
     const dialogRef = { afterClosed: () => of(mockGenre) };
     mockDialogManager.openGenreDetailsMenu.and.returnValue(dialogRef as any);
 
@@ -111,7 +111,7 @@ describe('GenreTableComponent', () => {
   });
 
   it('should open confirmation dialog and call deleteGenreById on confirmation', () => {
-    const mockGenre: GenreResponse = { id: 1, name: 'Fiction' };
+    const mockGenre: Genre = { id: 1, name: 'Fiction' };
     const dialogRef = { afterClosed: () => of(true) };
     mockDialogManager.openConfirmMenu.and.returnValue(dialogRef as any);
 

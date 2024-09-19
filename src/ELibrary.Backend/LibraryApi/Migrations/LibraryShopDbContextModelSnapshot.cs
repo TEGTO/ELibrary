@@ -22,21 +22,6 @@ namespace LibraryApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BookOrder", b =>
-                {
-                    b.Property<int>("BooksId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("BooksId", "OrderId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("BookOrder");
-                });
-
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Author", b =>
                 {
                     b.Property<int>("Id")
@@ -147,6 +132,47 @@ namespace LibraryApi.Migrations
                     b.ToTable("Publishers");
                 });
 
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Cart", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.CartBook", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
+
+                    b.Property<int>("BookAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CartId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("CartId");
+
+                    b.ToTable("CartBooks");
+                });
+
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Client", b =>
                 {
                     b.Property<string>("Id")
@@ -222,8 +248,14 @@ namespace LibraryApi.Migrations
                     b.Property<DateTime>("DeliveryTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("OrderAmount")
+                        .HasColumnType("integer");
+
                     b.Property<int>("OrderStatus")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -232,19 +264,28 @@ namespace LibraryApi.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("BookOrder", b =>
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.OrderBook", b =>
                 {
-                    b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text");
 
-                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("BookAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderBooks");
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Book", b =>
@@ -274,6 +315,25 @@ namespace LibraryApi.Migrations
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.CartBook", b =>
+                {
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Cart", "Cart")
+                        .WithMany("CartBooks")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Cart");
+                });
+
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Order", b =>
                 {
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Client", "Client")
@@ -285,9 +345,38 @@ namespace LibraryApi.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.OrderBook", b =>
+                {
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Order", "Order")
+                        .WithMany("OrderBooks")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Cart", b =>
+                {
+                    b.Navigation("CartBooks");
+                });
+
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Client", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Order", b =>
+                {
+                    b.Navigation("OrderBooks");
                 });
 #pragma warning restore 612, 618
         }

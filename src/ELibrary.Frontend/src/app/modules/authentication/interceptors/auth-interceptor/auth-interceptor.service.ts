@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { BehaviorSubject, filter, Observable, switchMap, take, throwError } from 'rxjs';
 import { AuthenticationCommand, AuthenticationCommandType, AuthenticationService } from '../..';
-import { AuthData, AuthToken } from '../../../shared';
+import { AuthData, AuthToken, ErrorHandler } from '../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
     private readonly authService: AuthenticationService,
-    private readonly authCommand: AuthenticationCommand
+    private readonly authCommand: AuthenticationCommand,
+    private readonly errorHandler: ErrorHandler
   ) {
     this.authService.getAuthData().subscribe(
       data => {
@@ -32,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
     });
   }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<object>> {
     let authReq = req;
     if (authReq.url.includes('/refresh')) {
       return next.handle(authReq);
@@ -94,6 +96,7 @@ export class AuthInterceptor implements HttpInterceptor {
     try {
       return jwtDecode<JwtPayload>(token);
     } catch (error) {
+      this.errorHandler.handleError(error);
       return null;
     }
   }

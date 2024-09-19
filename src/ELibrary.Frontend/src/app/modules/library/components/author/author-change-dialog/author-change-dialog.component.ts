@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AuthorResponse, minDateValidator, ValidationMessage } from '../../../../shared';
+import { Author, minDateValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-author-change-dialog',
@@ -16,7 +16,7 @@ export class AuthorChangeDialogComponent implements OnInit {
   get dateOfBirthInput() { return this.formGroup.get('dateOfBirth')!; }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public author: AuthorResponse,
+    @Inject(MAT_DIALOG_DATA) public author: Author,
     private dialogRef: MatDialogRef<AuthorChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -37,7 +37,7 @@ export class AuthorChangeDialogComponent implements OnInit {
   sendDetails() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const author: AuthorResponse = {
+      const author: Author = {
         id: this.author.id,
         name: formValues.name,
         lastName: formValues.lastName,

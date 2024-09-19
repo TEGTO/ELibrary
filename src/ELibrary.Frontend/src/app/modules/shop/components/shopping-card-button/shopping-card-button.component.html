@@ -1,0 +1,7 @@
+<div class="cart-container">
+    <button mat-icon-button>
+        <span class="material-icons">shopping_cart</span>
+        <span class="cart-count" *ngIf="cartCount > 0">
+            @if (cartCount <= 99) { {{ cartCount }} } @else { 99+ } </span>
+    </button>
+</div>

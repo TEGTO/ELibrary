@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
 import { deleteUser, deleteUserFailure, deleteUserSuccess, getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
-import { AuthData, AuthenticationApiService, copyAuthTokenToAuthData, getAuthDataFromAuthResponse, getUserFromAuthResponse, LocalStorageService, UserData } from "../../../shared";
+import { AuthData, AuthenticationApiService, copyAuthTokenToAuthData, LocalStorageService, mapAuthResponseToAuthData, mapAuthResponseToUserData, UserData } from "../../../shared";
 
 @Injectable()
 export class AuthEffects {
@@ -21,8 +21,8 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.apiService.registerUser(action.registrationRequest).pipe(
                     map((response) => {
-                        let authData: AuthData = getAuthDataFromAuthResponse(response);
-                        let userData: UserData = getUserFromAuthResponse(response);
+                        const authData: AuthData = mapAuthResponseToAuthData(response);
+                        const userData: UserData = mapAuthResponseToUserData(response);
                         this.localStorage.setItem(this.storageAuthDataKey, JSON.stringify(authData));
                         this.localStorage.setItem(this.storageUserDataKey, JSON.stringify(userData));
                         return registerSuccess({ authData: authData, userData: userData });
@@ -38,8 +38,8 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.apiService.loginUser(action.authRequest).pipe(
                     map((response) => {
-                        let authData: AuthData = getAuthDataFromAuthResponse(response);
-                        let userData: UserData = getUserFromAuthResponse(response);
+                        const authData: AuthData = mapAuthResponseToAuthData(response);
+                        const userData: UserData = mapAuthResponseToUserData(response);
                         this.localStorage.setItem(this.storageAuthDataKey, JSON.stringify(authData));
                         this.localStorage.setItem(this.storageUserDataKey, JSON.stringify(userData));
                         return signInUserSuccess({ authData: authData, userData: userData });
@@ -114,7 +114,7 @@ export class AuthEffects {
     deleteUser$ = createEffect(() =>
         this.actions$.pipe(
             ofType(deleteUser),
-            mergeMap((action) =>
+            mergeMap(() =>
                 this.apiService.deleteUser().pipe(
                     map(() => {
                         return deleteUserSuccess();

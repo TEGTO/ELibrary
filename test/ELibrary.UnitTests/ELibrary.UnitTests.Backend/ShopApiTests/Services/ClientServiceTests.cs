@@ -1,20 +1,21 @@
-﻿using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Entities.Shop;
 using MockQueryable.Moq;
 using Moq;
-using ShopApi.Repositories;
+using Shared.Repositories;
 
 namespace ShopApi.Services.Tests
 {
     [TestFixture]
-    internal class ClientServiceTests
+    public class ClientServiceTests
     {
-        private Mock<IShopDatabaseRepository> mockRepository;
+        private Mock<IDatabaseRepository<LibraryShopDbContext>> mockRepository;
         private ClientService clientService;
 
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new Mock<IShopDatabaseRepository>();
+            mockRepository = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
             clientService = new ClientService(mockRepository.Object);
         }
         private static IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class

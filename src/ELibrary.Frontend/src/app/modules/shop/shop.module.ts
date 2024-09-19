@@ -7,11 +7,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ClientRegistrationComponent } from './components/client/client-registration/client-registration.component';
+import { ClientChangeDialogComponent, ShoppingCardButtonComponent } from '.';
 
 @NgModule({
   declarations: [
-    ClientRegistrationComponent
+    ShoppingCardButtonComponent,
+    ClientChangeDialogComponent
   ],
   imports: [
     CommonModule,
@@ -24,6 +25,6 @@ import { ClientRegistrationComponent } from './components/client/client-registra
     MatDatepickerModule,
     MatNativeDateModule,
   ],
-  exports: [ClientRegistrationComponent],
+  exports: [ShoppingCardButtonComponent],
 })
 export class ShopModule { }

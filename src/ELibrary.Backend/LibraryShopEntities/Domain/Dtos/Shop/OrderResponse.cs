@@ -1,5 +1,4 @@
-﻿using LibraryShopEntities.Domain.Dtos.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
 
 namespace LibraryShopEntities.Domain.Dtos.Shop
 {
@@ -12,6 +11,6 @@ namespace LibraryShopEntities.Domain.Dtos.Shop
         public string DeliveryAddress { get; set; }
         public DateTime DeliveryTime { get; set; }
         public OrderStatus OrderStatus { get; set; }
-        public List<BookResponse> Books { get; set; }
+        public List<BookListingResponse> OrderBooks { get; set; }
     }
 }

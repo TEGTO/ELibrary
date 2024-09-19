@@ -12,7 +12,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { AuthorService, GenreService } from '../../..';
-import { AuthorResponse, BookResponse, GenreResponse } from '../../../../shared';
+import { Author, Book, Genre } from '../../../../shared';
 import { BookChangeDialogComponent } from './book-change-dialog.component';
 
 describe('BookChangeDialogComponent', () => {
@@ -22,7 +22,7 @@ describe('BookChangeDialogComponent', () => {
   let authorService: jasmine.SpyObj<AuthorService>;
   let genreService: jasmine.SpyObj<GenreService>;
 
-  const mockBook: BookResponse = {
+  const mockBook: Book = {
     id: 1,
     name: 'Mock Book',
     publicationDate: new Date('2020-01-01'),
@@ -30,12 +30,12 @@ describe('BookChangeDialogComponent', () => {
     genre: { id: 1, name: 'Fiction' }
   };
 
-  const mockAuthors: AuthorResponse[] = [
+  const mockAuthors: Author[] = [
     { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1970-01-01') },
     { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1980-01-01') }
   ];
 
-  const mockGenres: GenreResponse[] = [
+  const mockGenres: Genre[] = [
     { id: 1, name: 'Fiction' },
     { id: 2, name: 'Non-Fiction' }
   ];

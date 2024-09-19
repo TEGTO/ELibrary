@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { catchError, filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -60,7 +62,7 @@ export class AuthenticationCommandService implements AuthenticationCommand, OnDe
           this.cleanUp();
         }
       }),
-      catchError(err => {
+      catchError(() => {
         this.snackbarManager.openErrorSnackbar(['An error occurred during registration.']);
         this.cleanUp();
         return of();
@@ -85,7 +87,7 @@ export class AuthenticationCommandService implements AuthenticationCommand, OnDe
           this.cleanUp();
         }
       }),
-      catchError(err => {
+      catchError(() => {
         this.snackbarManager.openErrorSnackbar(['An error occurred during authentication.']);
         this.cleanUp();
         return of();
@@ -112,7 +114,7 @@ export class AuthenticationCommandService implements AuthenticationCommand, OnDe
           this.cleanUp();
         }
       }),
-      catchError(err => {
+      catchError(() => {
         this.snackbarManager.openErrorSnackbar(['An error occurred during updating.']);
         this.cleanUp();
         return of();
@@ -120,10 +122,10 @@ export class AuthenticationCommandService implements AuthenticationCommand, OnDe
     ).subscribe();
   }
   private closeDialogIfPresent(params: any[]): void {
-    for (var i = 0; i < params.length; i++) {
-      if (params[i] instanceof MatDialogRef) {
-        params[i].close();
+    params.forEach((param) => {
+      if (param instanceof MatDialogRef) {
+        param.close();
       }
-    }
+    })
   }
 }

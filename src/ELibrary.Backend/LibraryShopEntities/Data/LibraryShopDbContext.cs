@@ -12,6 +12,9 @@ namespace LibraryShopEntities.Data
         public virtual DbSet<Publisher> Publishers { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Cart> Carts { get; set; }
+        public virtual DbSet<CartBook> CartBooks { get; set; }
+        public virtual DbSet<OrderBook> OrderBooks { get; set; }
 
         public LibraryShopDbContext(DbContextOptions options) : base(options)
         {
@@ -20,8 +23,16 @@ namespace LibraryShopEntities.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Order>()
-                .HasMany(e => e.Books)
-                .WithMany();
+                  .HasMany(o => o.OrderBooks)
+                  .WithOne(ob => ob.Order)
+                  .HasForeignKey(ob => ob.OrderId)
+                  .IsRequired();
+
+            modelBuilder.Entity<Cart>()
+              .HasMany(e => e.CartBooks)
+              .WithOne(ob => ob.Cart)
+              .HasForeignKey(ob => ob.CartId)
+              .IsRequired();
         }
     }
 }

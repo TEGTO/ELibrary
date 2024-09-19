@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { AuthorResponse, BookFilterRequest, BookResponse, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, GenreResponse, LibraryFilterRequest, PublisherResponse, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
+import { Author, Book, BookFilterRequest, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, Genre, LibraryFilterRequest, Publisher, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
 
 function createEntityActions<CreateEntityRequest, UpdateEntityRequest, EntityResponse, FilterRequest>(entityName: string) {
     const capitalizedEntityName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
@@ -73,10 +73,10 @@ function createEntityActions<CreateEntityRequest, UpdateEntityRequest, EntityRes
     };
 }
 
-export const authorActions = createEntityActions<CreateAuthorRequest, UpdateAuthorRequest, AuthorResponse, LibraryFilterRequest>('author');
+export const authorActions = createEntityActions<CreateAuthorRequest, UpdateAuthorRequest, Author, LibraryFilterRequest>('author');
 
-export const genreActions = createEntityActions<CreateGenreRequest, UpdateGenreRequest, GenreResponse, LibraryFilterRequest>('genre');
+export const genreActions = createEntityActions<CreateGenreRequest, UpdateGenreRequest, Genre, LibraryFilterRequest>('genre');
 
-export const publisherActions = createEntityActions<CreatePublisherRequest, UpdatePublisherRequest, PublisherResponse, LibraryFilterRequest>('publisher');
+export const publisherActions = createEntityActions<CreatePublisherRequest, UpdatePublisherRequest, Publisher, LibraryFilterRequest>('publisher');
 
-export const bookActions = createEntityActions<CreateBookRequest, UpdateBookRequest, BookResponse, BookFilterRequest>('book');
+export const bookActions = createEntityActions<CreateBookRequest, UpdateBookRequest, Book, BookFilterRequest>('book');

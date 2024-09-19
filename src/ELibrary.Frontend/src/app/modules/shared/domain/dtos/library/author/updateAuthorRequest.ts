@@ -1,4 +1,4 @@
-import { AuthorResponse } from "./authorResponse";
+import { Author } from "../../../models/library/author";
 
 export interface UpdateAuthorRequest {
     id: number;
@@ -6,7 +6,7 @@ export interface UpdateAuthorRequest {
     lastName: string;
     dateOfBirth: Date;
 }
-export function authorToUpdateRequest(author: AuthorResponse): UpdateAuthorRequest {
+export function mapAuthorToUpdateAuthorRequest(author: Author): UpdateAuthorRequest {
     return {
         id: author.id,
         name: author.name,

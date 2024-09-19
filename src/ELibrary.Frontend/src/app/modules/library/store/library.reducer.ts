@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReducer, on } from "@ngrx/store";
-import { AuthorResponse, BookResponse, GenreResponse, PublisherResponse } from "../../shared";
+import { Author, Book, Genre, Publisher } from "../../shared";
 import { authorActions, bookActions, genreActions, publisherActions } from "./library.actions";
 
 //#region Author
 
 export interface AuthorState {
-    authors: AuthorResponse[],
+    authors: Author[],
     totalAuthorAmount: number,
     error: any
 }
@@ -55,7 +55,7 @@ export const authorReducer = createReducer(
 //#region Genre
 
 export interface GenreState {
-    genres: GenreResponse[],
+    genres: Genre[],
     totalGenreAmount: number,
     error: any
 }
@@ -104,7 +104,7 @@ export const genreReducer = createReducer(
 //#region Publisher
 
 export interface PublisherState {
-    publishers: PublisherResponse[],
+    publishers: Publisher[],
     totalPublisherAmount: number,
     error: any
 }
@@ -153,7 +153,7 @@ export const publisherReducer = createReducer(
 //#region Book
 
 export interface BookState {
-    books: BookResponse[],
+    books: Book[],
     totalBookAmount: number,
     error: any
 }

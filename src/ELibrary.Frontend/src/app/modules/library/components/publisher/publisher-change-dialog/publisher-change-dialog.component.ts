@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { PublisherResponse, ValidationMessage } from '../../../../shared';
+import { Publisher, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-publisher-change-dialog',
@@ -14,7 +14,7 @@ export class PublisherChangeDialogComponent implements OnInit {
   get nameInput() { return this.formGroup.get('name')!; }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public publisher: PublisherResponse,
+    @Inject(MAT_DIALOG_DATA) public publisher: Publisher,
     private dialogRef: MatDialogRef<PublisherChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -33,7 +33,7 @@ export class PublisherChangeDialogComponent implements OnInit {
   sendDetails() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const publisher: PublisherResponse = {
+      const publisher: Publisher = {
         id: this.publisher.id,
         name: formValues.name,
       };

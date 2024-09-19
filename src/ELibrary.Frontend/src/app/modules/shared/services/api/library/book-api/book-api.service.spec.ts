@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { BookResponse, CreateBookRequest, UpdateBookRequest, URLDefiner } from '../../../..';
+import { Book, CreateBookRequest, UpdateBookRequest, URLDefiner } from '../../../..';
 import { BookApiService } from './book-api.service';
 
 describe('BookApiService', () => {
@@ -35,7 +35,7 @@ describe('BookApiService', () => {
 
   it('should get book by id', () => {
     const expectedReq = `/api/book/1`;
-    const response: BookResponse = {
+    const response: Book = {
       id: 1,
       name: 'The Great Gatsby',
       publicationDate: new Date('1925-04-10'),
@@ -56,7 +56,7 @@ describe('BookApiService', () => {
   it('should get paginated books', () => {
     const expectedReq = `/api/book/pagination`;
     const request = { pageNumber: 1, pageSize: 10 };
-    const response: BookResponse[] = [
+    const response: Book[] = [
       { id: 1, name: 'The Great Gatsby', publicationDate: new Date('1925-04-10'), author: { id: 1, name: 'F. Scott Fitzgerald', lastName: 'Fitzgerald', dateOfBirth: new Date('1896-09-24') }, genre: { id: 1, name: 'Classic' } },
       { id: 2, name: 'Moby Dick', publicationDate: new Date('1851-11-14'), author: { id: 2, name: 'Herman Melville', lastName: 'Melville', dateOfBirth: new Date('1819-08-01') }, genre: { id: 2, name: 'Adventure' } }
     ];
@@ -93,7 +93,7 @@ describe('BookApiService', () => {
       authorId: 1,
       genreId: 1
     };
-    const response: BookResponse = {
+    const response: Book = {
       id: 1,
       name: '1984',
       publicationDate: new Date('1949-06-08'),
@@ -120,7 +120,7 @@ describe('BookApiService', () => {
       authorId: 1,
       genreId: 1
     };
-    const response: BookResponse = {
+    const response: Book = {
       id: 1,
       name: '1984',
       publicationDate: new Date('1949-06-08'),

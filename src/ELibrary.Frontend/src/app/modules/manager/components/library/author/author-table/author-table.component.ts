@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AuthorService, LibraryCommand, LibraryCommandObject, LibraryCommandType, TableColumn } from '../../../../../library';
-import { AuthorResponse, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { Author, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
 
 @Component({
   selector: 'app-author-table',
@@ -12,7 +12,7 @@ import { AuthorResponse, defaultLibraryFilterRequest, GenericTableComponent, Lib
 export class AuthorTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;
 
-  items$!: Observable<AuthorResponse[]>;
+  items$!: Observable<Author[]>;
   totalAmount$!: Observable<number>;
 
   private filterReq: LibraryFilterRequest = defaultLibraryFilterRequest();
@@ -69,11 +69,11 @@ export class AuthorTableComponent implements OnInit {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Create, this);
   }
 
-  update(item: AuthorResponse): void {
+  update(item: Author): void {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Update, this, item);
   }
 
-  delete(item: AuthorResponse): void {
+  delete(item: Author): void {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Delete, this, item);
   }
 }

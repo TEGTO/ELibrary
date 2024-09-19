@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { LibraryCommand, LibraryCommandObject, LibraryCommandType, PublisherService } from '../../../../../library';
-import { GenericTableComponent, LibraryFilterRequest, PublisherResponse, defaultLibraryFilterRequest } from '../../../../../shared';
+import { GenericTableComponent, LibraryFilterRequest, Publisher, defaultLibraryFilterRequest } from '../../../../../shared';
 
 @Component({
   selector: 'app-publisher-table',
@@ -12,7 +12,7 @@ import { GenericTableComponent, LibraryFilterRequest, PublisherResponse, default
 export class PublisherTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;
 
-  items$!: Observable<PublisherResponse[]>;
+  items$!: Observable<Publisher[]>;
   totalAmount$!: Observable<number>;
 
   private filterReq: LibraryFilterRequest = defaultLibraryFilterRequest();
@@ -66,11 +66,11 @@ export class PublisherTableComponent implements OnInit {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Publisher, LibraryCommandType.Create, this);
   }
   update(item: any) {
-    const entity = item as PublisherResponse;
+    const entity = item as Publisher;
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Publisher, LibraryCommandType.Update, this, entity);
   }
   delete(item: any) {
-    const entity = item as PublisherResponse;
+    const entity = item as Publisher;
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Publisher, LibraryCommandType.Delete, this, entity);
   }
 }

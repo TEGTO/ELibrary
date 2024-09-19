@@ -1,10 +1,10 @@
-import { PublisherResponse } from "../../../..";
+import { Publisher } from "../../../..";
 
 export interface CreatePublisherRequest {
     name: string;
 }
-export function publisherToCreateRequest(genre: PublisherResponse): CreatePublisherRequest {
+export function mapPublisherToCreatePublisherRequest(publisher: Publisher): CreatePublisherRequest {
     return {
-        name: genre.name
+        name: publisher.name
     }
 }

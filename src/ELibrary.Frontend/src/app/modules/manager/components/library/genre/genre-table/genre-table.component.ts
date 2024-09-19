@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { GenreService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { defaultLibraryFilterRequest, GenericTableComponent, GenreResponse, LibraryFilterRequest } from '../../../../../shared';
+import { defaultLibraryFilterRequest, GenericTableComponent, Genre, LibraryFilterRequest } from '../../../../../shared';
 
 @Component({
   selector: 'app-genre-table',
@@ -12,7 +12,7 @@ import { defaultLibraryFilterRequest, GenericTableComponent, GenreResponse, Libr
 export class GenreTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;
 
-  items$!: Observable<GenreResponse[]>;
+  items$!: Observable<Genre[]>;
   totalAmount$!: Observable<number>;
 
   private filterReq: LibraryFilterRequest = defaultLibraryFilterRequest();
@@ -66,11 +66,11 @@ export class GenreTableComponent implements OnInit {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Create, this);
   }
   update(item: any) {
-    const entity = item as GenreResponse;
+    const entity = item as Genre;
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Update, this, entity);
   }
   delete(item: any) {
-    const entity = item as GenreResponse;
+    const entity = item as Genre;
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Delete, this, entity);
   }
 }

@@ -1,5 +1,4 @@
-﻿using LibraryShopEntities.Domain.Entities.Library;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryShopEntities.Domain.Entities.Shop
@@ -15,16 +14,14 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.UtcNow;
-        [NotMapped]
-        public int OrderAmount { get => Books.Count; }
-        [NotMapped]
-        public decimal TotalPrice { get => Books.Sum(x => x.Price); }
+        public int OrderAmount { get; set; }
+        public decimal TotalPrice { get; set; }
         [Required]
         [MaxLength(512)]
         public string DeliveryAddress { get; set; } = default!;
         public DateTime DeliveryTime { get; set; }
         public OrderStatus OrderStatus { get; set; }
-        public List<Book> Books { get; set; } = new List<Book>();
+        public List<OrderBook> OrderBooks { get; set; } = new List<OrderBook>();
         [Required]
         public string ClientId { get; set; } = default!;
         public Client Client { get; set; } = default!;
