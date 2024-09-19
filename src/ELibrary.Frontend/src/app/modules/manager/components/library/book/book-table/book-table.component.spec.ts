@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { BookService, GenericTableComponent, LibraryDialogManager } from '../../../../../library';
-import { BookResponse } from '../../../../../shared';
+import { Book } from '../../../../../shared';
 import { BookTableComponent } from './book-table.component';
 
 describe('BookTableComponent', () => {
@@ -12,7 +12,7 @@ describe('BookTableComponent', () => {
   let mockDialogManager: jasmine.SpyObj<LibraryDialogManager>;
   let mockBookService: jasmine.SpyObj<BookService>;
 
-  const mockItems: BookResponse[] = [
+  const mockItems: Book[] = [
     { id: 1, name: 'Book One', publicationDate: new Date('2022-01-01'), author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() }, genre: { id: 1, name: 'Fiction' } },
     { id: 2, name: 'Book Two', publicationDate: new Date('2023-01-01'), author: { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date() }, genre: { id: 2, name: 'Non-Fiction' } }
   ];
@@ -103,7 +103,7 @@ describe('BookTableComponent', () => {
   });
 
   it('should open create dialog and call createBook on confirmation', () => {
-    const mockBook: BookResponse = {
+    const mockBook: Book = {
       id: 0,
       name: '',
       publicationDate: new Date(),
@@ -123,7 +123,7 @@ describe('BookTableComponent', () => {
   });
 
   it('should open update dialog and call updateBook on confirmation', () => {
-    const mockBook: BookResponse = {
+    const mockBook: Book = {
       id: 1,
       name: 'Updated Title',
       publicationDate: new Date('2023-01-01'),
@@ -143,7 +143,7 @@ describe('BookTableComponent', () => {
   });
 
   it('should open confirmation dialog and call deleteBookById on confirmation', () => {
-    const mockBook: BookResponse = mockItems[0];
+    const mockBook: Book = mockItems[0];
     const dialogRef = { afterClosed: () => of(true) };
     mockDialogManager.openConfirmMenu.and.returnValue(dialogRef as any);
 

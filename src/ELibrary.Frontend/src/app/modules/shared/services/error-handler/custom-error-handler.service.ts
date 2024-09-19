@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { ErrorHandler } from './error-handler';
 
@@ -5,6 +6,14 @@ import { ErrorHandler } from './error-handler';
   providedIn: 'root'
 })
 export class CustomErrorHandler implements ErrorHandler {
+  handleError(error: any): string {
+    let errorMessage;
+    if (error.message) {
+      errorMessage = error.message;
+    }
+    console.error(errorMessage);
+    return errorMessage;
+  }
 
   handleApiError(error: any): string {
     let errorMessage;
@@ -22,23 +31,13 @@ export class CustomErrorHandler implements ErrorHandler {
     console.error(errorMessage);
     return errorMessage;
   }
-  handleHubError(error: any): string {
-    let errorMessage;
-    if (error.message) {
-      errorMessage = error.message;
-    }
-    if (!errorMessage) {
-      errorMessage = `An unknown error occurred!`
-    }
-    console.error(errorMessage);
-    return errorMessage;
-  }
+
 }
 
 export function getStatusCodeDescription(statusCode: number): string {
   return HttpStatusCodes[statusCode] || 'Unknown Status Code';
 }
-export const HttpStatusCodes: { [key: number]: string } = {
+export const HttpStatusCodes: Record<number, string> = {
   400: 'Bad Request',
   401: 'Unauthorized',
   403: 'Forbidden',

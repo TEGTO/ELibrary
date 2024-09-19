@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { GenreResponse, ValidationMessage } from '../../../../shared';
+import { Genre, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-genre-change-dialog',
@@ -14,7 +14,7 @@ export class GenreChangeDialogComponent implements OnInit {
   get nameInput() { return this.formGroup.get('name')!; }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public genre: GenreResponse,
+    @Inject(MAT_DIALOG_DATA) public genre: Genre,
     private dialogRef: MatDialogRef<GenreChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -33,7 +33,7 @@ export class GenreChangeDialogComponent implements OnInit {
   sendDetails() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const genre: GenreResponse = {
+      const genre: Genre = {
         id: this.genre.id,
         name: formValues.name,
       };

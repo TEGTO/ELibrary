@@ -1,10 +1,12 @@
+import { Publisher } from "../../../..";
+
 export interface PublisherResponse {
     id: number;
     name: string;
 }
-export function getDefaultPublisherResponse(): PublisherResponse {
+export function mapPublisherResponseToPublisher(response: PublisherResponse): Publisher {
     return {
-        id: 0,
-        name: "",
+        id: response.id,
+        name: response.name,
     }
 }

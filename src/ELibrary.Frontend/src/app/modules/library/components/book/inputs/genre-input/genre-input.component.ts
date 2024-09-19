@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GenreService } from '../../../..';
-import { GenreResponse, ValidationMessage, defaultLibraryFilterRequest } from '../../../../../shared';
+import { Genre, ValidationMessage, defaultLibraryFilterRequest } from '../../../../../shared';
 import { BaseSelectInputComponent } from "../base-select-input-component/base-select-input-component.component";
 
 @Component({
@@ -9,7 +9,7 @@ import { BaseSelectInputComponent } from "../base-select-input-component/base-se
   templateUrl: './genre-input.component.html',
   styleUrl: './genre-input.component.scss'
 })
-export class GenreInputComponent extends BaseSelectInputComponent<GenreResponse> {
+export class GenreInputComponent extends BaseSelectInputComponent<Genre> {
 
   constructor(
     private readonly genreService: GenreService,
@@ -22,7 +22,7 @@ export class GenreInputComponent extends BaseSelectInputComponent<GenreResponse>
     return 'genre';
   }
 
-  fetchItems(containsName: string, pageIndex: number, pageSize: number): Observable<GenreResponse[]> {
+  fetchItems(containsName: string, pageIndex: number, pageSize: number): Observable<Genre[]> {
     const req = {
       ...defaultLibraryFilterRequest(),
       pageNumber: pageIndex,
@@ -32,11 +32,11 @@ export class GenreInputComponent extends BaseSelectInputComponent<GenreResponse>
     return this.genreService.getPaginated(req);
   }
 
-  displayWith(genre?: GenreResponse): string {
+  displayWith(genre?: Genre): string {
     return genre ? `${genre.name}` : '';
   }
 
-  trackByGenre(index: number, genre: GenreResponse): number {
+  trackByGenre(index: number, genre: Genre): number {
     return genre.id;
   }
 }

@@ -1,5 +1,5 @@
 import { authorActions, bookActions, genreActions } from "..";
-import { AuthorResponse, BookResponse, GenreResponse } from "../../shared";
+import { Author, Book, Genre } from "../../shared";
 import { LibraryState, libraryReducer } from "./library.reducer";
 
 describe('Library Reducer', () => {
@@ -14,7 +14,7 @@ describe('Library Reducer', () => {
     };
 
     it('should handle getPaginatedSuccess for books', () => {
-        const books: BookResponse[] = [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }];
+        const books: Book[] = [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }];
         const action = bookActions.getPaginatedSuccess({ entities: books });
         const newState = libraryReducer(initialState, action);
 
@@ -40,7 +40,7 @@ describe('Library Reducer', () => {
     });
 
     it('should handle createSuccess for books', () => {
-        const newBook: BookResponse = { id: 2, name: 'Book 2', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } };
+        const newBook: Book = { id: 2, name: 'Book 2', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } };
         const action = bookActions.createSuccess({ entity: newBook });
         const newState = libraryReducer(initialState, action);
 
@@ -54,7 +54,7 @@ describe('Library Reducer', () => {
             ...initialState,
             books: [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
         };
-        const updatedBook: BookResponse = {
+        const updatedBook: Book = {
             id: 1,
             name: 'Updated Book 1',
             publicationDate: new Date(),
@@ -85,7 +85,7 @@ describe('Library Reducer', () => {
     // For other entities tests are simmilar
 
     it('should handle getPaginatedSuccess for authors', () => {
-        const authors: AuthorResponse[] = [{ id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }];
+        const authors: Author[] = [{ id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }];
         const action = authorActions.getPaginatedSuccess({ entities: authors });
         const newState = libraryReducer(initialState, action);
 
@@ -94,7 +94,7 @@ describe('Library Reducer', () => {
     });
 
     it('should handle createSuccess for genres', () => {
-        const newGenre: GenreResponse = { id: 2, name: 'Genre 2' };
+        const newGenre: Genre = { id: 2, name: 'Genre 2' };
         const action = genreActions.createSuccess({ entity: newGenre });
         const newState = libraryReducer(initialState, action);
 

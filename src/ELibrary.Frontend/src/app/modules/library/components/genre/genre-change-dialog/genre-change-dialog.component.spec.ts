@@ -4,14 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { GenreResponse } from '../../../../shared';
+import { Genre } from '../../../../shared';
 import { GenreChangeDialogComponent } from './genre-change-dialog.component';
 
 describe('GenreChangeDialogComponent', () => {
   let component: GenreChangeDialogComponent;
   let fixture: ComponentFixture<GenreChangeDialogComponent>;
   let dialogRef: jasmine.SpyObj<MatDialogRef<GenreChangeDialogComponent>>;
-  const mockGenre: GenreResponse = { id: 1, name: 'Horror' };
+  const mockGenre: Genre = { id: 1, name: 'Horror' };
 
   beforeEach(async () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
@@ -64,7 +64,7 @@ describe('GenreChangeDialogComponent', () => {
   });
 
   it('should close dialog with updated genre data on form submission', () => {
-    const updatedGenre: GenreResponse = { id: 1, name: 'Thriller' };
+    const updatedGenre: Genre = { id: 1, name: 'Thriller' };
     component.formGroup.get('name')?.setValue(updatedGenre.name);
 
     component.sendDetails();

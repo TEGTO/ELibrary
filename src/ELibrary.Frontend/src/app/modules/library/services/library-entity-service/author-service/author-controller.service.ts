@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { authorActions, selectAuthorAmount, selectAuthors } from '../../..';
-import { AuthorApiService, AuthorResponse, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from '../../../../shared';
+import { Author, AuthorApiService, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from '../../../../shared';
 import { BaseControllerService } from '../base-entity-service/base-entity.service';
 import { AuthorService } from './author-service';
 
@@ -9,7 +9,7 @@ import { AuthorService } from './author-service';
   providedIn: 'root'
 })
 export class AuthorControllerService extends BaseControllerService<
-  AuthorResponse,
+  Author,
   LibraryFilterRequest,
   CreateAuthorRequest,
   UpdateAuthorRequest

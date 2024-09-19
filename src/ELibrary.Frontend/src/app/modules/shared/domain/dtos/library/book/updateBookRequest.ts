@@ -1,4 +1,4 @@
-import { BookResponse, CoverType } from "../../../..";
+import { Book, CoverType } from "../../../..";
 
 export interface UpdateBookRequest {
     id: number;
@@ -12,7 +12,7 @@ export interface UpdateBookRequest {
     genreId: number;
     publisherId: number;
 }
-export function bookToUpdateRequest(book: BookResponse): UpdateBookRequest {
+export function mapBookToUpdateBookRequest(book: Book): UpdateBookRequest {
     return {
         id: book.id,
         name: book.name,

@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { map, Observable } from 'rxjs';
 import { BookService } from '../../../library';
-import { BookFilterRequest, BookResponse, defaultBookFilterRequest, LocaleService } from '../../../shared';
+import { Book, BookFilterRequest, defaultBookFilterRequest, LocaleService } from '../../../shared';
 
 @Component({
   selector: 'app-product-page',
@@ -13,7 +13,7 @@ import { BookFilterRequest, BookResponse, defaultBookFilterRequest, LocaleServic
 export class ProductPageComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  items$!: Observable<BookResponse[]>;
+  items$!: Observable<Book[]>;
   totalAmount$!: Observable<number>;
 
   currencyPipe!: CurrencyPipe;

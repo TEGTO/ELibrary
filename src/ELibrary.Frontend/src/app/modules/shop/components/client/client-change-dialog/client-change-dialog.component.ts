@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ShopCommand, ShopCommandObject, ShopCommandType } from '../../..';
-import { CreateClientRequest, minDateValidator } from '../../../../shared';
+import { Component, Inject, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Client, minDateValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
-  selector: 'client-registration',
-  templateUrl: './client-registration.component.html',
-  styleUrl: './client-registration.component.scss'
+  selector: 'app-client-change-dialog',
+  templateUrl: './client-change-dialog.component.html',
+  styleUrl: './client-change-dialog.component.scss'
 })
-export class ClientRegistrationComponent implements OnInit {
+export class ClientChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
 
   get nameInput() { return this.formGroup.get('name')!; }
@@ -19,7 +19,11 @@ export class ClientRegistrationComponent implements OnInit {
   get phoneInput() { return this.formGroup.get('phone')!; }
   get emailInput() { return this.formGroup.get('email')!; }
 
-  constructor(private readonly shopCommand: ShopCommand) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public client: Client,
+    private dialogRef: MatDialogRef<ClientChangeDialogComponent>,
+    private readonly validateInput: ValidationMessage
+  ) { }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup(
@@ -34,10 +38,15 @@ export class ClientRegistrationComponent implements OnInit {
       });
   }
 
-  createClient() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validateInputField(input: AbstractControl<any, any>) {
+    return this.validateInput.getValidationMessage(input);
+  }
+  onSubmit() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const req: CreateClientRequest = {
+      const client: Client = {
+        id: this.client.id,
         name: formValues.name,
         middleName: formValues.middleName,
         lastName: formValues.lastName,
@@ -46,7 +55,7 @@ export class ClientRegistrationComponent implements OnInit {
         phone: formValues.phone,
         email: formValues.email,
       };
-      this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Create, this, req);
+      this.dialogRef.close(client);
     }
   }
 }

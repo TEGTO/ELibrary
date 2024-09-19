@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
-import { AuthorResponse, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from "../../../../shared";
+import { Author, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from "../../../../shared";
 import { LibraryEntityService } from "../library-entity-service";
 
 @Injectable({
     providedIn: 'root'
 })
 export abstract class AuthorService extends LibraryEntityService<
-    AuthorResponse,
+    Author,
     LibraryFilterRequest,
     CreateAuthorRequest,
     UpdateAuthorRequest> { }

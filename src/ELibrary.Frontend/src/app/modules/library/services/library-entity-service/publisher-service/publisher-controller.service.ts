@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { publisherActions, selectPublisherAmount, selectPublishers } from '../../..';
-import { CreatePublisherRequest, LibraryFilterRequest, PublisherApiService, PublisherResponse, UpdatePublisherRequest } from '../../../../shared';
+import { CreatePublisherRequest, LibraryFilterRequest, Publisher, PublisherApiService, UpdatePublisherRequest } from '../../../../shared';
 import { BaseControllerService } from '../base-entity-service/base-entity.service';
 import { PublisherService } from './publisher-service';
 
@@ -9,7 +9,7 @@ import { PublisherService } from './publisher-service';
   providedIn: 'root'
 })
 export class PublisherControllerService extends BaseControllerService<
-  PublisherResponse,
+  Publisher,
   LibraryFilterRequest,
   CreatePublisherRequest,
   UpdatePublisherRequest

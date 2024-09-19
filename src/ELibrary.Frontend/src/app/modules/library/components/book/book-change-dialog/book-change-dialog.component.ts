@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BookResponse, CoverType, getDefaultBookResponse, ValidationMessage } from '../../../../shared';
+import { Book, CoverType, getDefaultBook, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-change-dialog',
@@ -20,7 +20,7 @@ export class BookChangeDialogComponent implements OnInit {
   get stockAmountInput() { return this.formGroup.get('stockAmount')!; }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private readonly book: BookResponse | null,
+    @Inject(MAT_DIALOG_DATA) private readonly book: Book | null,
     private readonly dialogRef: MatDialogRef<BookChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -51,8 +51,8 @@ export class BookChangeDialogComponent implements OnInit {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
 
-      const book: BookResponse = {
-        id: this.book ? this.book.id : getDefaultBookResponse().id,
+      const book: Book = {
+        id: this.book ? this.book.id : getDefaultBook().id,
         name: formValues.name,
         publicationDate: formValues.publicationDate,
         price: formValues.price,

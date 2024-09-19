@@ -2,7 +2,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { AuthorApiService, AuthorResponse, BookApiService, BookFilterRequest, BookResponse, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, GenreApiService, GenreResponse, LibraryEntityApi, LibraryFilterRequest, PublisherApiService, PublisherResponse, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
+import { Author, AuthorApiService, Book, BookApiService, BookFilterRequest, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, Genre, GenreApiService, LibraryEntityApi, LibraryFilterRequest, Publisher, PublisherApiService, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
 import { authorActions, bookActions, genreActions, publisherActions } from "./library.actions";
 
 @Injectable()
@@ -75,7 +75,7 @@ export abstract class GenericLibraryEntityEffects<Response, Create, Update, Filt
 }
 
 @Injectable()
-export class AuthorEffects extends GenericLibraryEntityEffects<AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest, LibraryFilterRequest> {
+export class AuthorEffects extends GenericLibraryEntityEffects<Author, CreateAuthorRequest, UpdateAuthorRequest, LibraryFilterRequest> {
     constructor(
         actions$: Actions,
         apiService: AuthorApiService
@@ -85,7 +85,7 @@ export class AuthorEffects extends GenericLibraryEntityEffects<AuthorResponse, C
 }
 
 @Injectable()
-export class GenreEffects extends GenericLibraryEntityEffects<GenreResponse, CreateGenreRequest, UpdateGenreRequest, LibraryFilterRequest> {
+export class GenreEffects extends GenericLibraryEntityEffects<Genre, CreateGenreRequest, UpdateGenreRequest, LibraryFilterRequest> {
     constructor(
         actions$: Actions,
         apiService: GenreApiService
@@ -95,7 +95,7 @@ export class GenreEffects extends GenericLibraryEntityEffects<GenreResponse, Cre
 }
 
 @Injectable()
-export class PublisherEffects extends GenericLibraryEntityEffects<PublisherResponse, CreatePublisherRequest, UpdatePublisherRequest, LibraryFilterRequest> {
+export class PublisherEffects extends GenericLibraryEntityEffects<Publisher, CreatePublisherRequest, UpdatePublisherRequest, LibraryFilterRequest> {
     constructor(
         actions$: Actions,
         apiService: PublisherApiService
@@ -105,7 +105,7 @@ export class PublisherEffects extends GenericLibraryEntityEffects<PublisherRespo
 }
 
 @Injectable()
-export class BookEffects extends GenericLibraryEntityEffects<BookResponse, CreateBookRequest, UpdateBookRequest, BookFilterRequest> {
+export class BookEffects extends GenericLibraryEntityEffects<Book, CreateBookRequest, UpdateBookRequest, BookFilterRequest> {
     constructor(
         actions$: Actions,
         apiService: BookApiService

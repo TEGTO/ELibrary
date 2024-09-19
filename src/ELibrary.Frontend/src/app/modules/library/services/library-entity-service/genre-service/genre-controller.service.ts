@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { genreActions, selectGenreAmount, selectGenres } from '../../..';
-import { CreateGenreRequest, GenreApiService, GenreResponse, LibraryFilterRequest, UpdateGenreRequest } from '../../../../shared';
+import { CreateGenreRequest, Genre, GenreApiService, LibraryFilterRequest, UpdateGenreRequest } from '../../../../shared';
 import { BaseControllerService } from '../base-entity-service/base-entity.service';
 import { GenreService } from './genre-service';
 
@@ -9,7 +9,7 @@ import { GenreService } from './genre-service';
   providedIn: 'root'
 })
 export class GenreControllerService extends BaseControllerService<
-  GenreResponse,
+  Genre,
   LibraryFilterRequest,
   CreateGenreRequest,
   UpdateGenreRequest

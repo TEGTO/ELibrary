@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { AuthorService, GenericTableComponent, LibraryDialogManager } from '../../../../../library';
-import { AuthorResponse } from '../../../../../shared';
+import { Author } from '../../../../../shared';
 import { AuthorTableComponent } from './author-table.component';
 
 describe('AuthorTableComponent', () => {
@@ -12,7 +12,7 @@ describe('AuthorTableComponent', () => {
   let mockDialogManager: jasmine.SpyObj<LibraryDialogManager>;
   let mockAuthorService: jasmine.SpyObj<AuthorService>;
 
-  const mockItems: AuthorResponse[] = [
+  const mockItems: Author[] = [
     { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') },
     { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-01-01') }
   ];
@@ -89,7 +89,7 @@ describe('AuthorTableComponent', () => {
   });
 
   it('should open create dialog and call createAuthor on confirmation', () => {
-    const mockAuthor: AuthorResponse = { id: 0, name: '', lastName: '', dateOfBirth: new Date() };
+    const mockAuthor: Author = { id: 0, name: '', lastName: '', dateOfBirth: new Date() };
     const dialogRef = { afterClosed: () => of(mockAuthor) };
     mockDialogManager.openAuthorDetailsMenu.and.returnValue(dialogRef as any);
 
@@ -103,7 +103,7 @@ describe('AuthorTableComponent', () => {
   });
 
   it('should open update dialog and call updateAuthor on confirmation', () => {
-    const mockAuthor: AuthorResponse = { id: 1, name: 'Updated Name', lastName: 'Updated LastName', dateOfBirth: new Date('1990-01-01') };
+    const mockAuthor: Author = { id: 1, name: 'Updated Name', lastName: 'Updated LastName', dateOfBirth: new Date('1990-01-01') };
     const dialogRef = { afterClosed: () => of(mockAuthor) };
     mockDialogManager.openAuthorDetailsMenu.and.returnValue(dialogRef as any);
 
@@ -117,7 +117,7 @@ describe('AuthorTableComponent', () => {
   });
 
   it('should open confirmation dialog and call deleteAuthorById on confirmation', () => {
-    const mockAuthor: AuthorResponse = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') };
+    const mockAuthor: Author = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') };
     const dialogRef = { afterClosed: () => of(true) };
     mockDialogManager.openConfirmMenu.and.returnValue(dialogRef as any);
 

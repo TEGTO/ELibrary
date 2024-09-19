@@ -4,7 +4,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { AuthorService, BookService, GenreService, LibraryDialogManager, PublisherService } from '../..';
-import { AuthorResponse, authorToCreateRequest, authorToUpdateRequest, BookResponse, bookToCreateRequest, bookToUpdateRequest, GenreResponse, genreToCreateRequest, genreToUpdateRequest, getDefaultAuthorResponse, getDefaultGenreResponse, getDefaultPublisherResponse, PublisherResponse, publisherToCreateRequest, publisherToUpdateRequest } from '../../../shared';
+import { Author, Book, Genre, getDefaultAuthor, getDefaultGenre, getDefaultPublisher, mapAuthorToCreateAuthorRequest, mapAuthorToUpdateAuthorRequest, mapBookToCreateBookRequest, mapBookToUpdateBookRequest, mapGenreToCreateGenreRequest, mapGenreToUpdateGenreRequest, mapPublisherToCreatePublisherRequest, mapPublisherToUpdatePublisherRequest, Publisher } from '../../../shared';
 import { LibraryCommand, LibraryCommandObject, LibraryCommandType } from './library-command';
 
 @Injectable({
@@ -101,30 +101,30 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#region  Author
 
   private createAuthor(dispatchedFrom: any, params: any[]) {
-    const author: AuthorResponse = getDefaultAuthorResponse();
+    const author: Author = getDefaultAuthor();
 
     this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(author => {
       if (author) {
-        const req = authorToCreateRequest(author);
+        const req = mapAuthorToCreateAuthorRequest(author);
         this.authorService.create(req);
       }
       this.cleanUp();
     });
   }
-  private updateAuthor(dispatchedFrom: any, author: AuthorResponse, params: any[]) {
+  private updateAuthor(dispatchedFrom: any, author: Author, params: any[]) {
     this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(author => {
       if (author) {
-        const req = authorToUpdateRequest(author);
+        const req = mapAuthorToUpdateAuthorRequest(author);
         this.authorService.update(req);
       }
       this.cleanUp();
     });
   }
-  private deleteAuthor(dispatchedFrom: any, author: AuthorResponse, params: any[]) {
+  private deleteAuthor(dispatchedFrom: any, author: Author, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(result => {
@@ -140,30 +140,30 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#region Genre
 
   private createGenre(dispatchedFrom: any, params: any[]) {
-    const genre: GenreResponse = getDefaultGenreResponse();
+    const genre: Genre = getDefaultGenre();
 
     this.dialogManager.openGenreDetailsMenu(genre).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(genre => {
       if (genre) {
-        const req = genreToCreateRequest(genre);
+        const req = mapGenreToCreateGenreRequest(genre);
         this.genreService.create(req);
       }
       this.cleanUp();
     });
   }
-  private updateGenre(dispatchedFrom: any, genre: GenreResponse, params: any[]) {
+  private updateGenre(dispatchedFrom: any, genre: Genre, params: any[]) {
     this.dialogManager.openGenreDetailsMenu(genre).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(genre => {
       if (genre) {
-        const req = genreToUpdateRequest(genre);
+        const req = mapGenreToUpdateGenreRequest(genre);
         this.genreService.update(req);
       }
       this.cleanUp();
     });
   }
-  private deleteGenre(dispatchedFrom: any, genre: GenreResponse, params: any[]) {
+  private deleteGenre(dispatchedFrom: any, genre: Genre, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(result => {
@@ -179,30 +179,30 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   //#region  Publisher
 
   private createPublisher(dispatchedFrom: any, params: any[]) {
-    const publisher: PublisherResponse = getDefaultPublisherResponse();
+    const publisher: Publisher = getDefaultPublisher();
 
     this.dialogManager.openPublisherDetailsMenu(publisher).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(publusher => {
       if (publusher) {
-        const req = publisherToCreateRequest(publusher);
+        const req = mapPublisherToCreatePublisherRequest(publusher);
         this.publisherService.create(req);
       }
       this.cleanUp();
     });
   }
-  private updatePublisher(dispatchedFrom: any, publisher: PublisherResponse, params: any[]) {
+  private updatePublisher(dispatchedFrom: any, publisher: Publisher, params: any[]) {
     this.dialogManager.openPublisherDetailsMenu(publisher).afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(publisher => {
       if (publisher) {
-        const req = publisherToUpdateRequest(publisher);
+        const req = mapPublisherToUpdatePublisherRequest(publisher);
         this.publisherService.update(req);
       }
       this.cleanUp();
     });
   }
-  private deletePublisher(dispatchedFrom: any, publisher: PublisherResponse, params: any[]) {
+  private deletePublisher(dispatchedFrom: any, publisher: Publisher, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(result => {
@@ -223,13 +223,13 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
     ).subscribe(book => {
       if (book) {
         console.log(book);
-        const req = bookToCreateRequest(book);
+        const req = mapBookToCreateBookRequest(book);
         this.bookService.create(req);
       }
       this.cleanUp();
     });
   }
-  private updateBook(dispatchedFrom: any, book: BookResponse, params: any[]) {
+  private updateBook(dispatchedFrom: any, book: Book, params: any[]) {
 
     this.bookService.getById(book.id).pipe(
       takeUntil(this.destroy$),
@@ -238,13 +238,13 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
       })
     ).subscribe(book => {
       if (book) {
-        const req = bookToUpdateRequest(book);
+        const req = mapBookToUpdateBookRequest(book);
         this.bookService.update(req);
       }
       this.cleanUp();
     });
   }
-  private deleteBook(dispatchedFrom: any, book: BookResponse, params: any[]) {
+  private deleteBook(dispatchedFrom: any, book: Book, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
       takeUntil(this.destroy$)
     ).subscribe(result => {

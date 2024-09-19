@@ -2,12 +2,11 @@
 
 namespace ShopApi.Domain.Dtos.Order
 {
-    public class UpdateOrderRequest
+    public class ManagerUpdateOrderRequest
     {
         public int Id { get; set; }
         public string DeliveryAddress { get; set; }
         public DateTime DeliveryTime { get; set; }
         public OrderStatus OrderStatus { get; set; }
-        public List<OrderBook> Books { get; set; }
     }
 }

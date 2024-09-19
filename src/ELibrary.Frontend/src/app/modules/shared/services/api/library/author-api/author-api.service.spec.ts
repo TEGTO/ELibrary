@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { AuthorResponse, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest, URLDefiner } from '../../../..';
+import { Author, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest, URLDefiner } from '../../../..';
 import { AuthorApiService } from './author-api.service';
 
 describe('AuthorApiService', () => {
@@ -35,7 +35,7 @@ describe('AuthorApiService', () => {
 
   it('should get author by id', () => {
     const expectedReq = `/api/author/1`;
-    const response: AuthorResponse = {
+    const response: Author = {
       id: 1,
       name: 'John',
       lastName: 'Doe',
@@ -58,7 +58,7 @@ describe('AuthorApiService', () => {
       pageNumber: 1,
       pageSize: 10
     };
-    const response: AuthorResponse[] = [
+    const response: Author[] = [
       { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') },
       { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-05-15') }
     ];
@@ -94,7 +94,7 @@ describe('AuthorApiService', () => {
       lastName: 'Doe',
       dateOfBirth: new Date('1980-01-01')
     };
-    const response: AuthorResponse = {
+    const response: Author = {
       id: 1,
       name: 'John',
       lastName: 'Doe',
@@ -119,7 +119,7 @@ describe('AuthorApiService', () => {
       lastName: 'Doe',
       dateOfBirth: new Date('1980-01-01')
     };
-    const response: AuthorResponse = {
+    const response: Author = {
       id: 1,
       name: 'John',
       lastName: 'Doe',

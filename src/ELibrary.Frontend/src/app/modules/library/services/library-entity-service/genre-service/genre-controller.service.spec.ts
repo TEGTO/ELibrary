@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { genreActions, selectGenreAmount, selectGenres } from '../../..';
-import { CreateGenreRequest, GenreApiService, GenreResponse, PaginatedRequest, UpdateGenreRequest } from '../../../../shared';
+import { CreateGenreRequest, Genre, GenreApiService, PaginatedRequest, UpdateGenreRequest } from '../../../../shared';
 import { GenreControllerService } from './genre-controller.service';
 
 describe('GenreControllerService', () => {
@@ -10,7 +10,7 @@ describe('GenreControllerService', () => {
     let store: jasmine.SpyObj<Store>;
     let apiService: jasmine.SpyObj<GenreApiService>;
 
-    const mockGenreData: GenreResponse[] = [
+    const mockGenreData: Genre[] = [
         { id: 1, name: 'Action' },
         { id: 2, name: 'Comedy' }
     ];
@@ -46,7 +46,7 @@ describe('GenreControllerService', () => {
 
     it('should return genre data by ID', (done) => {
         const genreId = 1;
-        const expectedGenre: GenreResponse = { id: genreId, name: 'Action' };
+        const expectedGenre: Genre = { id: genreId, name: 'Action' };
         apiService.getById.and.returnValue(of(expectedGenre));
 
         service.getById(genreId).subscribe(result => {

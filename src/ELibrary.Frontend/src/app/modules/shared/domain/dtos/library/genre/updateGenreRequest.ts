@@ -1,10 +1,10 @@
-import { GenreResponse } from "../../../..";
+import { Genre } from "../../../..";
 
 export interface UpdateGenreRequest {
     id: number;
     name: string;
 }
-export function genreToUpdateRequest(genre: GenreResponse): UpdateGenreRequest {
+export function mapGenreToUpdateGenreRequest(genre: Genre): UpdateGenreRequest {
     return {
         id: genre.id,
         name: genre.name

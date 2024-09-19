@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { bookActions, selectBookAmount, selectBooks } from '../../..';
-import { BookApiService, BookFilterRequest, BookResponse, CreateBookRequest, UpdateBookRequest } from '../../../../shared';
+import { Book, BookApiService, BookFilterRequest, CreateBookRequest, UpdateBookRequest } from '../../../../shared';
 import { BaseControllerService } from '../base-entity-service/base-entity.service';
 import { BookService } from './book-service';
 
@@ -9,7 +9,7 @@ import { BookService } from './book-service';
   providedIn: 'root'
 })
 export class BookControllerService extends BaseControllerService<
-  BookResponse,
+  Book,
   BookFilterRequest,
   CreateBookRequest,
   UpdateBookRequest

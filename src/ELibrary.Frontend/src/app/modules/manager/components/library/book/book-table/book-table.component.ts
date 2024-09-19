@@ -3,7 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { BookService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { BookFilterRequest, BookResponse, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { Book, BookFilterRequest, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe } from '../../../../../shared';
 
 interface BookItem {
   id: number;
@@ -93,11 +93,11 @@ export class BookTableComponent implements OnInit {
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Create, this);
   }
   update(item: any) {
-    const entity = item as BookResponse;
+    const entity = item as Book;
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Update, this, entity);
   }
   delete(item: any) {
-    const entity = item as BookResponse;
+    const entity = item as Book;
     this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Delete, this, entity);
   }
 }

@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { ClientResponse, CreateClientRequest, UpdateClientRequest } from "../../../../shared";
+import { Client, CreateClientRequest, UpdateClientRequest } from "../../../../shared";
 
 @Injectable({
     providedIn: 'root'
 })
 export abstract class ClientService {
-    abstract getClient(): Observable<ClientResponse>;
-    abstract createClient(req: CreateClientRequest): Observable<ClientResponse>;
-    abstract updateClient(req: UpdateClientRequest): Observable<ClientResponse>;
+    abstract getClient(): Observable<Client>;
+    abstract createClient(req: CreateClientRequest): Observable<Client>;
+    abstract updateClient(req: UpdateClientRequest): Observable<Client>;
     abstract deleteClient(): void;
 
 }

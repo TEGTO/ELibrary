@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthorService } from '../../../..';
-import { AuthorResponse, defaultLibraryFilterRequest, ValidationMessage } from '../../../../../shared';
+import { Author, defaultLibraryFilterRequest, ValidationMessage } from '../../../../../shared';
 import { BaseSelectInputComponent } from "../base-select-input-component/base-select-input-component.component";
 
 @Component({
@@ -9,7 +9,7 @@ import { BaseSelectInputComponent } from "../base-select-input-component/base-se
   templateUrl: './author-input.component.html',
   styleUrl: './author-input.component.scss'
 })
-export class AuthorInputComponent extends BaseSelectInputComponent<AuthorResponse> {
+export class AuthorInputComponent extends BaseSelectInputComponent<Author> {
 
   constructor(
     private readonly authorService: AuthorService,
@@ -22,7 +22,7 @@ export class AuthorInputComponent extends BaseSelectInputComponent<AuthorRespons
     return 'author';
   }
 
-  fetchItems(containsName: string, pageIndex: number, pageSize: number): Observable<AuthorResponse[]> {
+  fetchItems(containsName: string, pageIndex: number, pageSize: number): Observable<Author[]> {
     const req = {
       ...defaultLibraryFilterRequest(),
       pageNumber: pageIndex,
@@ -32,11 +32,11 @@ export class AuthorInputComponent extends BaseSelectInputComponent<AuthorRespons
     return this.authorService.getPaginated(req);
   }
 
-  displayWith(author?: AuthorResponse): string {
+  displayWith(author?: Author): string {
     return author && author.name && author.lastName ? `${author.name} ${author.lastName}` : '';
   }
 
-  trackByAuthor(index: number, author: AuthorResponse): number {
+  trackByAuthor(index: number, author: Author): number {
     return author.id;
   }
 }

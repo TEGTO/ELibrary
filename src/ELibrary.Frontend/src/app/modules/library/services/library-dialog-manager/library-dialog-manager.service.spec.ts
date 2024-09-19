@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthorChangeDialogComponent, BookChangeDialogComponent, ConfirmMenuComponent, GenreChangeDialogComponent } from '../..';
-import { AuthorResponse, BookResponse, GenreResponse } from '../../../shared';
+import { Author, Book, Genre } from '../../../shared';
 import { LibraryDialogManagerService } from './library-dialog-manager.service';
 
 describe('LibraryDialogManagerService', () => {
@@ -39,7 +39,7 @@ describe('LibraryDialogManagerService', () => {
   });
 
   it('should open book details menu dialog', () => {
-    const book: BookResponse = {
+    const book: Book = {
       id: 1,
       name: 'Book Title',
       publicationDate: new Date(),
@@ -60,7 +60,7 @@ describe('LibraryDialogManagerService', () => {
   });
 
   it('should open author details menu dialog', () => {
-    const author: AuthorResponse = {
+    const author: Author = {
       id: 1,
       name: 'Author Name',
       lastName: 'Author LastName',
@@ -80,7 +80,7 @@ describe('LibraryDialogManagerService', () => {
   });
 
   it('should open genre details menu dialog', () => {
-    const genre: GenreResponse = {
+    const genre: Genre = {
       id: 1,
       name: 'Genre Name'
     };

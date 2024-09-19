@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
-import { AuthorApiService, AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest } from "../../shared";
+import { Author, AuthorApiService, CreateAuthorRequest, UpdateAuthorRequest } from "../../shared";
 import { authorActions } from "./library.actions";
 import { AuthorEffects } from "./library.effects";
 
@@ -29,7 +29,7 @@ describe('AuthorEffects', () => {
     describe('getPaginated$', () => {
         it('should dispatch getPaginatedSuccess on successful getPaginated', (done) => {
             const paginatedRequest = { pageNumber: 1, pageSize: 10 };
-            const entities: AuthorResponse[] = [{ id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() }];
+            const entities: Author[] = [{ id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() }];
             const action = authorActions.getPaginated({ request: paginatedRequest });
             const outcome = authorActions.getPaginatedSuccess({ entities });
 
@@ -95,7 +95,7 @@ describe('AuthorEffects', () => {
     describe('create$', () => {
         it('should dispatch createSuccess on successful create', (done) => {
             const createRequest: CreateAuthorRequest = { name: 'Author1', lastName: "Lastname1", dateOfBirth: new Date() };
-            const entity: AuthorResponse = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
+            const entity: Author = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
             const action = authorActions.create({ request: createRequest });
             const outcome = authorActions.createSuccess({ entity });
 
@@ -129,7 +129,7 @@ describe('AuthorEffects', () => {
     describe('update$', () => {
         it('should dispatch updateSuccess on successful update', (done) => {
             const updateRequest: UpdateAuthorRequest = { id: 1, name: 'UpdatedAuthor', lastName: 'UpdatedLastname', dateOfBirth: new Date() };
-            const entity: AuthorResponse = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
+            const entity: Author = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
             const action = authorActions.update({ request: updateRequest });
             const outcome = authorActions.updateSuccess({ entity: entity });
 

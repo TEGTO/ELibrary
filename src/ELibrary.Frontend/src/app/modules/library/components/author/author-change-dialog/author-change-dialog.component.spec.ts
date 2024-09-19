@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthorResponse } from '../../../../shared';
+import { Author } from '../../../../shared';
 import { AuthorChangeDialogComponent } from './author-change-dialog.component';
 
 describe('AuthorChangeDialogComponent', () => {
@@ -17,7 +17,7 @@ describe('AuthorChangeDialogComponent', () => {
   let fixture: ComponentFixture<AuthorChangeDialogComponent>;
   let dialogRef: jasmine.SpyObj<MatDialogRef<AuthorChangeDialogComponent>>;
 
-  const mockAuthor: AuthorResponse = {
+  const mockAuthor: Author = {
     id: 1,
     name: 'John',
     lastName: 'Doe',

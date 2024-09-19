@@ -3,8 +3,8 @@ using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;
+using Shared.Repositories;
 using ShopApi;
-using ShopApi.Repositories;
 using ShopApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,11 +29,9 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 builder.Services.AddSingleton<IClientService, ClientService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
+builder.Services.AddSingleton<ICartService, CartService>();
 
-builder.Services.AddSingleton<ShopDatabaseRepository>();
-builder.Services.AddSingleton<IShopDatabaseRepository>(provider =>
-    provider.GetRequiredService<ShopDatabaseRepository>());
-
+builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 #endregion
 
 builder.Services.AddMemoryCache();
