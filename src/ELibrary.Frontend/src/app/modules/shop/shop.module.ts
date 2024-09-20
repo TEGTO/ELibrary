@@ -7,7 +7,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ClientChangeDialogComponent, ShoppingCardButtonComponent } from '.';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { CartControllerService, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientService, ShoppingCardButtonComponent } from '.';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,12 @@ import { ClientChangeDialogComponent, ShoppingCardButtonComponent } from '.';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    StoreModule.forFeature('cart', cartReducer),
+    EffectsModule.forFeature([CartEffects]),
+  ],
+  providers: [
+    { provide: CartService, useClass: CartControllerService },
+    { provide: ClientService, useClass: ClientControllerService },
   ],
   exports: [ShoppingCardButtonComponent],
 })

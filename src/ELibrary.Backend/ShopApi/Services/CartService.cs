@@ -8,10 +8,12 @@ namespace ShopApi.Services
     public class CartService : ICartService
     {
         private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly int maxBookAmount;
 
-        public CartService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public CartService(IDatabaseRepository<LibraryShopDbContext> repository, IConfiguration configuration)
         {
             this.repository = repository;
+            maxBookAmount = int.Parse(configuration[Configuration.SHOP_MAX_ORDER_AMOUNT]!);
         }
 
         public async Task<Cart?> GetCartByUserIdAsync(string userId, bool includeProducts, CancellationToken cancellationToken)
@@ -20,7 +22,7 @@ namespace ShopApi.Services
             if (includeProducts)
             {
                 return await queryable.AsNoTracking()
-                    .Include(x => x.CartBooks)
+                    .Include(x => x.Books)
                     .ThenInclude(x => x.Book)
                     .FirstOrDefaultAsync(x => x.UserId == userId);
             }
@@ -28,6 +30,11 @@ namespace ShopApi.Services
             {
                 return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
             }
+        }
+        public async Task<int> GetInCartAmountAsync(Cart cart, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
+            return await queryable.SumAsync(x => x.Books.Sum(y => y.BookAmount));
         }
         public async Task<Cart?> CreateCartAsync(string userId, CancellationToken cancellationToken)
         {
@@ -37,26 +44,30 @@ namespace ShopApi.Services
         public async Task<CartBook> AddCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            var cartInDb = await queryable.Include(c => c.CartBooks).FirstOrDefaultAsync(x => x.Id == cart.Id);
+            var cartInDb = await queryable.Include(c => c.Books).FirstOrDefaultAsync(x => x.Id == cart.Id);
 
             if (cartInDb == null)
             {
                 throw new InvalidOperationException("Cart not found.");
             }
 
-            var existingCartBook = cartInDb.CartBooks.FirstOrDefault(cb => cb.BookId == cartBook.BookId);
+            var existingCartBook = cartInDb.Books.FirstOrDefault(cb => cb.BookId == cartBook.BookId);
 
             if (existingCartBook == null)
             {
-                cartInDb.CartBooks.Add(cartBook);
+                cartInDb.Books.Add(cartBook);
                 await repository.UpdateAsync(cartInDb, cancellationToken);
             }
-            //else
-            //{
-            //    existingCartBook.BookAmount += cartBook.BookAmount;
-            //    await repository.UpdateAsync(existingCartBook, cancellationToken);
-            //    return existingCartBook;
-            //}
+            else if (existingCartBook.BookAmount + cartBook.BookAmount <= maxBookAmount)
+            {
+                existingCartBook.BookAmount += cartBook.BookAmount;
+                await repository.UpdateAsync(existingCartBook, cancellationToken);
+                return existingCartBook;
+            }
+            else
+            {
+                return existingCartBook;
+            }
 
             return cartBook;
         }
@@ -90,14 +101,14 @@ namespace ShopApi.Services
         public async Task<Cart> ClearCartAsync(Cart cart, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            var cartInDb = await queryable.Include(x => x.CartBooks).FirstAsync(x => x.Id == cart.Id);
-            if (cartInDb.CartBooks.Any())
+            var cartInDb = await queryable.Include(x => x.Books).FirstAsync(x => x.Id == cart.Id);
+            if (cartInDb.Books.Any())
             {
-                foreach (var cartBook in cartInDb.CartBooks.ToList())
+                foreach (var cartBook in cartInDb.Books.ToList())
                 {
                     await repository.DeleteAsync(cartBook, cancellationToken);
                 }
-                cartInDb.CartBooks.Clear();
+                cartInDb.Books.Clear();
 
                 await repository.UpdateAsync(cartInDb, cancellationToken);
             }
@@ -106,7 +117,7 @@ namespace ShopApi.Services
         public async Task<bool> CheckBookCartAsync(Cart cart, string id, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            return await queryable.AnyAsync(x => x.Id == cart.Id && x.CartBooks.Any(y => y.Id == id));
+            return await queryable.AnyAsync(x => x.Id == cart.Id && x.Books.Any(y => y.Id == id));
         }
     }
 }

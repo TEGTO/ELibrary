@@ -28,7 +28,7 @@ namespace ShopApi
             CreateMap<OrderBook, BookListingResponse>();
             CreateMap<OrderBookRequest, OrderBook>();
 
-            CreateMap<AddCartBookToCartRequest, CartBook>();
+            CreateMap<AddBookToCartRequest, CartBook>();
             CreateMap<UpdateCartBookRequest, CartBook>();
 
             CreateMap<CreateOrderRequest, Order>();

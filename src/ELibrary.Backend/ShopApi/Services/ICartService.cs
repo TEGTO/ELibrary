@@ -10,6 +10,7 @@ namespace ShopApi.Services
         public Task<Cart?> CreateCartAsync(string userId, CancellationToken cancellationToken);
         public Task DeleteCartBookAsync(Cart cart, string id, CancellationToken cancellationToken);
         public Task<Cart?> GetCartByUserIdAsync(string userId, bool includeProducts, CancellationToken cancellationToken);
+        public Task<int> GetInCartAmountAsync(Cart cart, CancellationToken cancellationToken);
         public Task<CartBook> UpdateCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken);
     }
 }

@@ -29,7 +29,7 @@ namespace LibraryShopEntities.Data
                   .IsRequired();
 
             modelBuilder.Entity<Cart>()
-              .HasMany(e => e.CartBooks)
+              .HasMany(e => e.Books)
               .WithOne(ob => ob.Cart)
               .HasForeignKey(ob => ob.CartId)
               .IsRequired();

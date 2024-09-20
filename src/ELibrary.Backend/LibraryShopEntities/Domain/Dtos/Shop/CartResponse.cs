@@ -2,6 +2,6 @@
 {
     public class CartResponse
     {
-        public List<BookListingResponse> CartBooks { get; set; }
+        public List<BookListingResponse> Books { get; set; }
     }
 }

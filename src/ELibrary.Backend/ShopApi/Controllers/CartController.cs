@@ -33,8 +33,15 @@ namespace ShopApi.Controllers
             var cart = await GetCartAsync(true, cancellationToken);
             return Ok(mapper.Map<CartResponse>(cart));
         }
+        [HttpGet("amount")]
+        public async Task<ActionResult<CartResponse>> GetInCartAmount(CancellationToken cancellationToken)
+        {
+            var cart = await GetCartAsync(true, cancellationToken);
+            int amount = await cartService.GetInCartAmountAsync(cart, cancellationToken);
+            return Ok(amount);
+        }
         [HttpPost("cartbook")]
-        public async Task<ActionResult<BookListingResponse>> AddBookToCart(AddCartBookToCartRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<BookListingResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)
         {
             var cart = await GetCartAsync(false, cancellationToken);
             var cartBook = mapper.Map<CartBook>(request);

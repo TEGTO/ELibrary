@@ -13,7 +13,6 @@ using System.Security.Claims;
 namespace ShopApi.Controllers.Tests
 {
     [TestFixture]
-    [TestFixture]
     internal class CartControllerTests
     {
         private Mock<IMapper> mockMapper;
@@ -45,14 +44,14 @@ namespace ShopApi.Controllers.Tests
             var cart = new Cart
             {
                 Id = "cart-1",
-                CartBooks = new List<CartBook>
+                Books = new List<CartBook>
                 {
                     new CartBook { Id = "book-1", BookAmount = 2, BookId = 1, Book = new Book() }
                 }
             };
             var cartResponse = new CartResponse
             {
-                CartBooks = new List<BookListingResponse>
+                Books = new List<BookListingResponse>
                 {
                     new BookListingResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() }
                 }
@@ -70,10 +69,46 @@ namespace ShopApi.Controllers.Tests
             Assert.That(okResult.Value, Is.EqualTo(cartResponse));
         }
         [Test]
+        public async Task GetInCartAmount_CartExists_ReturnsAmount()
+        {
+            // Arrange
+            var cart = new Cart { Id = "cart-1", UserId = "test-user" };
+            var expectedAmount = 5;
+
+            mockCartService.Setup(c => c.GetCartByUserIdAsync(It.IsAny<string>(), true, It.IsAny<CancellationToken>()))
+                           .ReturnsAsync(cart);
+            mockCartService.Setup(c => c.GetInCartAmountAsync(cart, It.IsAny<CancellationToken>()))
+                           .ReturnsAsync(expectedAmount);
+
+            // Act
+            var result = await cartController.GetInCartAmount(CancellationToken.None);
+
+            // Assert
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            Assert.That(okResult.Value, Is.EqualTo(expectedAmount));
+        }
+
+        [Test]
+        public async Task GetInCartAmount_CartNotFound_ReturnsBadRequest()
+        {
+            // Arrange
+            mockCartService.Setup(c => c.GetCartByUserIdAsync(It.IsAny<string>(), true, It.IsAny<CancellationToken>()))
+                           .ReturnsAsync((Cart?)null);
+            // Act
+            var result = await cartController.GetInCartAmount(CancellationToken.None);
+            // Assert
+            var badRequestResult = result.Result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestResult);
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
+            Assert.That(badRequestResult.Value, Is.EqualTo("Cart is not found!"));
+        }
+        [Test]
         public async Task AddBookToCart_ValidRequest_ReturnsBookListingResponse()
         {
             // Arrange
-            var request = new AddCartBookToCartRequest { BookId = 1, BookAmount = 2 };
+            var request = new AddBookToCartRequest { BookId = 1, BookAmount = 2 };
             var cart = new Cart { Id = "cart-1", UserId = "test-user" };
             var cartBook = new CartBook { Id = "book-1", BookAmount = 2, BookId = 1 };
             var bookListingResponse = new BookListingResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() };
@@ -175,10 +210,10 @@ namespace ShopApi.Controllers.Tests
         public async Task ClearCart_ValidRequest_ReturnsCartResponse()
         {
             // Arrange
-            var cart = new Cart { Id = "cart-1", CartBooks = new List<CartBook> { new CartBook { BookId = 1, BookAmount = 2 } } };
+            var cart = new Cart { Id = "cart-1", Books = new List<CartBook> { new CartBook { BookId = 1, BookAmount = 2 } } };
             var cartResponse = new CartResponse
             {
-                CartBooks = new List<BookListingResponse>
+                Books = new List<BookListingResponse>
                 {
                     new BookListingResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() }
                 }

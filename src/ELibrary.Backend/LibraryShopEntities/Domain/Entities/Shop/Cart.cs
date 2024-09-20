@@ -11,6 +11,6 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         [Required]
         [MaxLength(256)]
         public string UserId { get; set; } = default!;
-        public List<CartBook> CartBooks { get; set; } = new List<CartBook>();
+        public List<CartBook> Books { get; set; } = new List<CartBook>();
     }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Client, CreateClientRequest, UpdateClientRequest } from "../../../../shared";
+import { Client, CreateClientRequest, UpdateClientRequest } from "../../../shared";
 
 @Injectable({
     providedIn: 'root'
