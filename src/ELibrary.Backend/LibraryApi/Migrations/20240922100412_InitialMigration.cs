@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryApi.Migrations
 {
     /// <inheritdoc />
-    public partial class CartAddedMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -120,6 +120,7 @@ namespace LibraryApi.Migrations
                     CoverType = table.Column<int>(type: "integer", nullable: false),
                     PageAmount = table.Column<int>(type: "integer", nullable: false),
                     StockAmount = table.Column<int>(type: "integer", nullable: false),
+                    CoverImgUrl = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
                     GenreId = table.Column<int>(type: "integer", nullable: false),
                     PublisherId = table.Column<int>(type: "integer", nullable: false),

@@ -5,12 +5,12 @@ import { CartBook } from "../../../shared";
 
 export interface CartState {
     amount: number,
-    books: CartBook[],
+    cartBooks: CartBook[],
     error: any
 }
 const initialCartState: CartState = {
     amount: 0,
-    books: [],
+    cartBooks: [],
     error: null
 };
 export const cartReducer = createReducer(
@@ -19,7 +19,7 @@ export const cartReducer = createReducer(
     on(getCartSuccess, (state, { cart: cart }) => ({
         ...state,
         amount: cart.books.reduce((total, book) => total + book.bookAmount, 0),
-        books: cart.books,
+        cartBooks: cart.books,
         error: null
     })),
     on(getCartFailure, (state, { error: error }) => ({
@@ -37,27 +37,39 @@ export const cartReducer = createReducer(
         error: error
     })),
 
-    on(addBookToCartSuccess, (state, { cartBook: cartBook }) => ({
-        ...state,
-        books: [cartBook, ...state.books],
-        amount: state.amount + 1,
-        error: null
-    })),
+    on(addBookToCartSuccess, (state, { req: req, cartBook: cartBook }) => {
+        const updatedBooks = state.cartBooks
+            ? state.cartBooks.map(book =>
+                book.id === cartBook.id
+                    ? cartBook
+                    : book
+            )
+            : [cartBook, ...state.cartBooks];
+
+        return {
+            ...state,
+            cartBooks: updatedBooks,
+            amount: state.amount + req.bookAmount,
+            error: null
+        };
+    }),
     on(addBookToCartFailure, (state, { error: error }) => ({
         ...initialCartState,
         error: error
     })),
 
     on(updateCartBookSuccess, (state, { cartBook: cartBook }) => {
-        const existingCartBook = state.books.find(book => book.id === cartBook.id);
-        const updatedBooks = state.books.map(book =>
-            book.id === cartBook.id ? { ...book, bookAmount: cartBook.bookAmount } : book
+        const existingCartBook = state.cartBooks.find(book => book.id === cartBook.id);
+        const updatedBooks = state.cartBooks.map(book =>
+            book.id === cartBook.id ? cartBook : book
         );
-        const amounWithOutOldCartBook = cartBook.bookAmount - (existingCartBook ? existingCartBook.bookAmount : 0);
+        const amounWithOutOldCartBook = existingCartBook
+            ? state.amount - existingCartBook.bookAmount + cartBook.bookAmount
+            : state.amount + cartBook.bookAmount;
         return {
             ...state,
-            books: updatedBooks,
-            amount: amounWithOutOldCartBook + cartBook.bookAmount,
+            cartBooks: updatedBooks,
+            amount: amounWithOutOldCartBook,
             error: null
         };
     }),
@@ -66,12 +78,15 @@ export const cartReducer = createReducer(
         error: error
     })),
 
-    on(deleteCartBookSuccess, (state, { id: id }) => ({
-        ...state,
-        books: state.books.filter(x => x.id !== id),
-        amount: state.amount - 1,
-        error: null
-    })),
+    on(deleteCartBookSuccess, (state, { id: id }) => {
+        const existingCartBook = state.cartBooks.find(book => book.id === id);
+        return {
+            ...state,
+            cartBooks: state.cartBooks.filter(x => x.id !== id),
+            amount: state.amount - (existingCartBook ? existingCartBook!.bookAmount : 0),
+            error: null
+        }
+    }),
     on(deleteCartBookFailure, (state, { error: error }) => ({
         ...initialCartState,
         error: error

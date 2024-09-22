@@ -91,7 +91,7 @@ namespace ShopApi.Controllers.Tests
         }
 
         [Test]
-        public async Task GetInCartAmount_CartNotFound_ReturnsBadRequest()
+        public async Task GetInCartAmount_CartNotFound_ReturnsZero()
         {
             // Arrange
             mockCartService.Setup(c => c.GetCartByUserIdAsync(It.IsAny<string>(), true, It.IsAny<CancellationToken>()))
@@ -99,10 +99,10 @@ namespace ShopApi.Controllers.Tests
             // Act
             var result = await cartController.GetInCartAmount(CancellationToken.None);
             // Assert
-            var badRequestResult = result.Result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestResult);
-            Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
-            Assert.That(badRequestResult.Value, Is.EqualTo("Cart is not found!"));
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            Assert.That(okResult.Value, Is.EqualTo(0));
         }
         [Test]
         public async Task AddBookToCart_ValidRequest_ReturnsBookListingResponse()

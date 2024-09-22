@@ -1,48 +1,66 @@
-<ng-template #book let-name="name" let-author="author" let-price="price">
+<app-book-filter (filterChange)="filterChange($event)"></app-book-filter>
+<div class="bg-zinc-50 body__products">
+    <ng-container *ngIf="items$ | async as items; else loading">
+        <ng-container *ngIf="items.length > 0; else noItems">
+            <ng-container *ngIf="totalAmount$ | async as totalAmount">
+                <div class="products-grid">
+                    <ng-container *ngFor="let item of items">
+                        <div *ngTemplateOutlet="book; context: { book: item, bookAdded: bookAddedMap[item.id] }">
+                        </div>
+                    </ng-container>
+                </div>
+                <mat-paginator class="!bg-zinc-50" [length]="totalAmount" [pageSize]="pageSize"
+                    [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
+                </mat-paginator>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <!-- Display this when no items are found -->
+    <ng-template #noItems>
+        <div class="no-items-container flex items-center justify-center h-96">
+            <p class="text-lg text-gray-600">No items found. Please adjust your filters.</p>
+        </div>
+    </ng-template>
+    <!-- Loading spinner -->
+    <ng-template #loading>
+        <div class="loading-spinner-container">
+            <mat-spinner diameter="80"></mat-spinner>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #book let-book="book" let-bookAdded="bookAdded">
     <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
-        <div class="flex flex-col items-center group">
-            <div class="book__cover transform transition-transform duration-300 ease-in-out group-hover:scale-105">
-                <img class="h-42 w-24" src="../../../../../assets/book_cover_placeholder.png" alt="Book cover"
+        <a [href]="book.id"
+            class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105">
+            <div class="book__cover">
+                <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
                     onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
             </div>
-            <div class="duration-50 ease-in-out group-hover:scale-105 ">
+            <div class="duration-50">
                 <div class="book__name text-gray-700 font-bold truncate-big">
-                    {{ name }}
+                    {{ book.name }}
                 </div>
                 <div class="book__author text-gray-400 truncate-small">
-                    {{ author }}
+                    {{ book.author.name + ' ' + book.author.lastName }}
                 </div>
             </div>
-        </div>
+        </a>
         <div class="book__buy w-full flex items-center justify-between">
             <div class="text-red-500 truncate-small font-bold">
-                {{ applyCurrencyPipe(price) }}
+                {{ applyCurrencyPipe(book.price) }}
             </div>
-            <button class="hover:bg-gray-200 py-1 px-1 rounded inline-flex items-center">
-                <span class="material-icons text-green-600">shopping_cart</span>
-            </button>
+            <ng-container *ngIf="!bookAdded; else addedToCart">
+                <button class="hover:bg-gray-200 py-1 px-1 rounded inline-flex items-center"
+                    (click)="addBookToCart(book)">
+                    <span class="material-icons text-green-600">shopping_cart</span>
+                </button>
+            </ng-container>
+            <ng-template #addedToCart>
+                <div class="py-1 px-1 rounded inline-flex items-center">
+                    <span class="material-icons text-green-600">check</span>
+                </div>
+            </ng-template>
         </div>
     </div>
 </ng-template>
-
-<div class="wrapper bg-zinc-50/60 max-w-screen-lg gap-3 mx-auto p-4">
-    <div class="wrapper__body w-full">
-        <app-book-filter (filterChange)="filterChange($event)"></app-book-filter>
-        <div class="bg-zinc-50 body__products">
-            <ng-container *ngIf="items$ | async as items">
-                <ng-container *ngIf="totalAmount$ | async as totalAmount">
-                    <div class="products-grid">
-                        <ng-container *ngFor="let item of items">
-                            <div
-                                *ngTemplateOutlet="book; context: { name: item.name, author: item.author.name + ' '+ item.author.lastName, price: item.price}">
-                            </div>
-                        </ng-container>
-                    </div>
-                    <mat-paginator class="!bg-zinc-50" [length]="totalAmount" [pageSize]="pageSize"
-                        [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
-                    </mat-paginator>
-                </ng-container>
-            </ng-container>
-        </div>
-    </div>
-</div>

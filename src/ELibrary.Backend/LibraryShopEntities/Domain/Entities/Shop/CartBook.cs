@@ -20,7 +20,6 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public void Copy(CartBook other)
         {
             this.BookAmount = other.BookAmount;
-            this.Book = other.Book;
         }
     }
 }

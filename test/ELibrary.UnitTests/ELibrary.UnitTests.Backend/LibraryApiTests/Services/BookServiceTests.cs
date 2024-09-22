@@ -28,7 +28,7 @@ namespace LibraryApi.Services.Tests
         }
 
         [Test]
-        public async Task GetByIdAsync_ValidId_ReturnsBookWithAuthorAndGenre()
+        public async Task GetByIdAsync_ValidId_ReturnsBookWithEntities()
         {
             // Arrange
             var book = new Book
@@ -36,7 +36,8 @@ namespace LibraryApi.Services.Tests
                 Id = 1,
                 Name = "Book1",
                 Author = new Author { Id = 1, Name = "Author1" },
-                Genre = new Genre { Id = 1, Name = "Genre1" }
+                Genre = new Genre { Id = 1, Name = "Genre1" },
+                Publisher = new Publisher { Id = 1, Name = "Publisher1" }
             };
             var books = new List<Book> { book };
             var dbSetMock = GetDbSetMock(books);
@@ -49,10 +50,11 @@ namespace LibraryApi.Services.Tests
             Assert.That(result!.Id, Is.EqualTo(book.Id));
             Assert.That(result.Author!.Name, Is.EqualTo(book.Author.Name));
             Assert.That(result.Genre!.Name, Is.EqualTo(book.Genre.Name));
+            Assert.That(result.Publisher!.Name, Is.EqualTo(book.Publisher.Name));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetPaginatedAsync_ValidPage_ReturnsBooksWithAuthorsAndGenres()
+        public async Task GetPaginatedAsync_ValidPage_ReturnsBooksWithEntities()
         {
             // Arrange
             var books = new List<Book>
@@ -63,6 +65,7 @@ namespace LibraryApi.Services.Tests
                     Name =  "Book1",
                     Author = new Author { Id = 1, Name = "Author1" },
                     Genre = new Genre { Id = 1, Name = "Genre1" },
+                    Publisher = new Publisher { Id = 1, Name = "Publisher1" },
                     PublicationDate = DateTime.UtcNow,
                     Price = 10,
                     PageAmount = 10,
@@ -74,6 +77,7 @@ namespace LibraryApi.Services.Tests
                     Name = "Book2",
                     Author = new Author { Id = 2, Name = "Author2" },
                     Genre = new Genre { Id = 2, Name = "Genre2" },
+                     Publisher = new Publisher { Id = 1, Name = "Publisher2" },
                     PublicationDate = DateTime.UtcNow,
                     Price = 10,
                     PageAmount = 10,
@@ -90,10 +94,11 @@ namespace LibraryApi.Services.Tests
             Assert.That(result.Count(), Is.EqualTo(2));
             Assert.That(result.First().Author!.Name, Is.EqualTo("Author2"));
             Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre2"));
+            Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher2"));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
         [Test]
-        public async Task CreateAsync_ValidBook_AddsBookWithAuthorAndGenre()
+        public async Task CreateAsync_ValidBook_AddsBookWithEntities()
         {
             // Arrange
             var book = new Book
@@ -101,7 +106,8 @@ namespace LibraryApi.Services.Tests
                 Id = 1,
                 Name = "Book1",
                 AuthorId = 1,
-                GenreId = 1
+                GenreId = 2,
+                PublisherId = 3,
             };
             var books = new List<Book> { book };
             var dbSetMock = GetDbSetMock(books);
@@ -113,11 +119,12 @@ namespace LibraryApi.Services.Tests
             // Assert
             Assert.That(result.AuthorId, Is.EqualTo(book.AuthorId));
             Assert.That(result.GenreId, Is.EqualTo(book.GenreId));
+            Assert.That(result.PublisherId, Is.EqualTo(book.PublisherId));
             repositoryMock.Verify(d => d.AddAsync(book, It.IsAny<CancellationToken>()), Times.Once);
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
         [Test]
-        public async Task UpdateAsync_ValidBook_UpdatesBookWithAuthorAndGenre()
+        public async Task UpdateAsync_ValidBook_UpdatesBookWithEntities()
         {
             // Arrange
             var bookInDb = new Book
@@ -127,14 +134,16 @@ namespace LibraryApi.Services.Tests
                 AuthorId = 1,
                 GenreId = 1,
                 Author = new Author { Id = 1, Name = "Author1" },
-                Genre = new Genre { Id = 1, Name = "Genre1" }
+                Genre = new Genre { Id = 1, Name = "Genre1" },
+                Publisher = new Publisher { Id = 1, Name = "Publisher1" },
             };
             var updatedBook = new Book
             {
                 Id = 1,
                 Name = "UpdatedBook1",
-                AuthorId = 2,
-                GenreId = 2
+                AuthorId = 1,
+                GenreId = 2,
+                PublisherId = 3,
             };
             var books = new List<Book> { bookInDb };
             var dbSetMock = GetDbSetMock(books);
@@ -146,8 +155,9 @@ namespace LibraryApi.Services.Tests
             await service.UpdateAsync(updatedBook, cancellationToken);
             // Assert
             Assert.That(bookInDb.Name, Is.EqualTo("UpdatedBook1"));
-            Assert.That(bookInDb.AuthorId, Is.EqualTo(2));
+            Assert.That(bookInDb.AuthorId, Is.EqualTo(1));
             Assert.That(bookInDb.GenreId, Is.EqualTo(2));
+            Assert.That(bookInDb.PublisherId, Is.EqualTo(3));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
             repositoryMock.Verify(repo => repo.UpdateAsync(bookInDb, cancellationToken), Times.Once);
         }
@@ -160,7 +170,8 @@ namespace LibraryApi.Services.Tests
                 Id = 1,
                 Name = "Book1",
                 Author = new Author { Id = 1, Name = "Author1" },
-                Genre = new Genre { Id = 1, Name = "Genre1" }
+                Genre = new Genre { Id = 1, Name = "Genre1" },
+                Publisher = new Publisher { Id = 1, Name = "Publisher1" },
             };
             var books = new List<Book> { book };
             var dbSetMock = GetDbSetMock(books);

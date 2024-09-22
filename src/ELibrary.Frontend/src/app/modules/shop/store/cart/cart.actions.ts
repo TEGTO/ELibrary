@@ -32,7 +32,7 @@ export const addBookToCart = createAction(
 );
 export const addBookToCartSuccess = createAction(
     '[Cart] Add Book To Cart Success',
-    props<{ cartBook: CartBook }>()
+    props<{ req: AddBookToCartRequest, cartBook: CartBook }>()
 );
 export const addBookToCartFailure = createAction(
     '[Cart] Add Book To Cart Failure',

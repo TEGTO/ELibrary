@@ -37,6 +37,12 @@
             <mat-error
                 *ngIf="validateInputField(stockAmountInput).hasError">{{validateInputField(stockAmountInput).message}}</mat-error>
         </mat-form-field>
+        <mat-form-field>
+            <mat-label>Cover Img Url</mat-label>
+            <input matInput type="text" autocomplete="book-cover-img" formControlName="coverImgUrl" maxlength="1024">
+            <mat-error
+                *ngIf="validateInputField(coverImgUrlInput).hasError">{{validateInputField(coverImgUrlInput).message}}</mat-error>
+        </mat-form-field>
         <div class="form__cover-type">
             <label for="cover">Cover Type</label>
             <div>

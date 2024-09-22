@@ -8,6 +8,7 @@ export interface BookResponse {
     coverType: CoverType;
     pageAmount: number;
     stockAmount: number;
+    coverImgUrl: string,
     author: AuthorResponse;
     genre: GenreResponse;
     publisher: PublisherResponse;
@@ -21,6 +22,7 @@ export function mapBookResponseToBook(response: BookResponse): Book {
         coverType: response.coverType,
         pageAmount: response.pageAmount,
         stockAmount: response.stockAmount,
+        coverImgUrl: response.coverImgUrl,
         author: mapAuthorResponseToAuthor(response.author),
         genre: mapGenreResponseToGenre(response.genre),
         publisher: mapPublisherResponseToPublisher(response.publisher),

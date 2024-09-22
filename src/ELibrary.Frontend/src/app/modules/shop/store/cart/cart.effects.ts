@@ -40,7 +40,7 @@ export class CartEffects {
             ofType(addBookToCart),
             mergeMap((action) =>
                 this.apiService.addBookToCart(action.req).pipe(
-                    map(response => addBookToCartSuccess({ cartBook: response })),
+                    map(response => addBookToCartSuccess({ req: action.req, cartBook: response })),
                     catchError(error => of(addBookToCartFailure({ error: error.message })))
                 )
             )

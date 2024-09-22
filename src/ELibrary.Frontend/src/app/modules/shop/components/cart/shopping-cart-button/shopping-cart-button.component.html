@@ -1,8 +1,8 @@
 <div class="cart-container">
-    <button mat-icon-button>
+    <button mat-icon-button (click)="openCartMenu()">
         <span class="material-icons">shopping_cart</span>
         <ng-container *ngIf="cartAmount$ | async as cartAmount">
-            <span class="cart-count" *ngIf="cartAmount > 0">
+            <span class="cart-count text-white bg-green-600" *ngIf="cartAmount > 0">
                 @if (cartAmount <= 99) { {{ cartAmount }} } @else { 99+ } </span>
         </ng-container>
 

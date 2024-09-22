@@ -1,0 +1,98 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Cart</h2>
+
+<ng-container *ngIf="items$ | async as items; else loading">
+    <ng-container *ngIf="items.length > 0; else emptyCart">
+        <mat-dialog-content>
+            <div class="content">
+                <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="products"
+                    [style.height.px]="calculateSelectionSize()">
+                    <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
+                        <div class="book-wrapper">
+                            <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
+                        </div>
+                    </ng-container>
+                </cdk-virtual-scroll-viewport>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions class="actions__bottom-container flex-col">
+            <div class="w-full flex justify-end">
+                <div class="flex items-center mt-6 gap-5 p-6 bg-green-600/20 rounded-md border border-green-500">
+                    <span class="truncate text-2xl font-medium text-gray-800">
+                        {{ applyCurrencyPipe(getTotalPrice(items)) }}
+                    </span>
+                    <button mat-flat-button id="send-button" form="authorDetails" type="submit"
+                        class="!bg-green-600 !text-base">
+                        Make order
+                    </button>
+                </div>
+            </div>
+        </mat-dialog-actions>
+    </ng-container>
+</ng-container>
+<!-- Empty Cart Template -->
+<ng-template #emptyCart>
+    <mat-dialog-content>
+        <div class="empty-cart flex items-center justify-center h-96">
+            <p class="text-lg text-gray-600">Your cart is empty. Add some items to continue.</p>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="actions__bottom-container flex-col">
+        <div class="w-full flex justify-end">
+            <button mat-flat-button mat-dialog-close class="!bg-green-600 !text-base">
+                Browse Products
+            </button>
+        </div>
+    </mat-dialog-actions>
+</ng-template>
+<!-- Loading spinner -->
+<ng-template #loading>
+    <div class="loading-spinner-container">
+        <mat-spinner diameter="80"></mat-spinner>
+    </div>
+</ng-template>
+
+<ng-template #book let-cartBook="cartBook">
+    <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
+        <div class="w-full flex justify-between">
+            <div class="flex flex gap-5">
+                <a class="book__cover hover:cursor-pointer" [href]="cartBook.book.id">
+                    <img class="h-42 w-24" crossorigin='anonymous' [src]="cartBook.book.coverImgUrl" alt="Book cover"
+                        onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                </a>
+                <a class="h-full flex flex-col items-start pt-5">
+                    <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
+                        [href]="'1'">
+                        {{ cartBook.book.name }}
+                    </a>
+                    <div class="book__author text-gray-400 truncate">
+                        {{ cartBook.book.author.name + ' '+ cartBook.book.author.lastName }}
+                    </div>
+                </a>
+            </div>
+            <div>
+                <button mat-icon-button [matMenuTriggerFor]="serverSlotMoreOptions">
+                    <span class="material-icons">more_vert</span>
+                </button>
+                <mat-menu #serverSlotMoreOptions="matMenu" id="serverSlotMoreOptions">
+                    <button mat-menu-item (click)="deleteCartBook(cartBook)">
+                        <div class="flex gap-2 items-center justify-between">
+                            <span class="text-base text-red-600">Delete</span>
+                            <span class="material-icons text-red-600">delete</span>
+                        </div>
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+        <div class="book__amount w-full justify-end gap-4">
+            <div class="text-red-500 truncate font-bold text-lg">
+                {{ applyCurrencyPipe(getPrice(cartBook)) }}
+            </div>
+            <input type="number" appInputRange [min]="1" [max]="maxAmount" [value]=" cartBook.bookAmount"
+                (input)="onInputChange(cartBook, $event)"
+                class="bg-gray-50 w-16 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+        </div>
+    </div>
+</ng-template>

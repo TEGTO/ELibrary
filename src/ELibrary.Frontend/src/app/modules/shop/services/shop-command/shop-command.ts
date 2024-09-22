@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from "@angular/core";
 
 export enum ShopCommandObject {
-    Client, Order
+    Client, Order, Cart
 }
 export enum ShopCommandType {
-    Create, Update, Delete
+    Add, Update, Delete
 }
 @Injectable({
     providedIn: 'root'

@@ -59,6 +59,11 @@ namespace LibraryApi.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CoverImgUrl")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
                     b.Property<int>("CoverType")
                         .HasColumnType("integer");
 
@@ -324,7 +329,7 @@ namespace LibraryApi.Migrations
                         .IsRequired();
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Cart", "Cart")
-                        .WithMany("CartBooks")
+                        .WithMany("Books")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -366,7 +371,7 @@ namespace LibraryApi.Migrations
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Cart", b =>
                 {
-                    b.Navigation("CartBooks");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Client", b =>

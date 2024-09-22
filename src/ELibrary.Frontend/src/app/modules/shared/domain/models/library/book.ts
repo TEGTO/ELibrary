@@ -11,6 +11,7 @@ export interface Book {
     coverType: CoverType;
     pageAmount: number;
     stockAmount: number;
+    coverImgUrl: string,
     author: Author;
     genre: Genre;
     publisher: Publisher;
@@ -24,8 +25,20 @@ export function getDefaultBook(): Book {
         coverType: CoverType.Hard,
         pageAmount: 0,
         stockAmount: 0,
+        coverImgUrl: "",
         author: getDefaultAuthor(),
         genre: getDefaultGenre(),
         publisher: getDefaultPublisher()
+    }
+}
+export function getStringCoverType(coverType: CoverType): string {
+    switch (coverType) {
+        case CoverType.Hard:
+            return 'Hard';
+        case CoverType.Soft:
+            return 'Soft';
+        case CoverType.Any:
+        default:
+            return 'Any';
     }
 }

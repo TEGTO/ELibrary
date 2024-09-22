@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryApi.Migrations
 {
     [DbContext(typeof(LibraryShopDbContext))]
-    [Migration("20240919151348_CartAdded-Migration")]
-    partial class CartAddedMigration
+    [Migration("20240922100412_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,11 @@ namespace LibraryApi.Migrations
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("CoverImgUrl")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
 
                     b.Property<int>("CoverType")
                         .HasColumnType("integer");
@@ -327,7 +332,7 @@ namespace LibraryApi.Migrations
                         .IsRequired();
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Cart", "Cart")
-                        .WithMany("CartBooks")
+                        .WithMany("Books")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -369,7 +374,7 @@ namespace LibraryApi.Migrations
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Cart", b =>
                 {
-                    b.Navigation("CartBooks");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Client", b =>

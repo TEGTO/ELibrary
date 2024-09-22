@@ -1,9 +1,9 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { BookService } from '../../../library';
-import { Book, BookFilterRequest, defaultBookFilterRequest, LocaleService } from '../../../shared';
+import { Book, BookFilterRequest, CurrencyPipeApplier, defaultBookFilterRequest } from '../../../shared';
+import { ShopCommand, ShopCommandObject, ShopCommandType } from '../../../shop';
 
 @Component({
   selector: 'app-product-page',
@@ -16,7 +16,7 @@ export class ProductPageComponent implements OnInit {
   items$!: Observable<Book[]>;
   totalAmount$!: Observable<number>;
 
-  currencyPipe!: CurrencyPipe;
+  bookAddedMap: Record<string, boolean> = {};
   pageSize = 8;
   pageSizeOptions: number[] = [8, 16, 32];
   private defaultPagination = { pageIndex: 1, pageSize: 8 };
@@ -24,13 +24,26 @@ export class ProductPageComponent implements OnInit {
 
   constructor(
     private readonly bookService: BookService,
-    private readonly localeService: LocaleService,
+    private readonly shopCommand: ShopCommand,
+    private readonly currenctyApplier: CurrencyPipeApplier
   ) { }
 
   ngOnInit(): void {
-    this.currencyPipe = new CurrencyPipe(this.localeService.getLocale(), this.localeService.getCurrency());
     this.fetchTotalAmount();
     this.fetchPaginatedItems(this.defaultPagination);
+
+    this.items$.pipe(
+      tap(
+        items => {
+          items.forEach(book => {
+            this.bookAddedMap[book.id] = false;
+          });
+        }));
+  }
+
+  addBookToCart(book: Book) {
+    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, this, book);
+    this.bookAddedMap[book.id] = true;
   }
 
   private updateFilterPagination(pagination: { pageIndex: number, pageSize: number }): void {
@@ -72,6 +85,6 @@ export class ProductPageComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   applyCurrencyPipe(value: any): any {
-    return this.currencyPipe ? this.currencyPipe.transform(value) : value;
+    return this.currenctyApplier.applyCurrencyPipe(value);
   }
 }

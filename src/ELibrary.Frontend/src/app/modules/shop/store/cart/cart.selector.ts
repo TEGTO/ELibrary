@@ -8,7 +8,7 @@ export const selectCartAmount = createSelector(
 );
 export const selectCartBooks = createSelector(
     selectCartState,
-    (state: CartState) => state.books
+    (state: CartState) => state.cartBooks
 );
 export const selectCartErrors = createSelector(
     selectCartState,
