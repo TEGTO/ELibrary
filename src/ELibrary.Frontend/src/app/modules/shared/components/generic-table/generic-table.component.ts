@@ -2,12 +2,13 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, PipeTransform, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { RouterModule } from '@angular/router';
 import { TableColumn } from '../..';
 
 @Component({
   selector: 'app-generic-table',
   standalone: true,
-  imports: [MatPaginator, CommonModule],
+  imports: [MatPaginator, CommonModule, RouterModule],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

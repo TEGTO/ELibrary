@@ -41,6 +41,10 @@
         padding: 0 1rem 0 1rem;
         display: flex;
         align-items: center;
+
+        input {
+            max-width: 60px;
+        }
     }
 }
 

@@ -14,7 +14,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent, MainViewComponent } from '.';
 import { AuthInterceptor } from '../authentication';
 import { AuthenticationModule } from '../authentication/authentication.module';
-import { CurrencyPipeApplier, CurrencyPipeApplierService, CustomErrorHandler, ErrorHandler, PolicyType, RoleGuard, ValidationMessage, ValidationMessageService } from '../shared';
+import { CurrencyPipeApplier, CurrencyPipeApplierService, CustomErrorHandler, ErrorHandler, pathes, PolicyType, RoleGuard, ValidationMessage, ValidationMessageService } from '../shared';
 import { ShopModule } from '../shop/shop.module';
 
 registerLocaleData(localeUa, 'uk-UA');
@@ -24,13 +24,13 @@ const routes: Routes = [
     path: "", component: MainViewComponent,
     children: [
       {
-        path: "manager",
+        path: pathes.manager,
         loadChildren: () => import('../manager/manager.module').then(m => m.ManagerModule),
         canActivate: [RoleGuard],
         data: { policy: [PolicyType.ManagerPolicy] }
       },
       {
-        path: "",
+        path: pathes.client,
         loadChildren: () => import('../client/client.module').then(m => m.ClientModule),
       },
     ],

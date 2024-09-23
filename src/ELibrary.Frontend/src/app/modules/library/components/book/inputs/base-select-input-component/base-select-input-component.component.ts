@@ -2,7 +2,7 @@ import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, filter, map, Observable, pairwise, Subject, switchMap, takeUntil, throttleTime } from "rxjs";
-import { ValidationMessage } from "../../../../../shared";
+import { noSpaces, notEmptyString, ValidationMessage } from "../../../../../shared";
 
 @Component({
     template: ''
@@ -55,7 +55,7 @@ export abstract class BaseSelectInputComponent<T extends { id: number }> impleme
     private initializeForm(): void {
         const controlName = this.getControlName();
         if (!this.formGroup.contains(controlName)) {
-            this.formGroup.addControl(controlName, new FormControl("", [Validators.required]));
+            this.formGroup.addControl(controlName, new FormControl("", [Validators.required, notEmptyString, noSpaces]));
         } else {
             const item = this.formGroup.get(controlName)?.value;
             if (item) {

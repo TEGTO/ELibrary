@@ -32,6 +32,7 @@ namespace LibraryApi.Controllers
         #region Endpoints
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
             var entity = await entityService.GetByIdAsync(id, cancellationToken);

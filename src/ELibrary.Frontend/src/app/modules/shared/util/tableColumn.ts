@@ -6,4 +6,5 @@ export interface TableColumn {
     field: string;
     pipe?: PipeTransform;
     pipeArgs?: any[];
+    linkPath?: ((item: any) => string);
 }

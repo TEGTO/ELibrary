@@ -3,7 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { BookService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { Book, BookFilterRequest, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { Book, BookFilterRequest, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe, redirectPathes } from '../../../../../shared';
 
 interface BookItem {
   id: number;
@@ -27,7 +27,7 @@ export class BookTableComponent implements OnInit {
   private filterReq: BookFilterRequest = defaultBookFilterRequest();
   private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
-    { header: 'Name', field: 'name' },
+    { header: 'Name', field: 'name', linkPath: (item: any) => `${redirectPathes.client_productInfo}/${item.id}` },
     { header: 'Publication Date', field: 'publicationDate', pipe: new LocalizedDatePipe(this.localeService.getLocale()) },
     { header: 'Author', field: 'author' },
     { header: 'Genre', field: 'genre' },

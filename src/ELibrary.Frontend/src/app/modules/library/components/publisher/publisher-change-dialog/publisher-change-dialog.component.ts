@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Publisher, ValidationMessage } from '../../../../shared';
+import { noSpaces, notEmptyString, Publisher, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-publisher-change-dialog',
@@ -22,7 +22,7 @@ export class PublisherChangeDialogComponent implements OnInit {
   ngOnInit(): void {
     this.formGroup = new FormGroup(
       {
-        name: new FormControl(this.publisher.name, [Validators.required, Validators.maxLength(256)]),
+        name: new FormControl(this.publisher.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
       });
   }
 

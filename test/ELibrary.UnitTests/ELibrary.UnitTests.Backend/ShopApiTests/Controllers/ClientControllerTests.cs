@@ -54,6 +54,18 @@ namespace ShopApi.Controllers.Tests
             Assert.That(okResult.Value, Is.EqualTo(clientResponse));
         }
         [Test]
+        public async Task GetClient_ReturnsNotFoundResponse()
+        {
+            // Arrange
+            Client? client = null;
+            mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(client);
+            // Act
+            var result = await clientController.GetClient(CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<NotFoundResult>(result.Result);
+        }
+        [Test]
         public async Task CreateClient_ReturnsCreatedWithClientResponse()
         {
             // Arrange

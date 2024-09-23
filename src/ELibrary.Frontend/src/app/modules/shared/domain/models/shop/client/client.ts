@@ -8,3 +8,16 @@ export interface Client {
     phone: string;
     email: string;
 }
+
+export function getDefaultClient(): Client {
+    return {
+        id: "",
+        name: "",
+        middleName: "",
+        lastName: "",
+        dateOfBirth: new Date(),
+        address: "",
+        phone: "",
+        email: ""
+    }
+}

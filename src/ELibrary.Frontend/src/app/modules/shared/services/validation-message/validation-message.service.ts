@@ -57,6 +57,9 @@ export class ValidationMessageService implements ValidationMessage {
     else if (input.hasError('pageAmountRangeMaxInvalid')) {
       return { hasError: true, message: '"Max" Amount must be greater than or equal to "Min".' };
     }
+    else if (input.hasError('noSpaces')) {
+      return { hasError: true, message: 'Input must not contain spaces.' };
+    }
     return { hasError: false, message: "" };
   }
 }

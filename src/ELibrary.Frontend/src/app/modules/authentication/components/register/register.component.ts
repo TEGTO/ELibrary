@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { UserRegistrationRequest, ValidationMessage } from '../../../shared';
+import { noSpaces, notEmptyString, UserRegistrationRequest, ValidationMessage } from '../../../shared';
 import { AuthenticationCommand, AuthenticationCommandType, confirmPasswordValidator, passwordValidator } from '../../index';
 
 @Component({
@@ -27,9 +27,9 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.formGroup = new FormGroup(
       {
-        email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(256)]),
-        password: new FormControl('', [Validators.required, passwordValidator, Validators.maxLength(256)]),
-        passwordConfirm: new FormControl('', [Validators.required, confirmPasswordValidator, Validators.maxLength(256)])
+        email: new FormControl('', [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
+        password: new FormControl('', [Validators.required, notEmptyString, noSpaces, passwordValidator, Validators.maxLength(256)]),
+        passwordConfirm: new FormControl('', [Validators.required, notEmptyString, noSpaces, confirmPasswordValidator, Validators.maxLength(256)])
       });
   }
 

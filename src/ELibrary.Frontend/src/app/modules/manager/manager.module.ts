@@ -12,19 +12,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthorTableComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, PublisherTableComponent } from '.';
 import { LibraryModule } from '../library/library.module';
-import { GenericTableComponent } from '../shared';
+import { GenericTableComponent, pathes } from '../shared';
 
 const routes: Routes = [
   {
     path: "", component: ManagerTableComponent,
     children: [
-      {
-        path: "", redirectTo: "books", pathMatch: "full"
-      },
-      { path: "books", component: BookTableComponent },
-      { path: "genres", component: GenreTableComponent },
-      { path: "authors", component: AuthorTableComponent },
-      { path: "publishers", component: PublisherTableComponent }
+      { path: pathes.manager_books, component: BookTableComponent },
+      { path: pathes.manager_genres, component: GenreTableComponent },
+      { path: pathes.manager_authors, component: AuthorTableComponent },
+      { path: pathes.manager_publishers, component: PublisherTableComponent },
+      { path: "", redirectTo: pathes.manager_books, pathMatch: "full" },
     ]
   },
   { path: '**', redirectTo: '' }

@@ -6,9 +6,9 @@ import { Client, CreateClientRequest, UpdateClientRequest } from "../../../share
     providedIn: 'root'
 })
 export abstract class ClientService {
-    abstract getClient(): Observable<Client>;
-    abstract createClient(req: CreateClientRequest): Observable<Client>;
-    abstract updateClient(req: UpdateClientRequest): Observable<Client>;
+    abstract getClient(): Observable<Client | null>;
+    abstract createClient(req: CreateClientRequest): void;
+    abstract updateClient(req: UpdateClientRequest): void;
     abstract deleteClient(): void;
 
 }

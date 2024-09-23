@@ -23,7 +23,7 @@
                     <span class="truncate text-2xl font-medium text-gray-800">
                         {{ applyCurrencyPipe(getTotalPrice(items)) }}
                     </span>
-                    <button mat-flat-button id="send-button" form="authorDetails" type="submit"
+                    <button mat-flat-button id="send-button" form="authorDetails" type="submit" (click)="makeOrder()"
                         class="!bg-green-600 !text-base">
                         Make order
                     </button>
@@ -58,13 +58,13 @@
     <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
         <div class="w-full flex justify-between">
             <div class="flex flex gap-5">
-                <a class="book__cover hover:cursor-pointer" [href]="cartBook.book.id">
+                <a class="book__cover hover:cursor-pointer" [href]="getBookPage(cartBook)">
                     <img class="h-42 w-24" crossorigin='anonymous' [src]="cartBook.book.coverImgUrl" alt="Book cover"
                         onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
                 </a>
                 <a class="h-full flex flex-col items-start pt-5">
                     <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
-                        [href]="'1'">
+                        [href]="getBookPage(cartBook)">
                         {{ cartBook.book.name }}
                     </a>
                     <div class="book__author text-gray-400 truncate">
@@ -92,7 +92,7 @@
             </div>
             <input type="number" appInputRange [min]="1" [max]="maxAmount" [value]=" cartBook.bookAmount"
                 (input)="onInputChange(cartBook, $event)"
-                class="bg-gray-50 w-16 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         </div>
     </div>
 </ng-template>

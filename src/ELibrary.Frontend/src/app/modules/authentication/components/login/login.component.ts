@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { UserAuthenticationRequest, ValidationMessage } from '../../../shared';
+import { noSpaces, notEmptyString, UserAuthenticationRequest, ValidationMessage } from '../../../shared';
 import { AuthenticationCommand, AuthenticationCommandType, AuthenticationDialogManager, passwordValidator } from '../../index';
 
 @Component({
@@ -29,8 +29,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.formGroup = new FormGroup(
       {
-        login: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(256)]),
-        password: new FormControl('', [Validators.required, passwordValidator, Validators.maxLength(256)]),
+        login: new FormControl('', [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
+        password: new FormControl('', [Validators.required, notEmptyString, noSpaces, passwordValidator, Validators.maxLength(256)]),
       });
   }
   ngOnDestroy(): void {

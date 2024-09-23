@@ -1,9 +1,9 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
 import { CartService, ShopCommand, ShopCommandObject, ShopCommandType } from '../../..';
 import { environment } from '../../../../../../environment/environment';
-import { CartBook, LocaleService } from '../../../../shared';
+import { CartBook, CurrencyPipeApplier } from '../../../../shared';
 
 @Component({
   selector: 'app-cart-dialog',
@@ -11,11 +11,9 @@ import { CartBook, LocaleService } from '../../../../shared';
   styleUrl: './cart-dialog.component.scss'
 })
 export class CartDialogComponent implements OnInit {
-  currencyPipe!: CurrencyPipe;
   readonly itemHeight = 200;
   readonly amountItemsInView = 3;
   readonly scollSize = 420;
-
 
   items$!: Observable<CartBook[]>;
   private inputChangeSubject$ = new Subject<{ cartBook: CartBook, value: number }>();
@@ -23,13 +21,13 @@ export class CartDialogComponent implements OnInit {
   get maxAmount() { return environment.maxOrderAmount; }
 
   constructor(
-    private readonly localeService: LocaleService,
     private readonly cartService: CartService,
-    private readonly shopCommand: ShopCommand
+    private readonly shopCommand: ShopCommand,
+    private readonly currencyApplier: CurrencyPipeApplier,
+    private readonly dialogRef: MatDialogRef<CartDialogComponent>,
   ) { }
 
   ngOnInit(): void {
-    this.currencyPipe = new CurrencyPipe(this.localeService.getLocale(), this.localeService.getCurrency());
     this.items$ = this.cartService.getCartBooks();
 
     this.inputChangeSubject$.pipe(
@@ -46,7 +44,7 @@ export class CartDialogComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   applyCurrencyPipe(value: any): any {
-    return this.currencyPipe ? this.currencyPipe.transform(value) : value;
+    return this.currencyApplier.applyCurrencyPipe(value);
   }
 
   calculateSelectionSize(): number {
@@ -74,4 +72,11 @@ export class CartDialogComponent implements OnInit {
     this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Delete, this, cartBook);
   }
 
+  getBookPage(cartBook: CartBook): number {
+    return cartBook.book.id;
+  }
+
+  makeOrder() {
+    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Add, this, null, this.dialogRef);
+  }
 }

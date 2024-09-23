@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Observable, map } from 'rxjs';
+import { Policy, PolicyType, RedirectorService } from '../..';
 import { AuthenticationService } from '../../../authentication';
-import { Policy, PolicyType } from '../../identity/policy';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class RoleGuard implements CanActivate {
 
   constructor(
     private readonly authService: AuthenticationService,
-    private router: Router
+    private readonly redirector: RedirectorService
   ) { }
 
   canActivate(
@@ -28,7 +29,7 @@ export class RoleGuard implements CanActivate {
           hasRights = Policy.checkPolicy(policy, data.roles);
         });
         if (!hasRights) {
-          this.router.navigate(['']);
+          this.redirector.redirectTo('');
           return false;
         }
         return true;

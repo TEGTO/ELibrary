@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthenticationCommand, AuthenticationCommandType, AuthenticationService, passwordValidator } from '../..';
-import { UserUpdateRequest, ValidationMessage } from '../../../shared';
+import { noSpaces, notEmptyString, UserUpdateRequest, ValidationMessage } from '../../../shared';
 
 @Component({
   selector: 'app-authenticated',
@@ -33,9 +33,9 @@ export class AuthenticatedComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.formGroup = new FormGroup(
           {
-            email: new FormControl(data.email, [Validators.required, Validators.email, Validators.maxLength(256)]),
-            oldPassword: new FormControl('', [Validators.required, Validators.maxLength(256)]),
-            password: new FormControl('', [Validators.required, passwordValidator, Validators.maxLength(256)])
+            email: new FormControl(data.email, [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
+            oldPassword: new FormControl('', [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
+            password: new FormControl('', [Validators.required, notEmptyString, noSpaces, passwordValidator, Validators.maxLength(256)])
           });
       })
   }

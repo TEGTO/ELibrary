@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Book, CoverType, getDefaultBook, ValidationMessage } from '../../../../shared';
+import { Book, CoverType, getDefaultBook, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-change-dialog',
@@ -36,13 +36,13 @@ export class BookChangeDialogComponent implements OnInit {
   }
   initializeForm(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(this.book?.name, [Validators.required, Validators.maxLength(256)]),
+      name: new FormControl(this.book?.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
       publicationDate: new FormControl(this.book?.publicationDate ?? new Date(), [Validators.required]),
       price: new FormControl(this.book?.price, [Validators.required, Validators.min(0)]),
       coverType: new FormControl(this.book?.coverType ?? CoverType.Hard, [Validators.required]),
       pageAmount: new FormControl(this.book?.pageAmount, [Validators.required, Validators.min(1)]),
       stockAmount: new FormControl(this.book?.stockAmount, [Validators.required, Validators.min(0)]),
-      coverImgUrl: new FormControl(this.book?.coverImgUrl, [Validators.required, Validators.maxLength(1024)]),
+      coverImgUrl: new FormControl(this.book?.coverImgUrl, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(1024)]),
       author: new FormControl(this.book?.author, [Validators.required]),
       genre: new FormControl(this.book?.genre, [Validators.required]),
       publisher: new FormControl(this.book?.publisher, [Validators.required]),

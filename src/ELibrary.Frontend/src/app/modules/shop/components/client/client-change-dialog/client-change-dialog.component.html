@@ -1,13 +1,13 @@
 <button mat-icon-button mat-dialog-close class="close-button">
     <span class="material-icons">close</span>
 </button>
-<h2 mat-dialog-title>Client</h2>
+<h2 mat-dialog-title>Contact Information</h2>
 
 <mat-dialog-content>
     <form id="client" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput type="text" autocomplete="client-name" formControlName="firstName" placeholder="John"
+            <input matInput type="text" autocomplete="client-name" formControlName="name" placeholder="John"
                 maxlength="256">
             <mat-error
                 *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
@@ -26,11 +26,13 @@
             <mat-error
                 *ngIf="validateInputField(lastNameInput).hasError">{{validateInputField(lastNameInput).message}}</mat-error>
         </mat-form-field>
-        <mat-label>Email</mat-label>
-        <input matInput type="text" autocomplete="client-email" formControlName="email" placeholder="example@gmail.com"
-            maxlength="256">
-        <mat-error
-            *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" autocomplete="client-email" formControlName="email"
+                placeholder="example@gmail.com" maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
+        </mat-form-field>
         <mat-form-field>
             <mat-label>Date of Birth</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [readonly]="true">
@@ -41,19 +43,21 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Address</mat-label>
-            <input matInput type="text" formControlName="client-address" placeholder="123 Main St" maxlength="256">
+            <input matInput type="text" autocomplete="client-address" formControlName="address"
+                placeholder="123 Main St" maxlength="256">
             <mat-error
                 *ngIf="validateInputField(addressInput).hasError">{{validateInputField(addressInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Phone</mat-label>
-            <input matInput type="phone" formControlName="client-phone" placeholder="+3801234567" maxlength="256">
+            <input matInput type="phone" autocomplete="client-phone" formControlName="phone" placeholder="+3801234567"
+                maxlength="256">
             <mat-error
                 *ngIf="validateInputField(phoneInput).hasError">{{validateInputField(phoneInput).message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions class="actions__bottom-container flex-col">
-    <button mat-flat-button id="send-button" form="authorDetails" type="submit" color="primary"
-        class="w-full">Confirm</button>
+    <button mat-flat-button id="send-button" form="client" type="submit" color="primary"
+        class="w-full !bg-green-600">Save</button>
 </mat-dialog-actions>

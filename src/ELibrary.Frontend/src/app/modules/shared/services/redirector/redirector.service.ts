@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -13,7 +14,7 @@ export class RedirectorService {
   redirectToHome(): void {
     this.router.navigate(['']);
   }
-  redirectTo(path: string): void {
-    this.router.navigate([path]);
+  redirectTo(path: string, queryParams?: Record<string, any>): void {
+    this.router.navigate([path], { queryParams });
   }
 }

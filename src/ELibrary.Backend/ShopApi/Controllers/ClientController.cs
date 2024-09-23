@@ -32,6 +32,12 @@ namespace ShopApi.Controllers
         {
             var id = GetUserId();
             var client = await clientService.GetClientByUserIdAsync(id, cancellationToken);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
             return Ok(mapper.Map<ClientResponse>(client));
         }
         [HttpPost]

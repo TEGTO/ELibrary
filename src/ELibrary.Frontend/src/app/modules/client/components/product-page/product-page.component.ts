@@ -87,4 +87,8 @@ export class ProductPageComponent implements OnInit {
   applyCurrencyPipe(value: any): any {
     return this.currenctyApplier.applyCurrencyPipe(value);
   }
+
+  getBookPage(book: Book): number {
+    return book.id;
+  }
 }
