@@ -3,11 +3,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { CartService, ClientService, ShopDialogManager } from '../..';
+import { CartService, ClientService, OrderService, ShopDialogManager } from '../..';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { Book, CartBook, Client, getDefaultClient, mapBookToAddBookToCartRequest, mapCartBookToUpdateCartBookRequest, mapClientToCreateClientRequest, mapClientToUpdateClientRequest, Order, RedirectorService, redirectPathes, SnackbarManager } from '../../../shared';
-import { ShopCommand, ShopCommandObject, ShopCommandType } from './shop-command';
-
+import { Book, CartBook, Client, getDefaultClient, mapBookToAddBookToCartRequest, mapCartBookToUpdateCartBookRequest, mapClientToCreateClientRequest, mapClientToUpdateClientRequest, mapOrderToClientUpdateOrderRequest, mapOrderToCreateOrderRequest, mapOrderToManagerUpdateOrderRequest, Order, RedirectorService, redirectPathes, SnackbarManager } from '../../../shared';
+import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from './shop-command';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +21,7 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
     private readonly authenticationDialog: AuthenticationDialogManager,
     private readonly shopDialog: ShopDialogManager,
     private readonly redirector: RedirectorService,
+    private readonly orderService: OrderService,
     private readonly snackManager: SnackbarManager
   ) { }
 
@@ -34,7 +34,23 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
     this.destroy$.complete();
   }
 
-  dispatchCommand(commandObject: ShopCommandObject, commandType: ShopCommandType, dispatchedFrom: any, ...params: any): void {
+  dispatchCommand(commandObject: ShopCommandObject, commandType: ShopCommandType, commandRole: ShopCommandRole, dispatchedFrom: any, ...params: any): void {
+    switch (commandRole) {
+      case ShopCommandRole.Client:
+        this.clientSwitch(commandObject, commandType, dispatchedFrom, params);
+        break;
+      case ShopCommandRole.Manager:
+        this.managerSwitch(commandObject, commandType, dispatchedFrom, params);
+        break;
+      case ShopCommandRole.Administrator:
+        this.adminSwitch(commandObject, commandType, dispatchedFrom, params);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private clientSwitch(commandObject: ShopCommandObject, commandType: ShopCommandType, dispatchedFrom: any, params: any) {
     switch (commandObject) {
       case ShopCommandObject.Cart:
         switch (commandType) {
@@ -72,10 +88,114 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
             this.addOrder(dispatchedFrom, params[0], params);
             break;
           case ShopCommandType.Update:
-            // this.updateOrder(dispatchedFrom, params[0], params);
+            this.clientUpdateOrder(dispatchedFrom, params[0], params);
             break;
           case ShopCommandType.Delete:
-            // this.deleteOrder(dispatchedFrom, params[0], params);
+            this.clientCancelOrder(dispatchedFrom, params[0], params);
+            break;
+          default:
+            break;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  private managerSwitch(commandObject: ShopCommandObject, commandType: ShopCommandType, dispatchedFrom: any, params: any) {
+    switch (commandObject) {
+      case ShopCommandObject.Cart:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addBookToCart(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Update:
+            this.updateCartBook(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Delete:
+            this.deleteCartBook(dispatchedFrom, params[0], params);
+            break;
+          default:
+            break;
+        }
+        break;
+      case ShopCommandObject.Client:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addClient(dispatchedFrom, params);
+            break;
+          case ShopCommandType.Update:
+            this.updateClient(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Delete:
+            this.deleteClient(dispatchedFrom, params);
+            break;
+          default:
+            break;
+        }
+        break;
+      case ShopCommandObject.Order:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addOrder(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Update:
+            this.managerUpdateOrder(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Delete:
+            this.managerCancelOrder(dispatchedFrom, params[0], params);
+            break;
+          default:
+            break;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  private adminSwitch(commandObject: ShopCommandObject, commandType: ShopCommandType, dispatchedFrom: any, params: any) {
+    switch (commandObject) {
+      case ShopCommandObject.Cart:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addBookToCart(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Update:
+            this.updateCartBook(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Delete:
+            this.deleteCartBook(dispatchedFrom, params[0], params);
+            break;
+          default:
+            break;
+        }
+        break;
+      case ShopCommandObject.Client:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addClient(dispatchedFrom, params);
+            break;
+          case ShopCommandType.Update:
+            this.updateClient(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Delete:
+            this.deleteClient(dispatchedFrom, params);
+            break;
+          default:
+            break;
+        }
+        break;
+      case ShopCommandObject.Order:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addOrder(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Update:
+            this.managerUpdateOrder(dispatchedFrom, params[0], params);
+            break;
+          case ShopCommandType.Delete:
+            this.managerCancelOrder(dispatchedFrom, params[0], params);
             break;
           default:
             break;
@@ -117,6 +237,37 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
       this.closeDialogIfPresent(params);
       this.redirector.redirectTo(redirectPathes.client_makeOrder);
     }
+    else {
+      this.orderService.createOrder(mapOrderToCreateOrderRequest(order))
+        .pipe(
+          takeUntil(this.destroy$)
+        )
+        .subscribe(
+          (result) => {
+            if (result.isSuccess) {
+              this.redirector.redirectToHome();
+              this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
+              this.cartService.clearCart();
+            }
+            else if (!result.isSuccess && result.error !== null) {
+              this.cleanUp();
+            }
+          }
+        );
+    }
+  }
+  clientUpdateOrder(dispatchedFrom: any, order: Order, params: any) {
+    this.orderService.clientUpdateOrder(mapOrderToClientUpdateOrderRequest(order));
+  }
+  clientCancelOrder(dispatchedFrom: any, order: Order, params: any) {
+    this.orderService.clientCancelOrder(order.id);
+  }
+
+  managerUpdateOrder(dispatchedFrom: any, order: Order, params: any) {
+    this.orderService.managerUpdateOrder(mapOrderToManagerUpdateOrderRequest(order));
+  }
+  managerCancelOrder(dispatchedFrom: any, order: Order, params: any) {
+    this.orderService.managerCancelOrder(order.id);
   }
 
   //#endregion

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { BookService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
 import { Book, BookFilterRequest, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe, redirectPathes } from '../../../../../shared';
@@ -16,7 +16,8 @@ interface BookItem {
 @Component({
   selector: 'app-book-table',
   templateUrl: './book-table.component.html',
-  styleUrl: './book-table.component.scss'
+  styleUrl: './book-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;

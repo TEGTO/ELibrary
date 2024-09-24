@@ -5,7 +5,11 @@ namespace LibraryShopEntities.Domain.Entities.Shop
 {
     public enum OrderStatus
     {
-        InProcessing, Packed, Delivered
+        Canceled = -1, InProcessing, Packed, Delivered
+    }
+    public enum PaymentMethod
+    {
+        Cash
     }
 
     public class Order
@@ -21,6 +25,7 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public string DeliveryAddress { get; set; } = default!;
         public DateTime DeliveryTime { get; set; }
         public OrderStatus OrderStatus { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public List<OrderBook> OrderBooks { get; set; } = new List<OrderBook>();
         [Required]
         public string ClientId { get; set; } = default!;

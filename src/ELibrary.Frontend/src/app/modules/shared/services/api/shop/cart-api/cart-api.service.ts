@@ -37,7 +37,11 @@ export class CartApiService extends BaseApiService {
     );
   }
   clearCart(): Observable<Cart> {
-    return this.httpClient.put<CartResponse>(this.combinePathWithCartApiUrl(`/cartbook`), null).pipe(
+    return this.httpClient.put<CartResponse>(
+      this.combinePathWithCartApiUrl(``),
+      {},
+      { headers: { 'Content-Type': 'application/json' } }
+    ).pipe(
       map((response) => mapCartResponseToCart(response)),
       catchError((error) => this.handleError(error)),
     );

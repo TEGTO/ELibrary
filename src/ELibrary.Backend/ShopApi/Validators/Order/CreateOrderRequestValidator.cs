@@ -11,6 +11,7 @@ namespace ShopApi.Validators.Order
             int maxAmount = int.Parse(configuration[Configuration.SHOP_MAX_ORDER_AMOUNT]!);
             RuleFor(x => x.DeliveryAddress).NotNull().NotEmpty().MaximumLength(512);
             RuleFor(x => x.DeliveryTime).NotNull().GreaterThanOrEqualTo(DateTime.UtcNow);
+            RuleFor(x => x.PaymentMethod).NotNull();
             RuleFor(x => x.OrderBooks)
               .NotNull()
               .NotEmpty()

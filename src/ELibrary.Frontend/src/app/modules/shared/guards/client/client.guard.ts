@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { RedirectorService } from '../..';
-import { ClientService, ShopCommand, ShopCommandObject, ShopCommandType } from '../../../shop';
+import { ClientService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class ClientGuard implements CanActivate {
     return this.clientService.getClient().pipe(
       map((client) => {
         if (!client) {
-          this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Add, this, state.url)
+          this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Add, ShopCommandRole.Client, this, state.url)
           return false;
         }
         return true;

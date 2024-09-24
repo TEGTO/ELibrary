@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Book, CoverType, getDefaultBook, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
@@ -6,7 +6,8 @@ import { Book, CoverType, getDefaultBook, noSpaces, notEmptyString, ValidationMe
 @Component({
   selector: 'app-book-change-dialog',
   templateUrl: './book-change-dialog.component.html',
-  styleUrl: './book-change-dialog.component.scss'
+  styleUrl: './book-change-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;

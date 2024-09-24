@@ -15,20 +15,20 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <!-- Display this when no items are found -->
-    <ng-template #noItems>
-        <div class="no-items-container flex items-center justify-center h-96">
-            <p class="text-lg text-gray-600">No items found. Please adjust your filters.</p>
-        </div>
-    </ng-template>
-    <!-- Loading spinner -->
-    <ng-template #loading>
-        <div class="loading-spinner-container">
-            <mat-spinner diameter="80"></mat-spinner>
-        </div>
-    </ng-template>
 </div>
 
+<!-- Display this when no items are found -->
+<ng-template #noItems>
+    <div class="no-items-container flex items-center justify-center h-96">
+        <p class="text-lg text-gray-600">No items found. Please adjust your filters.</p>
+    </div>
+</ng-template>
+<!-- Loading spinner -->
+<ng-template #loading>
+    <div class="loading-spinner-container">
+        <mat-spinner diameter="80"></mat-spinner>
+    </div>
+</ng-template>
 <ng-template #book let-book="book" let-bookAdded="bookAdded">
     <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
         <a [href]="getBookPage(book)"

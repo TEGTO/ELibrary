@@ -1,10 +1,9 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
-export function minDateValidator(): ValidatorFn {
+export function minDateValidator(minDate: Date): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         const selectedDate = new Date(control.value);
-        const today = new Date();
-        if (selectedDate >= today) {
+        if (selectedDate < minDate) {
             return { invalidMinDate: 'Date must be in the past' };
         }
         return null;

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { noSpaces, notEmptyString, Publisher, ValidationMessage } from '../../../../shared';
@@ -6,7 +6,8 @@ import { noSpaces, notEmptyString, Publisher, ValidationMessage } from '../../..
 @Component({
   selector: 'app-publisher-change-dialog',
   templateUrl: './publisher-change-dialog.component.html',
-  styleUrl: './publisher-change-dialog.component.scss'
+  styleUrl: './publisher-change-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PublisherChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;

@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
-import { CartService, ShopCommand, ShopCommandObject, ShopCommandType } from '../../..';
+import { CartService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../..';
 import { environment } from '../../../../../../environment/environment';
 import { CartBook, CurrencyPipeApplier } from '../../../../shared';
 
 @Component({
   selector: 'app-cart-dialog',
   templateUrl: './cart-dialog.component.html',
-  styleUrl: './cart-dialog.component.scss'
+  styleUrl: './cart-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartDialogComponent implements OnInit {
   readonly itemHeight = 200;
@@ -38,7 +39,7 @@ export class CartDialogComponent implements OnInit {
         ...cartBook,
         bookAmount: value
       }
-      this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Update, this, cartBook);
+      this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Update, ShopCommandRole.Client, this, cartBook);
     });
   }
 
@@ -69,7 +70,7 @@ export class CartDialogComponent implements OnInit {
     this.inputChangeSubject$.next({ cartBook, value });
   }
   deleteCartBook(cartBook: CartBook) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Delete, this, cartBook);
+    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Delete, ShopCommandRole.Client, this, cartBook);
   }
 
   getBookPage(cartBook: CartBook): number {
@@ -77,6 +78,6 @@ export class CartDialogComponent implements OnInit {
   }
 
   makeOrder() {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Add, this, null, this.dialogRef);
+    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Add, ShopCommandRole.Client, this, null, this.dialogRef);
   }
 }

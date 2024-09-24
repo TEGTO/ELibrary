@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { BookService } from '../../../library';
 import { Book, CoverType, CurrencyPipeApplier, getDefaultBook, getStringCoverType, RedirectorService } from '../../../shared';
-import { ShopCommand, ShopCommandObject, ShopCommandType } from '../../../shop';
+import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
 
 @Component({
   selector: 'app-product-info',
   templateUrl: './product-info.component.html',
-  styleUrl: './product-info.component.scss'
+  styleUrl: './product-info.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductInfoComponent implements OnInit {
   bookAdded = false;
@@ -62,7 +63,7 @@ export class ProductInfoComponent implements OnInit {
   }
 
   addBookToCart(book: Book) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, this, book);
+    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, ShopCommandRole.Client, this, book);
     this.bookAdded = true;
   }
 }

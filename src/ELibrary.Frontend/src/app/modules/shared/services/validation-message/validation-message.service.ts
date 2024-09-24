@@ -31,6 +31,9 @@ export class ValidationMessageService implements ValidationMessage {
       return { hasError: true, message: "Passwords don't match." };
     }
     else if (input.hasError('invalidMinDate')) {
+      return { hasError: true, message: "Date must be greater." };
+    }
+    else if (input.hasError('dateInPast')) {
       return { hasError: true, message: "Date must be in the past." };
     }
     else if (input.hasError('min')) {

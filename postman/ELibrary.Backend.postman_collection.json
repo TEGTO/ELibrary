@@ -1096,6 +1096,45 @@
 					"response": []
 				},
 				{
+					"name": "order-cancel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/{{order_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "order-manager-pagination",
 					"event": [
 						{
@@ -1187,7 +1226,7 @@
 					"response": []
 				},
 				{
-					"name": "order-manager-delete",
+					"name": "order-manager-cancel",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1249,14 +1288,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -1622,14 +1654,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -1991,14 +2016,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -2360,14 +2378,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -2526,7 +2537,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 1, //Hard\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
+							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 1, //Hard\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2620,7 +2631,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 2, //Soft\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
+							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 2, //Soft\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

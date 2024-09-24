@@ -44,6 +44,7 @@ builder.Services.AddScoped<ITokenHandler, JwtHandler>();
 #region Project Services 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
 #endregion

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthorService } from '../../../..';
 import { Author, defaultLibraryFilterRequest, ValidationMessage } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { BaseSelectInputComponent } from "../base-select-input-component/base-se
 @Component({
   selector: 'app-author-input',
   templateUrl: './author-input.component.html',
-  styleUrl: './author-input.component.scss'
+  styleUrl: './author-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthorInputComponent extends BaseSelectInputComponent<Author> {
 

@@ -9,12 +9,12 @@
                         @if (authData.isAuthenticated)
                         {
                         <app-shopping-cart-button></app-shopping-cart-button>
-                        <button mat-icon-button>
+                        <a mat-icon-button [href]="orderHistoryPath">
                             <span class="material-icons">receipt_long</span>
-                        </button>
+                        </a>
                         }
                         @if (checkManagerPolicy(authData.roles)) {
-                        <a mat-icon-button [href]="'manager'">
+                        <a mat-icon-button [href]="managerPath">
                             <span class="material-icons">storefront</span>
                         </a>
                         }

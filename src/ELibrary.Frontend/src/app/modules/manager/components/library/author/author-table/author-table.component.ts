@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AuthorService, LibraryCommand, LibraryCommandObject, LibraryCommandType, TableColumn } from '../../../../../library';
 import { Author, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { Author, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilt
 @Component({
   selector: 'app-author-table',
   templateUrl: './author-table.component.html',
-  styleUrl: './author-table.component.scss'
+  styleUrl: './author-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthorTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;

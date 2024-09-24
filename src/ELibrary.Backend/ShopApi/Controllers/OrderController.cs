@@ -1,5 +1,4 @@
 ﻿using Authentication.Identity;
-using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos;
 using ShopApi.Domain.Dtos.Order;
 using ShopApi.Services;
+using ShopApi.Services.Facades;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers
@@ -16,22 +16,22 @@ namespace ShopApi.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IMapper mapper;
+        private readonly IOrderManager orderManager;
         private readonly IClientService clientService;
-        private readonly IOrderService orderService;
 
-        public OrderController(IMapper mapper, IOrderService orderService, IClientService clientService)
+        public OrderController(
+            IOrderManager orderCommandHandler,
+            IClientService clientService)
         {
-            this.mapper = mapper;
-            this.orderService = orderService;
+            this.orderManager = orderCommandHandler;
             this.clientService = clientService;
         }
 
         #region Endpoints
 
         [ResponseCache(Duration = 60)]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(CancellationToken cancellationToken)
+        [HttpPost("pagination")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(PaginationRequest request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
@@ -40,12 +40,25 @@ namespace ShopApi.Controllers
                 return BadRequest("Client is not found!");
             }
 
-            var orders = await orderService.GetOrdersByClientIdAsync(client.Id, cancellationToken);
+            var orders = await orderManager.GetPaginatedOrdersAsync(client.Id, request, cancellationToken);
+            return Ok(orders);
+        }
+        [ResponseCache(Duration = 60)]
+        [HttpGet("amount")]
+        public async Task<ActionResult<int>> GetOrderAmount(CancellationToken cancellationToken)
+        {
+            var client = await GetClientAsync(cancellationToken);
 
-            return Ok(orders.Select(mapper.Map<OrderResponse>));
+            if (client == null)
+            {
+                return BadRequest("Client is not found!");
+            }
+
+            int amount = await orderManager.GetOrderAmountAsync(client.Id, cancellationToken);
+            return Ok(amount);
         }
         [HttpPost]
-        public async Task<ActionResult<OrderResponse>> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderResponse>> CreateOrder(CreateOrderRequest request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
@@ -54,55 +67,68 @@ namespace ShopApi.Controllers
                 return BadRequest("Client is not found!");
             }
 
-            var order = mapper.Map<Order>(request);
-            order.ClientId = client.Id;
-
-            var response = await orderService.CreateOrderAsync(order, cancellationToken);
-
-            return Created($"", mapper.Map<OrderResponse>(response));
+            var response = await orderManager.CreateOrderAsync(request, client, cancellationToken);
+            return Created($"", response);
         }
         [HttpPatch]
-        public async Task<ActionResult<OrderResponse>> UpdateOrder([FromBody] ClientUpdateOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderResponse>> UpdateOrder(ClientUpdateOrderRequest request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
-            if (client == null || !await orderService.CheckOrderAsync(client.Id, request.Id, cancellationToken))
+            if (client == null)
             {
-                return BadRequest("Order is not found!");
+                return BadRequest("Client is not found!");
             }
 
-            var order = mapper.Map<Order>(request);
-            var orderInService = await orderService.GetOrderByIdAsync(order.Id, cancellationToken);
-            order.OrderStatus = orderInService!.OrderStatus;
+            var response = await orderManager.UpdateOrderAsync(request, client, cancellationToken);
+            return Ok(response);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CancelOrder(int id, CancellationToken cancellationToken)
+        {
+            var client = await GetClientAsync(cancellationToken);
 
-            var response = await orderService.UpdateOrderAsync(order, cancellationToken);
-            return Ok(mapper.Map<OrderResponse>(response));
+            if (client == null)
+            {
+                return BadRequest("Client is not found!");
+            }
+
+            await orderManager.CancelOrderAsync(id, client, cancellationToken);
+            return Ok();
         }
 
         #endregion
 
         #region Manager Endpoints
 
+        [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/pagination")]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetPaginatedOrders(PaginationRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> ManagerGetPaginatedOrders(PaginationRequest request, CancellationToken cancellationToken)
         {
-            var orders = await orderService.GetPaginatedAsync(request, cancellationToken);
-            return Ok(orders.Select(mapper.Map<OrderResponse>));
+            var orders = await orderManager.GetPaginatedOrdersAsync(request, cancellationToken);
+            return Ok(orders);
+        }
+        [ResponseCache(Duration = 10)]
+        [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
+        [HttpGet("manager/amount")]
+        public async Task<ActionResult<int>> ManagerGetOrderAmount(CancellationToken cancellationToken)
+        {
+            int amount = await orderManager.GetOrderAmountAsync(cancellationToken);
+            return Ok(amount);
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPut("manager")]
-        public async Task<ActionResult<OrderResponse>> ManagerUpdateOrder([FromBody] ManagerUpdateOrderRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<OrderResponse>> ManagerUpdateOrder(ManagerUpdateOrderRequest request, CancellationToken cancellationToken)
         {
-            var order = mapper.Map<Order>(request);
-            var response = await orderService.UpdateOrderAsync(order, cancellationToken);
-            return Ok(mapper.Map<OrderResponse>(response));
+            var response = await orderManager.UpdateOrderAsync(request, cancellationToken);
+            return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpDelete("manager/{id}")]
-        public async Task<IActionResult> ManagerDeleteOrder(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> ManagerCancelOrder(int id, CancellationToken cancellationToken)
         {
-            await orderService.DeleteOrderAsync(id, cancellationToken);
+            await orderManager.CancelOrderAsync(id, cancellationToken);
             return Ok();
         }
 
@@ -112,7 +138,7 @@ namespace ShopApi.Controllers
 
         private async Task<Client?> GetClientAsync(CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return await clientService.GetClientByUserIdAsync(userId, cancellationToken);
         }
 

@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { map, Observable, tap } from 'rxjs';
 import { BookService } from '../../../library';
 import { Book, BookFilterRequest, CurrencyPipeApplier, defaultBookFilterRequest } from '../../../shared';
-import { ShopCommand, ShopCommandObject, ShopCommandType } from '../../../shop';
+import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
 
 @Component({
   selector: 'app-product-page',
   templateUrl: './product-page.component.html',
-  styleUrl: './product-page.component.scss'
+  styleUrl: './product-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductPageComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -42,7 +43,7 @@ export class ProductPageComponent implements OnInit {
   }
 
   addBookToCart(book: Book) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, this, book);
+    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, ShopCommandRole.Client, this, book);
     this.bookAddedMap[book.id] = true;
   }
 

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Genre, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
@@ -6,7 +6,8 @@ import { Genre, noSpaces, notEmptyString, ValidationMessage } from '../../../../
 @Component({
   selector: 'app-genre-change-dialog',
   templateUrl: './genre-change-dialog.component.html',
-  styleUrl: './genre-change-dialog.component.scss'
+  styleUrl: './genre-change-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenreChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;

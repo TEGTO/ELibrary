@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule, Routes } from '@angular/router';
-import { ClientViewComponent, CreateClientComponent, MakeOrderComponent, ProductInfoComponent, ProductPageComponent } from '.';
+import { ClientViewComponent, CreateClientComponent, MakeOrderComponent, OrderHistoryComponent, ProductInfoComponent, ProductPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
 import { ClientGuard, pathes, PolicyType, RoleGuard } from '../shared';
 import { ShopModule } from '../shop/shop.module';
@@ -18,12 +23,20 @@ const routes: Routes = [
     children: [
       {
         path: pathes.client_order,
+        canActivate: [RoleGuard],
+        data: { policy: [PolicyType.ClientPolicy] },
         children: [
-          { path: pathes.client_order_addInformation, component: CreateClientComponent },
+          {
+            path: pathes.client_order_history,
+            component: OrderHistoryComponent,
+          },
+          {
+            path: pathes.client_order_addInformation,
+            component: CreateClientComponent,
+          },
           {
             path: pathes.client_order_makeOrder, component: MakeOrderComponent,
-            canActivate: [RoleGuard, ClientGuard],
-            data: { policy: [PolicyType.ClientPolicy] }
+            canActivate: [ClientGuard],
           },
           { path: "", redirectTo: '', pathMatch: "full" },
         ]
@@ -42,6 +55,7 @@ const routes: Routes = [
     ClientViewComponent,
     MakeOrderComponent,
     CreateClientComponent,
+    OrderHistoryComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -49,6 +63,11 @@ const routes: Routes = [
     LibraryModule,
     ShopModule,
     MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatRadioModule,
     MatButtonModule,
     ScrollingModule,
     MatPaginator,

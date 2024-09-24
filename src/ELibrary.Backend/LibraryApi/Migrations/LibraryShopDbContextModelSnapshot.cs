@@ -186,8 +186,8 @@ namespace LibraryApi.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
@@ -257,6 +257,9 @@ namespace LibraryApi.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("OrderStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PaymentMethod")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("TotalPrice")

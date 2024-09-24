@@ -1,13 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { RedirectorService } from '../../../shared';
-import { ClientService, ShopCommand, ShopCommandObject, ShopCommandType } from '../../../shop';
+import { ClientService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
 
 @Component({
   selector: 'app-create-client',
   templateUrl: './create-client.component.html',
-  styleUrl: './create-client.component.scss'
+  styleUrl: './create-client.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateClientComponent implements OnInit, OnDestroy {
   redirectUrl: string | null = null;
@@ -46,6 +47,6 @@ export class CreateClientComponent implements OnInit, OnDestroy {
   }
 
   addClient() {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Add, this);
+    this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Add, ShopCommandRole.Client, this);
   }
 }

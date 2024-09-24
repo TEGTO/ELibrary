@@ -11,6 +11,7 @@ namespace LibraryShopEntities.Domain.Dtos.Shop
         public string DeliveryAddress { get; set; }
         public DateTime DeliveryTime { get; set; }
         public OrderStatus OrderStatus { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public List<BookListingResponse> OrderBooks { get; set; }
     }
 }

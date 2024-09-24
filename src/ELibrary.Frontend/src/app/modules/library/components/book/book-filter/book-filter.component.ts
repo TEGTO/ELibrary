@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { dateRangeValidatorFrom, dateRangeValidatorTo, pageAmountRangeMaxValidator, pageAmountRangeMinValidator, priceRangeMaxValidator, priceRangeMinValidator } from '../../..';
@@ -7,7 +7,8 @@ import { BookFilterRequest, CoverType, defaultBookFilterRequest, ValidationMessa
 @Component({
   selector: 'app-book-filter',
   templateUrl: './book-filter.component.html',
-  styleUrl: './book-filter.component.scss'
+  styleUrl: './book-filter.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookFilterComponent implements OnInit, OnDestroy {
   @Output() filterChange = new EventEmitter<BookFilterRequest>();

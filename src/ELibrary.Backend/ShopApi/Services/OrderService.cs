@@ -21,33 +21,48 @@ namespace ShopApi.Services
         public async Task<Order?> GetOrderByIdAsync(int id, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            return await queryable.AsNoTracking().Include(x => x.OrderBooks).ThenInclude(x => x.Book).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return
+                await GetQueryableOrderWithBook(queryable)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
-        public async Task<IEnumerable<Order>> GetPaginatedAsync(PaginationRequest pagination, CancellationToken cancellationToken)
+        public async Task<int> GetOrderAmountAsync(string clientId, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
+            return
+                await GetQueryableOrderWithBook(queryable)
+                .Where(x => x.ClientId == clientId)
+                .CountAsync();
+        }
+        public async Task<int> GetOrderAmountAsync(CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
+            return
+                await GetQueryableOrderWithBook(queryable)
+                .CountAsync();
+        }
+        public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(PaginationRequest pagination, CancellationToken cancellationToken)
         {
             List<Order> orders = new List<Order>();
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
 
-            orders.AddRange(await queryable
-                                     .AsNoTracking()
-                                     .OrderByDescending(b => b.Id)
+            orders.AddRange(await GetQueryableOrderWithBook(queryable)
+                                     .OrderByDescending(b => b.CreationTime)
                                      .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                                      .Take(pagination.PageSize)
-                                     .Include(x => x.OrderBooks)
-                                     .ThenInclude(x => x.Book)
                                      .ToListAsync(cancellationToken));
             return orders;
         }
-        public async Task<IEnumerable<Order>> GetOrdersByClientIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(string id, PaginationRequest pagination, CancellationToken cancellationToken)
         {
             List<Order> orders = new List<Order>();
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
 
             orders.AddRange(
-            await queryable.AsNoTracking()
+            await GetQueryableOrderWithBook(queryable)
             .Where(t => t.ClientId == id)
-            .Include(x => x.OrderBooks)
-            .ThenInclude(x => x.Book)
+            .OrderByDescending(b => b.CreationTime)
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
             .ToListAsync(cancellationToken));
 
             return orders;
@@ -70,12 +85,10 @@ namespace ShopApi.Services
                     return book != null ? orderBook.BookAmount * book.Price : 0;
                 });
 
-            return await repository.AddAsync(order, cancellationToken);
-        }
-        public async Task<bool> CheckOrderAsync(string clientId, int id, CancellationToken cancellationToken)
-        {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            return await queryable.AsNoTracking().AnyAsync(x => x.Id == id && x.ClientId == clientId, cancellationToken);
+            var newOrder = await repository.AddAsync(order, cancellationToken);
+            var orderQueryable = await repository.GetQueryableAsync<Order>(cancellationToken);
+
+            return await GetQueryableOrderWithBook(orderQueryable).FirstAsync(x => x.Id == newOrder.Id, cancellationToken);
         }
         public async Task<Order> UpdateOrderAsync(Order order, CancellationToken cancellationToken)
         {
@@ -88,7 +101,9 @@ namespace ShopApi.Services
             }
 
             orderInDb.Copy(order);
-            return await repository.UpdateAsync(orderInDb, cancellationToken);
+            await repository.UpdateAsync(orderInDb, cancellationToken);
+
+            return await GetQueryableOrderWithBook(queryable).FirstAsync(x => x.Id == orderInDb.Id, cancellationToken);
         }
         public async Task DeleteOrderAsync(int id, CancellationToken cancellationToken)
         {
@@ -98,5 +113,22 @@ namespace ShopApi.Services
         }
 
         #endregion
+
+        private IQueryable<Order> GetQueryableOrderWithBook(IQueryable<Order> queryable)
+        {
+            return
+                queryable
+                .AsSplitQuery()
+                .AsNoTracking()
+                .Include(x => x.OrderBooks)
+                    .ThenInclude(book => book.Book)
+                    .ThenInclude(book => book.Author)
+                .Include(x => x.OrderBooks)
+                    .ThenInclude(book => book.Book)
+                    .ThenInclude(book => book.Publisher)
+                .Include(x => x.OrderBooks)
+                    .ThenInclude(book => book.Book)
+            .ThenInclude(book => book.Genre);
+        }
     }
 }

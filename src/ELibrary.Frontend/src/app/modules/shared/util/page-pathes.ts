@@ -12,6 +12,7 @@ export const pathes =
     client_order: "order",
     client_order_makeOrder: "make",
     client_order_addInformation: "add-contact-info",
+    client_order_history: "history",
 };
 
 export const redirectPathes =
@@ -25,4 +26,5 @@ export const redirectPathes =
     client_productInfo: `${pathes.client}`,
     client_makeOrder: `${pathes.client}/${pathes.client_order}/${pathes.client_order_makeOrder}`,
     client_addInformation: `${pathes.client}/${pathes.client_order}/${pathes.client_order_addInformation}`,
+    client_order_history: `${pathes.client}/${pathes.client_order}/${pathes.client_order_history}`
 };

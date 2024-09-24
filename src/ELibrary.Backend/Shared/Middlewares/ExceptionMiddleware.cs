@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Shared.Dtos;
+using Shared.Exceptions;
 using System.Net;
 
 namespace Shared.Middlewares
@@ -30,6 +31,11 @@ namespace Shared.Middlewares
                  .Select(e => $"{e.PropertyName}: {e.ErrorMessage}")
                  .ToArray();
                 await SetError(httpContext, HttpStatusCode.BadRequest, ex, errors);
+            }
+            catch (AuthorizationException ex)
+            {
+                var errors = ex.Errors.ToArray();
+                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, errors);
             }
             catch (UnauthorizedAccessException ex)
             {

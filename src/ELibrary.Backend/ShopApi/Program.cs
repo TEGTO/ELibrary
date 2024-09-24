@@ -6,6 +6,7 @@ using Shared.Middlewares;
 using Shared.Repositories;
 using ShopApi;
 using ShopApi.Services;
+using ShopApi.Services.Facades;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 builder.Services.AddSingleton<IClientService, ClientService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddSingleton<IOrderManager, OrderManager>();
+builder.Services.AddSingleton<IClientManager, ClientManager>();
 
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 #endregion

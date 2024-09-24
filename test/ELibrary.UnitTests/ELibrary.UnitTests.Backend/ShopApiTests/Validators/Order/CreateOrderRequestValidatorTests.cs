@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using ShopApi.Domain.Dtos.Order;
@@ -27,7 +28,8 @@ namespace ShopApi.Validators.Order.Tests
             {
                 DeliveryAddress = "Valid Address",
                 DeliveryTime = DateTime.UtcNow.AddDays(1),
-                OrderBooks = new List<OrderBookRequest> { new OrderBookRequest { BookId = 1, BookAmount = 1 } }
+                OrderBooks = new List<OrderBookRequest> { new OrderBookRequest { BookId = 1, BookAmount = 1 } },
+                PaymentMethod = PaymentMethod.Cash
             };
             // Act & Assert
             var result = validator.TestValidate(request);

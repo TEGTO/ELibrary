@@ -7,9 +7,12 @@ export enum ShopCommandObject {
 export enum ShopCommandType {
     Add, Update, Delete
 }
+export enum ShopCommandRole {
+    Client, Manager, Administrator
+}
 @Injectable({
     providedIn: 'root'
 })
 export abstract class ShopCommand {
-    abstract dispatchCommand(commandObject: ShopCommandObject, commandType: ShopCommandType, dispatchedFrom: any, ...params: any): void;
+    abstract dispatchCommand(commandObject: ShopCommandObject, commandType: ShopCommandType, commandRole: ShopCommandRole, dispatchedFrom: any, ...params: any): void;
 }

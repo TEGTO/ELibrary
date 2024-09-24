@@ -1,41 +1,96 @@
 <div class="body__order bg-zinc-50">
     <ng-container *ngIf="client$ | async as client; else loading">
-        <app-client-info [client]="client"></app-client-info>
         <ng-container *ngIf="items$ | async as items; else loading">
-            <div class="content">
-                <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="products"
-                    [style.height.px]="calculateSelectionSize()">
-                    <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
-                        <div class="book-wrapper">
-                            <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
+            <ng-container *ngIf="items.length > 0; else emptyCart">
+                <div class="content w-full">
+                    <app-client-info [client]="client"></app-client-info>
+                    <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="books"
+                        [style.height.px]="calculateSelectionSize(items.length)">
+                        <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
+                            <div class="book-wrapper">
+                                <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
+                            </div>
+                        </ng-container>
+                    </cdk-virtual-scroll-viewport>
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState.set(true)" [expanded]="true"
+                            (closed)="panelOpenState.set(false)">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="text-gray-700 font-bold"> Delivery Information
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form id="order" class="flex flex-col space-y-1" [formGroup]="formGroup"
+                                (ngSubmit)="makeOrder(items)">
+                                <div class="flex gap-3">
+                                    <mat-form-field class="w-4/12">
+                                        <mat-label>Delivery Date</mat-label>
+                                        <input matInput [matDatepicker]="picker" formControlName="deliveryTime"
+                                            [readonly]="true">
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <mat-error
+                                            *ngIf="validateInputField(deliveryTimeInput).hasError">{{validateInputField(deliveryTimeInput).message}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-6/12">
+                                        <mat-label>Delivery Address</mat-label>
+                                        <input matInput type="text" autocomplete="delivery-address"
+                                            formControlName="address" placeholder="123 Main St" maxlength="256">
+                                        <mat-error
+                                            *ngIf="validateInputField(deliveryAddressInput).hasError">{{validateInputField(deliveryAddressInput).message}}</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="">
+                                    <label for="payment">Payment</label>
+                                    <div>
+                                        <mat-radio-group id="payment" formControlName="payment">
+                                            <mat-radio-button [value]="0">Cash</mat-radio-button>
+                                            <mat-error
+                                                *ngIf="(paymentMethodInput).hasError">{{validateInputField(paymentMethodInput).message}}</mat-error>
+                                        </mat-radio-group>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <div class="actions__bottom-container flex-col">
+                    <div class="w-full flex justify-end">
+                        <div
+                            class="flex items-center mt-6 gap-5 p-6 bg-green-600/20 rounded-md border border-green-500">
+                            <span class="truncate text-2xl font-medium text-gray-800">
+                                {{ applyCurrencyPipe(getTotalPrice(items)) }}
+                            </span>
+                            <button mat-flat-button id="send-button" form="order" type="submit"
+                                class="!bg-green-600 !text-base">
+                                Confirm order
+                            </button>
                         </div>
-                    </ng-container>
-                </cdk-virtual-scroll-viewport>
-            </div>
-            <div class="actions__bottom-container flex-col">
-                <div class="w-full flex justify-end">
-                    <div class="flex items-center mt-6 gap-5 p-6 bg-green-600/20 rounded-md border border-green-500">
-                        <span class="truncate text-2xl font-medium text-gray-800">
-                            {{ applyCurrencyPipe(getTotalPrice(items)) }}
-                        </span>
-                        <button mat-flat-button id="send-button" form="authorDetails" type="submit"
-                            (click)="makeOrder()" class="!bg-green-600 !text-base">
-                            Confirm order
-                        </button>
                     </div>
                 </div>
-            </div>
+            </ng-container>
         </ng-container>
     </ng-container>
-    <ng-template #loading>
-        <div class="loading-spinner-container">
-            <mat-spinner diameter="80"></mat-spinner>
-        </div>
-    </ng-template>
 </div>
 
-
-
+<!-- Empty Cart Template -->
+<ng-template #emptyCart>
+    <div class="empty-cart flex items-center justify-center h-96">
+        <p class="text-lg text-gray-600">Your cart is empty. Add some items to continue.</p>
+    </div>
+    <div class="flex-col">
+        <div class="w-full flex justify-end">
+            <a mat-flat-button class="!bg-green-600 !text-base" [href]="redirectToProductsPagePath">
+                Browse Products
+            </a>
+        </div>
+    </div>
+</ng-template>
+<!-- Loading spinner -->
+<ng-template #loading>
+    <div class="loading-spinner-container">
+        <mat-spinner diameter="80"></mat-spinner>
+    </div>
+</ng-template>
 <ng-template #book let-cartBook="cartBook">
     <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
         <div class="w-full flex justify-between items-center">

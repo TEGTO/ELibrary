@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { GenreService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
 import { defaultLibraryFilterRequest, GenericTableComponent, Genre, LibraryFilterRequest } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { defaultLibraryFilterRequest, GenericTableComponent, Genre, LibraryFilte
 @Component({
   selector: 'app-genre-table',
   templateUrl: './genre-table.component.html',
-  styleUrl: './genre-table.component.scss'
+  styleUrl: './genre-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenreTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;

@@ -1,0 +1,36 @@
+<div class="body__history bg-zinc-50">
+    <ng-container *ngIf="client$ | async as client; else loading">
+        <div class="content w-full">
+            <app-client-info [client]="client"></app-client-info>
+            <ng-container *ngIf="totalAmount$ | async as totalAmount; else loading">
+                <ng-container *ngIf="items$ | async as items; else loading">
+                    <ng-container *ngIf="items.length > 0; else emptyCart">
+                        <mat-paginator [length]="totalAmount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+                            (page)="onPageChange($event)">
+                        </mat-paginator>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>
+
+<!-- Loading spinner -->
+<ng-template #loading>
+    <div class="loading-spinner-container">
+        <mat-spinner diameter="80"></mat-spinner>
+    </div>
+</ng-template>
+<!-- Empty Cart Template -->
+<ng-template #emptyCart>
+    <div class="empty-cart flex items-center justify-center h-96">
+        <p class="text-lg text-gray-600">There are no orders yet.</p>
+    </div>
+    <div class="flex-col">
+        <div class="w-full flex justify-end">
+            <a mat-flat-button class="!bg-green-600 !text-base" [href]="redirectToProductsPagePath">
+                Browse Products
+            </a>
+        </div>
+    </div>
+</ng-template>

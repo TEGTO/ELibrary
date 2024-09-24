@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { LibraryCommand, LibraryCommandObject, LibraryCommandType, PublisherService } from '../../../../../library';
 import { GenericTableComponent, LibraryFilterRequest, Publisher, defaultLibraryFilterRequest } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { GenericTableComponent, LibraryFilterRequest, Publisher, defaultLibraryF
 @Component({
   selector: 'app-publisher-table',
   templateUrl: './publisher-table.component.html',
-  styleUrl: './publisher-table.component.scss'
+  styleUrl: './publisher-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PublisherTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;

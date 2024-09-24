@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PublisherService } from '../../../..';
 import { Publisher, ValidationMessage, defaultLibraryFilterRequest } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { BaseSelectInputComponent } from "../base-select-input-component/base-se
 @Component({
   selector: 'app-publisher-input',
   templateUrl: './publisher-input.component.html',
-  styleUrl: './publisher-input.component.scss'
+  styleUrl: './publisher-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PublisherInputComponent extends BaseSelectInputComponent<Publisher> {
 

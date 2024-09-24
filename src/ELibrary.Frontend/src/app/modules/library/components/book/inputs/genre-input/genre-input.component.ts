@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GenreService } from '../../../..';
 import { Genre, ValidationMessage, defaultLibraryFilterRequest } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { BaseSelectInputComponent } from "../base-select-input-component/base-se
 @Component({
   selector: 'app-genre-input',
   templateUrl: './genre-input.component.html',
-  styleUrl: './genre-input.component.scss'
+  styleUrl: './genre-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenreInputComponent extends BaseSelectInputComponent<Genre> {
 

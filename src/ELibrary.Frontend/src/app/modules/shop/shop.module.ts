@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, ShopCommand, ShopCommandService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent } from '.';
+import { CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, managerOrderReducer, OrderControllerService, OrderEffects, orderReducer, OrderService, ShopCommand, ShopCommandService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent } from '.';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { InputRangeDirective } from '../shared';
 
@@ -44,13 +44,16 @@ import { InputRangeDirective } from '../shared';
     MatMenuModule,
     StoreModule.forFeature('cart', cartReducer),
     StoreModule.forFeature('client', clientReducer),
-    EffectsModule.forFeature([CartEffects, ClientEffects]),
+    StoreModule.forFeature('order', orderReducer),
+    StoreModule.forFeature('managerorder', managerOrderReducer),
+    EffectsModule.forFeature([CartEffects, ClientEffects, OrderEffects]),
   ],
   providers: [
     { provide: CartService, useClass: CartControllerService },
     { provide: ClientService, useClass: ClientControllerService },
     { provide: ShopCommand, useClass: ShopCommandService },
     { provide: ShopDialogManager, useClass: ShopDialogManagerService },
+    { provide: OrderService, useClass: OrderControllerService },
   ],
   exports: [ShoppingCartButtonComponent, ClientInfoComponent],
 })

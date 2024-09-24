@@ -1,12 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Client, minDateValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
+import { Client, dateInPastValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-client-change-dialog',
   templateUrl: './client-change-dialog.component.html',
-  styleUrl: './client-change-dialog.component.scss'
+  styleUrl: './client-change-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClientChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
@@ -31,8 +32,8 @@ export class ClientChangeDialogComponent implements OnInit {
         name: new FormControl(this.client.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
         middleName: new FormControl(this.client.middleName, [Validators.maxLength(256)]),
         lastName: new FormControl(this.client.lastName, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
-        dateOfBirth: new FormControl(this.client.dateOfBirth, [Validators.required, minDateValidator()]),
-        address: new FormControl(this.client.address, [Validators.maxLength(256)]),
+        dateOfBirth: new FormControl(this.client.dateOfBirth, [Validators.required, dateInPastValidator()]),
+        address: new FormControl(this.client.address, [Validators.maxLength(512)]),
         phone: new FormControl(this.client.phone, [Validators.maxLength(256)]),
         email: new FormControl(this.client.email, [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
       });

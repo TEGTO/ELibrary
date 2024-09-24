@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { AuthData, Policy, PolicyType } from '../../../shared';
+import { AuthData, Policy, PolicyType, redirectPathes } from '../../../shared';
 
 @Component({
   selector: 'app-main-view',
@@ -11,6 +11,9 @@ import { AuthData, Policy, PolicyType } from '../../../shared';
 })
 export class MainViewComponent implements OnInit {
   authData$!: Observable<AuthData>;
+
+  get managerPath() { return redirectPathes.manager_books; }
+  get orderHistoryPath() { return redirectPathes.client_order_history; }
 
   constructor(
     private readonly authService: AuthenticationService,

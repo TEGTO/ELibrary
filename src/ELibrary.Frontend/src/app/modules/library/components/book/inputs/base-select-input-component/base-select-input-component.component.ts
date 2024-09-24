@@ -1,11 +1,12 @@
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { debounceTime, filter, map, Observable, pairwise, Subject, switchMap, takeUntil, throttleTime } from "rxjs";
 import { noSpaces, notEmptyString, ValidationMessage } from "../../../../../shared";
 
 @Component({
-    template: ''
+    template: '',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export abstract class BaseSelectInputComponent<T extends { id: number }> implements OnInit, OnDestroy, AfterViewInit {
     @Input({ required: true }) formGroup!: FormGroup;

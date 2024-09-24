@@ -1,13 +1,14 @@
-import { Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { ShopCommand, ShopCommandObject, ShopCommandType } from '../../..';
-import { Client, minDateValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
+import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../..';
+import { Client, dateInPastValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-client-info',
   templateUrl: './client-info.component.html',
-  styleUrl: './client-info.component.scss'
+  styleUrl: './client-info.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClientInfoComponent implements OnInit, OnDestroy {
   @Input({ required: true }) client!: Client;
@@ -51,8 +52,8 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
         name: new FormControl(this.client.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
         middleName: new FormControl(this.client.middleName, [Validators.maxLength(256)]),
         lastName: new FormControl(this.client.lastName, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
-        dateOfBirth: new FormControl(this.client.dateOfBirth, [Validators.required, minDateValidator()]),
-        address: new FormControl(this.client.address, [Validators.maxLength(256)]),
+        dateOfBirth: new FormControl(this.client.dateOfBirth, [Validators.required, dateInPastValidator()]),
+        address: new FormControl(this.client.address, [Validators.maxLength(512)]),
         phone: new FormControl(this.client.phone, [Validators.maxLength(256)]),
         email: new FormControl(this.client.email, [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
       });
@@ -70,7 +71,7 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
         phone: formValues.phone,
         email: formValues.email,
       };
-      this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Update, this, client);
+      this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Update, ShopCommandRole.Client, this, client);
     }
   }
 
