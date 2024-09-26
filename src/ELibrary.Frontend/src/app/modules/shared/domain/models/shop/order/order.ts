@@ -1,7 +1,7 @@
 import { OrderBook } from "../../../..";
 
 export enum OrderStatus {
-    Canceled = -1, InProcessing, Packed, Delivered
+    Canceled = -1, InProcessing, Processed, Packed, Delivered
 }
 export enum PaymentMethod {
     Cash
@@ -30,4 +30,21 @@ export function getDefaultOrder(): Order {
         paymentMethod: PaymentMethod.Cash,
         orderBooks: []
     };
+}
+
+export function getOrderStatusString(orderStatus: OrderStatus): string {
+    switch (orderStatus) {
+        case OrderStatus.Canceled:
+            return 'Canceled';
+        case OrderStatus.InProcessing:
+            return 'In Processing';
+        case OrderStatus.Processed:
+            return 'Processed';
+        case OrderStatus.Packed:
+            return 'Packed';
+        case OrderStatus.Delivered:
+            return 'Delivered';
+        default:
+            return "";
+    }
 }

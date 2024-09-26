@@ -20,3 +20,45 @@
     border-radius: 10px;
     gap: 2rem;
 }
+
+.order__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .content__books {
+        width: 100%;
+        overflow-y: auto;
+
+        .books__wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+    }
+}
+
+.book {
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    align-content: center;
+    position: relative;
+
+    .book__cover {
+        box-shadow: 2px 1px 6px 2px rgb(0 0 0 / 58%);
+        margin-bottom: 1rem;
+    }
+
+}
+
+::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.order-content__bottom-container .material-icons {
+    transform: scale(1);
+}

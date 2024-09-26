@@ -22,7 +22,8 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
     private readonly shopDialog: ShopDialogManager,
     private readonly redirector: RedirectorService,
     private readonly orderService: OrderService,
-    private readonly snackManager: SnackbarManager
+    private readonly snackManager: SnackbarManager,
+    private readonly dialogManager: ShopDialogManager
   ) { }
 
   ngOnDestroy(): void {
@@ -260,7 +261,14 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
     this.orderService.clientUpdateOrder(mapOrderToClientUpdateOrderRequest(order));
   }
   clientCancelOrder(dispatchedFrom: any, order: Order, params: any) {
-    this.orderService.clientCancelOrder(order.id);
+    this.dialogManager.openConfirmMenu().afterClosed().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(result => {
+      if (result === true) {
+        this.orderService.clientCancelOrder(order.id);
+      }
+      this.cleanUp();
+    });
   }
 
   managerUpdateOrder(dispatchedFrom: any, order: Order, params: any) {

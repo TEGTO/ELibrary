@@ -2,12 +2,12 @@
     <ng-container *ngIf="client$ | async as client; else loading">
         <ng-container *ngIf="items$ | async as items; else loading">
             <ng-container *ngIf="items.length > 0; else emptyCart">
-                <div class="content w-full">
+                <div class="order__content w-full">
                     <app-client-info [client]="client"></app-client-info>
-                    <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="books"
+                    <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="content__books"
                         [style.height.px]="calculateSelectionSize(items.length)">
                         <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
-                            <div class="book-wrapper">
+                            <div class="books__wrapper">
                                 <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
                             </div>
                         </ng-container>
@@ -22,16 +22,17 @@
                             <form id="order" class="flex flex-col space-y-1" [formGroup]="formGroup"
                                 (ngSubmit)="makeOrder(items)">
                                 <div class="flex gap-3">
-                                    <mat-form-field class="w-4/12">
-                                        <mat-label>Delivery Date</mat-label>
-                                        <input matInput [matDatepicker]="picker" formControlName="deliveryTime"
-                                            [readonly]="true">
-                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                        <mat-datepicker #picker></mat-datepicker>
-                                        <mat-error
-                                            *ngIf="validateInputField(deliveryTimeInput).hasError">{{validateInputField(deliveryTimeInput).message}}</mat-error>
+                                    <mat-form-field class="w-5/12">
+                                        <mat-label>Delivery Time</mat-label>
+                                        <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
+                                            formControlName="deliveryTime" [readonly]="true">
+                                        <ngx-mat-datepicker-toggle [for]="picker" matSuffix></ngx-mat-datepicker-toggle>
+                                        <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
+                                        <mat-error *ngIf="validateInputField(deliveryTimeInput).hasError">
+                                            {{validateInputField(deliveryTimeInput).message}}
+                                        </mat-error>
                                     </mat-form-field>
-                                    <mat-form-field class="w-6/12">
+                                    <mat-form-field class="w-5/12">
                                         <mat-label>Delivery Address</mat-label>
                                         <input matInput type="text" autocomplete="delivery-address"
                                             formControlName="address" placeholder="123 Main St" maxlength="256">
@@ -53,7 +54,7 @@
                         </mat-expansion-panel>
                     </mat-accordion>
                 </div>
-                <div class="actions__bottom-container flex-col">
+                <div class="content__bottom-container flex-col">
                     <div class="w-full flex justify-end">
                         <div
                             class="flex items-center mt-6 gap-5 p-6 bg-green-600/20 rounded-md border border-green-500">
@@ -91,6 +92,7 @@
         <mat-spinner diameter="80"></mat-spinner>
     </div>
 </ng-template>
+<!-- Book -->
 <ng-template #book let-cartBook="cartBook">
     <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
         <div class="w-full flex justify-between items-center">

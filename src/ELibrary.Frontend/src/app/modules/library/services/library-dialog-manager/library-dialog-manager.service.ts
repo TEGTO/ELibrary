@@ -1,25 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AuthorChangeDialogComponent, BookChangeDialogComponent, ConfirmMenuComponent, GenreChangeDialogComponent, PublisherChangeDialogComponent } from '../..';
-import { Author, Book, Genre, Publisher } from '../../../shared';
+import { MatDialogRef } from '@angular/material/dialog';
+import { AuthorChangeDialogComponent, BookChangeDialogComponent, GenreChangeDialogComponent, PublisherChangeDialogComponent } from '../..';
+import { Author, Book, DialogManagerService, Genre, Publisher } from '../../../shared';
 import { LibraryDialogManager } from './library-dialog-manager';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LibraryDialogManagerService implements LibraryDialogManager {
-  constructor(
-    private readonly dialog: MatDialog
-  ) { }
-
-  openConfirmMenu(): MatDialogRef<any> {
-    const dialogRef = this.dialog.open(ConfirmMenuComponent, {
-      height: '200px',
-      width: '450px',
-    });
-    return dialogRef;
-  }
+export class LibraryDialogManagerService extends DialogManagerService implements LibraryDialogManager {
 
   openAuthorDetailsMenu(author: Author): MatDialogRef<any> {
     const dialogRef = this.dialog.open(AuthorChangeDialogComponent, {

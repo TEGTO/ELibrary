@@ -1,7 +1,6 @@
 export * from "../manager/components/library/author/author-table/author-table.component";
 export * from "../manager/components/library/book/book-table/book-table.component";
 export * from "../manager/components/library/genre/genre-table/genre-table.component";
-export * from "../shared/components/confirm-menu/confirm-menu.component";
 export * from "../shared/util/tableColumn";
 export * from "./components/author/author-change-dialog/author-change-dialog.component";
 export * from "./components/book/book-change-dialog/book-change-dialog.component";

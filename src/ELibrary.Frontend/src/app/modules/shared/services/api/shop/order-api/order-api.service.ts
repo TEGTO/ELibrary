@@ -25,13 +25,13 @@ export class OrderApiService extends BaseApiService {
     );
   }
   updateOrder(request: ClientUpdateOrderRequest): Observable<Order> {
-    return this.httpClient.put<OrderResponse>(this.combinePathWithOrderApiUrl(``), request).pipe(
+    return this.httpClient.patch<OrderResponse>(this.combinePathWithOrderApiUrl(``), request).pipe(
       map((response) => mapOrderResponseToOrder(response)),
       catchError((error) => this.handleError(error)),
     );
   }
   cancelOrder(id: number): Observable<HttpResponse<void>> {
-    return this.httpClient.delete<void>(this.combinePathWithOrderApiUrl(`${id}`), { observe: 'response' }).pipe(
+    return this.httpClient.delete<void>(this.combinePathWithOrderApiUrl(`/${id}`), { observe: 'response' }).pipe(
       catchError((error) => this.handleError(error))
     );
   }

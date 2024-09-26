@@ -5,8 +5,11 @@
             <ng-container *ngIf="totalAmount$ | async as totalAmount; else loading">
                 <ng-container *ngIf="items$ | async as items; else loading">
                     <ng-container *ngIf="items.length > 0; else emptyCart">
-                        <mat-paginator [length]="totalAmount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-                            (page)="onPageChange($event)">
+                        <ng-container *ngFor="let item of items;">
+                            <div *ngTemplateOutlet="order; context: { order: item }"></div>
+                        </ng-container>
+                        <mat-paginator class="!bg-zinc-50" [length]="totalAmount" [pageSize]="pageSize"
+                            [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
                         </mat-paginator>
                     </ng-container>
                 </ng-container>
@@ -31,6 +34,131 @@
             <a mat-flat-button class="!bg-green-600 !text-base" [href]="redirectToProductsPagePath">
                 Browse Products
             </a>
+        </div>
+    </div>
+</ng-template>
+<!-- Order -->
+<ng-template #order let-order="order">
+    <div class="order__content w-full bg-zinc-50">
+        <mat-accordion>
+            <mat-expansion-panel (opened)="getPanelState(order.id).set(true)"
+                (closed)="getPanelState(order.id).set(false)">
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="text-gray-700 font-bold">
+                        #{{order.id}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <div class="w-full flex justify-between">
+                            <div class="flex gap-5">
+                                <span class="text-green-700" [ngClass]="{ 
+                                    '!text-red-500': isOrderCanceled(order), 
+                                    '!text-yellow-600': isOrderDelivered(order) 
+                                    }">
+                                    {{getOrderStatusString(order)}}
+                                </span>
+                                <span>
+                                    {{ order.deliveryTime | date: 'dd/MM/yyyy, HH:mm' }}
+                                </span>
+                                <span class="truncate-small">
+                                    {{order.deliveryAddress }}
+                                </span>
+                            </div>
+                            <span class="font-bold text-red-500 truncate">
+                                {{ applyCurrencyPipe(order.totalPrice) }}
+                            </span>
+                        </div>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="p-6 mb-3 flex flex-col gap-6">
+                        <label for="order" class="text-xl font-bold">Edit Order</label>
+                        <form id="order" class="flex flex-col space-y-1" [formGroup]="getFormGroup(order)"
+                            (ngSubmit)="updateOrder(order)">
+                            <div class="flex gap-3">
+                                <mat-form-field class="w-5/12">
+                                    <mat-label>Delivery Time</mat-label>
+                                    <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
+                                        formControlName="deliveryTime" [readonly]="true">
+                                    <ngx-mat-datepicker-toggle [for]="picker" matSuffix></ngx-mat-datepicker-toggle>
+                                    <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
+                                    <mat-error *ngIf="validateInputField(deliveryTimeInput(order)).hasError">
+                                        {{validateInputField(deliveryTimeInput(order)).message}}
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field class="w-5/12">
+                                    <mat-label>Delivery Address</mat-label>
+                                    <input matInput type="text" autocomplete="delivery-address"
+                                        formControlName="address" placeholder="123 Main St" maxlength="256">
+                                    <mat-error
+                                        *ngIf="validateInputField(deliveryAddressInput(order)).hasError">{{validateInputField(deliveryAddressInput(order)).message}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <label for="payment">Payment</label>
+                                    <div>
+                                        <mat-radio-group id="payment" formControlName="payment">
+                                            <mat-radio-button [value]="0">Cash</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div>
+                                </div>
+                                <div class="order-content__bottom-container flex-col">
+                                    <div class="w-full flex justify-end gap-2">
+                                        <button mat-flat-button form="order" type="button" (click)="deleteOrder(order)"
+                                            class="!text-base !bg-red-600" [disabled]="!isOrderProcessing(order)">
+                                            <span class="font-small material-icons">delete</span>
+                                            Delete
+                                        </button>
+                                        <button mat-flat-button id="send-button" form="order" type="submit"
+                                            class="!text-base !bg-blue-600" [disabled]="!isOrderProcessing(order)">
+                                            <span class="material-icons">edit</span>
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="content__books"
+                        [style.height.px]="calculateSelectionSize(order.orderBooks.length)">
+                        <ng-container
+                            *cdkVirtualFor="let item of order.orderBooks; trackBy: trackById; let index = $index;">
+                            <div class="books__wrapper">
+                                <div *ngTemplateOutlet="book; context: { orderBook: item }"></div>
+                            </div>
+                        </ng-container>
+                    </cdk-virtual-scroll-viewport>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</ng-template>
+<!-- Book -->
+<ng-template #book let-orderBook="orderBook">
+    <div class="book mr-2 h-72 w-11/12 p-6 border-t border-gray-200">
+        <div class="w-full flex justify-between items-center">
+            <div class=" flex flex gap-5">
+                <a class="book__cover hover:cursor-pointer" [href]="getBookPage(orderBook)">
+                    <img class="h-42 w-24" crossorigin='anonymous' [src]="orderBook.book.coverImgUrl" alt="Book cover"
+                        onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                </a>
+                <a class="h-full flex flex-col items-start pt-5">
+                    <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
+                        [href]="getBookPage(orderBook)">
+                        {{ orderBook.book.name }}
+                    </a>
+                    <div class="book__author text-gray-400 truncate">
+                        {{ orderBook.book.author.name + ' '+ orderBook.book.author.lastName }}
+                    </div>
+                </a>
+            </div>
+            <div class="text-gray-700 truncate text-lg">
+                {{ applyCurrencyPipe(orderBook.book.price) }} x {{orderBook.bookAmount}}
+            </div>
+            <div class="text-red-500 truncate font-bold text-lg">
+                {{ applyCurrencyPipe(getOrderBookPrice(orderBook)) }}
+            </div>
         </div>
     </div>
 </ng-template>

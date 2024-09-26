@@ -1,3 +1,4 @@
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -29,6 +30,7 @@ const routes: Routes = [
           {
             path: pathes.client_order_history,
             component: OrderHistoryComponent,
+            canActivate: [ClientGuard],
           },
           {
             path: pathes.client_order_addInformation,
@@ -64,15 +66,18 @@ const routes: Routes = [
     ShopModule,
     MatProgressSpinnerModule,
     MatFormFieldModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
     MatRadioModule,
     MatButtonModule,
+    NgxMatDatetimePickerModule,
     ScrollingModule,
     MatPaginator,
     MatExpansionModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ]
 })
 export class ClientModule { }

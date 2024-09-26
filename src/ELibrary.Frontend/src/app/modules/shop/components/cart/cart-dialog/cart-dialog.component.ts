@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
 import { CartService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../..';
 import { environment } from '../../../../../../environment/environment';
-import { CartBook, CurrencyPipeApplier } from '../../../../shared';
+import { CartBook, CurrencyPipeApplier, redirectPathes } from '../../../../shared';
 
 @Component({
   selector: 'app-cart-dialog',
@@ -20,6 +20,7 @@ export class CartDialogComponent implements OnInit {
   private inputChangeSubject$ = new Subject<{ cartBook: CartBook, value: number }>();
 
   get maxAmount() { return environment.maxOrderAmount; }
+  get booksUrlPath() { return redirectPathes.client_products; }
 
   constructor(
     private readonly cartService: CartService,

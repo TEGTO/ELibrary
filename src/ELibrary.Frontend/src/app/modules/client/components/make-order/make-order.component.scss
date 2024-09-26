@@ -5,23 +5,23 @@
     padding: 20px;
     border-radius: 10px;
     gap: 2rem;
-}
 
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    .order__content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
 
-    .books {
-        width: 100%;
-        overflow-y: auto;
-
-        .book-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
+        .content__books {
             width: 100%;
+            overflow-y: auto;
+
+            .books__wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 20px;
+                width: 100%;
+            }
         }
     }
 }
@@ -60,6 +60,13 @@
 
 .truncate {
     max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.truncate-small {
+    max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

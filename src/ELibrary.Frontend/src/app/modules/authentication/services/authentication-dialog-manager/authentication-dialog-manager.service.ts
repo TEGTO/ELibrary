@@ -2,18 +2,20 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticatedComponent, AuthenticationService, LoginComponent, RegisterComponent } from '../..';
+import { DialogManagerService } from '../../../shared/services/dialog-manager/dialog-manager.service';
 import { AuthenticationDialogManager } from './authentication-dialog-manager';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationDialogManagerService implements AuthenticationDialogManager {
+export class AuthenticationDialogManagerService extends DialogManagerService implements AuthenticationDialogManager {
   isAuthenticated = false;
 
   constructor(
     private readonly authService: AuthenticationService,
-    private readonly dialog: MatDialog
+    protected override readonly dialog: MatDialog
   ) {
+    super(dialog);
     this.authService.getAuthData().subscribe(data => {
       this.isAuthenticated = data.isAuthenticated;
     })
