@@ -2,7 +2,8 @@ import { BookListingResponse, mapBookListingResponseToOrderBook, Order, OrderSta
 
 export interface OrderResponse {
     id: number,
-    creationTime: Date,
+    createdAt: Date,
+    updatedAt: Date,
     orderAmount: number,
     totalPrice: number,
     deliveryAddress: string,
@@ -14,14 +15,15 @@ export interface OrderResponse {
 
 export function mapOrderResponseToOrder(response: OrderResponse): Order {
     return {
-        id: response.id,
-        creationTime: new Date(response.creationTime),
-        orderAmount: response.orderAmount,
-        totalPrice: response.totalPrice,
-        deliveryAddress: response.deliveryAddress,
-        deliveryTime: new Date(response.deliveryTime),
-        orderStatus: response.orderStatus,
-        paymentMethod: response.paymentMethod,
-        orderBooks: response.orderBooks.map(x => mapBookListingResponseToOrderBook(x))
+        id: response?.id,
+        createdAt: new Date(response?.createdAt),
+        updatedAt: new Date(response?.updatedAt),
+        orderAmount: response?.orderAmount,
+        totalPrice: response?.totalPrice,
+        deliveryAddress: response?.deliveryAddress,
+        deliveryTime: new Date(response?.deliveryTime),
+        orderStatus: response?.orderStatus,
+        paymentMethod: response?.paymentMethod,
+        orderBooks: response?.orderBooks.map(x => mapBookListingResponseToOrderBook(x))
     }
 }

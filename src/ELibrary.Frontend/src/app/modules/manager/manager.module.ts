@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorTableComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, PublisherTableComponent } from '.';
+import { AuthorTableComponent, BookStockComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, PublisherTableComponent } from '.';
 import { LibraryModule } from '../library/library.module';
 import { GenericTableComponent, pathes } from '../shared';
 
@@ -18,6 +18,7 @@ const routes: Routes = [
   {
     path: "", component: ManagerTableComponent,
     children: [
+      { path: pathes.manager_bookstock, component: BookStockComponent },
       { path: pathes.manager_books, component: BookTableComponent },
       { path: pathes.manager_genres, component: GenreTableComponent },
       { path: pathes.manager_authors, component: AuthorTableComponent },
@@ -34,6 +35,7 @@ const routes: Routes = [
     AuthorTableComponent,
     ManagerTableComponent,
     PublisherTableComponent,
+    BookStockComponent,
   ],
   imports: [
     RouterModule.forChild(routes),

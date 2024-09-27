@@ -2,8 +2,8 @@
 using LibraryShopEntities.Domain.Dtos.Shop;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShopApi.Domain.Dtos.Client;
-using ShopApi.Services.Facades;
+using ShopApi.Features.ClientFeature.Dtos;
+using ShopApi.Features.ClientFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers

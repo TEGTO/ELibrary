@@ -9,12 +9,16 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Book amount must be greater than 0")]
         public int BookAmount { get; set; }
         [Required]
         public int BookId { get; set; }
         [Required]
         public int OrderId { get; set; }
+        [ForeignKey("BookId")]
         public Book Book { get; set; } = default!;
+        [ForeignKey("OrderId")]
         public Order Order { get; set; } = default!;
 
         public void Copy(OrderBook other)

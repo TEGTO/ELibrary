@@ -6,8 +6,8 @@ using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using ShopApi.Domain.Dtos.Cart;
-using ShopApi.Services;
+using ShopApi.Features.CartFeature.Dtos;
+using ShopApi.Features.CartFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers.Tests

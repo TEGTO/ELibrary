@@ -7,7 +7,7 @@
     <form id="authorDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput type="text" autocomplete="author-name" formControlName="name" placeholder="Jonh"
+            <input matInput type="text" autocomplete="author-name" formControlName="name" placeholder="Bookworm"
                 maxlength="256">
             <mat-error
                 *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>

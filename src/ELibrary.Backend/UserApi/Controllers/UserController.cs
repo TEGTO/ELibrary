@@ -60,9 +60,9 @@ namespace UserApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpGet("admin/{login}")]
-        public async Task<ActionResult<AdminUserResponse>> AdminGetUserByLogin(string login)
+        public async Task<ActionResult<AdminUserResponse>> AdminGetUser(string str)
         {
-            var response = await userManager.GetUserByLoginAsync(login);
+            var response = await userManager.GetUserThatContainsAsync(str);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]

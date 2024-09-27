@@ -19,6 +19,9 @@ export class GenericTableComponent implements OnInit {
   @Input({ required: true }) totalItemAmount!: number;
   @Input() pageSizeOptions: number[] = [5, 10, 20];
   @Input() initialPageSize = 10;
+  @Input() disableEdit = false;
+  @Input() disableDelete = false;
+  @Input() disableCreate = false;
 
   @Output() editItem = new EventEmitter<any>();
   @Output() deleteItem = new EventEmitter<any>();

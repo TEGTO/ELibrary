@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shared.Dtos;
-using ShopApi.Domain.Dtos.Order;
-using ShopApi.Services;
-using ShopApi.Services.Facades;
+using ShopApi.Features.ClientFeature.Services;
+using ShopApi.Features.OrderFeature.Dtos;
+using ShopApi.Features.OrderFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers.Tests

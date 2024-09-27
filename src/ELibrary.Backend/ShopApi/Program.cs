@@ -1,12 +1,16 @@
 using Authentication;
+using EventSourcing;
 using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;
 using Shared.Repositories;
 using ShopApi;
-using ShopApi.Services;
-using ShopApi.Services.Facades;
+using ShopApi.Features.CartFeature.Services;
+using ShopApi.Features.ClientFeature.Services;
+using ShopApi.Features.OrderFeature.Services;
+using ShopApi.Features.StockBookOrderFeature.Models;
+using ShopApi.Features.StockBookOrderFeature.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +37,9 @@ builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddSingleton<IOrderManager, OrderManager>();
 builder.Services.AddSingleton<IClientManager, ClientManager>();
+builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
+builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
+builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 #endregion

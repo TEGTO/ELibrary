@@ -3,9 +3,10 @@ using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
-using ShopApi.Domain.Dtos.Cart;
-using ShopApi.Domain.Dtos.Client;
-using ShopApi.Domain.Dtos.Order;
+using ShopApi.Features.CartFeature.Dtos;
+using ShopApi.Features.ClientFeature.Dtos;
+using ShopApi.Features.OrderFeature.Dtos;
+using ShopApi.Features.StockBookOrderFeature.Dtos;
 
 namespace ShopApi
 {
@@ -37,6 +38,11 @@ namespace ShopApi
             CreateMap<Order, OrderResponse>();
 
             CreateMap<CartBook, Book>();
+
+            CreateMap<StockBookOrder, StockBookOrderResponse>();
+            CreateMap<CreateStockBookOrderRequest, StockBookOrder>();
+            CreateMap<StockBookChangeRequest, StockBookChange>();
+            CreateMap<StockBookChange, StockBookChangeResponse>();
         }
     }
 }

@@ -15,16 +15,16 @@ export interface BookResponse {
 }
 export function mapBookResponseToBook(response: BookResponse): Book {
     return {
-        id: response.id,
-        name: response.name,
-        publicationDate: new Date(response.publicationDate),
-        price: response.price,
-        coverType: response.coverType,
-        pageAmount: response.pageAmount,
-        stockAmount: response.stockAmount,
-        coverImgUrl: response.coverImgUrl,
-        author: mapAuthorResponseToAuthor(response.author),
-        genre: mapGenreResponseToGenre(response.genre),
-        publisher: mapPublisherResponseToPublisher(response.publisher),
+        id: response?.id,
+        name: response?.name,
+        publicationDate: new Date(response?.publicationDate),
+        price: response?.price,
+        coverType: response?.coverType,
+        pageAmount: response?.pageAmount,
+        stockAmount: response?.stockAmount,
+        coverImgUrl: response?.coverImgUrl,
+        author: mapAuthorResponseToAuthor(response?.author),
+        genre: mapGenreResponseToGenre(response?.genre),
+        publisher: mapPublisherResponseToPublisher(response?.publisher),
     }
 }

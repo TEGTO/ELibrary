@@ -8,9 +8,9 @@ export interface AuthorResponse {
 }
 export function mapAuthorResponseToAuthor(response: AuthorResponse): Author {
     return {
-        id: response.id,
-        name: response.name,
-        lastName: response.lastName,
-        dateOfBirth: new Date(response.dateOfBirth)
+        id: response?.id,
+        name: response?.name,
+        lastName: response?.lastName,
+        dateOfBirth: new Date(response?.dateOfBirth)
     }
 }

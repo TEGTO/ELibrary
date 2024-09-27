@@ -8,7 +8,8 @@ export enum PaymentMethod {
 }
 export interface Order {
     id: number,
-    creationTime: Date,
+    createdAt: Date,
+    updatedAt: Date,
     orderAmount: number,
     totalPrice: number,
     deliveryAddress: string,
@@ -21,7 +22,8 @@ export interface Order {
 export function getDefaultOrder(): Order {
     return {
         id: 0,
-        creationTime: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         orderAmount: 0,
         totalPrice: 0,
         deliveryAddress: "",

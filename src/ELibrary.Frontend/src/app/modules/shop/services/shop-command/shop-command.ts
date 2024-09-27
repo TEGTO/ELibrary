@@ -2,7 +2,7 @@
 import { Injectable } from "@angular/core";
 
 export enum ShopCommandObject {
-    Client, Order, Cart
+    Client, Order, Cart, Bookstock
 }
 export enum ShopCommandType {
     Add, Update, Delete

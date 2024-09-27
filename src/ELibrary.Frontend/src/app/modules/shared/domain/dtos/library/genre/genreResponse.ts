@@ -7,7 +7,7 @@ export interface GenreResponse {
 
 export function mapGenreResponseToGenre(response: GenreResponse): Genre {
     return {
-        id: response.id,
-        name: response.name,
+        id: response?.id,
+        name: response?.name,
     }
 }

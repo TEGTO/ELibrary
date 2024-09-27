@@ -3,9 +3,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { CartService, ClientService, OrderService, ShopDialogManager } from '../..';
+import { BookstockOrderService, CartService, ClientService, OrderService, ShopDialogManager } from '../..';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { Book, CartBook, Client, getDefaultClient, mapBookToAddBookToCartRequest, mapCartBookToUpdateCartBookRequest, mapClientToCreateClientRequest, mapClientToUpdateClientRequest, mapOrderToClientUpdateOrderRequest, mapOrderToCreateOrderRequest, mapOrderToManagerUpdateOrderRequest, Order, RedirectorService, redirectPathes, SnackbarManager } from '../../../shared';
+import { Book, CartBook, Client, CreateStockBookOrderRequest, getDefaultClient, mapBookToAddBookToCartRequest, mapCartBookToUpdateCartBookRequest, mapClientToCreateClientRequest, mapClientToUpdateClientRequest, mapOrderToClientUpdateOrderRequest, mapOrderToCreateOrderRequest, mapOrderToManagerUpdateOrderRequest, mapStockBookChangeToStockBookChangeRequest, Order, RedirectorService, redirectPathes, SnackbarManager, StockBookChange } from '../../../shared';
 import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from './shop-command';
 
 @Injectable({
@@ -23,7 +23,8 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
     private readonly redirector: RedirectorService,
     private readonly orderService: OrderService,
     private readonly snackManager: SnackbarManager,
-    private readonly dialogManager: ShopDialogManager
+    private readonly dialogManager: ShopDialogManager,
+    private readonly stockbookService: BookstockOrderService
   ) { }
 
   ngOnDestroy(): void {
@@ -150,6 +151,15 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
             break;
         }
         break;
+      case ShopCommandObject.Bookstock:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addBookstockOrder(dispatchedFrom, params[0], params);
+            break;
+          default:
+            break;
+        }
+        break;
       default:
         break;
     }
@@ -202,6 +212,15 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
             break;
         }
         break;
+      case ShopCommandObject.Bookstock:
+        switch (commandType) {
+          case ShopCommandType.Add:
+            this.addBookstockOrder(dispatchedFrom, params[0], params);
+            break;
+          default:
+            break;
+        }
+        break;
       default:
         break;
     }
@@ -246,7 +265,7 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
         .subscribe(
           (result) => {
             if (result.isSuccess) {
-              this.redirector.redirectToHome();
+              this.redirector.redirectTo(redirectPathes.client_order_history);
               this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
               this.cartService.clearCart();
             }
@@ -305,6 +324,26 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
   }
   deleteClient(dispatchedFrom: any, params: any) {
     this.clientService.deleteClient();
+  }
+
+  //#endregion
+
+  //#region  Bookstock
+
+  addBookstockOrder(dispatchedFrom: any, changes: StockBookChange[], params: any) {
+    this.clientService.getClient()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(client => {
+        if (client) {
+          const req: CreateStockBookOrderRequest =
+          {
+            clientId: client.id,
+            stockBookChanges: changes.map(x => mapStockBookChangeToStockBookChangeRequest(x))
+          }
+          this.stockbookService.createOrder(req);
+        }
+        this.cleanUp();
+      })
   }
 
   //#endregion

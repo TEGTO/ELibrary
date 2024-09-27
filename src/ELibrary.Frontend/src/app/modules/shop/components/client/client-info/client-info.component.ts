@@ -62,7 +62,7 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
       const client: Client = {
-        id: this.client.id,
+        ...this.client,
         name: formValues.name,
         middleName: formValues.middleName,
         lastName: formValues.lastName,

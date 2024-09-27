@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Authentication\Authentication.csproj" />
+		<ProjectReference Include="..\EventSourcing\EventSourcing.csproj" />
 		<ProjectReference Include="..\LibraryShopEntities\LibraryShopEntities.csproj" />
 		<ProjectReference Include="..\Shared\Shared.csproj" />
 	</ItemGroup>

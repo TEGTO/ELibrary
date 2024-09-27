@@ -5,7 +5,8 @@ namespace LibraryShopEntities.Domain.Dtos.Shop
     public class OrderResponse
     {
         public int Id { get; set; }
-        public DateTime CreationTime { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public int OrderAmount { get; set; }
         public decimal TotalPrice { get; set; }
         public string DeliveryAddress { get; set; }

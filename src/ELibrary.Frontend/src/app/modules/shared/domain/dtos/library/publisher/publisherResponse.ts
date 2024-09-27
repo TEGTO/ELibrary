@@ -6,7 +6,7 @@ export interface PublisherResponse {
 }
 export function mapPublisherResponseToPublisher(response: PublisherResponse): Publisher {
     return {
-        id: response.id,
-        name: response.name,
+        id: response?.id,
+        name: response?.name,
     }
 }

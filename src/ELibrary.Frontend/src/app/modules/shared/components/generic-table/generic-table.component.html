@@ -5,12 +5,20 @@
                 <th *ngFor="let column of columns" scope="col" class="px-6 py-3">
                     {{ column.header }}
                 </th>
+                @if(!disableCreate)
+                {
                 <th scope="col" class="px-6 py-3">
                     <button class="font-medium text-blue-600 hover:text-blue-400" (click)="onCreate()">
                         <span class="material-icons">add</span>
                     </button>
                 </th>
+                }
+                @else if (!disableEdit) {
                 <th scope="col" class="px-6 py-3">
+                    <span class="sr-only">Edit</span>
+                </th>
+                }
+                <th scope="col" class="px-6 py-3" *ngIf="!disableDelete">
                     <span class="sr-only">Delete</span>
                 </th>
             </tr>
@@ -27,12 +35,19 @@
                         {{ applyPipe(item[column.field], column.pipe, column.pipeArgs) }}
                     </ng-template>
                 </td>
+                @if(!disableEdit)
+                {
                 <td class="px-6 py-4">
                     <button class="font-small text-blue-600 hover:text-blue-400" (click)="onEdit(item)">
                         <span class="material-icons">edit</span>
                     </button>
                 </td>
-                <td class="px-2 py-4 text-left">
+                }
+                @else if (!disableCreate) {
+                <td class="px-6 py-4">
+                </td>
+                }
+                <td class="px-6 py-4 text-left" *ngIf="!disableDelete">
                     <button class="font-small text-red-600 hover:text-red-400" (click)="onDelete(item)">
                         <span class="material-icons">delete</span>
                     </button>

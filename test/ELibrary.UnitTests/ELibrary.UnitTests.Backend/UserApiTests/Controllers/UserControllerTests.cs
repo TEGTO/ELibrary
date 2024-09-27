@@ -108,10 +108,10 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var login = "adminuser";
             var adminResponse = new AdminUserResponse { Email = "adminuser@example.com" };
-            userManagerMock.Setup(m => m.GetUserByLoginAsync(login))
+            userManagerMock.Setup(m => m.GetUserThatContainsAsync(login))
                            .ReturnsAsync(adminResponse);
             // Act
-            var result = await userController.AdminGetUserByLogin(login);
+            var result = await userController.AdminGetUser(login);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;

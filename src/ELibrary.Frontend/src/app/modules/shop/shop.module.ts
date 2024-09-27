@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, managerOrderReducer, OrderControllerService, OrderEffects, orderReducer, OrderService, ShopCommand, ShopCommandService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent } from '.';
+import { boockstockOrderReducer, BookstockEffects, BookstockOrderControllerService, BookstockOrderService, CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, managerOrderReducer, OrderControllerService, OrderEffects, orderReducer, OrderService, ShopCommand, ShopCommandService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent } from '.';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { InputRangeDirective } from '../shared';
 
@@ -46,7 +46,8 @@ import { InputRangeDirective } from '../shared';
     StoreModule.forFeature('client', clientReducer),
     StoreModule.forFeature('order', orderReducer),
     StoreModule.forFeature('managerorder', managerOrderReducer),
-    EffectsModule.forFeature([CartEffects, ClientEffects, OrderEffects]),
+    StoreModule.forFeature('bookstockorder', boockstockOrderReducer),
+    EffectsModule.forFeature([CartEffects, ClientEffects, OrderEffects, BookstockEffects]),
   ],
   providers: [
     { provide: CartService, useClass: CartControllerService },
@@ -54,6 +55,7 @@ import { InputRangeDirective } from '../shared';
     { provide: ShopCommand, useClass: ShopCommandService },
     { provide: ShopDialogManager, useClass: ShopDialogManagerService },
     { provide: OrderService, useClass: OrderControllerService },
+    { provide: BookstockOrderService, useClass: BookstockOrderControllerService },
   ],
   exports: [ShoppingCartButtonComponent, ClientInfoComponent],
 })

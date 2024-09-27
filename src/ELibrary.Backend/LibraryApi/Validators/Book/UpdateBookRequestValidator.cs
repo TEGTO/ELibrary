@@ -13,7 +13,6 @@ namespace LibraryApi.Validators.Book
             RuleFor(x => x.PublicationDate).NotNull().LessThanOrEqualTo(DateTime.UtcNow);
             RuleFor(x => x.Price).NotNull().GreaterThanOrEqualTo(0);
             RuleFor(x => x.PageAmount).NotNull().GreaterThan(0);
-            RuleFor(x => x.StockAmount).NotNull().GreaterThan(0);
             RuleFor(x => x.CoverImgUrl).NotNull().NotEmpty().MaximumLength(1024);
             RuleFor(x => x.CoverType).NotNull().NotEqual(CoverType.Any);
             RuleFor(x => x.AuthorId).NotNull().GreaterThan(0);

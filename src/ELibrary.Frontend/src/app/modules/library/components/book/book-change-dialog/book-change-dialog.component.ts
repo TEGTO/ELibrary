@@ -42,12 +42,15 @@ export class BookChangeDialogComponent implements OnInit {
       price: new FormControl(this.book?.price, [Validators.required, Validators.min(0)]),
       coverType: new FormControl(this.book?.coverType ?? CoverType.Hard, [Validators.required]),
       pageAmount: new FormControl(this.book?.pageAmount, [Validators.required, Validators.min(1)]),
-      stockAmount: new FormControl(this.book?.stockAmount, [Validators.required, Validators.min(0)]),
+      stockAmount: (new FormControl(this.book?.stockAmount ?? 0, [Validators.required, Validators.min(0)])),
       coverImgUrl: new FormControl(this.book?.coverImgUrl, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(1024)]),
       author: new FormControl(this.book?.author, [Validators.required]),
       genre: new FormControl(this.book?.genre, [Validators.required]),
       publisher: new FormControl(this.book?.publisher, [Validators.required]),
     });
+
+    this.stockAmountInput.disable();
+
   }
 
   sendDetails(): void {

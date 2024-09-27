@@ -1,5 +1,6 @@
 export interface Client {
     id: string;
+    userId: string;
     name: string;
     middleName: string;
     lastName: string;
@@ -12,6 +13,7 @@ export interface Client {
 export function getDefaultClient(): Client {
     return {
         id: "",
+        userId: "",
         name: "",
         middleName: "",
         lastName: "",

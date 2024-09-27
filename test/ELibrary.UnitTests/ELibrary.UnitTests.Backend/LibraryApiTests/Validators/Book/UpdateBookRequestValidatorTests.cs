@@ -20,7 +20,6 @@ namespace LibraryApi.Validators.Book.Tests
                 Price = 500,
                 CoverType = CoverType.Hard,
                 PageAmount = 500,
-                StockAmount = 100,
                 CoverImgUrl = "valid-url",
                 AuthorId = 1,
                 GenreId = 1,
@@ -44,7 +43,6 @@ namespace LibraryApi.Validators.Book.Tests
                 CoverType = CoverType.Any,
                 CoverImgUrl = "",
                 PageAmount = -1,
-                StockAmount = -1,
                 AuthorId = 0,
                 GenreId = 0,
                 PublisherId = 0,
@@ -58,7 +56,6 @@ namespace LibraryApi.Validators.Book.Tests
             result.ShouldHaveValidationErrorFor(x => x.CoverType);
             result.ShouldHaveValidationErrorFor(x => x.CoverImgUrl);
             result.ShouldHaveValidationErrorFor(x => x.PageAmount);
-            result.ShouldHaveValidationErrorFor(x => x.StockAmount);
             result.ShouldHaveValidationErrorFor(x => x.AuthorId);
             result.ShouldHaveValidationErrorFor(x => x.GenreId);
             result.ShouldHaveValidationErrorFor(x => x.PublisherId);

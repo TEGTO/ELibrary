@@ -6,7 +6,6 @@ export interface CreateBookRequest {
     price: number;
     coverType: CoverType;
     pageAmount: number;
-    stockAmount: number;
     coverImgUrl: string,
     authorId: number;
     genreId: number;
@@ -19,7 +18,6 @@ export function mapBookToCreateBookRequest(book: Book): CreateBookRequest {
         price: book.price,
         coverType: book.coverType,
         pageAmount: book.pageAmount,
-        stockAmount: book.stockAmount,
         coverImgUrl: book.coverImgUrl,
         authorId: book.author.id,
         genreId: book.genre.id,

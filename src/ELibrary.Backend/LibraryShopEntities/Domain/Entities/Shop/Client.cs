@@ -17,6 +17,7 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public string MiddleName { get; set; } = string.Empty;
         [MaxLength(256)]
         public string LastName { get; set; } = string.Empty;
+        [Required]
         public DateTime DateOfBirth { get; set; }
         [MaxLength(512)]
         public string Address { get; set; } = string.Empty;

@@ -242,7 +242,7 @@ namespace LibraryApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreationTime")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DeliveryAddress")
@@ -263,7 +263,10 @@ namespace LibraryApi.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -294,6 +297,60 @@ namespace LibraryApi.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderBooks");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookChange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChangeAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("StockBookOrderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("StockBookOrderId");
+
+                    b.ToTable("StockBookChanges");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TotalChangeAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("StockBookOrders");
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Book", b =>
@@ -372,6 +429,32 @@ namespace LibraryApi.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookChange", b =>
+                {
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", null)
+                        .WithMany("StockBookChanges")
+                        .HasForeignKey("StockBookOrderId");
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", b =>
+                {
+                    b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Cart", b =>
                 {
                     b.Navigation("Books");
@@ -385,6 +468,11 @@ namespace LibraryApi.Migrations
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Order", b =>
                 {
                     b.Navigation("OrderBooks");
+                });
+
+            modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", b =>
+                {
+                    b.Navigation("StockBookChanges");
                 });
 #pragma warning restore 612, 618
         }

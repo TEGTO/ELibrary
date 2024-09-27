@@ -10,7 +10,6 @@ namespace LibraryApi.Domain.Dto.Book
         public CoverType CoverType { get; set; }
         public string CoverImgUrl { get; set; }
         public int PageAmount { get; set; }
-        public int StockAmount { get; set; }
         public int AuthorId { get; set; }
         public int GenreId { get; set; }
         public int PublisherId { get; set; }

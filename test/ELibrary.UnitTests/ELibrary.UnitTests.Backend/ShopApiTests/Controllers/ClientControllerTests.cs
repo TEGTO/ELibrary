@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using ShopApi.Domain.Dtos.Client;
-using ShopApi.Services.Facades;
+using ShopApi.Features.ClientFeature.Dtos;
+using ShopApi.Features.ClientFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers.Tests

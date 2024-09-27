@@ -9,6 +9,6 @@ namespace UserEntities.Domain.Entities
     {
         [MaxLength(100)]
         public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

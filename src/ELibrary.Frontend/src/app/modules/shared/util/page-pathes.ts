@@ -1,6 +1,7 @@
 export const pathes =
 {
     manager: 'manager',
+    manager_bookstock: 'bookstock',
     manager_books: 'books',
     manager_genres: 'genres',
     manager_authors: 'authors',

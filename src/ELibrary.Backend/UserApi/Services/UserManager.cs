@@ -97,11 +97,11 @@ namespace UserApi.Services
             errors.AddRange(await authService.SetUserRolesAsync(user, request.Roles));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            return await GetUserByLoginAsync(request.Email);
+            return await GetUserThatContainsAsync(request.Email);
         }
-        public async Task<AdminUserResponse> GetUserByLoginAsync(string login)
+        public async Task<AdminUserResponse> GetUserThatContainsAsync(string str)
         {
-            var user = await authService.GetUserByLoginAsync(login);
+            var user = await authService.GetUserByLoginAsync(str);
             if (user == null) throw new KeyNotFoundException("User not found");
 
             var response = mapper.Map<AdminUserResponse>(user);

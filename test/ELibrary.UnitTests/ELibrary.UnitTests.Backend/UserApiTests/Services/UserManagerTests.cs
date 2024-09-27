@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Shared.Exceptions;
 using System.Security.Claims;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
@@ -45,7 +46,7 @@ namespace UserApi.Services.Tests
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
             authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
-            var result = await userManager.GetUserByLoginAsync(login);
+            var result = await userManager.GetUserThatContainsAsync(login);
             // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Email, Is.EqualTo("adminuser@example.com"));
@@ -58,7 +59,7 @@ namespace UserApi.Services.Tests
             var login = "nonexistentuser";
             authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync((User)null);
             // Act & Assert
-            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () => await userManager.GetUserByLoginAsync(login));
+            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () => await userManager.GetUserThatContainsAsync(login));
             Assert.That(ex.Message, Is.EqualTo("User not found"));
         }
         [Test]
@@ -93,8 +94,8 @@ namespace UserApi.Services.Tests
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
             // Act & Assert
-            var ex = Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userManager.RegisterUserAsync(registrationRequest));
-            Assert.That(ex.Message, Is.EqualTo("Email already exists"));
+            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.RegisterUserAsync(registrationRequest));
+            Assert.That(ex.Errors.First(), Is.EqualTo("Email already exists"));
         }
         [Test]
         public async Task LoginUserAsync_ValidRequest_ReturnsUserAuthenticationResponse()
@@ -152,8 +153,8 @@ namespace UserApi.Services.Tests
             authServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             authServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, false)).ReturnsAsync(errors);
             // Act & Assert
-            var ex = Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userManager.UpdateUserAsync(updateRequest, new Mock<ClaimsPrincipal>().Object, CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("Update failed"));
+            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.UpdateUserAsync(updateRequest, new Mock<ClaimsPrincipal>().Object, CancellationToken.None));
+            Assert.That(ex.Errors.First(), Is.EqualTo("Update failed"));
         }
         [Test]
         public async Task RefreshTokenAsync_ValidRequest_ReturnsNewAuthToken()
@@ -200,8 +201,8 @@ namespace UserApi.Services.Tests
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
             // Act & Assert
-            var ex = Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userManager.AdminRegisterUserAsync(adminRequest));
-            Assert.That(ex.Message, Is.EqualTo("Admin registration failed"));
+            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.AdminRegisterUserAsync(adminRequest));
+            Assert.That(ex.Errors.First(), Is.EqualTo("Admin registration failed"));
         }
     }
 }
