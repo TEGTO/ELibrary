@@ -44,6 +44,7 @@ namespace LibraryApi.Controllers
 
             return Ok(mapper.Map<TGetResponse>(entity));
         }
+        [ResponseCache(Duration = 10)]
         [AllowAnonymous]
         [HttpPost("pagination")]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
@@ -51,6 +52,7 @@ namespace LibraryApi.Controllers
             var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
             return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
+        [ResponseCache(Duration = 10)]
         [AllowAnonymous]
         [HttpPost("amount")]
         public virtual async Task<ActionResult<int>> GetItemTotalAmount(TFilterRequest request, CancellationToken cancellationToken)

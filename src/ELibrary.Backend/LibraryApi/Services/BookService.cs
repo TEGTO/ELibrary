@@ -37,7 +37,6 @@ namespace LibraryApi.Services
             query = ApplyFilter(query, req);
 
             paginatedBooks.AddRange(await query
-                  .OrderByDescending(b => b.Id)
                   .Skip((req.PageNumber - 1) * req.PageSize)
                   .Take(req.PageSize)
                   .ToListAsync(cancellationToken));
@@ -135,11 +134,16 @@ namespace LibraryApi.Services
                 {
                     query = query.Where(b => b.PageAmount <= bookFilter.MaxPageAmount);
                 }
-                return query;
+                return query
+                  .OrderByDescending(b => b.Id)
+                  .OrderByDescending(b => b.StockAmount > 0);
             }
             else
             {
-                return query.Where(b => b.Name.Contains(req.ContainsName));
+                return query
+                    .Where(b => b.Name.Contains(req.ContainsName))
+                    .OrderByDescending(b => b.Id)
+                    .OrderByDescending(b => b.StockAmount > 0);
             }
         }
     }

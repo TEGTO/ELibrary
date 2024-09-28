@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { createBookstockOrder, getBookstockOrderAmount, getBookstockOrders, selectBookstockOrders, selectBookstockOrderTotalAmount } from '../..';
-import { CreateStockBookOrderRequest, PaginatedRequest, StockBookOrder } from '../../../shared';
+import { BookstockApiService, CreateStockBookOrderRequest, PaginatedRequest, StockBookOrder } from '../../../shared';
 import { BookstockOrderService } from './bookstock-order-service';
 
 @Injectable({
@@ -12,8 +12,12 @@ export class BookstockOrderControllerService implements BookstockOrderService {
 
   constructor(
     private readonly store: Store,
+    private readonly apiService: BookstockApiService
   ) { }
 
+  getById(id: number): Observable<StockBookOrder> {
+    return this.apiService.getStockOrderById(id);
+  }
   getPaginatedOrders(req: PaginatedRequest): Observable<StockBookOrder[]> {
     this.store.dispatch(getBookstockOrders({ req: req }));
     return this.store.select(selectBookstockOrders);
@@ -22,7 +26,7 @@ export class BookstockOrderControllerService implements BookstockOrderService {
     this.store.dispatch(getBookstockOrderAmount());
     return this.store.select(selectBookstockOrderTotalAmount);
   }
-  createOrder(req: CreateStockBookOrderRequest): void {
+  createStockOrder(req: CreateStockBookOrderRequest): void {
     this.store.dispatch(createBookstockOrder({ req: req }));
   }
 }

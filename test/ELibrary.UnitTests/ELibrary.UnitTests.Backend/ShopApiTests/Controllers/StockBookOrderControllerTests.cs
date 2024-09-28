@@ -124,8 +124,8 @@ namespace ShopApi.Controllers.Tests
             // Act
             var result = await stockBookOrderController.CreateStockBookOrder(createRequest, cancellationToken);
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
+            Assert.IsInstanceOf<CreatedResult>(result.Result);
+            var okResult = result.Result as CreatedResult;
             Assert.That(okResult?.Value, Is.EqualTo(stockBookOrderResponse));
         }
     }

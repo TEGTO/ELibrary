@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryShopEntities.Domain.Entities.Shop
 {
+    public enum StockBookOrderType
+    {
+        StockReplenishment, ClientOrder, ClientOrderCancel
+    }
     public class StockBookOrder : ITrackable
     {
         [Key]
@@ -14,6 +18,8 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public DateTime UpdatedAt { get; set; }
         [Required]
         public int TotalChangeAmount { get; set; }
+        [Required]
+        public StockBookOrderType Type { get; set; }
         [Required]
         public string ClientId { get; set; } = default!;
         [ForeignKey("ClientId")]

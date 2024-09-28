@@ -2,6 +2,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -11,10 +12,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { boockstockOrderReducer, BookstockEffects, BookstockOrderControllerService, BookstockOrderService, CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, managerOrderReducer, OrderControllerService, OrderEffects, orderReducer, OrderService, ShopCommand, ShopCommandService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent } from '.';
+import { boockstockOrderReducer, BookstockEffects, BookstockOrderControllerService, BookstockOrderService, BookStockReplenishmentComponent, CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, InputMaxStockDirective, managerOrderReducer, OrderControllerService, OrderEffects, orderReducer, OrderService, ShopCommand, ShopCommandService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent } from '.';
 import { AuthenticationModule } from '../authentication/authentication.module';
+import { LibraryModule } from '../library/library.module';
 import { InputRangeDirective } from '../shared';
 
 @NgModule({
@@ -23,6 +26,8 @@ import { InputRangeDirective } from '../shared';
     ClientChangeDialogComponent,
     CartDialogComponent,
     ClientInfoComponent,
+    InputMaxStockDirective,
+    BookStockReplenishmentComponent,
   ],
   imports: [
     CommonModule,
@@ -34,14 +39,16 @@ import { InputRangeDirective } from '../shared';
     ReactiveFormsModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
     InputRangeDirective,
     ScrollingModule,
     MatExpansionModule,
     MatDialogModule,
+    LibraryModule,
     MatMenuModule,
+    MatSelectModule,
+    MatAutocompleteModule,
     StoreModule.forFeature('cart', cartReducer),
     StoreModule.forFeature('client', clientReducer),
     StoreModule.forFeature('order', orderReducer),

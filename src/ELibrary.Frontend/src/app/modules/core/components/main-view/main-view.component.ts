@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
 import { AuthData, Policy, PolicyType, redirectPathes } from '../../../shared';
+import { ClientService } from '../../../shop';
 
 @Component({
   selector: 'app-main-view',
@@ -17,11 +18,13 @@ export class MainViewComponent implements OnInit {
 
   constructor(
     private readonly authService: AuthenticationService,
+    private readonly clientService: ClientService,
     private readonly authDialogManager: AuthenticationDialogManager
   ) { }
 
   ngOnInit(): void {
     this.authData$ = this.authService.getAuthData();
+    this.clientService.getClient();
   }
 
   openLoginMenu() {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Shop;
+using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,12 +29,14 @@ namespace ShopApi.Controllers
 
         #region EndPoints
 
+        [ResponseCache(Duration = 1)]
         [HttpGet]
         public async Task<ActionResult<CartResponse>> GetCart(CancellationToken cancellationToken)
         {
             var cart = await GetCartAsync(true, cancellationToken);
             return Ok(mapper.Map<CartResponse>(cart));
         }
+        [ResponseCache(Duration = 1)]
         [HttpGet("amount")]
         public async Task<ActionResult<CartResponse>> GetInCartAmount(CancellationToken cancellationToken)
         {
@@ -63,25 +66,13 @@ namespace ShopApi.Controllers
             var response = await cartService.UpdateCartBookAsync(cart, cartBook, cancellationToken);
             return Ok(mapper.Map<BookListingResponse>(response));
         }
-        [HttpDelete("cartbook/{id}")]
-        public async Task<IActionResult> DeleteCartBookFromCart(string id, CancellationToken cancellationToken)
-        {
-            var cart = await GetCartAsync(false, cancellationToken);
-
-            if (!await cartService.CheckBookCartAsync(cart, id, cancellationToken))
-            {
-                return BadRequest("Cart book is not found in the cart!");
-            }
-
-            await cartService.DeleteCartBookAsync(cart, id, cancellationToken);
-            return Ok();
-        }
         [HttpPut]
-        public async Task<ActionResult<CartResponse>> ClearCart(CancellationToken cancellationToken)
+        public async Task<ActionResult<CartResponse>> DeleteBooksFromCart(DeleteCartBookFromCartRequest[] requests, CancellationToken cancellationToken)
         {
+            var books = requests.Select(mapper.Map<Book>);
             var cart = await GetCartAsync(false, cancellationToken);
-            var response = await cartService.ClearCartAsync(cart, cancellationToken);
-            return Ok(mapper.Map<CartResponse>(cart));
+            var response = await cartService.DeleteBooksFromCartAsync(cart, books.ToArray(), cancellationToken);
+            return Ok(mapper.Map<CartResponse>(response));
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Domain.Entities.Shop;
 
 namespace ShopApi.Features.CartFeature.Services
 {
@@ -6,9 +7,8 @@ namespace ShopApi.Features.CartFeature.Services
     {
         public Task<CartBook> AddCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken);
         public Task<bool> CheckBookCartAsync(Cart cart, string id, CancellationToken cancellationToken);
-        public Task<Cart> ClearCartAsync(Cart cart, CancellationToken cancellationToken);
+        public Task<Cart> DeleteBooksFromCartAsync(Cart cart, Book[] cartBooks, CancellationToken cancellationToken);
         public Task<Cart> CreateCartAsync(string userId, CancellationToken cancellationToken);
-        public Task DeleteCartBookAsync(Cart cart, string id, CancellationToken cancellationToken);
         public Task<Cart?> GetCartByUserIdAsync(string userId, bool includeProducts, CancellationToken cancellationToken);
         public Task<int> GetInCartAmountAsync(Cart cart, CancellationToken cancellationToken);
         public Task<CartBook> UpdateCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken);

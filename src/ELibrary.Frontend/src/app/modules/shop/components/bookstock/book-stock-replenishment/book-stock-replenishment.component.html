@@ -1,0 +1,45 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Stock Replenishment</h2>
+
+<mat-dialog-content>
+    <div class="stockBookChange-body">
+        <ng-container *ngFor="let item of items;">
+            <div *ngTemplateOutlet="stockBookChange; context: { formGroup: item }"></div>
+        </ng-container>
+    </div>
+    <div class="flex justify-start items-center">
+        <button class="font-medium text-blue-600 hover:text-blue-400" (click)="addFormGroup()">
+            <span class="material-icons">add</span>
+        </button>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-flat-button id="send-button" type="button" color="primary" (click)="submitForms()">
+        Confirm
+    </button>
+</mat-dialog-actions>
+
+<ng-template #stockBookChange let-formGroup="formGroup">
+    <form id="replenishment" [formGroup]="formGroup" class="content__form space-y-1">
+        <div class="flex w-full">
+            <div class="flex gap-2 w-10/12">
+                <mat-error *ngIf="hasBeenTriedSubmitted">Book field must be set.</mat-error>
+                <app-book-input [formGroup]="formGroup" class="w-8/12"></app-book-input>
+                <mat-form-field class="!w-4/12">
+                    <mat-label>Amount</mat-label>
+                    <input matInput type="number" appInputRange [min]="1" [max]="maxAmount" [value]="1"
+                        formControlName="amount">
+                </mat-form-field>
+            </div>
+            <div class="delete-button flex w-2/12 justify-center items-center">
+                <button class="text-red-600 hover:text-red-500" (click)="deleteFormGroup(formGroup)">
+                    <span class="material-icons">do_not_disturb_on</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</ng-template>

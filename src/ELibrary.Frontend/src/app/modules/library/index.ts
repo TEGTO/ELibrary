@@ -7,6 +7,7 @@ export * from "./components/book/book-change-dialog/book-change-dialog.component
 export * from "./components/book/book-filter/book-filter.component";
 export * from "./components/book/inputs/author-input/author-input.component";
 export * from "./components/book/inputs/base-select-input-component/base-select-input-component.component";
+export * from "./components/book/inputs/book-input/book-input.component";
 export * from "./components/book/inputs/genre-input/genre-input.component";
 export * from "./components/book/inputs/publisher-input/publisher-input.component";
 export * from "./components/genre/genre-change-dialog/genre-change-dialog.component";

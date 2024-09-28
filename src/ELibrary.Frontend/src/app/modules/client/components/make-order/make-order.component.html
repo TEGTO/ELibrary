@@ -46,7 +46,7 @@
                                         <mat-radio-group id="payment" formControlName="payment">
                                             <mat-radio-button [value]="0">Cash</mat-radio-button>
                                             <mat-error
-                                                *ngIf="(paymentMethodInput).hasError">{{validateInputField(paymentMethodInput).message}}</mat-error>
+                                                *ngIf="validateInputField(paymentMethodInput).hasError">{{validateInputField(paymentMethodInput).message}}</mat-error>
                                         </mat-radio-group>
                                     </div>
                                 </div>

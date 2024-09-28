@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, take, takeUntil } from 'rxjs';
 import { AuthorService, BookService, GenreService, LibraryDialogManager, PublisherService } from '../..';
 import { Author, Book, Genre, getDefaultAuthor, getDefaultGenre, getDefaultPublisher, mapAuthorToCreateAuthorRequest, mapAuthorToUpdateAuthorRequest, mapBookToCreateBookRequest, mapBookToUpdateBookRequest, mapGenreToCreateGenreRequest, mapGenreToUpdateGenreRequest, mapPublisherToCreatePublisherRequest, mapPublisherToUpdatePublisherRequest, Publisher } from '../../../shared';
 import { LibraryCommand, LibraryCommandObject, LibraryCommandType } from './library-command';
@@ -104,34 +104,31 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
     const author: Author = getDefaultAuthor();
 
     this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(author => {
       if (author) {
         const req = mapAuthorToCreateAuthorRequest(author);
         this.authorService.create(req);
       }
-      this.cleanUp();
     });
   }
   private updateAuthor(dispatchedFrom: any, author: Author, params: any[]) {
     this.dialogManager.openAuthorDetailsMenu(author).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(author => {
       if (author) {
         const req = mapAuthorToUpdateAuthorRequest(author);
         this.authorService.update(req);
       }
-      this.cleanUp();
     });
   }
   private deleteAuthor(dispatchedFrom: any, author: Author, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(result => {
       if (result === true) {
         this.authorService.deleteById(author.id);
       }
-      this.cleanUp();
     });
   }
 
@@ -143,34 +140,31 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
     const genre: Genre = getDefaultGenre();
 
     this.dialogManager.openGenreDetailsMenu(genre).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(genre => {
       if (genre) {
         const req = mapGenreToCreateGenreRequest(genre);
         this.genreService.create(req);
       }
-      this.cleanUp();
     });
   }
   private updateGenre(dispatchedFrom: any, genre: Genre, params: any[]) {
     this.dialogManager.openGenreDetailsMenu(genre).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(genre => {
       if (genre) {
         const req = mapGenreToUpdateGenreRequest(genre);
         this.genreService.update(req);
       }
-      this.cleanUp();
     });
   }
   private deleteGenre(dispatchedFrom: any, genre: Genre, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(result => {
       if (result === true) {
         this.genreService.deleteById(genre.id);
       }
-      this.cleanUp();
     });
   }
 
@@ -182,34 +176,31 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
     const publisher: Publisher = getDefaultPublisher();
 
     this.dialogManager.openPublisherDetailsMenu(publisher).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(publusher => {
       if (publusher) {
         const req = mapPublisherToCreatePublisherRequest(publusher);
         this.publisherService.create(req);
       }
-      this.cleanUp();
     });
   }
   private updatePublisher(dispatchedFrom: any, publisher: Publisher, params: any[]) {
     this.dialogManager.openPublisherDetailsMenu(publisher).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(publisher => {
       if (publisher) {
         const req = mapPublisherToUpdatePublisherRequest(publisher);
         this.publisherService.update(req);
       }
-      this.cleanUp();
     });
   }
   private deletePublisher(dispatchedFrom: any, publisher: Publisher, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(result => {
       if (result === true) {
         this.publisherService.deleteById(publisher.id);
       }
-      this.cleanUp();
     });
   }
 
@@ -219,14 +210,13 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
 
   private createBook(dispatchedFrom: any, params: any[]) {
     this.dialogManager.openBookDetailsMenu(null).afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(book => {
       if (book) {
         console.log(book);
         const req = mapBookToCreateBookRequest(book);
         this.bookService.create(req);
       }
-      this.cleanUp();
     });
   }
   private updateBook(dispatchedFrom: any, book: Book, params: any[]) {
@@ -246,12 +236,11 @@ export class LibraryCommandService implements LibraryCommand, OnDestroy {
   }
   private deleteBook(dispatchedFrom: any, book: Book, params: any[]) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1)
     ).subscribe(result => {
       if (result === true) {
         this.bookService.deleteById(book.id);
       }
-      this.cleanUp();
     });
   }
 

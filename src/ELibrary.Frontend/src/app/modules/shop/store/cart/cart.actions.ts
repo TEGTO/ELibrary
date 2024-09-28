@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { AddBookToCartRequest, Cart, CartBook, UpdateCartBookRequest } from "../../../shared";
+import { AddBookToCartRequest, Cart, CartBook, DeleteCartBookFromCartRequest as DeleteBookFromCartRequest, UpdateCartBookRequest } from "../../../shared";
 
 export const getCart = createAction(
     '[Cart] Get Cart'
@@ -52,26 +52,15 @@ export const updateCartBookFailure = createAction(
     props<{ error: any }>()
 );
 
-export const deleteCartBook = createAction(
-    '[Cart] Delete Cart Book',
-    props<{ id: string }>()
+export const deleteBooksFromCart = createAction(
+    '[Cart] Delete Books From Cart',
+    props<{ requests: DeleteBookFromCartRequest[] }>()
 );
-export const deleteCartBookSuccess = createAction(
-    '[Cart] Delete Cart Book Success',
-    props<{ id: string }>()
+export const deleteBooksFromCartSuccess = createAction(
+    '[Cart] elete Books From Cart Success',
+    props<{ cart: Cart }>()
 );
-export const deleteCartBookFailure = createAction(
-    '[Cart] Delete Cart Book Failure',
-    props<{ error: any }>()
-);
-
-export const clearCart = createAction(
-    '[Cart] Clear Cart'
-);
-export const clearCartSuccess = createAction(
-    '[Cart] Clear Cart Success'
-);
-export const clearCartFailure = createAction(
-    '[Cart] Clear Cart Failure',
+export const deleteBooksFromCartFailure = createAction(
+    '[Cart] elete Books From Cart Failure',
     props<{ error: any }>()
 );

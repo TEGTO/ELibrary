@@ -23,7 +23,7 @@ namespace ShopApi.Controllers
 
         #region Endpoints
 
-        [ResponseCache(Duration = 60)]
+        [ResponseCache(Duration = 10)]
         [HttpGet]
         public async Task<ActionResult<ClientResponse>> GetClient(CancellationToken cancellationToken)
         {

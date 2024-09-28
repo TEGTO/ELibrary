@@ -49,9 +49,10 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(new StockBookOrder());
             eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
             // Act
-            await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, cancellationToken);
+            await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, StockBookOrderType.ClientOrder, cancellationToken);
             // Assert
             repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.StockBookChanges[0].ChangeAmount == -order.OrderAmount), cancellationToken), Times.Once);
+            repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.Type == StockBookOrderType.ClientOrder), cancellationToken), Times.Once);
         }
         [Test]
         public async Task AddStockBookOrderAsyncFromCanceledOrderAsync_CreatesStockBookOrderWithPositiveChangeAmount()
@@ -61,9 +62,10 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(new StockBookOrder());
             eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
             // Act
-            await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(order, cancellationToken);
+            await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(order, StockBookOrderType.ClientOrderCancel, cancellationToken);
             // Assert
             repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.StockBookChanges[0].ChangeAmount == order.OrderAmount), cancellationToken), Times.Once);
+            repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.Type == StockBookOrderType.ClientOrderCancel), cancellationToken), Times.Once);
         }
         [Test]
         public async Task AddStockBookOrderAsync_CalculatesTotalChangeAmount()

@@ -41,6 +41,8 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddSharedFluentValidation(typeof(Program));
 
+builder.Services.AddMemoryCache();
+
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 var app = builder.Build();

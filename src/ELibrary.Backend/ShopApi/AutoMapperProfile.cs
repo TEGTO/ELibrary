@@ -31,13 +31,13 @@ namespace ShopApi
 
             CreateMap<AddBookToCartRequest, CartBook>();
             CreateMap<UpdateCartBookRequest, CartBook>();
+            CreateMap<DeleteCartBookFromCartRequest, Book>();
+            CreateMap<CartBook, Book>();
 
             CreateMap<CreateOrderRequest, Order>();
             CreateMap<ManagerUpdateOrderRequest, Order>();
             CreateMap<ClientUpdateOrderRequest, Order>();
             CreateMap<Order, OrderResponse>();
-
-            CreateMap<CartBook, Book>();
 
             CreateMap<StockBookOrder, StockBookOrderResponse>();
             CreateMap<CreateStockBookOrderRequest, StockBookOrder>();

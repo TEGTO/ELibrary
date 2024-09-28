@@ -36,11 +36,13 @@ namespace ShopApi.Controllers
 
             return Ok(mapper.Map<StockBookOrderResponse>(order));
         }
+        [ResponseCache(Duration = 10)]
         [HttpGet("amount")]
         public async Task<ActionResult<int>> GetStockOrderAmount(CancellationToken cancellationToken)
         {
             return Ok(await stockBookOrderService.GetStockBookAmountAsync(cancellationToken));
         }
+        [ResponseCache(Duration = 10)]
         [HttpPost("pagination")]
         public async Task<ActionResult<IEnumerable<StockBookOrderResponse>>> GetStockOrderPaginated(PaginationRequest paginationRequest, CancellationToken cancellationToken)
         {

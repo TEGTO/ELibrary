@@ -2,7 +2,7 @@
     <ng-container *ngIf="client$ | async as client; else loading">
         <div class="content w-full">
             <app-client-info [client]="client"></app-client-info>
-            <ng-container *ngIf="totalAmount$ | async as totalAmount; else loading">
+            <ng-container *ngIf="totalAmount$ | async as totalAmount; else emptyCart">
                 <ng-container *ngIf="items$ | async as items; else loading">
                     <ng-container *ngIf="items.length > 0; else emptyCart">
                         <ng-container *ngFor="let item of items;">

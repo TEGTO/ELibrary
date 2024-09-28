@@ -26,17 +26,34 @@ namespace LibraryShopEntities.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Order>()
-                  .HasMany(o => o.OrderBooks)
-                  .WithOne(ob => ob.Order)
-                  .HasForeignKey(ob => ob.OrderId)
-                  .IsRequired();
+                .HasMany(o => o.OrderBooks)
+                .WithOne(ob => ob.Order)
+                .HasForeignKey(ob => ob.OrderId)
+                .IsRequired();
 
             modelBuilder.Entity<Cart>()
-              .HasMany(e => e.Books)
-              .WithOne(ob => ob.Cart)
-              .HasForeignKey(ob => ob.CartId)
-              .IsRequired();
+                .HasMany(e => e.Books)
+                .WithOne(ob => ob.Cart)
+                .HasForeignKey(ob => ob.CartId)
+                .IsRequired();
 
+            modelBuilder.Entity<StockBookOrder>()
+                .HasOne(sbo => sbo.Client)
+                .WithMany()
+                .HasForeignKey(sbo => sbo.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StockBookChange>()
+                .HasOne(sbc => sbc.Book)
+                .WithMany()
+                .HasForeignKey(sbc => sbc.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OrderBook>()
+                .HasOne(ob => ob.Book)
+                .WithMany()
+                .HasForeignKey(ob => ob.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

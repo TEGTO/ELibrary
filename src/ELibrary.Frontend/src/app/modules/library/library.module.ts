@@ -17,7 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorInputComponent, authorReducer, AuthorService, BookChangeDialogComponent, BookControllerService, BookEffects, BookFilterComponent, bookReducer, BookService, GenreChangeDialogComponent, GenreControllerService, GenreEffects, GenreInputComponent, genreReducer, GenreService, LibraryCommand, LibraryCommandService, LibraryDialogManager, LibraryDialogManagerService, LibraryFilterComponent, PublisherChangeDialogComponent, PublisherControllerService, PublisherEffects, PublisherInputComponent, publisherReducer, PublisherService } from '.';
+import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorInputComponent, authorReducer, AuthorService, BookChangeDialogComponent, BookControllerService, BookEffects, BookFilterComponent, BookInputComponent, bookReducer, BookService, GenreChangeDialogComponent, GenreControllerService, GenreEffects, GenreInputComponent, genreReducer, GenreService, LibraryCommand, LibraryCommandService, LibraryDialogManager, LibraryDialogManagerService, LibraryFilterComponent, PublisherChangeDialogComponent, PublisherControllerService, PublisherEffects, PublisherInputComponent, publisherReducer, PublisherService } from '.';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,7 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     PublisherInputComponent,
     BookFilterComponent,
     LibraryFilterComponent,
-
+    BookInputComponent,
   ],
   imports: [
     MatDialogModule,
@@ -65,6 +65,6 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     { provide: PublisherService, useClass: PublisherControllerService },
     { provide: LibraryCommand, useClass: LibraryCommandService },
   ],
-  exports: [AuthorChangeDialogComponent, GenreChangeDialogComponent, BookChangeDialogComponent, BookFilterComponent, LibraryFilterComponent]
+  exports: [AuthorChangeDialogComponent, GenreChangeDialogComponent, BookChangeDialogComponent, BookFilterComponent, LibraryFilterComponent, BookInputComponent]
 })
 export class LibraryModule { }

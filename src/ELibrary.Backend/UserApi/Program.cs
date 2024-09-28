@@ -51,6 +51,8 @@ builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, Databa
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddSharedFluentValidation(typeof(Program));
 
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();

@@ -1,7 +1,6 @@
-import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
-import { AddBookToCartRequest, BaseApiService, BookListingResponse, Cart, CartBook, CartResponse, mapBookListingResponseToCartBook, mapCartResponseToCart, UpdateCartBookRequest } from '../../../..';
+import { AddBookToCartRequest, BaseApiService, BookListingResponse, Cart, CartBook, CartResponse, DeleteCartBookFromCartRequest, mapBookListingResponseToCartBook, mapCartResponseToCart, UpdateCartBookRequest } from '../../../..';
 
 @Injectable({
   providedIn: 'root'
@@ -31,17 +30,8 @@ export class CartApiService extends BaseApiService {
       catchError((error) => this.handleError(error)),
     );
   }
-  deleteCartBookFromCart(id: string): Observable<HttpResponse<void>> {
-    return this.httpClient.delete<void>(this.combinePathWithCartApiUrl(`/cartbook/${id}`), { observe: 'response' }).pipe(
-      catchError((error) => this.handleError(error)),
-    );
-  }
-  clearCart(): Observable<Cart> {
-    return this.httpClient.put<CartResponse>(
-      this.combinePathWithCartApiUrl(``),
-      {},
-      { headers: { 'Content-Type': 'application/json' } }
-    ).pipe(
+  deleteBooksFromCart(requests: DeleteCartBookFromCartRequest[]): Observable<Cart> {
+    return this.httpClient.put<CartResponse>(this.combinePathWithCartApiUrl(``), requests).pipe(
       map((response) => mapCartResponseToCart(response)),
       catchError((error) => this.handleError(error)),
     );

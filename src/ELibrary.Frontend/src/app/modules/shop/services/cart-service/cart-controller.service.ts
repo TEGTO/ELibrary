@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { addBookToCart, clearCart, deleteCartBook, getCart, getInCartAmount, selectCartAmount, selectCartBooks, updateCartBook } from '../..';
-import { AddBookToCartRequest, CartBook, UpdateCartBookRequest } from '../../../shared';
+import { addBookToCart, deleteBooksFromCart, getCart, getInCartAmount, selectCartAmount, selectCartBooks, updateCartBook } from '../..';
+import { AddBookToCartRequest, CartBook, DeleteCartBookFromCartRequest, UpdateCartBookRequest } from '../../../shared';
 import { CartService } from './cart-service';
 
 @Injectable({
@@ -28,10 +28,7 @@ export class CartControllerService implements CartService {
   updateCartBook(req: UpdateCartBookRequest): void {
     this.store.dispatch(updateCartBook({ req: req }));
   }
-  deleteCartBook(id: string): void {
-    this.store.dispatch(deleteCartBook({ id: id }));
-  }
-  clearCart(): void {
-    this.store.dispatch(clearCart());
+  deleteBooksFromCart(requests: DeleteCartBookFromCartRequest[]): void {
+    this.store.dispatch(deleteBooksFromCart({ requests: requests }));
   }
 }

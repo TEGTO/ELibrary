@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { addBookToCart, addBookToCartFailure, addBookToCartSuccess, clearCart, clearCartFailure, clearCartSuccess, deleteCartBook, deleteCartBookFailure, deleteCartBookSuccess, getCart, getCartFailure, getCartSuccess, getInCartAmount, getInCartAmountFailure, getInCartAmountSuccess, updateCartBook, updateCartBookFailure, updateCartBookSuccess } from "../..";
+import { addBookToCart, addBookToCartFailure, addBookToCartSuccess, deleteBooksFromCart, deleteBooksFromCartFailure, deleteBooksFromCartSuccess, getCart, getCartFailure, getCartSuccess, getInCartAmount, getInCartAmountFailure, getInCartAmountSuccess, updateCartBook, updateCartBookFailure, updateCartBookSuccess } from "../..";
 import { CartApiService } from "../../../shared";
 
 @Injectable()
@@ -59,25 +59,13 @@ export class CartEffects {
         )
     );
 
-    deleteCartBook$ = createEffect(() =>
+    deleteBooksFromCart$ = createEffect(() =>
         this.actions$.pipe(
-            ofType(deleteCartBook),
+            ofType(deleteBooksFromCart),
             mergeMap((action) =>
-                this.apiService.deleteCartBookFromCart(action.id).pipe(
-                    map(() => deleteCartBookSuccess({ id: action.id })),
-                    catchError(error => of(deleteCartBookFailure({ error: error.message })))
-                )
-            )
-        )
-    );
-
-    clearCart$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(clearCart),
-            mergeMap(() =>
-                this.apiService.clearCart().pipe(
-                    map(() => clearCartSuccess()),
-                    catchError(error => of(clearCartFailure({ error: error.message })))
+                this.apiService.deleteBooksFromCart(action.requests).pipe(
+                    map((response) => deleteBooksFromCartSuccess({ cart: response })),
+                    catchError(error => of(deleteBooksFromCartFailure({ error: error.message })))
                 )
             )
         )

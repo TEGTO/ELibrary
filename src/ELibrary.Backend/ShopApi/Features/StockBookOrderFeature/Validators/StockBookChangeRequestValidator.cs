@@ -8,7 +8,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Validators
         public StockBookChangeRequestValidator()
         {
             RuleFor(x => x.BookId).NotNull().GreaterThan(0);
-            RuleFor(x => Math.Abs(x.ChangeAmount)).NotNull().GreaterThan(0);
+            RuleFor(x => x.ChangeAmount).NotNull().NotEqual(0);
         }
     }
 }

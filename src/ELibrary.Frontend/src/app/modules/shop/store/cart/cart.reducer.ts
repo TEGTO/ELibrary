@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReducer, on } from "@ngrx/store";
-import { addBookToCartFailure, addBookToCartSuccess, clearCartFailure, clearCartSuccess, deleteCartBookFailure, deleteCartBookSuccess, getCartFailure, getCartSuccess, getInCartAmountFailure, getInCartAmountSuccess, updateCartBookFailure, updateCartBookSuccess } from "../..";
+import { addBookToCartFailure, addBookToCartSuccess, deleteBooksFromCartFailure, deleteBooksFromCartSuccess, getCartFailure, getCartSuccess, getInCartAmountFailure, getInCartAmountSuccess, updateCartBookFailure, updateCartBookSuccess } from "../..";
 import { CartBook } from "../../../shared";
 
 export interface CartState {
@@ -78,24 +78,13 @@ export const cartReducer = createReducer(
         error: error
     })),
 
-    on(deleteCartBookSuccess, (state, { id: id }) => {
-        const existingCartBook = state.cartBooks.find(book => book.id === id);
-        return {
-            ...state,
-            cartBooks: state.cartBooks.filter(x => x.id !== id),
-            amount: state.amount - (existingCartBook ? existingCartBook!.bookAmount : 0),
-            error: null
-        }
-    }),
-    on(deleteCartBookFailure, (state, { error: error }) => ({
-        ...initialCartState,
-        error: error
+    on(deleteBooksFromCartSuccess, (state, { cart: cart }) => ({
+        ...state,
+        cartBooks: cart.books,
+        amount: cart.books.reduce((total, book) => total + book.bookAmount, 0),
+        error: null
     })),
-
-    on(clearCartSuccess, () => ({
-        ...initialCartState,
-    })),
-    on(clearCartFailure, (state, { error: error }) => ({
+    on(deleteBooksFromCartFailure, (state, { error: error }) => ({
         ...initialCartState,
         error: error
     })),

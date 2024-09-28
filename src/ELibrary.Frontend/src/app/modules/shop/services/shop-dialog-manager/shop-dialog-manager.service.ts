@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { CartDialogComponent, ClientChangeDialogComponent } from '../..';
+import { BookStockReplenishmentComponent, CartDialogComponent, ClientChangeDialogComponent } from '../..';
 import { Client, DialogManagerService } from '../../../shared';
 import { ShopDialogManager } from './shop-dialog-manager';
 
@@ -18,7 +18,6 @@ export class ShopDialogManagerService extends DialogManagerService implements Sh
     });
     return dialogRef;
   }
-
   openClientChangeMenu(client: Client): MatDialogRef<any> {
     const dialogRef = this.dialog.open(ClientChangeDialogComponent, {
       height: '700px',
@@ -26,6 +25,15 @@ export class ShopDialogManagerService extends DialogManagerService implements Sh
       maxHeight: '700px',
       maxWidth: '530px',
       data: client
+    });
+    return dialogRef;
+  }
+  openReplenishmentMenu(): MatDialogRef<any> {
+    const dialogRef = this.dialog.open(BookStockReplenishmentComponent, {
+      height: '400px',
+      width: '550px',
+      maxHeight: '400px',
+      maxWidth: '550px',
     });
     return dialogRef;
   }

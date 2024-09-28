@@ -32,30 +32,41 @@
 <ng-template #book let-book="book" let-bookAdded="bookAdded">
     <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
         <a [href]="getBookPage(book)"
-            class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105">
-            <div class="book__cover">
+            class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 relative">
+            <div class="book__cover relative">
                 <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
                     onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                <!-- Gray Overlay with Centered "Out of Stock" Text -->
+                <div *ngIf="book.stockAmount === 0"
+                    class="absolute inset-0 bg-gray-100/70 flex items-center justify-center text-red-600 font-bold text-xs">
+                    Out of Stock
+                </div>
             </div>
             <div class="duration-50">
-                <div class="book__name text-gray-700 font-bold truncate-big">
+                <div class="book__name font-bold truncate-big"
+                    [ngClass]="book.stockAmount > 0 ? 'text-gray-700' : 'text-gray-300'">
                     {{ book.name }}
                 </div>
-                <div class="book__author text-gray-400 truncate-small">
+                <div class="book__author truncate-small"
+                    [ngClass]="book.stockAmount > 0 ? 'text-gray-400' : 'text-gray-300'">
                     {{ book.author.name + ' ' + book.author.lastName }}
                 </div>
             </div>
         </a>
         <div class="book__buy w-full flex items-center justify-between">
-            <div class="text-red-500 truncate-small font-bold">
+            <div class="truncate-small font-bold" [ngClass]="book.stockAmount > 0 ? 'text-red-500' : 'text-gray-300'">
                 {{ applyCurrencyPipe(book.price) }}
             </div>
             <ng-container *ngIf="!bookAdded; else addedToCart">
-                <button class="hover:bg-gray-200 py-1 px-1 rounded inline-flex items-center"
-                    (click)="addBookToCart(book)">
-                    <span class="material-icons text-green-600">shopping_cart</span>
+                <button class="py-1 px-1 rounded inline-flex items-center" (click)="addBookToCart(book)"
+                    [disabled]="book.stockAmount === 0" [ngClass]="{
+                            'hover:bg-gray-200 text-green-600': book.stockAmount > 0,
+                            'bg-gray-300 text-gray-400': book.stockAmount === 0
+                        }">
+                    <span class="material-icons">shopping_cart</span>
                 </button>
             </ng-container>
+
             <ng-template #addedToCart>
                 <div class="py-1 px-1 rounded inline-flex items-center">
                     <span class="material-icons text-green-600">check</span>

@@ -34,15 +34,15 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
             var bookPriceUpdatedEvent = new BookStockAmountUpdatedEvent(newStockBookOrder);
             await eventDispatcher.DispatchAsync(bookPriceUpdatedEvent, cancellationToken);
 
-            return newStockBookOrder;
+            return (await GetStockBookOrderByIdAsync(newStockBookOrder.Id, cancellationToken))!;
         }
-        public async Task<StockBookOrder> AddStockBookOrderAsyncFromOrderAsync(Order order, CancellationToken cancellationToken)
+        public async Task<StockBookOrder> AddStockBookOrderAsyncFromOrderAsync(Order order, StockBookOrderType type, CancellationToken cancellationToken)
         {
-            return await CreateStockBookOrderAsync(order, -1, cancellationToken);
+            return await CreateStockBookOrderFromOrderAsync(order, type, -1, cancellationToken);
         }
-        public async Task<StockBookOrder> AddStockBookOrderAsyncFromCanceledOrderAsync(Order order, CancellationToken cancellationToken)
+        public async Task<StockBookOrder> AddStockBookOrderAsyncFromCanceledOrderAsync(Order order, StockBookOrderType type, CancellationToken cancellationToken)
         {
-            return await CreateStockBookOrderAsync(order, 1, cancellationToken);
+            return await CreateStockBookOrderFromOrderAsync(order, type, 1, cancellationToken);
         }
         public async Task<StockBookOrder?> GetStockBookOrderByIdAsync(int id, CancellationToken cancellationToken)
         {
@@ -83,11 +83,12 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
 
         #region Private Members
 
-        private async Task<StockBookOrder> CreateStockBookOrderAsync(Order order, int changeMultiplier, CancellationToken cancellationToken)
+        private async Task<StockBookOrder> CreateStockBookOrderFromOrderAsync(Order order, StockBookOrderType type, int changeMultiplier, CancellationToken cancellationToken)
         {
             var stockCreateRequest = new StockBookOrder
             {
-                ClientId = order.ClientId
+                ClientId = order.ClientId,
+                Type = type
             };
 
             foreach (var orderBook in order.OrderBooks)
@@ -95,7 +96,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
                 stockCreateRequest.StockBookChanges.Add(new StockBookChange
                 {
                     BookId = orderBook.BookId,
-                    ChangeAmount = changeMultiplier * order.OrderAmount
+                    ChangeAmount = changeMultiplier * orderBook.BookAmount
                 });
             }
 

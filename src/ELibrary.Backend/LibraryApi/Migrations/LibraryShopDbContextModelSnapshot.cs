@@ -343,6 +343,9 @@ namespace LibraryApi.Migrations
                     b.Property<int>("TotalChangeAmount")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -415,7 +418,7 @@ namespace LibraryApi.Migrations
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Order", "Order")
@@ -434,7 +437,7 @@ namespace LibraryApi.Migrations
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", null)
@@ -449,7 +452,7 @@ namespace LibraryApi.Migrations
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Client");

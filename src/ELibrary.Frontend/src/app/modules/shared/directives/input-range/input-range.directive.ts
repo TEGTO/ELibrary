@@ -14,6 +14,10 @@ export class InputRangeDirective {
   onInput(value: string) {
     let numericValue = parseInt(value, 10);
 
+    if (isNaN(numericValue)) {
+      numericValue = this.min;
+    }
+
     if (numericValue < this.min) {
       numericValue = this.min;
     } else if (numericValue > this.max) {

@@ -54,7 +54,6 @@
                 </mat-radio-group>
             </div>
         </div>
-        <mat-error *ngIf="hasBeenTriedSubmitted">Make sure the Author, Genre, and Publisher fields are set.</mat-error>
         <app-author-input [formGroup]="formGroup"></app-author-input>
         <app-genre-input [formGroup]="formGroup"></app-genre-input>
         <app-publisher-input [formGroup]="formGroup"></app-publisher-input>

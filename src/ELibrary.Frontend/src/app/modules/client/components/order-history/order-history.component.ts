@@ -129,7 +129,6 @@ export class OrderHistoryComponent implements OnInit {
     return this.validateInput.getValidationMessage(input);
   }
 
-
   getOrderBookPrice(orderBook: OrderBook): number {
     return orderBook.book.price * orderBook.bookAmount;
   }

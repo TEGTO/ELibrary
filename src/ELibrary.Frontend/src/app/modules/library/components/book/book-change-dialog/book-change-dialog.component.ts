@@ -11,7 +11,6 @@ import { Book, CoverType, getDefaultBook, noSpaces, notEmptyString, ValidationMe
 })
 export class BookChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
-  hasBeenTriedSubmitted = false;
 
   get nameInput() { return this.formGroup.get('name')!; }
   get publicationDateInput() { return this.formGroup.get('publicationDate')!; }
@@ -73,6 +72,6 @@ export class BookChangeDialogComponent implements OnInit {
 
       this.dialogRef.close(book);
     }
-    this.hasBeenTriedSubmitted = true;
+    this.formGroup.markAllAsTouched();
   }
 }

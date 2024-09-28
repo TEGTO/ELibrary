@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Subject, takeUntil } from 'rxjs';
+import { map, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { BookstockOrderService, CartService, ClientService, OrderService, ShopDialogManager } from '../..';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { Book, CartBook, Client, CreateStockBookOrderRequest, getDefaultClient, mapBookToAddBookToCartRequest, mapCartBookToUpdateCartBookRequest, mapClientToCreateClientRequest, mapClientToUpdateClientRequest, mapOrderToClientUpdateOrderRequest, mapOrderToCreateOrderRequest, mapOrderToManagerUpdateOrderRequest, mapStockBookChangeToStockBookChangeRequest, Order, RedirectorService, redirectPathes, SnackbarManager, StockBookChange } from '../../../shared';
+import { Book, CartBook, Client, CreateStockBookOrderRequest, getDefaultClient, mapBookToAddBookToCartRequest, mapCartBookToDeleteCartBookFromCartRequest, mapCartBookToUpdateCartBookRequest, mapClientToCreateClientRequest, mapClientToUpdateClientRequest, mapOrderBookToDeleteCartBookFromCartRequest, mapOrderToClientUpdateOrderRequest, mapOrderToCreateOrderRequest, mapOrderToManagerUpdateOrderRequest, mapStockBookChangeToStockBookChangeRequest, Order, RedirectorService, redirectPathes, SnackbarManager, StockBookChange, StockBookOrderType } from '../../../shared';
 import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from './shop-command';
 
 @Injectable({
@@ -154,7 +154,7 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
       case ShopCommandObject.Bookstock:
         switch (commandType) {
           case ShopCommandType.Add:
-            this.addBookstockOrder(dispatchedFrom, params[0], params);
+            this.addBookstockOrder(dispatchedFrom, params);
             break;
           default:
             break;
@@ -215,7 +215,7 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
       case ShopCommandObject.Bookstock:
         switch (commandType) {
           case ShopCommandType.Add:
-            this.addBookstockOrder(dispatchedFrom, params[0], params);
+            this.addBookstockOrder(dispatchedFrom, params);
             break;
           default:
             break;
@@ -230,7 +230,9 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
 
   addBookToCart(dispatchedFrom: any, book: Book, params: any) {
     this.authenticatioService.getAuthData()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$)
+      )
       .subscribe(data => {
         if (data.isAuthenticated) {
           this.cartService.addBookToCart(mapBookToAddBookToCartRequest(book));
@@ -245,7 +247,8 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
     this.cartService.updateCartBook(mapCartBookToUpdateCartBookRequest(cartBook));
   }
   deleteCartBook(dispatchedFrom: any, cartBook: CartBook, params: any) {
-    this.cartService.deleteCartBook(cartBook.id);
+    const requests = [mapCartBookToDeleteCartBookFromCartRequest(cartBook)];
+    this.cartService.deleteBooksFromCart(requests);
   }
 
   //#endregion
@@ -267,7 +270,8 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
             if (result.isSuccess) {
               this.redirector.redirectTo(redirectPathes.client_order_history);
               this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
-              this.cartService.clearCart();
+              const requests = order.orderBooks.map(x => mapOrderBookToDeleteCartBookFromCartRequest(x));
+              this.cartService.deleteBooksFromCart(requests);
             }
             else if (!result.isSuccess && result.error !== null) {
               this.cleanUp();
@@ -281,7 +285,7 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
   }
   clientCancelOrder(dispatchedFrom: any, order: Order, params: any) {
     this.dialogManager.openConfirmMenu().afterClosed().pipe(
-      takeUntil(this.destroy$)
+      take(1),
     ).subscribe(result => {
       if (result === true) {
         this.orderService.clientCancelOrder(order.id);
@@ -306,16 +310,15 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
       this.redirector.redirectTo(redirectPathes.client_addInformation, { redirectTo: params[0] });
     }
     else {
-      this.shopDialog.openClientChangeMenu(getDefaultClient())
-        .afterClosed().pipe(
-          takeUntil(this.destroy$)
-        ).subscribe(client => {
-          if (client) {
-            const req = mapClientToCreateClientRequest(client);
-            this.clientService.createClient(req);
-          }
-          this.cleanUp();
-        });
+      this.shopDialog.openClientChangeMenu(getDefaultClient()).afterClosed().pipe(
+        take(1),
+      ).subscribe(client => {
+        if (client) {
+          const req = mapClientToCreateClientRequest(client);
+          this.clientService.createClient(req);
+        }
+        this.cleanUp();
+      });
     }
   }
   updateClient(dispatchedFrom: any, client: Client, params: any) {
@@ -330,20 +333,36 @@ export class ShopCommandService implements ShopCommand, OnDestroy {
 
   //#region  Bookstock
 
-  addBookstockOrder(dispatchedFrom: any, changes: StockBookChange[], params: any) {
+  addBookstockOrder(dispatchedFrom: any, params: any) {
     this.clientService.getClient()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(client => {
-        if (client) {
-          const req: CreateStockBookOrderRequest =
-          {
-            clientId: client.id,
-            stockBookChanges: changes.map(x => mapStockBookChangeToStockBookChangeRequest(x))
+      .pipe(
+        take(1),
+        switchMap(client => {
+          if (client) {
+            const dialogRef = this.dialogManager.openReplenishmentMenu();
+            return dialogRef.afterClosed().pipe(
+              take(1),
+              map(changes => ({ client, changes }))
+            );
+          } else {
+            this.addClient(this, []);
+            return of(null);
           }
-          this.stockbookService.createOrder(req);
+        })
+      )
+      .subscribe(result => {
+        if (result && result.changes) {
+          const req: CreateStockBookOrderRequest = {
+            type: StockBookOrderType.StockReplenishment,
+            clientId: result.client.id,
+            stockBookChanges: result.changes.map((x: StockBookChange) =>
+              mapStockBookChangeToStockBookChangeRequest(x)
+            ),
+          };
+          this.stockbookService.createStockOrder(req);
         }
         this.cleanUp();
-      })
+      });
   }
 
   //#endregion

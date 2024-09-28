@@ -174,63 +174,36 @@ namespace ShopApi.Controllers.Tests
             Assert.That(badRequestResult.Value, Is.EqualTo("Cart book is not found in the cart!"));
         }
         [Test]
-        public async Task DeleteCartBookFromCart_ValidRequest_ReturnsOk()
+        public async Task DeleteBooksFromCart_ValidRequests_CallsDeleteBooksFromCartAndReturnsOk()
         {
             // Arrange
-            var cart = new Cart { Id = "cart-1", UserId = "test-user" };
-            var cartBookId = "book-1";
-            mockCartService.Setup(c => c.GetCartByUserIdAsync(It.IsAny<string>(), false, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(cart);
-            mockCartService.Setup(c => c.CheckBookCartAsync(cart, cartBookId, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(true);
-            // Act
-            var result = await cartController.DeleteCartBookFromCart(cartBookId, CancellationToken.None) as OkResult;
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-        }
-        [Test]
-        public async Task DeleteCartBookFromCart_CartBookNotInCart_ReturnsBadRequest()
-        {
-            // Arrange
-            var cart = new Cart { Id = "cart-1", UserId = "test-user" };
-            var cartBookId = "book-1";
-            mockCartService.Setup(c => c.GetCartByUserIdAsync(It.IsAny<string>(), false, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(cart);
-            mockCartService.Setup(c => c.CheckBookCartAsync(cart, cartBookId, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(false);
-            // Act
-            var result = await cartController.DeleteCartBookFromCart(cartBookId, CancellationToken.None) as BadRequestObjectResult;
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.That(result.StatusCode, Is.EqualTo(400));
-            Assert.That(result.Value, Is.EqualTo("Cart book is not found in the cart!"));
-        }
-        [Test]
-        public async Task ClearCart_ValidRequest_ReturnsCartResponse()
-        {
-            // Arrange
-            var cart = new Cart { Id = "cart-1", Books = new List<CartBook> { new CartBook { BookId = 1, BookAmount = 2 } } };
-            var cartResponse = new CartResponse
+            var requests = new[]
             {
-                Books = new List<BookListingResponse>
-                {
-                    new BookListingResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() }
-                }
+                new DeleteCartBookFromCartRequest { Id = 1 },
+                new DeleteCartBookFromCartRequest { Id = 2 }
             };
-            mockCartService.Setup(c => c.GetCartByUserIdAsync(It.IsAny<string>(), false, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(cart);
-            mockCartService.Setup(c => c.ClearCartAsync(cart, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(cart);
-            mockMapper.Setup(m => m.Map<CartResponse>(cart)).Returns(cartResponse);
+
+            var books = new[]
+            {
+                new Book { Id = 1 },
+                new Book { Id = 2 }
+            };
+            var cart = new Cart { Id = "cart-1", Books = new List<CartBook>() };
+            var cartResponse = new CartResponse();
+            mockMapper.Setup(m => m.Map<Book>(requests[0])).Returns(books[0]);
+            mockMapper.Setup(m => m.Map<Book>(requests[1])).Returns(books[1]);
+            mockCartService.Setup(s => s.DeleteBooksFromCartAsync(cart, books, It.IsAny<CancellationToken>())).ReturnsAsync(cart);
+            mockMapper.Setup(m => m.Map<CartResponse>(It.IsAny<Cart>())).Returns(cartResponse);
             // Act
-            var result = await cartController.ClearCart(CancellationToken.None);
+            var result = await cartController.DeleteBooksFromCart(requests, It.IsAny<CancellationToken>());
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okResult);
-            Assert.That(okResult.StatusCode, Is.EqualTo(200));
-            Assert.That(okResult.Value, Is.EqualTo(cartResponse));
+            Assert.That(okResult?.Value, Is.EqualTo(cartResponse));
+            mockMapper.Verify(m => m.Map<Book>(requests[0]), Times.Once);
+            mockMapper.Verify(m => m.Map<Book>(requests[1]), Times.Once);
+            mockCartService.Verify(s => s.DeleteBooksFromCartAsync(It.IsAny<Cart>(), books, It.IsAny<CancellationToken>()), Times.Once);
+            mockMapper.Verify(m => m.Map<CartResponse>(It.IsAny<Cart>()), Times.Once);
         }
     }
 }

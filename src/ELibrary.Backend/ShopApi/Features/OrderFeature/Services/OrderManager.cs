@@ -36,8 +36,7 @@ namespace ShopApi.Features.OrderFeature.Services
             var order = mapper.Map<Order>(request);
             order.ClientId = client.Id;
 
-            await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, cancellationToken);
-
+            await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, StockBookOrderType.ClientOrder, cancellationToken);
             var createdOrder = await orderService.CreateOrderAsync(order, cancellationToken);
 
             return mapper.Map<OrderResponse>(createdOrder);
@@ -73,7 +72,7 @@ namespace ShopApi.Features.OrderFeature.Services
             order.OrderStatus = OrderStatus.Canceled;
             var canceledOrder = await orderService.UpdateOrderAsync(order, cancellationToken);
 
-            await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(canceledOrder, cancellationToken);
+            await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(canceledOrder, StockBookOrderType.ClientOrderCancel, cancellationToken);
 
             return mapper.Map<OrderResponse>(canceledOrder);
         }

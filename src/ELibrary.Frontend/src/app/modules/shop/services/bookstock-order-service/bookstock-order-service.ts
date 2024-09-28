@@ -6,7 +6,8 @@ import { CreateStockBookOrderRequest, PaginatedRequest, StockBookOrder } from ".
     providedIn: 'root'
 })
 export abstract class BookstockOrderService {
+    abstract getById(id: number): Observable<StockBookOrder>;
     abstract getPaginatedOrders(req: PaginatedRequest): Observable<StockBookOrder[]>;
     abstract getOrderTotalAmount(): Observable<number>;
-    abstract createOrder(req: CreateStockBookOrderRequest): void;
+    abstract createStockOrder(req: CreateStockBookOrderRequest): void;
 }

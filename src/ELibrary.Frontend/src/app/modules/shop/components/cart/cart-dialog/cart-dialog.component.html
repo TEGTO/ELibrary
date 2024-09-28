@@ -55,12 +55,19 @@
 </ng-template>
 
 <ng-template #book let-cartBook="cartBook">
-    <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
+    <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6 relative">
+        <!-- Book Cover with "Out of Stock" Overlay -->
         <div class="w-full flex justify-between">
             <div class="flex flex gap-5">
-                <a class="book__cover hover:cursor-pointer" [href]="getBookPage(cartBook)">
+                <a class="book__cover hover:cursor-pointer relative" [href]="getBookPage(cartBook)">
                     <img class="h-42 w-24" crossorigin='anonymous' [src]="cartBook.book.coverImgUrl" alt="Book cover"
                         onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+
+                    <!-- Gray Overlay if Out of Stock -->
+                    <div *ngIf="cartBook.book.stockAmount === 0"
+                        class="absolute inset-0 bg-gray-100/70 flex items-center justify-center text-red-600 font-bold text-xs">
+                        Out of Stock
+                    </div>
                 </a>
                 <a class="h-full flex flex-col items-start pt-5">
                     <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
@@ -68,7 +75,7 @@
                         {{ cartBook.book.name }}
                     </a>
                     <div class="book__author text-gray-400 truncate">
-                        {{ cartBook.book.author.name + ' '+ cartBook.book.author.lastName }}
+                        {{ cartBook.book.author.name + ' ' + cartBook.book.author.lastName }}
                     </div>
                 </a>
             </div>
@@ -86,13 +93,19 @@
                 </mat-menu>
             </div>
         </div>
+
+        <!-- Book Price and Amount Input -->
         <div class="book__amount w-full justify-end gap-4">
-            <div class="text-red-500 truncate font-bold text-lg">
+            <div class="truncate font-bold text-lg"
+                [ngClass]="cartBook.book.stockAmount > 0 ? 'text-red-500' : 'text-gray-300'">
                 {{ applyCurrencyPipe(getPrice(cartBook)) }}
             </div>
-            <input type="number" appInputRange [min]="1" [max]="maxAmount" [value]=" cartBook.bookAmount"
-                (input)="onInputChange(cartBook, $event)"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+            <!-- Disable input if book is out of stock -->
+            <input type="number" appInputMaxStock [min]="1" [max]="getMaxAmount(cartBook.book)"
+                [value]="cartBook.book.stockAmount > 0 ? cartBook.bookAmount : 0"
+                (input)="onInputChange(cartBook, $event)" [disabled]="cartBook.book.stockAmount === 0"
+                [ngClass]="cartBook.book.stockAmount > 0 ? 'text-gray-900' : 'text-gray-300'"
+                class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         </div>
     </div>
 </ng-template>

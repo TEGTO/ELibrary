@@ -28,7 +28,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         {
             // Arrange
             var book = new Book { Id = 1, StockAmount = 5 };
-            var stockChange = new StockBookChange { Book = book, ChangeAmount = 3 };
+            var stockChange = new StockBookChange { BookId = 1, ChangeAmount = 3 };
             var stockBookOrder = new StockBookOrder { StockBookChanges = new List<StockBookChange> { stockChange } };
             var bookEvent = new BookStockAmountUpdatedEvent(stockBookOrder);
             var books = new List<Book> { book }.AsQueryable().BuildMock();
@@ -45,7 +45,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         {
             // Arrange
             var book = new Book { Id = 1, StockAmount = 2 };
-            var stockChange = new StockBookChange { Book = book, ChangeAmount = -5 };
+            var stockChange = new StockBookChange { BookId = 1, ChangeAmount = -5 };
             var stockBookOrder = new StockBookOrder { StockBookChanges = new List<StockBookChange> { stockChange } };
             var bookEvent = new BookStockAmountUpdatedEvent(stockBookOrder);
             var books = new List<Book> { book }.AsQueryable().BuildMock();
@@ -61,8 +61,8 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             // Arrange
             var book1 = new Book { Id = 1, StockAmount = 10 };
             var book2 = new Book { Id = 2, StockAmount = 4 };
-            var stockChange1 = new StockBookChange { Book = book1, ChangeAmount = 3 };
-            var stockChange2 = new StockBookChange { Book = book2, ChangeAmount = -2 };
+            var stockChange1 = new StockBookChange { BookId = 1, ChangeAmount = 3 };
+            var stockChange2 = new StockBookChange { BookId = 2, ChangeAmount = -2 };
             var stockBookOrder = new StockBookOrder
             {
                 StockBookChanges = new List<StockBookChange> { stockChange1, stockChange2 }

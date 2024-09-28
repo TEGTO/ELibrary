@@ -29,7 +29,7 @@ namespace ShopApi.Controllers
 
         #region Endpoints
 
-        [ResponseCache(Duration = 60)]
+        [ResponseCache(Duration = 10)]
         [HttpPost("pagination")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(PaginationRequest request, CancellationToken cancellationToken)
         {
@@ -43,7 +43,7 @@ namespace ShopApi.Controllers
             var orders = await orderManager.GetPaginatedOrdersAsync(client.Id, request, cancellationToken);
             return Ok(orders);
         }
-        [ResponseCache(Duration = 60)]
+        [ResponseCache(Duration = 10)]
         [HttpGet("amount")]
         public async Task<ActionResult<int>> GetOrderAmount(CancellationToken cancellationToken)
         {

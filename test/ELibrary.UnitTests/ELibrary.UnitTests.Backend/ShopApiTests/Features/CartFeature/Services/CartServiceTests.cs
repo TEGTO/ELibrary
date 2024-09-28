@@ -275,46 +275,94 @@ namespace ShopApiTests.Features.CartFeature.Services
             Assert.That(ex.Message, Is.EqualTo("CartBook is not found or does not belong to the specified cart."));
         }
         [Test]
-        public async Task DeleteCartBookAsync_CartBookExists_DeletesCartBook()
+        public async Task DeleteCartBooksFromCartAsync_CartExists_DeletesCartBooks()
         {
             // Arrange
-            var cart = new Cart { Id = "cart-1" };
-            var cartBook = new CartBook { Id = "cart-book-1", CartId = cart.Id };
-            var cartBooks = GetDbSetMock(new List<CartBook> { cartBook });
-            mockRepository.Setup(r => r.GetQueryableAsync<CartBook>(It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(cartBooks);
+            var cart = new Cart
+            {
+                Id = "cart-1",
+                Books = new List<CartBook>
+                {
+                    new CartBook { Id = "cart-book-1", BookId = 1 },
+                    new CartBook { Id = "cart-book-2" }
+                }
+            };
+            var booksToDelete = new[]
+            {
+                new Book { Id = 1 }
+            };
+            var cartQueryable = new List<Cart> { cart }.AsQueryable().BuildMock();
+            mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
             // Act
-            await cartService.DeleteCartBookAsync(cart, cartBook.Id, CancellationToken.None);
+            var result = await cartService.DeleteBooksFromCartAsync(cart, booksToDelete, It.IsAny<CancellationToken>());
             // Assert
-            mockRepository.Verify(r => r.DeleteAsync(cartBook, It.IsAny<CancellationToken>()), Times.Once);
-        }
-        [Test]
-        public void DeleteCartBookAsync_CartBookDoesNotExist_ThrowsException()
-        {
-            // Arrange
-            var cart = new Cart { Id = "cart-1" };
-            var cartBooks = GetDbSetMock(new List<CartBook>());
-            mockRepository.Setup(r => r.GetQueryableAsync<CartBook>(It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(cartBooks);
-            // Act & Assert
-            var ex = Assert.ThrowsAsync<InvalidOperationException>(() => cartService.DeleteCartBookAsync(cart, "non-existing-cart-book", CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("CartBook is not found or does not belong to the specified cart."));
-        }
-        [Test]
-        public async Task ClearCartAsync_RemovesAllCartBooks()
-        {
-            // Arrange
-            var cart = new Cart { Id = "cart-1", Books = new List<CartBook> { new CartBook { BookId = 1 } } };
-            var carts = GetDbSetMock(new List<Cart> { cart });
-
-            mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(carts);
-            // Act
-            var result = await cartService.ClearCartAsync(cart, CancellationToken.None);
-            // Assert
-            Assert.That(result.Books, Is.Empty);
-            mockRepository.Verify(r => r.DeleteAsync(It.IsAny<CartBook>(), It.IsAny<CancellationToken>()), Times.Once);
+            Assert.That(result.Books.Count, Is.EqualTo(1));
+            Assert.That(result.Books.First().Id, Is.EqualTo("cart-book-2"));
+            mockRepository.Verify(r => r.DeleteAsync(It.Is<CartBook>(cb => cb.Id == "cart-book-1"), It.IsAny<CancellationToken>()), Times.Once);
             mockRepository.Verify(r => r.UpdateAsync(cart, It.IsAny<CancellationToken>()), Times.Once);
+        }
+        [Test]
+        public async Task DeleteCartBooksFromCartAsync_CartDoesNotExist_ReturnsNull()
+        {
+            // Arrange
+            var cart = new Cart { Id = "non-existing-cart" };
+            var booksToDelete = new[]
+            {
+                new Book { Id = 1 }
+            };
+            var cartQueryable = new List<Cart>().AsQueryable().BuildMock();
+            mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
+            // Act
+            var result = await cartService.DeleteBooksFromCartAsync(cart, booksToDelete, It.IsAny<CancellationToken>());
+            // Assert
+            Assert.IsNull(result);
+            mockRepository.Verify(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>()), Times.Once);
+            mockRepository.Verify(r => r.DeleteAsync(It.IsAny<CartBook>(), It.IsAny<CancellationToken>()), Times.Never);
+            mockRepository.Verify(r => r.UpdateAsync(It.IsAny<Cart>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+        [Test]
+        public async Task DeleteCartBooksFromCartAsync_NoMatchingBooksInCart_DoesNotDelete()
+        {
+            // Arrange
+            var cart = new Cart
+            {
+                Id = "cart-1",
+                Books = new List<CartBook>
+                {
+                    new CartBook { Id = "cart-book-1" }
+                }
+            };
+            var booksToDelete = new[]
+            {
+                new Book { Id = 1 }
+            };
+            var cartQueryable = new List<Cart> { cart }.AsQueryable().BuildMock();
+            mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
+            // Act
+            var result = await cartService.DeleteBooksFromCartAsync(cart, booksToDelete, It.IsAny<CancellationToken>());
+            // Assert
+            Assert.That(result.Books.Count, Is.EqualTo(1));
+            Assert.That(result.Books.First().Id, Is.EqualTo("cart-book-1"));
+            mockRepository.Verify(r => r.DeleteAsync(It.IsAny<CartBook>(), It.IsAny<CancellationToken>()), Times.Never);
+            mockRepository.Verify(r => r.UpdateAsync(cart, It.IsAny<CancellationToken>()), Times.Never);
+        }
+        [Test]
+        public async Task DeleteCartBooksFromCartAsync_CartHasNoBooks_DoesNotDelete()
+        {
+            // Arrange
+            var cart = new Cart { Id = "cart-1", Books = new List<CartBook>() };
+            var booksToDelete = new[]
+            {
+                new Book { Id = 1 }
+            };
+            var cartQueryable = new List<Cart> { cart }.AsQueryable().BuildMock();
+            mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
+            // Act
+            var result = await cartService.DeleteBooksFromCartAsync(cart, booksToDelete, It.IsAny<CancellationToken>());
+            // Assert
+            Assert.That(result.Books, Is.Empty);  // No books to delete
+            mockRepository.Verify(r => r.DeleteAsync(It.IsAny<CartBook>(), It.IsAny<CancellationToken>()), Times.Never);
+            mockRepository.Verify(r => r.UpdateAsync(It.IsAny<Cart>(), It.IsAny<CancellationToken>()), Times.Never);
         }
         [Test]
         public async Task CheckBookCartAsync_ReturnsTrue_WhenCartBookExists()

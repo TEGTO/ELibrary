@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { filter, Observable, tap } from 'rxjs';
+import { filter, map, Observable, tap } from 'rxjs';
 import { CartBook, Client, CurrencyPipeApplier, getDefaultOrder, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, redirectPathes, ValidationMessage } from '../../../shared';
 import { CartService, ClientService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
 
@@ -35,8 +35,9 @@ export class MakeOrderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-    this.items$ = this.cartService.getCartBooks();
+    this.items$ = this.cartService.getCartBooks().pipe(
+      map(cartBooks => cartBooks.filter(cartBook => cartBook.book.stockAmount > 0))
+    );
 
     this.client$ = this.clientService.getClient().pipe(
       filter((client): client is Client => client !== null),

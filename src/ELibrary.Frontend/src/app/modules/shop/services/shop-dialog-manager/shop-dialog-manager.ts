@@ -9,4 +9,5 @@ import { Client, DialogManager } from "../../../shared";
 export abstract class ShopDialogManager extends DialogManager {
     abstract openCartMenu(): MatDialogRef<any>;
     abstract openClientChangeMenu(client: Client): MatDialogRef<any>;
+    abstract openReplenishmentMenu(): MatDialogRef<any>;
 }

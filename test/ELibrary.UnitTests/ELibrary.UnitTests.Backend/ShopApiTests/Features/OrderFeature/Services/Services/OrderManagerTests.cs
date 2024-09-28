@@ -88,7 +88,7 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             var result = await manager.CreateOrderAsync(createOrderRequest, client, CancellationToken.None);
             // Assert
             Assert.That(result.Id, Is.EqualTo(orderResponse.Id));
-            stockBookOrderServiceMock.Verify(x => x.AddStockBookOrderAsyncFromOrderAsync(order, It.IsAny<CancellationToken>()), Times.Once);
+            stockBookOrderServiceMock.Verify(x => x.AddStockBookOrderAsyncFromOrderAsync(order, StockBookOrderType.ClientOrder, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public async Task UpdateOrderAsync_ValidRequest_ReturnsUpdatedOrder()
@@ -142,7 +142,7 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             // Assert
             Assert.That(result.Id, Is.EqualTo(orderResponse.Id));
             Assert.That(OrderStatus.Canceled, Is.EqualTo(orderResponse.OrderStatus));
-            stockBookOrderServiceMock.Verify(x => x.AddStockBookOrderAsyncFromCanceledOrderAsync(canceledOrder, It.IsAny<CancellationToken>()), Times.Once);
+            stockBookOrderServiceMock.Verify(x => x.AddStockBookOrderAsyncFromCanceledOrderAsync(canceledOrder, StockBookOrderType.ClientOrderCancel, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public void CancelOrderAsync_OrderNotFoundOrClientMismatch_ThrowsInvalidOperationException()
