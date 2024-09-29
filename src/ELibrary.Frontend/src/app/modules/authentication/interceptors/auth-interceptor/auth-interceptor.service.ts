@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@angular/core';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { BehaviorSubject, filter, Observable, switchMap, take, throwError } from 'rxjs';
 import { AuthenticationService, LOG_OUT_COMMAND_HANDLER, LogOutCommand } from '../..';
-import { AuthData, AuthToken, CommandHandler, ErrorHandler } from '../../../shared';
+import { AuthToken, CommandHandler, ErrorHandler, UserAuth } from '../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     @Inject(LOG_OUT_COMMAND_HANDLER) private readonly logOutHandler: CommandHandler<LogOutCommand>,
     private readonly errorHandler: ErrorHandler
   ) {
-    this.authService.getAuthData().subscribe(
+    this.authService.getUserAuth().subscribe(
       data => {
         this.processAuthData(data);
       }
@@ -101,12 +101,8 @@ export class AuthInterceptor implements HttpInterceptor {
       return null;
     }
   }
-  private processAuthData(data: AuthData): void {
-    this.authToken = {
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-      refreshTokenExpiryDate: new Date(data.refreshTokenExpiryDate)
-    };
+  private processAuthData(data: UserAuth): void {
+    this.authToken = data.authToken;
     this.decodedToken = this.tryDecodeToken(this.authToken.accessToken);
   }
 }

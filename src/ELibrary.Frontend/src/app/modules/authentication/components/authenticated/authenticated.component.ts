@@ -29,7 +29,7 @@ export class AuthenticatedComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.authService.getUserData()
+    this.authService.getUserAuth()
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.formGroup = new FormGroup(

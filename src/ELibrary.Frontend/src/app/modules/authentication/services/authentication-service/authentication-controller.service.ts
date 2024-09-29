@@ -2,8 +2,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { deleteUser, getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthData, selectAuthErrors, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccess, selectRegistrationErrors, selectUserData, selectUserErrors, signInUser, updateUserData } from '../..';
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
+import { deleteUser as deleteUserAuth, getAuthData as getUserAuth, logOutUser, refreshAccessToken, registerUser, selectAuthErrors, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccess, selectUserAuth, signInUser, updateUserData } from '../..';
+import { AuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
 import { AuthenticationService } from './authentication-service';
 
 @Injectable({
@@ -15,24 +15,16 @@ export class AuthenticationControllerService implements AuthenticationService {
     private readonly store: Store,
   ) { }
 
-  //Registration
-  registerUser(userRegistrationData: UserRegistrationRequest): Observable<boolean> {
-    this.store.dispatch(registerUser({ registrationRequest: userRegistrationData }));
+  registerUser(req: UserRegistrationRequest): Observable<boolean> {
+    this.store.dispatch(registerUser({ req: req }));
     return this.store.select(selectIsRegistrationSuccess);
   }
-  getRegistrationErrors(): Observable<any> {
-    return this.store.select(selectRegistrationErrors);
+  getUserAuth(): Observable<UserAuth> {
+    this.store.dispatch(getUserAuth());
+    return this.store.select(selectUserAuth);
   }
-  //Auth
-  getAuthData(): Observable<AuthData> {
-    this.store.dispatch(getAuthData());
-    return this.store.select(selectAuthData);
-  }
-  getAuthErrors(): Observable<any> {
-    return this.store.select(selectAuthErrors);
-  }
-  singInUser(authRequest: UserAuthenticationRequest): void {
-    this.store.dispatch(signInUser({ authRequest: authRequest }));
+  signInUser(req: UserAuthenticationRequest): void {
+    this.store.dispatch(signInUser({ req: req }));
   }
   logOutUser(): void {
     this.store.dispatch(logOutUser());
@@ -41,19 +33,14 @@ export class AuthenticationControllerService implements AuthenticationService {
     this.store.dispatch(refreshAccessToken({ authToken: authToken }));
     return this.store.select(selectIsRefreshSuccessful);
   }
-  deleteUser(): void {
-    this.store.dispatch(deleteUser());
+  deleteUserAuth(): void {
+    this.store.dispatch(deleteUserAuth());
   }
-  //User Data
-  getUserData(): Observable<UserData> {
-    this.store.dispatch(getAuthData());
-    return this.store.select(selectUserData);
-  }
-  updateUserData(req: UserUpdateRequest): Observable<boolean> {
-    this.store.dispatch(updateUserData({ updateRequest: req }));
+  updateUserAuth(req: UserUpdateRequest): Observable<boolean> {
+    this.store.dispatch(updateUserData({ req: req }));
     return this.store.select(selectIsUpdateSuccess);
   }
-  getUserErrors(): Observable<any> {
-    return this.store.select(selectUserErrors);
+  getAuthErrors(): Observable<any> {
+    return this.store.select(selectAuthErrors);
   }
 }

@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { take } from 'rxjs';
 import { CartAddBookCommand, CartService } from '../../..';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../../authentication';
 import { CommandHandler, mapBookToAddBookToCartRequest } from '../../../../shared';
@@ -7,8 +7,7 @@ import { CommandHandler, mapBookToAddBookToCartRequest } from '../../../../share
 @Injectable({
   providedIn: 'root'
 })
-export class CartAddBookCommandHandlerService extends CommandHandler<CartAddBookCommand> implements OnDestroy {
-  private readonly destroy$ = new Subject<void>();
+export class CartAddBookCommandHandlerService extends CommandHandler<CartAddBookCommand> {
 
   constructor(
     private readonly authenticatioService: AuthenticationService,
@@ -18,18 +17,10 @@ export class CartAddBookCommandHandlerService extends CommandHandler<CartAddBook
     super();
   }
 
-  ngOnDestroy(): void {
-    this.cleanUp();
-  }
-
-  cleanUp() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
   dispatch(command: CartAddBookCommand): void {
-    this.authenticatioService.getAuthData()
+    this.authenticatioService.getUserAuth()
       .pipe(
-        takeUntil(this.destroy$)
+        take(1)
       )
       .subscribe(data => {
         if (data.isAuthenticated) {
@@ -38,7 +29,6 @@ export class CartAddBookCommandHandlerService extends CommandHandler<CartAddBook
         else {
           this.authenticationDialog.openLoginMenu();
         }
-        this.cleanUp();
       })
   }
 

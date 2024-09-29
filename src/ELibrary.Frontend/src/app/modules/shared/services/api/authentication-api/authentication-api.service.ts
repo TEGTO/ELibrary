@@ -1,7 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError } from 'rxjs';
-import { AuthToken, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest, UserUpdateRequest } from '../../..';
+import { catchError, map, Observable } from 'rxjs';
+import { AuthToken, AuthTokenResponse, mapAuthTokenResponseToAuthToken, mapUserAuthenticationResponseToUserAuthentication, UserAuth, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest, UserUpdateRequest } from '../../..';
 import { BaseApiService } from '../base-api/base-api.service';
 
 @Injectable({
@@ -9,20 +9,23 @@ import { BaseApiService } from '../base-api/base-api.service';
 })
 export class AuthenticationApiService extends BaseApiService {
 
-  loginUser(req: UserAuthenticationRequest): Observable<UserAuthenticationResponse> {
+  loginUser(req: UserAuthenticationRequest): Observable<UserAuth> {
     return this.httpClient.post<UserAuthenticationResponse>(this.combinePathWithAuthApiUrl(`/login`), req).pipe(
+      map((response) => mapUserAuthenticationResponseToUserAuthentication(response)),
       catchError((resp) => this.handleError(resp))
     );
   }
 
-  registerUser(req: UserRegistrationRequest): Observable<UserAuthenticationResponse> {
+  registerUser(req: UserRegistrationRequest): Observable<UserAuth> {
     return this.httpClient.post<UserAuthenticationResponse>(this.combinePathWithAuthApiUrl(`/register`), req).pipe(
+      map((response) => mapUserAuthenticationResponseToUserAuthentication(response)),
       catchError((resp) => this.handleError(resp))
     );
   }
 
   refreshToken(tokenData: AuthToken): Observable<AuthToken> {
-    return this.httpClient.post<AuthToken>(this.combinePathWithAuthApiUrl(`/refresh`), tokenData).pipe(
+    return this.httpClient.post<AuthTokenResponse>(this.combinePathWithAuthApiUrl(`/refresh`), tokenData).pipe(
+      map((response) => mapAuthTokenResponseToAuthToken(response)),
       catchError((resp) => this.handleError(resp))
     );
   }

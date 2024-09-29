@@ -37,7 +37,7 @@ export class SignUpCommandHandlerService extends CommandHandler<SignUpCommand> i
           this.cleanUp();
         }
       }),
-      switchMap(isSuccess => isSuccess ? of() : this.authService.getRegistrationErrors()),
+      switchMap(isSuccess => isSuccess ? of() : this.authService.getAuthErrors()),
       tap(errors => {
         if (errors) {
           this.snackbarManager.openErrorSnackbar(errors.split('\n'));

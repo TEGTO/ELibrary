@@ -22,7 +22,7 @@ export class RoleGuard implements CanActivate {
 
     const expectedPolicies = route.data['policy'] as PolicyType[];
 
-    return this.authService.getAuthData().pipe(
+    return this.authService.getUserAuth().pipe(
       map((data) => {
         let hasRights = true;
         expectedPolicies.forEach(policy => {

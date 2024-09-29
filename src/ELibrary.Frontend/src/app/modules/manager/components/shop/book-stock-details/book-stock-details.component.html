@@ -29,10 +29,6 @@
                         <span class="detail-header__dots">⠀</span>
                     </div>
                     <div class="order__detail-header text-gray-400">
-                        <span class="font-semibold">Updated At</span>
-                        <span class="detail-header__dots">⠀</span>
-                    </div>
-                    <div class="order__detail-header text-gray-400">
                         <span class="font-semibold">Total Change Amount</span>
                         <span class="detail-header__dots">⠀</span>
                     </div>
@@ -59,9 +55,6 @@
                     </div>
                     <div class="order__detail-value text-gray-400 flex justify-between">
                         <span>{{ order.createdAt | date:'dd/MM/YYYY'}}</span>
-                    </div>
-                    <div class="order__detail-value text-gray-400">
-                        <span>{{ order.updatedAt | date:'dd/MM/YYYY' }}</span>
                     </div>
                     <div class="order__detail-value text-gray-400">
                         <span *ngIf="order.totalChangeAmount> 0">+</span>

@@ -1,50 +1,25 @@
 import { MemoizedSelector, createFeatureSelector, createSelector } from "@ngrx/store";
-import { AuthState, RegistrationState, UserDataState } from "../..";
-import { AuthData, UserData } from "../../../shared";
+import { AuthState } from "../..";
+import { UserAuth } from "../../../shared";
 
-//Registration
-export const selectRegistrationState = createFeatureSelector<RegistrationState>('registration');
-export const selectIsRegistrationSuccess = createSelector(
-    selectRegistrationState,
-    (state: RegistrationState) => state.isSuccess
-);
-export const selectRegistrationErrors = createSelector(
-    selectRegistrationState,
-    (state: RegistrationState) => state.error
-);
-//Auth
 export const selectAuthState = createFeatureSelector<AuthState>('authentication');
-export const selectAuthData: MemoizedSelector<object, AuthData> = createSelector(
+export const selectUserAuth: MemoizedSelector<object, UserAuth> = createSelector(
     selectAuthState,
-    (state: AuthState) => ({
-        isAuthenticated: state.isAuthenticated,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
-        refreshTokenExpiryDate: state.refreshTokenExpiryDate,
-        roles: state.roles
-    })
+    (state: AuthState) => (state.userAuth)
+);
+export const selectIsRegistrationSuccess = createSelector(
+    selectAuthState,
+    (state: AuthState) => state.isRegistrationSuccess
 );
 export const selectIsRefreshSuccessful = createSelector(
     selectAuthState,
     (state: AuthState) => state.isRefreshSuccessful
 );
+export const selectIsUpdateSuccess = createSelector(
+    selectAuthState,
+    (state: AuthState) => state.isUpdateSuccess
+);
 export const selectAuthErrors = createSelector(
     selectAuthState,
     (state: AuthState) => state.error
-);
-//User Data
-export const selectUserDataState = createFeatureSelector<UserDataState>('userdata');
-export const selectUserData: MemoizedSelector<object, UserData> = createSelector(
-    selectUserDataState,
-    (state: UserData) => ({
-        email: state.email,
-    })
-);
-export const selectIsUpdateSuccess = createSelector(
-    selectUserDataState,
-    (state: UserDataState) => state.isUpdateSuccess
-);
-export const selectUserErrors = createSelector(
-    selectUserDataState,
-    (state: UserDataState) => state.error
 );

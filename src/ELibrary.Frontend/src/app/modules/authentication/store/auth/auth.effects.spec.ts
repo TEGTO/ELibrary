@@ -39,7 +39,7 @@ describe('RegistrationEffects', () => {
                     address: ""
                 }
             };
-            const action = registerUser({ registrationRequest });
+            const action = registerUser({ req: registrationRequest });
             const outcome = registerSuccess();
 
             actions$ = of(action);
@@ -64,7 +64,7 @@ describe('RegistrationEffects', () => {
                     address: ""
                 }
             };
-            const action = registerUser({ registrationRequest });
+            const action = registerUser({ req: registrationRequest });
             const error = new Error('Error!');
             const outcome = registerFailure({ error: error.message });
 
@@ -117,7 +117,7 @@ describe('SignInEffects', () => {
                 refreshTokenExpiryDate: response.authToken.refreshTokenExpiryDate
             };
             const userData: UserData = { email: response.email };
-            const action = signInUser({ authRequest });
+            const action = signInUser({ req: authRequest });
             const outcome = signInUserSuccess({ authData, userData });
 
             actions$ = of(action);
@@ -134,7 +134,7 @@ describe('SignInEffects', () => {
 
         it('should dispatch signInUserFailure on failed signInUser', (done) => {
             const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-            const action = signInUser({ authRequest });
+            const action = signInUser({ req: authRequest });
             const error = new Error('Error!');
             const outcome = signInUserFailure({ error: error.message });
 

@@ -28,7 +28,7 @@ export class UpdateUserCommandHandlerService extends CommandHandler<UpdateUserCo
   dispatch(command: UpdateUserCommand): void {
     const req = mapUpdateUserCommandToUserUpdateRequest(command);
 
-    this.authService.updateUserData(req).pipe(
+    this.authService.updateUserAuth(req).pipe(
       takeUntil(this.destroy$),
       tap(isSuccess => {
         if (isSuccess) {

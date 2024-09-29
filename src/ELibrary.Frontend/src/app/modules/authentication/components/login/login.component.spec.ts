@@ -93,13 +93,13 @@ describe('LoginComponent', () => {
       password: 'password123'
     });
 
-    authService.getAuthData.and.returnValue(of(authData));
+    authService.getUserAuth.and.returnValue(of(authData));
     authService.getAuthErrors.and.returnValue(of(null));
 
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
     fixture.detectChanges();
 
-    expect(authService.singInUser).toHaveBeenCalledWith({
+    expect(authService.signInUser).toHaveBeenCalledWith({
       login: 'john@example.com',
       password: 'password123'
     });
@@ -119,13 +119,13 @@ describe('LoginComponent', () => {
       password: 'password123'
     });
 
-    authService.getAuthData.and.returnValue(of(authData));
+    authService.getUserAuth.and.returnValue(of(authData));
     authService.getAuthErrors.and.returnValue(of('Login failed'));
 
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
     fixture.detectChanges();
 
-    expect(authService.singInUser).toHaveBeenCalled();
+    expect(authService.signInUser).toHaveBeenCalled();
     expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Login failed']);
   });
 
@@ -142,12 +142,12 @@ describe('LoginComponent', () => {
       refreshTokenExpiryDate: new Date()
     };
 
-    authService.getAuthData.and.returnValue(of(authData));
+    authService.getUserAuth.and.returnValue(of(authData));
     authService.getAuthErrors.and.returnValue(of('Server error'));
 
     component.signInUser();
 
-    expect(authService.singInUser).toHaveBeenCalled();
+    expect(authService.signInUser).toHaveBeenCalled();
     expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Server error']);
   });
 
@@ -179,7 +179,7 @@ describe('LoginComponent', () => {
       password: 'wrongpassword'
     });
 
-    authService.getAuthData.and.returnValue(of({
+    authService.getUserAuth.and.returnValue(of({
       isAuthenticated: false,
       accessToken: "",
       refreshToken: "",

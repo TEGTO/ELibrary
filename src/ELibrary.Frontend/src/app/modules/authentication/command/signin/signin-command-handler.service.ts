@@ -28,8 +28,8 @@ export class SignInCommandHandlerService extends CommandHandler<SignInCommand> i
   dispatch(command: SignInCommand): void {
     const req = mapSignInCommandToUserAuthenticationRequest(command);
 
-    this.authService.singInUser(req);
-    this.authService.getAuthData().pipe(
+    this.authService.signInUser(req);
+    this.authService.getUserAuth().pipe(
       takeUntil(this.destroy$),
       tap(authData => {
         if (authData.isAuthenticated) {

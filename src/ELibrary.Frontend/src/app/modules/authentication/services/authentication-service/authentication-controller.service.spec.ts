@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthData, selectIsRefreshSuccessful, signInUser } from '../..';
+import { getAuthData, logOutUser, refreshAccessToken, registerUser, selectIsRefreshSuccessful, selectUserAuth, signInUser } from '../..';
 import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest } from '../../../shared';
 import { AuthenticationControllerService } from './authentication-controller.service';
 
@@ -52,7 +52,7 @@ describe('AuthenticationControllerService', () => {
     store.select.and.returnValue(of(true));
 
     service.registerUser(userRegistrationData).subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(registerUser({ registrationRequest: userRegistrationData }));
+      expect(store.dispatch).toHaveBeenCalledWith(registerUser({ req: userRegistrationData }));
       expect(result).toBe(true);
       done();
     });
@@ -71,9 +71,9 @@ describe('AuthenticationControllerService', () => {
     const userAuthData: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
     store.select.and.returnValue(of(mockAuthData));
 
-    service.singInUser(userAuthData);
-    service.getAuthData().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(signInUser({ authRequest: userAuthData }));
+    service.signInUser(userAuthData);
+    service.getUserAuth().subscribe(result => {
+      expect(store.dispatch).toHaveBeenCalledWith(signInUser({ req: userAuthData }));
       expect(result).toEqual(mockAuthData);
       done();
     });
@@ -82,7 +82,7 @@ describe('AuthenticationControllerService', () => {
   it('should dispatch getAuthData action and return authData observable', (done) => {
     store.select.and.returnValue(of(mockAuthData));
 
-    service.getAuthData().subscribe(result => {
+    service.getUserAuth().subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(getAuthData());
       expect(result).toEqual(mockAuthData);
       done();
@@ -102,7 +102,7 @@ describe('AuthenticationControllerService', () => {
     store.select.and.returnValue(of(mockAuthData));
 
     service.logOutUser();
-    service.getAuthData().subscribe(result => {
+    service.getUserAuth().subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(logOutUser());
       expect(result).toEqual(mockAuthData);
       done();
@@ -114,12 +114,12 @@ describe('AuthenticationControllerService', () => {
     // @ts-ignore
     store.select.withArgs(selectIsRefreshSuccessful).and.returnValue(of(true));
     // @ts-ignore
-    store.select.withArgs(selectAuthData).and.returnValue(of(mockAuthData));
+    store.select.withArgs(selectUserAuth).and.returnValue(of(mockAuthData));
 
     service.refreshToken(accessToken).subscribe(result => {
       expect(result).toEqual(true);
     });
-    service.getAuthData().subscribe(result => {
+    service.getUserAuth().subscribe(result => {
       expect(store.dispatch).toHaveBeenCalledWith(refreshAccessToken({ authToken: accessToken }));
       expect(result).toEqual(mockAuthData);
       done();

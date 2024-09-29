@@ -18,9 +18,9 @@ describe('Registration Actions', () => {
                     address: ""
                 }
             }
-            const action = registerUser({ registrationRequest: req });
+            const action = registerUser({ req: req });
             expect(action.type).toBe('[Registration] Register New User');
-            expect(action.registrationRequest).toBe(req);
+            expect(action.req).toBe(req);
         });
         it('should create registerUserSuccess action', () => {
             const action = registerUserSuccess();
@@ -44,9 +44,9 @@ describe('Authentication Actions', () => {
                 login: "login",
                 password: "password",
             }
-            const action = signInUser({ authRequest: req });
+            const action = signInUser({ req: req });
             expect(action.type).toBe('[Auth] Sing In By User Data');
-            expect(action.authRequest).toBe(req);
+            expect(action.req).toBe(req);
         });
         it('should create signInUserSuccess action', () => {
             const authData: AuthData =

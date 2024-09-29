@@ -1,12 +1,16 @@
-import { AuthToken, UserData } from "../../../..";
+import { AuthTokenResponse, mapAuthTokenResponseToAuthToken, UserAuth } from "../../../..";
 
 export interface UserAuthenticationResponse {
-    authToken: AuthToken;
+    authToken: AuthTokenResponse;
     email: string;
     roles: string[];
 }
-export function mapAuthResponseToUserData(response: UserAuthenticationResponse): UserData {
+
+export function mapUserAuthenticationResponseToUserAuthentication(response: UserAuthenticationResponse): UserAuth {
     return {
+        isAuthenticated: true,
+        authToken: mapAuthTokenResponseToAuthToken(response.authToken),
         email: response.email,
+        roles: response.roles
     }
 }

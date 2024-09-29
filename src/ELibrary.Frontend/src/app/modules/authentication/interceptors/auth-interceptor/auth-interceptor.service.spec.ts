@@ -31,7 +31,7 @@ describe('AuthInterceptor', () => {
   beforeEach(() => {
     authDataSubject = new BehaviorSubject<AuthData>(mockAuthData);
     authService = jasmine.createSpyObj('AuthenticationService', ['getAuthData', 'getAuthErrors', 'refreshToken', 'logOutUser']);
-    authService.getAuthData.and.returnValue(authDataSubject.asObservable());
+    authService.getUserAuth.and.returnValue(authDataSubject.asObservable());
     authService.getAuthErrors.and.returnValue(of(null));
 
     TestBed.configureTestingModule({
@@ -95,7 +95,7 @@ describe('AuthInterceptor', () => {
       accessToken: 'new-access-token'
     };
 
-    authService.getAuthData.and.returnValue(of({ ...mockAuthData, accessToken: expiredAccessToken }));
+    authService.getUserAuth.and.returnValue(of({ ...mockAuthData, accessToken: expiredAccessToken }));
     authService.refreshToken.and.returnValue(of(true));
 
     httpClient.get('/test').subscribe(response => {

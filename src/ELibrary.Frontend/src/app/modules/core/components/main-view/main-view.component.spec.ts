@@ -44,21 +44,21 @@ describe('MainViewComponent', () => {
 
     it('should initialize isAuthenticated$ with authentication status', () => {
         const mockAuthData: AuthData = { isAuthenticated: true, accessToken: 'token', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-        authService.getAuthData.and.returnValue(of(mockAuthData));
+        authService.getUserAuth.and.returnValue(of(mockAuthData));
 
         component.ngOnInit();
         fixture.detectChanges();
 
-        component.authData$.subscribe(isAuthenticated => {
+        component.userAuth$.subscribe(isAuthenticated => {
             expect(isAuthenticated).toBeTrue();
         });
 
-        expect(authService.getAuthData).toHaveBeenCalled();
+        expect(authService.getUserAuth).toHaveBeenCalled();
     });
 
     it('should display the authenticated view when the user is authenticated', () => {
         const mockAuthData: AuthData = { isAuthenticated: true, accessToken: 'token', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-        authService.getAuthData.and.returnValue(of(mockAuthData));
+        authService.getUserAuth.and.returnValue(of(mockAuthData));
 
         component.ngOnInit();
         fixture.detectChanges();
@@ -72,7 +72,7 @@ describe('MainViewComponent', () => {
 
     it('should display the unauthenticated view when the user is not authenticated', () => {
         const mockAuthData: AuthData = { isAuthenticated: false, accessToken: '', refreshToken: '', refreshTokenExpiryDate: new Date() };
-        authService.getAuthData.and.returnValue(of(mockAuthData));
+        authService.getUserAuth.and.returnValue(of(mockAuthData));
 
         component.ngOnInit();
         fixture.detectChanges();

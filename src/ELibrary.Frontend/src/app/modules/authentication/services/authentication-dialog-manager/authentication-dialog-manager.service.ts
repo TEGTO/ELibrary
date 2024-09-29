@@ -16,7 +16,7 @@ export class AuthenticationDialogManagerService extends DialogManagerService imp
     protected override readonly dialog: MatDialog
   ) {
     super(dialog);
-    this.authService.getAuthData().subscribe(data => {
+    this.authService.getUserAuth().subscribe(data => {
       this.isAuthenticated = data.isAuthenticated;
     })
   }

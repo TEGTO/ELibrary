@@ -1,4 +1,4 @@
-import { UserData } from "../../../..";
+import { UserAuth } from "../../../..";
 
 export interface UserUpdateRequest {
     email: string;
@@ -6,8 +6,9 @@ export interface UserUpdateRequest {
     password: string;
 }
 
-export function mapUserUpdateRequestToUserData(response: UserUpdateRequest): UserData {
+export function copyUserUpdateRequestToAuthData(authData: UserAuth, req: UserUpdateRequest): UserAuth {
     return {
-        email: response.email,
+        ...authData,
+        email: req.email,
     }
 }

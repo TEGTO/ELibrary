@@ -21,7 +21,7 @@ describe('AuthenticationDialogManagerService', () => {
   beforeEach(() => {
     mockMatDialog = jasmine.createSpyObj<MatDialog>('MatDialog', ['open']);
     mockAuthService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getAuthData']);
-    mockAuthService.getAuthData.and.returnValue(of(mockAuthData));
+    mockAuthService.getUserAuth.and.returnValue(of(mockAuthData));
 
     TestBed.configureTestingModule({
       providers: [
@@ -53,7 +53,7 @@ describe('AuthenticationDialogManagerService', () => {
       refreshToken: "refreshToken",
       refreshTokenExpiryDate: new Date()
     }
-    mockAuthService.getAuthData.and.returnValue(of(mockAuthData));
+    mockAuthService.getUserAuth.and.returnValue(of(mockAuthData));
     service = new AuthenticationDialogManagerService(mockAuthService, mockMatDialog);
 
     service.openLoginMenu();

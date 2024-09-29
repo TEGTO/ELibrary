@@ -1,5 +1,5 @@
 import { AuthState, RegistrationState, UserDataState } from "./auth.reducer";
-import { selectAuthData, selectAuthErrors, selectAuthState, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectRegistrationErrors, selectRegistrationState, selectUserDataState, selectUserErrors } from "./auth.selector";
+import { selectAuthErrors, selectAuthState, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectRegistrationErrors, selectRegistrationState, selectUserAuth, selectUserDataState, selectUserErrors } from "./auth.selector";
 
 describe('Registration Selectors', () => {
     const initialState: RegistrationState = {
@@ -44,7 +44,7 @@ describe('Authentication Selectors', () => {
         expect(result).toEqual(initialState);
     });
     it('should select a authentication data', () => {
-        const result = selectAuthData.projector(initialState);
+        const result = selectUserAuth.projector(initialState);
         expect(result).toEqual({
             isAuthenticated: initialState.isAuthenticated,
             accessToken: initialState.accessToken,

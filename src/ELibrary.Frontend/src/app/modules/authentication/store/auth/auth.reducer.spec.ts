@@ -26,7 +26,7 @@ describe('RegistrationReducer', () => {
                 address: ""
             }
         };
-        const action = registerUser({ registrationRequest: registrationRequest });
+        const action = registerUser({ req: registrationRequest });
         const state = registrationReducer(initialState, action);
         expect(state).toEqual({
             isSuccess: false,
@@ -72,7 +72,7 @@ describe('AuthReducer', () => {
 
     it('should handle signInUser', () => {
         const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-        const action = signInUser({ authRequest: authRequest });
+        const action = signInUser({ req: authRequest });
         const state = authReducer(initialState, action);
         expect(state).toEqual({
             ...initialState,
@@ -194,7 +194,7 @@ describe('UserDataReducer', () => {
 
     it('should handle signInUser', () => {
         const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-        const action = signInUser({ authRequest: authRequest });
+        const action = signInUser({ req: authRequest });
         const state = userDataReducer(initialState, action);
         expect(state).toEqual({
             ...initialState
