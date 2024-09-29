@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { RedirectorService } from '../../../shared';
-import { ClientService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
+import { CommandHandler, RedirectorService } from '../../../shared';
+import { ADD_CLIENT_COMMAND_HANDLER, AddClientCommand, ClientService } from '../../../shop';
 
 @Component({
   selector: 'app-create-client',
@@ -19,7 +19,7 @@ export class CreateClientComponent implements OnInit, OnDestroy {
     private readonly clientService: ClientService,
     private readonly route: ActivatedRoute,
     private readonly redirector: RedirectorService,
-    private readonly shopCommand: ShopCommand
+    @Inject(ADD_CLIENT_COMMAND_HANDLER) private readonly addClientHandler: CommandHandler<AddClientCommand>
   ) { }
 
   ngOnInit(): void {
@@ -47,6 +47,9 @@ export class CreateClientComponent implements OnInit, OnDestroy {
   }
 
   addClient() {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Add, ShopCommandRole.Client, this);
+    const command: AddClientCommand = {
+      redirectAfter: undefined
+    }
+    this.addClientHandler.dispatch(command);
   }
 }

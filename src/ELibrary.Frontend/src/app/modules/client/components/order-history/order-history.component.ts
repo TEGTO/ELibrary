@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
-import { Client, CurrencyPipeApplier, getDefaultOrder, getOrderStatusString, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, redirectPathes, ValidationMessage } from '../../../shared';
-import { ClientService, OrderService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
+import { Client, CommandHandler, CurrencyPipeApplier, getDefaultOrder, getOrderStatusString, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, redirectPathes, ValidationMessage } from '../../../shared';
+import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
 @Component({
   selector: 'app-order-history',
@@ -32,8 +32,9 @@ export class OrderHistoryComponent implements OnInit {
     private readonly validateInput: ValidationMessage,
     private readonly clientService: ClientService,
     private readonly currencyApplier: CurrencyPipeApplier,
-    private readonly shopCommand: ShopCommand,
     private readonly orderService: OrderService,
+    @Inject(CLIENT_UPDATE_ORDER_COMMAND_HANDLER) private readonly updateOrderHandler: CommandHandler<ClientUpdateOrderCommand>,
+    @Inject(CLIENT_CANCEL_ORDER_COMMAND_HANDLER) private readonly cancelOrderHandler: CommandHandler<ClientCancelOrderCommand>
   ) { }
 
   ngOnInit(): void {
@@ -110,11 +111,19 @@ export class OrderHistoryComponent implements OnInit {
       deliveryAddress: formValues.address,
       deliveryTime: formValues.deliveryTime,
     };
-    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Update, ShopCommandRole.Client, this, updatedOrder);
+    const command: ClientUpdateOrderCommand =
+    {
+      order: updatedOrder
+    }
+    this.updateOrderHandler.dispatch(command);
   }
 
   deleteOrder(order: Order) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Delete, ShopCommandRole.Client, this, order);
+    const command: ClientCancelOrderCommand =
+    {
+      order: order
+    }
+    this.cancelOrderHandler.dispatch(command);
   }
 
   getBookPage(orderBook: OrderBook): number {

@@ -1,8 +1,8 @@
 
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { AuthorService, LibraryCommand, LibraryCommandObject, LibraryCommandType, TableColumn } from '../../../../../library';
-import { Author, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { AuthorService, CREATE_AUTHOR_COMMAND_HANDLER, CreateAuthorCommand, DELETE_AUTHOR_COMMAND_HANDLER, DeleteAuthorCommand, TableColumn, UPDATE_AUTHOR_COMMAND_HANDLER, UpdateAuthorCommand } from '../../../../../library';
+import { Author, CommandHandler, defaultLibraryFilterRequest, GenericTableComponent, LibraryFilterRequest, LocaleService, LocalizedDatePipe } from '../../../../../shared';
 
 @Component({
   selector: 'app-author-table',
@@ -27,7 +27,9 @@ export class AuthorTableComponent implements OnInit {
   constructor(
     private readonly localeService: LocaleService,
     private readonly authorService: AuthorService,
-    private readonly libraryCommand: LibraryCommand
+    @Inject(CREATE_AUTHOR_COMMAND_HANDLER) private readonly createHandler: CommandHandler<CreateAuthorCommand>,
+    @Inject(UPDATE_AUTHOR_COMMAND_HANDLER) private readonly updateHandler: CommandHandler<UpdateAuthorCommand>,
+    @Inject(DELETE_AUTHOR_COMMAND_HANDLER) private readonly deleteHandler: CommandHandler<DeleteAuthorCommand>,
   ) { }
 
   ngOnInit(): void {
@@ -67,14 +69,21 @@ export class AuthorTableComponent implements OnInit {
   }
 
   createNew(): void {
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Create, this);
+    const command: CreateAuthorCommand = {};
+    this.createHandler.dispatch(command);
   }
 
   update(item: Author): void {
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Update, this, item);
+    const command: UpdateAuthorCommand = {
+      author: item as Author
+    };
+    this.updateHandler.dispatch(command);
   }
 
   delete(item: Author): void {
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Author, LibraryCommandType.Delete, this, item);
+    const command: DeleteAuthorCommand = {
+      author: item as Author
+    };
+    this.deleteHandler.dispatch(command);
   }
 }

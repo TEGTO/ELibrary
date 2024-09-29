@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { BookService } from '../../../library';
-import { Book, CoverType, CurrencyPipeApplier, getDefaultBook, getStringCoverType, RedirectorService } from '../../../shared';
-import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
+import { Book, CommandHandler, CoverType, CurrencyPipeApplier, getDefaultBook, getStringCoverType, RedirectorService } from '../../../shared';
+import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from '../../../shop';
 
 @Component({
   selector: 'app-product-info',
@@ -18,10 +18,10 @@ export class ProductInfoComponent implements OnInit {
 
   constructor(
     private readonly bookService: BookService,
-    private readonly shopCommand: ShopCommand,
     private readonly route: ActivatedRoute,
     private readonly redirectService: RedirectorService,
-    private readonly currenctyApplier: CurrencyPipeApplier
+    private readonly currenctyApplier: CurrencyPipeApplier,
+    @Inject(CART_ADD_BOOK_COMMAND_HANDLER) private readonly addBookToCartHandler: CommandHandler<CartAddBookCommand>
   ) { }
 
   ngOnInit(): void {
@@ -63,7 +63,11 @@ export class ProductInfoComponent implements OnInit {
   }
 
   addBookToCart(book: Book) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, ShopCommandRole.Client, this, book);
+    const command: CartAddBookCommand =
+    {
+      book: book
+    }
+    this.addBookToCartHandler.dispatch(command);
     this.bookAdded = true;
   }
 }

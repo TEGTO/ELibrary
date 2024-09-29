@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
 import { deleteUser, deleteUserFailure, deleteUserSuccess, getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
-import { AuthData, AuthenticationApiService, copyAuthTokenToAuthData, LocalStorageService, mapAuthResponseToAuthData, mapAuthResponseToUserData, UserData } from "../../../shared";
+import { AuthData, AuthenticationApiService, copyAuthTokenToAuthData, LocalStorageService, mapAuthResponseToAuthData, mapAuthResponseToUserData, mapUserUpdateRequestToUserData, UserData } from "../../../shared";
 
 @Injectable()
 export class AuthEffects {
@@ -102,6 +102,8 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.apiService.updateUser(action.updateRequest).pipe(
                     map(() => {
+                        const userData: UserData = mapUserUpdateRequestToUserData(action.updateRequest);
+                        this.localStorage.setItem(this.storageUserDataKey, JSON.stringify(userData));
                         return updateUserDataSuccess({ updateRequest: action.updateRequest });
                     }),
                     catchError(error => {

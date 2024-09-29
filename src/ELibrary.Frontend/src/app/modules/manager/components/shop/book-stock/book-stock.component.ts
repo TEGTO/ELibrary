@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { GenericTableComponent, LocaleService, LocalizedDatePipe, PaginatedRequest, redirectPathes, stockBookOrderTypeToString } from '../../../../shared';
-import { BookstockOrderService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../../shop';
+import { CommandHandler, GenericTableComponent, LocaleService, LocalizedDatePipe, PaginatedRequest, redirectPathes, stockBookOrderTypeToString } from '../../../../shared';
+import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, AddBookStockOrderCommand, BookstockOrderService } from '../../../../shop';
 
 interface StockOrderItem {
   id: number,
@@ -35,7 +35,7 @@ export class BookStockComponent implements OnInit {
   constructor(
     private readonly localeService: LocaleService,
     private readonly stockOrderService: BookstockOrderService,
-    private readonly shopCommand: ShopCommand
+    @Inject(ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER) private readonly bookStockAddHandler: CommandHandler<AddBookStockOrderCommand>
   ) { }
 
   ngOnInit(): void {
@@ -69,7 +69,8 @@ export class BookStockComponent implements OnInit {
   }
 
   createNew() {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Bookstock, ShopCommandType.Add, ShopCommandRole.Manager, this);
+    const command: AddBookStockOrderCommand = {};
+    this.bookStockAddHandler.dispatch(command);
   }
 
   getTotalChangeAmountString(num: number): string {

@@ -1,9 +1,9 @@
 
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { map, Observable } from 'rxjs';
-import { RedirectorService } from '../..';
-import { ClientService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
+import { CommandHandler } from '../..';
+import { ADD_CLIENT_COMMAND_HANDLER, AddClientCommand, ClientService } from '../../../shop';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,8 @@ export class ClientGuard implements CanActivate {
 
   constructor(
     private readonly clientService: ClientService,
-    private readonly shopCommand: ShopCommand,
-    private readonly redirector: RedirectorService,
+    @Inject(ADD_CLIENT_COMMAND_HANDLER) private readonly addClientHandler: CommandHandler<AddClientCommand>
+
   ) { }
 
   canActivate(
@@ -23,7 +23,11 @@ export class ClientGuard implements CanActivate {
     return this.clientService.getClient().pipe(
       map((client) => {
         if (!client) {
-          this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Add, ShopCommandRole.Client, this, state.url)
+          const command: AddClientCommand =
+          {
+            redirectAfter: state.url
+          }
+          this.addClientHandler.dispatch(command);
           return false;
         }
         return true;

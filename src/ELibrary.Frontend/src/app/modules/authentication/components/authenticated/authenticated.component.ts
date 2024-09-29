@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthenticationCommand, AuthenticationCommandType, AuthenticationService, passwordValidator } from '../..';
-import { noSpaces, notEmptyString, UserUpdateRequest, ValidationMessage } from '../../../shared';
+import { AuthenticationService, changePasswordValidator, LOG_OUT_COMMAND_HANDLER, LogOutCommand, UPDATE_USER_COMMAND_HANDLER, UpdateUserCommand } from '../..';
+import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
 
 @Component({
   selector: 'app-authenticated',
@@ -22,7 +22,8 @@ export class AuthenticatedComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly authService: AuthenticationService,
-    private readonly authCommand: AuthenticationCommand,
+    @Inject(UPDATE_USER_COMMAND_HANDLER) private readonly updateHandler: CommandHandler<UpdateUserCommand>,
+    @Inject(LOG_OUT_COMMAND_HANDLER) private readonly logOutHandler: CommandHandler<LogOutCommand>,
     private readonly dialogRef: MatDialogRef<AuthenticatedComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -35,7 +36,7 @@ export class AuthenticatedComponent implements OnInit, OnDestroy {
           {
             email: new FormControl(data.email, [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
             oldPassword: new FormControl('', [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
-            password: new FormControl('', [Validators.required, notEmptyString, noSpaces, passwordValidator, Validators.maxLength(256)])
+            password: new FormControl('', [noSpaces, changePasswordValidator, Validators.maxLength(256)])
           });
       })
   }
@@ -56,15 +57,18 @@ export class AuthenticatedComponent implements OnInit, OnDestroy {
   }
   updateUser() {
     if (this.formGroup.valid) {
-      const req: UserUpdateRequest = {
-        email: this.formGroup.value.email,
-        oldPassword: this.formGroup.value.oldPassword,
-        password: this.formGroup.value.password,
+      const formValues = { ...this.formGroup.value };
+      const command: UpdateUserCommand = {
+        email: formValues.email,
+        oldPassword: formValues.oldPassword,
+        password: formValues.password,
+        matDialogRef: this.dialogRef
       };
-      this.authCommand.dispatchCommand(AuthenticationCommandType.Update, this, req, this.dialogRef);
+      this.updateHandler.dispatch(command);
     }
   }
   logOutUser() {
-    this.authCommand.dispatchCommand(AuthenticationCommandType.LogOut, this);
+    const command: LogOutCommand = {};
+    this.logOutHandler.dispatch(command);
   }
 }

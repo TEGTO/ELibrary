@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { map, Observable, tap } from 'rxjs';
 import { BookService } from '../../../library';
-import { Book, BookFilterRequest, CurrencyPipeApplier, defaultBookFilterRequest } from '../../../shared';
-import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
+import { Book, BookFilterRequest, CommandHandler, CurrencyPipeApplier, defaultBookFilterRequest } from '../../../shared';
+import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from '../../../shop';
 
 @Component({
   selector: 'app-product-page',
@@ -25,8 +25,8 @@ export class ProductPageComponent implements OnInit {
 
   constructor(
     private readonly bookService: BookService,
-    private readonly shopCommand: ShopCommand,
-    private readonly currenctyApplier: CurrencyPipeApplier
+    private readonly currenctyApplier: CurrencyPipeApplier,
+    @Inject(CART_ADD_BOOK_COMMAND_HANDLER) private readonly addBookToCartHandler: CommandHandler<CartAddBookCommand>
   ) { }
 
   ngOnInit(): void {
@@ -43,7 +43,11 @@ export class ProductPageComponent implements OnInit {
   }
 
   addBookToCart(book: Book) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Add, ShopCommandRole.Client, this, book);
+    const command: CartAddBookCommand =
+    {
+      book: book
+    }
+    this.addBookToCartHandler.dispatch(command);
     this.bookAddedMap[book.id] = true;
   }
 

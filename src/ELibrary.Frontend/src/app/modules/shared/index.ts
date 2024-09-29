@@ -1,3 +1,5 @@
+export * from "./command/command"
+export * from "./command/commandhandler"
 export * from "./components/confirm-menu/confirm-menu.component"
 export * from "./components/error-annotated/error-annotated.component"
 export * from "./components/generic-table/generic-table.component"

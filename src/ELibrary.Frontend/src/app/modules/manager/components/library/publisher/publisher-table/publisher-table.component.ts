@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { LibraryCommand, LibraryCommandObject, LibraryCommandType, PublisherService } from '../../../../../library';
-import { GenericTableComponent, LibraryFilterRequest, Publisher, defaultLibraryFilterRequest } from '../../../../../shared';
+import { CREATE_PUBLISHER_COMMAND_HANDLER, CreatePublisherCommand, DELETE_PUBLISHER_COMMAND_HANDLER, DeletePublisherCommand, PublisherService, UPDATE_PUBLISHER_COMMAND_HANDLER, UpdatePublisherCommand } from '../../../../../library';
+import { CommandHandler, GenericTableComponent, LibraryFilterRequest, Publisher, defaultLibraryFilterRequest } from '../../../../../shared';
 
 @Component({
   selector: 'app-publisher-table',
@@ -24,7 +24,9 @@ export class PublisherTableComponent implements OnInit {
 
   constructor(
     private readonly publisherService: PublisherService,
-    private readonly libraryCommand: LibraryCommand
+    @Inject(CREATE_PUBLISHER_COMMAND_HANDLER) private readonly createHandler: CommandHandler<CreatePublisherCommand>,
+    @Inject(UPDATE_PUBLISHER_COMMAND_HANDLER) private readonly updateHandler: CommandHandler<UpdatePublisherCommand>,
+    @Inject(DELETE_PUBLISHER_COMMAND_HANDLER) private readonly deleteHandler: CommandHandler<DeletePublisherCommand>,
   ) { }
 
   ngOnInit(): void {
@@ -64,14 +66,19 @@ export class PublisherTableComponent implements OnInit {
   }
 
   createNew() {
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Publisher, LibraryCommandType.Create, this);
+    const command: CreatePublisherCommand = {};
+    this.createHandler.dispatch(command);
   }
   update(item: any) {
-    const entity = item as Publisher;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Publisher, LibraryCommandType.Update, this, entity);
+    const command: UpdatePublisherCommand = {
+      publisher: item as Publisher
+    };
+    this.updateHandler.dispatch(command);
   }
   delete(item: any) {
-    const entity = item as Publisher;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Publisher, LibraryCommandType.Delete, this, entity);
+    const command: DeletePublisherCommand = {
+      publisher: item as Publisher
+    };
+    this.deleteHandler.dispatch(command);
   }
 }

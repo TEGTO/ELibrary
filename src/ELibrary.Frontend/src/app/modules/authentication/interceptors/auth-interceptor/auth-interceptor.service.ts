@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { BehaviorSubject, filter, Observable, switchMap, take, throwError } from 'rxjs';
-import { AuthenticationCommand, AuthenticationCommandType, AuthenticationService } from '../..';
-import { AuthData, AuthToken, ErrorHandler } from '../../../shared';
+import { AuthenticationService, LOG_OUT_COMMAND_HANDLER, LogOutCommand } from '../..';
+import { AuthData, AuthToken, CommandHandler, ErrorHandler } from '../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
     private readonly authService: AuthenticationService,
-    private readonly authCommand: AuthenticationCommand,
+    @Inject(LOG_OUT_COMMAND_HANDLER) private readonly logOutHandler: CommandHandler<LogOutCommand>,
     private readonly errorHandler: ErrorHandler
   ) {
     this.authService.getAuthData().subscribe(
@@ -78,7 +78,8 @@ export class AuthInterceptor implements HttpInterceptor {
     return clonedRequest;
   }
   private logOutUserWithError(errorMessage: string): Observable<never> {
-    this.authCommand.dispatchCommand(AuthenticationCommandType.LogOut, this);
+    const command: LogOutCommand = {};
+    this.logOutHandler.dispatch(command);
     return throwError(() => new Error(errorMessage));
   }
   private isTokenExpired(): boolean {

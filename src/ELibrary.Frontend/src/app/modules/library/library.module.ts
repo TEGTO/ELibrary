@@ -17,7 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorInputComponent, authorReducer, AuthorService, BookChangeDialogComponent, BookControllerService, BookEffects, BookFilterComponent, BookInputComponent, bookReducer, BookService, GenreChangeDialogComponent, GenreControllerService, GenreEffects, GenreInputComponent, genreReducer, GenreService, LibraryCommand, LibraryCommandService, LibraryDialogManager, LibraryDialogManagerService, LibraryFilterComponent, PublisherChangeDialogComponent, PublisherControllerService, PublisherEffects, PublisherInputComponent, publisherReducer, PublisherService } from '.';
+import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, AuthorInputComponent, authorReducer, AuthorService, BookChangeDialogComponent, BookControllerService, BookEffects, BookFilterComponent, BookInputComponent, bookReducer, BookService, CREATE_AUTHOR_COMMAND_HANDLER, CREATE_BOOK_COMMAND_HANDLER, CREATE_GENRE_COMMAND_HANDLER, CREATE_PUBLISHER_COMMAND_HANDLER, CreateAuthorCommandHandlerService, CreateBookCommandHandlerService, CreateGenreCommandHandlerService, CreatePublisherCommandHandlerService, DELETE_AUTHOR_COMMAND_HANDLER, DELETE_BOOK_COMMAND_HANDLER, DELETE_GENRE_COMMAND_HANDLER, DELETE_PUBLISHER_COMMAND_HANDLER, DeleteAuthorCommandHandlerService, DeleteBookCommandHandlerService, DeleteGenreCommandHandlerService, DeletePublisherCommandHandlerService, GenreChangeDialogComponent, GenreControllerService, GenreEffects, GenreInputComponent, genreReducer, GenreService, LibraryDialogManager, LibraryDialogManagerService, LibraryFilterComponent, PublisherChangeDialogComponent, PublisherControllerService, PublisherEffects, PublisherInputComponent, publisherReducer, PublisherService, UPDATE_AUTHOR_COMMAND_HANDLER, UPDATE_BOOK_COMMAND_HANDLER, UPDATE_GENRE_COMMAND_HANDLER, UPDATE_PUBLISHER_COMMAND_HANDLER, UpdateAuthorCommandHandlerService, UpdateBookCommandHandlerService, UpdateGenreCommandHandlerService, UpdatePublisherCommandHandlerService } from '.';
 
 @NgModule({
   declarations: [
@@ -63,7 +63,22 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     { provide: AuthorService, useClass: AuthorControllerService },
     { provide: GenreService, useClass: GenreControllerService },
     { provide: PublisherService, useClass: PublisherControllerService },
-    { provide: LibraryCommand, useClass: LibraryCommandService },
+
+    { provide: CREATE_AUTHOR_COMMAND_HANDLER, useClass: CreateAuthorCommandHandlerService },
+    { provide: UPDATE_AUTHOR_COMMAND_HANDLER, useClass: UpdateAuthorCommandHandlerService },
+    { provide: DELETE_AUTHOR_COMMAND_HANDLER, useClass: DeleteAuthorCommandHandlerService },
+
+    { provide: CREATE_GENRE_COMMAND_HANDLER, useClass: CreateGenreCommandHandlerService },
+    { provide: UPDATE_GENRE_COMMAND_HANDLER, useClass: UpdateGenreCommandHandlerService },
+    { provide: DELETE_GENRE_COMMAND_HANDLER, useClass: DeleteGenreCommandHandlerService },
+
+    { provide: CREATE_PUBLISHER_COMMAND_HANDLER, useClass: CreatePublisherCommandHandlerService },
+    { provide: UPDATE_PUBLISHER_COMMAND_HANDLER, useClass: UpdatePublisherCommandHandlerService },
+    { provide: DELETE_PUBLISHER_COMMAND_HANDLER, useClass: DeletePublisherCommandHandlerService },
+
+    { provide: CREATE_BOOK_COMMAND_HANDLER, useClass: CreateBookCommandHandlerService },
+    { provide: UPDATE_BOOK_COMMAND_HANDLER, useClass: UpdateBookCommandHandlerService },
+    { provide: DELETE_BOOK_COMMAND_HANDLER, useClass: DeleteBookCommandHandlerService },
   ],
   exports: [AuthorChangeDialogComponent, GenreChangeDialogComponent, BookChangeDialogComponent, BookFilterComponent, LibraryFilterComponent, BookInputComponent]
 })

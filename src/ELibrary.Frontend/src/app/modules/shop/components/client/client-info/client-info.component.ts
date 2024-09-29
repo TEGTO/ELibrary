@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../..';
-import { Client, dateInPastValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
+import { UPDATE_CLIENT_COMMAND_HANDLER, UpdateClientCommand } from '../../..';
+import { Client, CommandHandler, dateInPastValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-client-info',
@@ -28,7 +28,7 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly validateInput: ValidationMessage,
-    private readonly shopCommand: ShopCommand
+    @Inject(UPDATE_CLIENT_COMMAND_HANDLER) private readonly updateClientHandler: CommandHandler<UpdateClientCommand>
   ) { }
 
   ngOnInit(): void {
@@ -71,7 +71,10 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
         phone: formValues.phone,
         email: formValues.email,
       };
-      this.shopCommand.dispatchCommand(ShopCommandObject.Client, ShopCommandType.Update, ShopCommandRole.Client, this, client);
+      const command: UpdateClientCommand = {
+        client: client
+      }
+      this.updateClientHandler.dispatch(command);
     }
   }
 

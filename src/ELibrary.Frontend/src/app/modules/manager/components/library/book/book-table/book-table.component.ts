@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { BookService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { Book, BookFilterRequest, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe, redirectPathes } from '../../../../../shared';
+import { BookService, CREATE_BOOK_COMMAND_HANDLER, CreateBookCommand, DELETE_BOOK_COMMAND_HANDLER, DeleteBookCommand, UPDATE_BOOK_COMMAND_HANDLER, UpdateBookCommand } from '../../../../../library';
+import { Book, BookFilterRequest, CommandHandler, defaultBookFilterRequest, GenericTableComponent, LocaleService, LocalizedDatePipe, redirectPathes } from '../../../../../shared';
 
 interface BookItem {
   id: number;
@@ -40,7 +40,9 @@ export class BookTableComponent implements OnInit {
   constructor(
     private readonly localeService: LocaleService,
     private readonly bookService: BookService,
-    private readonly libraryCommand: LibraryCommand
+    @Inject(CREATE_BOOK_COMMAND_HANDLER) private readonly createHandler: CommandHandler<CreateBookCommand>,
+    @Inject(UPDATE_BOOK_COMMAND_HANDLER) private readonly updateHandler: CommandHandler<UpdateBookCommand>,
+    @Inject(DELETE_BOOK_COMMAND_HANDLER) private readonly deleteHandler: CommandHandler<DeleteBookCommand>,
   ) { }
 
   ngOnInit(): void {
@@ -91,14 +93,19 @@ export class BookTableComponent implements OnInit {
   }
 
   createNew() {
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Create, this);
+    const command: CreateBookCommand = {};
+    this.createHandler.dispatch(command);
   }
   update(item: any) {
-    const entity = item as Book;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Update, this, entity);
+    const command: UpdateBookCommand = {
+      book: item as Book
+    };
+    this.updateHandler.dispatch(command);
   }
   delete(item: any) {
-    const entity = item as Book;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Book, LibraryCommandType.Delete, this, entity);
+    const command: DeleteBookCommand = {
+      book: item as Book
+    };
+    this.deleteHandler.dispatch(command);
   }
 }

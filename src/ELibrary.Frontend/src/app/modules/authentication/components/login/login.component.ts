@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { noSpaces, notEmptyString, UserAuthenticationRequest, ValidationMessage } from '../../../shared';
-import { AuthenticationCommand, AuthenticationCommandType, AuthenticationDialogManager, passwordValidator } from '../../index';
+import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
+import { AuthenticationDialogManager, passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand } from '../../index';
 
 @Component({
   selector: 'app-auth-login',
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly authDialogManager: AuthenticationDialogManager,
-    private readonly authCommand: AuthenticationCommand,
+    @Inject(SIGN_IN_COMMAND_HANDLER) private readonly signInHandler: CommandHandler<SignInCommand>,
     private readonly dialogRef: MatDialogRef<LoginComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -60,11 +60,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInUser() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const req: UserAuthenticationRequest = {
+      const command: SignInCommand =
+      {
         login: formValues.login,
         password: formValues.password,
-      };
-      this.authCommand.dispatchCommand(AuthenticationCommandType.SignIn, this, req, this.dialogRef);
+        matDialogRef: this.dialogRef
+      }
+      this.signInHandler.dispatch(command);
     }
   }
 }

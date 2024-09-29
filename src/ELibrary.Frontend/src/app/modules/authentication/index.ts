@@ -1,10 +1,17 @@
+export * from "./command/logout/logout-command";
+export * from "./command/logout/logout-command-handler.service";
+export * from "./command/signin/signin-command";
+export * from "./command/signin/signin-command-handler.service";
+export * from "./command/signup/signup-command";
+export * from "./command/signup/signup-command-handler.service";
+export * from "./command/tokens";
+export * from "./command/update-user/update-user-command";
+export * from "./command/update-user/update-user-command-handler.service";
 export * from "./components/authenticated/authenticated.component";
 export * from "./components/login/login.component";
 export * from "./components/register/register.component";
 export * from "./components/unauthenticated/unauthenticated.component";
 export * from "./interceptors/auth-interceptor/auth-interceptor.service";
-export * from "./services/authentication-command/authentication-command";
-export * from "./services/authentication-command/authentication-command.service";
 export * from "./services/authentication-dialog-manager/authentication-dialog-manager";
 export * from "./services/authentication-dialog-manager/authentication-dialog-manager.service";
 export * from "./services/authentication-service/authentication-controller.service";
@@ -13,6 +20,7 @@ export * from "./store/auth/auth.actions";
 export * from "./store/auth/auth.effects";
 export * from "./store/auth/auth.reducer";
 export * from "./store/auth/auth.selector";
+export * from "./validators/change-password-validator.ts/change-password-validator";
 export * from "./validators/password-confirm/password-confirmation-validator";
 export * from "./validators/password/password-validator";
 

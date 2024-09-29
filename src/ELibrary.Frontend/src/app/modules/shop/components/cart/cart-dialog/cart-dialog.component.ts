@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
-import { CartService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../..';
+import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, DELETE_CART_BOOK_COMMAND_HANDLER, DeleteCartBookCommand, UPDATE_CART_BOOK_COMMAND_HANDLER, UpdateCartBookCommand } from '../../..';
 import { environment } from '../../../../../../environment/environment';
-import { Book, CartBook, CurrencyPipeApplier, redirectPathes } from '../../../../shared';
+import { Book, CartBook, CommandHandler, CurrencyPipeApplier, redirectPathes } from '../../../../shared';
 
 @Component({
   selector: 'app-cart-dialog',
@@ -24,8 +24,10 @@ export class CartDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly cartService: CartService,
-    private readonly shopCommand: ShopCommand,
     private readonly currencyApplier: CurrencyPipeApplier,
+    @Inject(UPDATE_CART_BOOK_COMMAND_HANDLER) private readonly updateCartBookHanlder: CommandHandler<UpdateCartBookCommand>,
+    @Inject(DELETE_CART_BOOK_COMMAND_HANDLER) private readonly deleteCartBookHandler: CommandHandler<DeleteCartBookCommand>,
+    @Inject(CLIENT_ADD_ORDER_COMMAND_HANDLER) private readonly clientAddOrderHandler: CommandHandler<ClientAddOrderCommand>,
     private readonly dialogRef: MatDialogRef<CartDialogComponent>,
   ) { }
 
@@ -82,8 +84,10 @@ export class CartDialogComponent implements OnInit, OnDestroy {
         debounceTime(300),
         distinctUntilChanged()
       ).subscribe((value: number) => {
-        const updatedCartBook = { ...cartBook, bookAmount: value };
-        this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Update, ShopCommandRole.Client, this, updatedCartBook);
+        const command: UpdateCartBookCommand = {
+          cartBook: { ...cartBook, bookAmount: value }
+        }
+        this.updateCartBookHanlder.dispatch(command);
       });
     }
 
@@ -91,7 +95,11 @@ export class CartDialogComponent implements OnInit, OnDestroy {
   }
 
   deleteCartBook(cartBook: CartBook) {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Cart, ShopCommandType.Delete, ShopCommandRole.Client, this, cartBook);
+    const command: DeleteCartBookCommand =
+    {
+      cartBook: cartBook
+    }
+    this.deleteCartBookHandler.dispatch(command);
   }
 
   getBookPage(cartBook: CartBook): number {
@@ -99,6 +107,11 @@ export class CartDialogComponent implements OnInit, OnDestroy {
   }
 
   makeOrder() {
-    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Add, ShopCommandRole.Client, this, null, this.dialogRef);
+    const command: ClientAddOrderCommand =
+    {
+      order: undefined,
+      matDialogRef: this.dialogRef
+    }
+    this.clientAddOrderHandler.dispatch(command);
   }
 }

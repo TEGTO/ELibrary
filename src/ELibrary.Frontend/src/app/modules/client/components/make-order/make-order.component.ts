@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, map, Observable, tap } from 'rxjs';
-import { CartBook, Client, CurrencyPipeApplier, getDefaultOrder, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, redirectPathes, ValidationMessage } from '../../../shared';
-import { CartService, ClientService, ShopCommand, ShopCommandObject, ShopCommandRole, ShopCommandType } from '../../../shop';
+import { CartBook, Client, CommandHandler, CurrencyPipeApplier, getDefaultOrder, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, redirectPathes, ValidationMessage } from '../../../shared';
+import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 
 @Component({
   selector: 'app-make-order',
@@ -31,7 +31,7 @@ export class MakeOrderComponent implements OnInit {
     private readonly clientService: ClientService,
     private readonly currencyApplier: CurrencyPipeApplier,
     private readonly cartService: CartService,
-    private readonly shopCommand: ShopCommand,
+    @Inject(CLIENT_ADD_ORDER_COMMAND_HANDLER) private readonly addOrderHandler: CommandHandler<ClientAddOrderCommand>
   ) { }
 
   ngOnInit(): void {
@@ -88,7 +88,12 @@ export class MakeOrderComponent implements OnInit {
       paymentMethod: formValues.payment,
       orderBooks: books.map(x => mapCartBookToOrderBook(x))
     };
-    this.shopCommand.dispatchCommand(ShopCommandObject.Order, ShopCommandType.Add, ShopCommandRole.Client, this, order);
+    const command: ClientAddOrderCommand =
+    {
+      order: order,
+      matDialogRef: undefined
+    }
+    this.addOrderHandler.dispatch(command);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

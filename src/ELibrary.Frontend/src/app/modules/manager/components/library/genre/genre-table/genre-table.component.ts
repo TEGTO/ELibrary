@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { GenreService, LibraryCommand, LibraryCommandObject, LibraryCommandType } from '../../../../../library';
-import { defaultLibraryFilterRequest, GenericTableComponent, Genre, LibraryFilterRequest } from '../../../../../shared';
+import { CREATE_GENRE_COMMAND_HANDLER, CreateGenreCommand, DELETE_GENRE_COMMAND_HANDLER, DeleteGenreCommand, GenreService, UPDATE_GENRE_COMMAND_HANDLER, UpdateGenreCommand } from '../../../../../library';
+import { CommandHandler, defaultLibraryFilterRequest, GenericTableComponent, Genre, LibraryFilterRequest } from '../../../../../shared';
 
 @Component({
   selector: 'app-genre-table',
@@ -24,7 +24,9 @@ export class GenreTableComponent implements OnInit {
 
   constructor(
     private readonly genreService: GenreService,
-    private readonly libraryCommand: LibraryCommand
+    @Inject(CREATE_GENRE_COMMAND_HANDLER) private readonly createHandler: CommandHandler<CreateGenreCommand>,
+    @Inject(UPDATE_GENRE_COMMAND_HANDLER) private readonly updateHandler: CommandHandler<UpdateGenreCommand>,
+    @Inject(DELETE_GENRE_COMMAND_HANDLER) private readonly deleteHandler: CommandHandler<DeleteGenreCommand>,
   ) { }
 
   ngOnInit(): void {
@@ -64,14 +66,19 @@ export class GenreTableComponent implements OnInit {
   }
 
   createNew() {
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Create, this);
+    const command: CreateGenreCommand = {};
+    this.createHandler.dispatch(command);
   }
   update(item: any) {
-    const entity = item as Genre;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Update, this, entity);
+    const command: UpdateGenreCommand = {
+      genre: item as Genre
+    };
+    this.updateHandler.dispatch(command);
   }
   delete(item: any) {
-    const entity = item as Genre;
-    this.libraryCommand.dispatchCommand(LibraryCommandObject.Genre, LibraryCommandType.Delete, this, entity);
+    const command: DeleteGenreCommand = {
+      genre: item as Genre
+    };
+    this.deleteHandler.dispatch(command);
   }
 }

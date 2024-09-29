@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { noSpaces, notEmptyString, UserRegistrationRequest, ValidationMessage } from '../../../shared';
-import { AuthenticationCommand, AuthenticationCommandType, confirmPasswordValidator, passwordValidator } from '../../index';
+import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
+import { confirmPasswordValidator, passwordValidator, SIGN_UP_COMMAND_HANDLER, SignUpCommand } from '../../index';
 
 @Component({
   selector: 'app-register',
@@ -19,9 +19,9 @@ export class RegisterComponent implements OnInit {
   get passwordConfirmInput() { return this.formGroup.get('passwordConfirm')!; }
 
   constructor(
-    private readonly authCommand: AuthenticationCommand,
+    @Inject(SIGN_UP_COMMAND_HANDLER) private readonly signUpHandler: CommandHandler<SignUpCommand>,
+    private readonly validateInput: ValidationMessage,
     private readonly dialogRef: MatDialogRef<RegisterComponent>,
-    private readonly validateInput: ValidationMessage
   ) { }
 
   ngOnInit(): void {
@@ -46,12 +46,14 @@ export class RegisterComponent implements OnInit {
   registerUser() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const req: UserRegistrationRequest = {
+      const command: SignUpCommand =
+      {
         email: formValues.email,
         password: formValues.password,
-        confirmPassword: formValues.passwordConfirm
-      };
-      this.authCommand.dispatchCommand(AuthenticationCommandType.SignUp, this, req, this.dialogRef);
+        confirmPassword: formValues.passwordConfirm,
+        matDialogRef: this.dialogRef
+      }
+      this.signUpHandler.dispatch(command);
     }
   }
 }
