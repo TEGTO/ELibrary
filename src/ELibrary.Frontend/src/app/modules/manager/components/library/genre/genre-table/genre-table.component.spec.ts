@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { GenericTableComponent, GenreService, LibraryDialogManager } from '../../../../../library';
-import { Genre } from '../../../../../shared';
+import { GenreService, LibraryDialogManager } from '../../../../../library';
+import { GenericTableComponent, Genre } from '../../../../../shared';
 import { GenreTableComponent } from './genre-table.component';
 
 describe('GenreTableComponent', () => {
@@ -53,9 +54,9 @@ describe('GenreTableComponent', () => {
   });
 
   it('should initialize and call pageChange on ngOnInit', () => {
-    spyOn(component, 'pageChange');
+    spyOn(component, 'onPageChange');
     component.ngOnInit();
-    expect(component.pageChange).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
+    expect(component.onPageChange).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
   });
 
   it('should bind data to generic-table component', () => {
@@ -74,7 +75,7 @@ describe('GenreTableComponent', () => {
     const mockItems = [{ id: 1, name: 'Fiction' }, { id: 2, name: 'Non-Fiction' }];
     mockGenreService.getPaginated.and.returnValue(of(mockItems));
 
-    component.pageChange({ pageIndex: 1, pageSize: 10 });
+    component.onPageChange({ pageIndex: 1, pageSize: 10 });
     fixture.detectChanges();
 
     component.items$.subscribe(items => {
@@ -122,15 +123,5 @@ describe('GenreTableComponent', () => {
 
     expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
     expect(mockGenreService.deleteById).toHaveBeenCalledWith(mockGenre.id);
-  });
-
-  it('should clean up subscriptions on destroy', () => {
-    spyOn(component['destroy$'], 'next').and.callThrough();
-    spyOn(component['destroy$'], 'complete').and.callThrough();
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
   });
 });

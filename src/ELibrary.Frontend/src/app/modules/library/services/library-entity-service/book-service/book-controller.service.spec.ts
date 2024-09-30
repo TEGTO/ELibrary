@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { bookActions, selectBookAmount, selectBooks } from '../..';
-import { BookApiService, BookResponse, CreateBookRequest, PaginatedRequest, UpdateBookRequest } from '../../../shared';
+import { bookActions, selectBookAmount, selectBooks } from '../../..';
+import { Book, BookApiService, BookFilterRequest, BookResponse, CreateBookRequest, getDefaultBook, defaultBookFilterRequest as getDefaultBookFilterRequest, mapBookToCreateBookRequest, mapBookToUpdateBookRequest, UpdateBookRequest } from '../../../../shared';
 import { BookControllerService } from './book-controller.service';
 
 describe('BookControllerService', () => {
@@ -10,12 +11,12 @@ describe('BookControllerService', () => {
   let store: jasmine.SpyObj<Store>;
   let apiService: jasmine.SpyObj<BookApiService>;
 
-  const mockBookData: BookResponse[] = [
-    { id: 1, name: 'Book One', publicationDate: new Date('2022-01-01'), author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') }, genre: { id: 1, name: 'Action' } },
-    { id: 2, name: 'Book Two', publicationDate: new Date('2022-02-02'), author: { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-02-02') }, genre: { id: 2, name: 'Comedy' } }
+  const mockBookData: Book[] = [
+    { ...getDefaultBook(), id: 1 },
+    { ...getDefaultBook(), id: 2 },
   ];
 
-  const mockTotalAmount: number = 15;
+  const mockTotalAmount = 15;
 
   beforeEach(() => {
     const storeSpy = jasmine.createSpyObj('Store', ['dispatch', 'select']);
@@ -57,7 +58,11 @@ describe('BookControllerService', () => {
   });
 
   it('should dispatch getPaginated action and return paginated books', (done) => {
-    const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
+    const request: BookFilterRequest = {
+      ...getDefaultBookFilterRequest(),
+      pageNumber: 1,
+      pageSize: 10,
+    };
     store.select.and.returnValue(of(mockBookData));
 
     service.getPaginated(request).subscribe(result => {
@@ -69,16 +74,21 @@ describe('BookControllerService', () => {
 
   it('should dispatch getTotalAmount action and return total amount of books', (done) => {
     store.select.and.returnValue(of(mockTotalAmount));
+    const request: BookFilterRequest = {
+      ...getDefaultBookFilterRequest(),
+      pageNumber: 1,
+      pageSize: 10,
+    };
 
-    service.getItemTotalAmount().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(bookActions.getTotalAmount());
+    service.getItemTotalAmount(request).subscribe(result => {
+      expect(store.dispatch).toHaveBeenCalledWith(bookActions.getTotalAmount({ request: request }));
       expect(result).toEqual(mockTotalAmount);
       done();
     });
   });
 
   it('should dispatch create action for a new book', () => {
-    const newBook: CreateBookRequest = { name: 'New Book', publicationDate: new Date('2023-03-03'), authorId: 3, genreId: 3 };
+    const newBook: CreateBookRequest = mapBookToCreateBookRequest(getDefaultBook());
 
     service.create(newBook);
 
@@ -86,7 +96,7 @@ describe('BookControllerService', () => {
   });
 
   it('should dispatch update action for an existing book', () => {
-    const updatedBook: UpdateBookRequest = { id: 1, name: 'Updated Book', publicationDate: new Date('2023-03-03'), authorId: 3, genreId: 3 };
+    const updatedBook: UpdateBookRequest = mapBookToUpdateBookRequest(getDefaultBook());
 
     service.update(updatedBook);
 

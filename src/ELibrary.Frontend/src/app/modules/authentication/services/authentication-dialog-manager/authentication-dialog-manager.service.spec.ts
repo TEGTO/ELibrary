@@ -2,16 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { AuthenticatedComponent, AuthenticationService, LoginComponent, RegisterComponent } from '../..';
-import { AuthData } from '../../../shared';
+import { getDefaultUserAuth, UserAuth } from '../../../shared';
 import { AuthenticationDialogManagerService } from './authentication-dialog-manager.service';
 
 describe('AuthenticationDialogManagerService', () => {
-  const mockAuthData: AuthData =
+  const mockUserAuth: UserAuth =
   {
+    ...getDefaultUserAuth(),
     isAuthenticated: true,
-    accessToken: "accessToken",
-    refreshToken: "refreshToken",
-    refreshTokenExpiryDate: new Date()
   }
 
   let service: AuthenticationDialogManagerService;
@@ -20,8 +18,8 @@ describe('AuthenticationDialogManagerService', () => {
 
   beforeEach(() => {
     mockMatDialog = jasmine.createSpyObj<MatDialog>('MatDialog', ['open']);
-    mockAuthService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getAuthData']);
-    mockAuthService.getUserAuth.and.returnValue(of(mockAuthData));
+    mockAuthService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getUserAuth']);
+    mockAuthService.getUserAuth.and.returnValue(of(mockUserAuth));
 
     TestBed.configureTestingModule({
       providers: [
@@ -46,14 +44,12 @@ describe('AuthenticationDialogManagerService', () => {
   });
 
   it('should open login dialog', () => {
-    let mockAuthData: AuthData =
+    const mockUserAuth: UserAuth =
     {
+      ...getDefaultUserAuth(),
       isAuthenticated: false,
-      accessToken: "accessToken",
-      refreshToken: "refreshToken",
-      refreshTokenExpiryDate: new Date()
     }
-    mockAuthService.getUserAuth.and.returnValue(of(mockAuthData));
+    mockAuthService.getUserAuth.and.returnValue(of(mockUserAuth));
     service = new AuthenticationDialogManagerService(mockAuthService, mockMatDialog);
 
     service.openLoginMenu();

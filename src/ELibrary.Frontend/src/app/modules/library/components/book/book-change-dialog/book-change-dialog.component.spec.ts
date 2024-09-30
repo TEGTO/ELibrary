@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -10,40 +11,29 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
-import { AuthorService, GenreService } from '../../..';
-import { Author, Book, Genre } from '../../../../shared';
+import { Book } from '../../../../shared';
 import { BookChangeDialogComponent } from './book-change-dialog.component';
 
 describe('BookChangeDialogComponent', () => {
   let component: BookChangeDialogComponent;
   let fixture: ComponentFixture<BookChangeDialogComponent>;
   let dialogRef: jasmine.SpyObj<MatDialogRef<BookChangeDialogComponent>>;
-  let authorService: jasmine.SpyObj<AuthorService>;
-  let genreService: jasmine.SpyObj<GenreService>;
-
   const mockBook: Book = {
     id: 1,
     name: 'Mock Book',
     publicationDate: new Date('2020-01-01'),
+    price: 100,
+    coverType: 1,
+    pageAmount: 250,
+    stockAmount: 50,
+    coverImgUrl: 'http://example.com/image.jpg',
     author: { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1970-01-01') },
-    genre: { id: 1, name: 'Fiction' }
+    genre: { id: 1, name: 'Fiction' },
+    publisher: { id: 1, name: 'Publisher 1' }
   };
-
-  const mockAuthors: Author[] = [
-    { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1970-01-01') },
-    { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1980-01-01') }
-  ];
-
-  const mockGenres: Genre[] = [
-    { id: 1, name: 'Fiction' },
-    { id: 2, name: 'Non-Fiction' }
-  ];
 
   beforeEach(async () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-    const authorServiceSpy = jasmine.createSpyObj('AuthorService', ['getAuthorsPaginated']);
-    const genreServiceSpy = jasmine.createSpyObj('GenreService', ['getGenresPaginated']);
 
     await TestBed.configureTestingModule({
       declarations: [BookChangeDialogComponent],
@@ -62,148 +52,101 @@ describe('BookChangeDialogComponent', () => {
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: mockBook },
         { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: AuthorService, useValue: authorServiceSpy },
-        { provide: GenreService, useValue: genreServiceSpy }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     dialogRef = TestBed.inject(MatDialogRef) as jasmine.SpyObj<MatDialogRef<BookChangeDialogComponent>>;
-    authorService = TestBed.inject(AuthorService) as jasmine.SpyObj<AuthorService>;
-    genreService = TestBed.inject(GenreService) as jasmine.SpyObj<GenreService>;
-  });
-
-  beforeEach(() => {
-    authorService.getPaginated.and.returnValue(of(mockAuthors));
-    genreService.getPaginated.and.returnValue(of(mockGenres));
-
     fixture = TestBed.createComponent(BookChangeDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with dialog data', () => {
+  it('should initialize form with book data', () => {
     expect(component.formGroup).toBeDefined();
-    expect(component.titleInput.value).toBe(mockBook.name);
+    expect(component.nameInput.value).toBe(mockBook.name);
     expect(component.publicationDateInput.value).toEqual(mockBook.publicationDate);
-    expect(component.authorInput.value).toBe(mockBook.author.id);
-    expect(component.genreInput.value).toBe(mockBook.genre.id);
+    expect(component.priceInput.value).toBe(mockBook.price);
+    expect(component.pageAmountInput.value).toBe(mockBook.pageAmount);
+    expect(component.coverImgUrlInput.value).toBe(mockBook.coverImgUrl);
+    expect(component.stockAmountInput.value).toBe(mockBook.stockAmount);
+    expect(component.coverTypeInput.value).toBe(mockBook.coverType);
   });
 
-  it('should validate form fields', () => {
-    component.formGroup.get('title')?.setValue('');
-    component.formGroup.get('publicationDate')?.setValue(null);
-    component.formGroup.get('author')?.setValue(null);
-    component.formGroup.get('genre')?.setValue(null);
+  it('should validate required fields', () => {
+    component.nameInput.setValue('');
+    component.publicationDateInput.setValue(null);
+    component.priceInput.setValue(null);
+    component.pageAmountInput.setValue(null);
 
     expect(component.formGroup.invalid).toBeTrue();
 
-    component.formGroup.get('title')?.setValue('Updated Title');
-    component.formGroup.get('publicationDate')?.setValue(new Date('2021-01-01'));
-    component.formGroup.get('author')?.setValue(1);
-    component.formGroup.get('genre')?.setValue(1);
+    component.nameInput.setValue('Updated Book');
+    component.publicationDateInput.setValue(new Date('2021-01-01'));
+    component.priceInput.setValue(200);
+    component.pageAmountInput.setValue(300);
 
     expect(component.formGroup.valid).toBeTrue();
   });
 
-  it('should close dialog with correct data when form is valid', () => {
-    component.formGroup.setValue({
-      title: 'Updated Title',
-      publicationDate: new Date('2021-01-01'),
-      author: 1,
-      genre: 1
-    });
-
+  it('should call close method with book data when form is valid', () => {
     component.sendDetails();
 
     expect(dialogRef.close).toHaveBeenCalledWith({
       id: mockBook.id,
-      title: 'Updated Title',
-      publicationDate: new Date('2021-01-01'),
+      name: mockBook.name,
+      publicationDate: mockBook.publicationDate,
+      price: mockBook.price,
+      coverType: mockBook.coverType,
+      pageAmount: mockBook.pageAmount,
+      stockAmount: mockBook.stockAmount,
+      coverImgUrl: mockBook.coverImgUrl,
       author: mockBook.author,
-      genre: mockBook.genre
+      genre: mockBook.genre,
+      publisher: mockBook.publisher,
     });
   });
 
-  it('should not close dialog if form is invalid', () => {
-    component.formGroup.get('title')?.setValue('');
-    component.formGroup.get('publicationDate')?.setValue(null);
-    component.formGroup.get('author')?.setValue(null);
-    component.formGroup.get('genre')?.setValue(null);
-
+  it('should not call close method when form is invalid', () => {
+    component.nameInput.setValue('');
     component.sendDetails();
 
     expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
-  it('should display validation errors when form fields are invalid', () => {
-    component.formGroup.get('title')?.setValue('');
+  it('should mark all fields as touched when form is submitted', () => {
+    const markAllAsTouchedSpy = spyOn(component.formGroup, 'markAllAsTouched');
+    component.sendDetails();
+
+    expect(markAllAsTouchedSpy).toHaveBeenCalled();
+  });
+
+  it('should display validation messages for invalid fields', () => {
+    component.nameInput.setValue('');
     fixture.detectChanges();
 
-    expect(component.formGroup.valid).toBeFalse();
-    expect(component.titleInput.hasError('required')).toBeTrue();
+    const nameErrorElement = fixture.debugElement.query(By.css('mat-error')).nativeElement;
+    expect(nameErrorElement.textContent).toContain('required');
+  });
+
+  it('should initialize form with default values if no book is passed', () => {
+    component = new BookChangeDialogComponent(null as any, dialogRef, {} as any);
+    component.ngOnInit();
+
+    expect(component.nameInput.value).toBe('');
+    expect(component.priceInput.value).toBe(0);
+    expect(component.stockAmountInput.value).toBe(0);
   });
 
   it('should render the HTML structure correctly', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('h2')?.textContent).toContain('Book');
-
     expect(compiled.querySelector('mat-form-field')).toBeTruthy();
     expect(compiled.querySelector('button#send-button')).toBeTruthy();
   });
-
-  it('should load authors and genres on initialization', () => {
-    expect(authorService.getPaginated).toHaveBeenCalled();
-    expect(genreService.getPaginated).toHaveBeenCalled();
-  });
-
-  it('should close the dialog when the close button is clicked', () => {
-    const closeButton = fixture.debugElement.query(By.css('.close-button')).nativeElement;
-    closeButton.click();
-    fixture.detectChanges();
-    expect(dialogRef.close).toHaveBeenCalled();
-  });
-
-  it('should append unique authors when loading more', fakeAsync(() => {
-    component.loadAuthors();
-
-    expect(component.authors.length).toBe(2);
-    expect(component.authors).toEqual(mockAuthors);
-  }));
-
-  it('should append unique genres when loading more', fakeAsync(() => {
-    component.loadGenres();
-
-    expect(component.genres.length).toBe(2);
-    expect(component.genres).toEqual(mockGenres);
-  }));
-
-  it('should load more authors on scroll', fakeAsync(() => {
-    const authorScroller = component.authorScroller;
-    spyOn(authorScroller, 'measureScrollOffset').and.returnValue(3);
-    const elementScrolledSpy = spyOn(authorScroller.elementScrolled(), 'pipe').and.callThrough();
-    spyOn(component, 'loadAuthors').and.callThrough();
-    component.ngAfterViewInit();
-    authorScroller.elementScrolled = jasmine.createSpy().and.returnValue(of({}));
-    tick(300);
-    expect(elementScrolledSpy).toHaveBeenCalled();
-    // expect(component.loadAuthors).toHaveBeenCalled();
-  }));
-
-  it('should load more genres on scroll', fakeAsync(() => {
-    const genreScroller = component.genreScroller;
-    spyOn(genreScroller, 'measureScrollOffset').and.returnValue(3);
-    const elementScrolledSpy = spyOn(genreScroller.elementScrolled(), 'pipe').and.callThrough();
-    spyOn(component, 'loadGenres').and.callThrough();
-    component.ngAfterViewInit();
-    genreScroller.elementScrolled = jasmine.createSpy().and.returnValue(of({}));
-    tick(300);
-    expect(elementScrolledSpy).toHaveBeenCalled();
-    // expect(component.loadGenres).toHaveBeenCalled();
-  }));
 });

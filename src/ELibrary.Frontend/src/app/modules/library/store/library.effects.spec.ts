@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
-import { Author, AuthorApiService, CreateAuthorRequest, UpdateAuthorRequest } from "../../shared";
+import { Author, AuthorApiService, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from "../../shared";
 import { authorActions } from "./library.actions";
 import { AuthorEffects } from "./library.effects";
 
@@ -28,7 +29,7 @@ describe('AuthorEffects', () => {
 
     describe('getPaginated$', () => {
         it('should dispatch getPaginatedSuccess on successful getPaginated', (done) => {
-            const paginatedRequest = { pageNumber: 1, pageSize: 10 };
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
             const entities: Author[] = [{ id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() }];
             const action = authorActions.getPaginated({ request: paginatedRequest });
             const outcome = authorActions.getPaginatedSuccess({ entities });
@@ -44,7 +45,7 @@ describe('AuthorEffects', () => {
         });
 
         it('should dispatch getPaginatedFailure on failed getPaginated', (done) => {
-            const paginatedRequest = { pageNumber: 1, pageSize: 10 };
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
             const action = authorActions.getPaginated({ request: paginatedRequest });
             const error = new Error('Error!');
             const outcome = authorActions.getPaginatedFailure({ error: error.message });
@@ -63,7 +64,8 @@ describe('AuthorEffects', () => {
     describe('getTotalAmount$', () => {
         it('should dispatch getTotalAmountSuccess on successful getItemTotalAmount', (done) => {
             const amount = 100;
-            const action = authorActions.getTotalAmount();
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+            const action = authorActions.getTotalAmount({ request: paginatedRequest });
             const outcome = authorActions.getTotalAmountSuccess({ amount });
 
             actions$ = of(action);
@@ -77,7 +79,8 @@ describe('AuthorEffects', () => {
         });
 
         it('should dispatch getTotalAmountFailure on failed getItemTotalAmount', (done) => {
-            const action = authorActions.getTotalAmount();
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+            const action = authorActions.getTotalAmount({ request: paginatedRequest });
             const error = new Error('Error!');
             const outcome = authorActions.getTotalAmountFailure({ error: error.message });
 
@@ -167,7 +170,7 @@ describe('AuthorEffects', () => {
             const outcome = authorActions.deleteByIdSuccess({ id });
 
             actions$ = of(action);
-            mockApiService.deleteById.and.returnValue(of({}));
+            mockApiService.deleteById.and.returnValue(of());
 
             effects.deleteById$.subscribe(result => {
                 expect(result).toEqual(outcome);

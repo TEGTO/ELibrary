@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { authorActions, selectAuthorAmount, selectAuthors } from '../..';
-import { AuthorApiService, AuthorResponse, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest } from '../../../shared';
+import { authorActions, selectAuthorAmount, selectAuthors } from '../../..';
+import { AuthorApiService, AuthorResponse, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from '../../../../shared';
 import { AuthorControllerService } from './author-controller.service';
 
 describe('AuthorControllerService', () => {
@@ -15,7 +16,7 @@ describe('AuthorControllerService', () => {
     { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-02-02') }
   ];
 
-  const mockTotalAmount: number = 5;
+  const mockTotalAmount = 5;
 
   beforeEach(() => {
     const storeSpy = jasmine.createSpyObj('Store', ['dispatch', 'select']);
@@ -57,7 +58,7 @@ describe('AuthorControllerService', () => {
   });
 
   it('should dispatch getPaginated action and return paginated authors', (done) => {
-    const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
+    const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
     store.select.and.returnValue(of(mockAuthorData));
 
     service.getPaginated(request).subscribe(result => {
@@ -69,9 +70,10 @@ describe('AuthorControllerService', () => {
 
   it('should dispatch getTotalAmount action and return total amount of authors', (done) => {
     store.select.and.returnValue(of(mockTotalAmount));
+    const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
 
-    service.getItemTotalAmount().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(authorActions.getTotalAmount());
+    service.getItemTotalAmount(request).subscribe(result => {
+      expect(store.dispatch).toHaveBeenCalledWith(authorActions.getTotalAmount({ request: request }));
       expect(result).toEqual(mockTotalAmount);
       done();
     });

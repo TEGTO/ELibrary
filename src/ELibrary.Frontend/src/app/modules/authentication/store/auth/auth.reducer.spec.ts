@@ -1,261 +1,194 @@
-import { getAuthDataFailure, getAuthDataSuccess, logOutUserSuccess, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData } from "../../../shared";
-import { AuthState, RegistrationState, UserDataState, authReducer, registrationReducer, userDataReducer } from "./auth.reducer";
-
-describe('RegistrationReducer', () => {
-    const initialState: RegistrationState = {
-        isSuccess: false,
-        error: null
-    };
-
-    it('should return the initial state', () => {
-        const action = { type: 'Unknown' } as any;
-        const state = registrationReducer(initialState, action);
-        expect(state).toBe(initialState);
-    });
-
-    it('should handle registerUser', () => {
-        const registrationRequest = {
-            userName: 'user',
-            password: 'password',
-            confirmPassword: 'password',
-            userInfo: {
-                name: "",
-                lastName: "",
-                dateOfBirth: new Date(),
-                address: ""
-            }
-        };
-        const action = registerUser({ req: registrationRequest });
-        const state = registrationReducer(initialState, action);
-        expect(state).toEqual({
-            isSuccess: false,
-            error: null
-        });
-    });
-
-    it('should handle registerSuccess', () => {
-        const action = registerSuccess();
-        const state = registrationReducer(initialState, action);
-        expect(state).toEqual({
-            isSuccess: true,
-            error: null
-        });
-    });
-
-    it('should handle registerFailure', () => {
-        const error = 'Error!';
-        const action = registerFailure({ error });
-        const state = registrationReducer(initialState, action);
-        expect(state).toEqual({
-            isSuccess: false,
-            error
-        });
-    });
-});
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { deleteUserFailure, deleteUserSuccess, getAuthDataFailure, getAuthDataSuccess, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
+import { AuthToken, getDefaultUserAuth, UserAuth, UserAuthenticationRequest } from "../../../shared";
+import { authReducer, AuthState } from "./auth.reducer";
 
 describe('AuthReducer', () => {
-    const initialState: AuthState = {
-        isAuthenticated: false,
-        accessToken: "",
-        refreshToken: "",
-        refreshTokenExpiryDate: new Date(),
+    const initialAuthState: AuthState = {
+        isRegistrationSuccess: false,
+        isUpdateSuccess: false,
         isRefreshSuccessful: false,
+        userAuth: getDefaultUserAuth(),
         error: null
+    };
+
+    const mockUserAuth: UserAuth = {
+        isAuthenticated: true,
+        authToken: {
+            accessToken: 'mockAccessToken',
+            refreshToken: 'mockRefreshToken',
+            refreshTokenExpiryDate: new Date(),
+        },
+        email: 'test@example.com',
+        roles: ['CLIENT']
+    };
+
+    const mockAuthToken: AuthToken = {
+        accessToken: 'newAccessToken',
+        refreshToken: 'newRefreshToken',
+        refreshTokenExpiryDate: new Date(),
     };
 
     it('should return the initial state', () => {
         const action = { type: 'Unknown' } as any;
-        const state = authReducer(initialState, action);
-        expect(state).toBe(initialState);
+        const state = authReducer(initialAuthState, action);
+        expect(state).toBe(initialAuthState);
     });
 
-    it('should handle signInUser', () => {
-        const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-        const action = signInUser({ req: authRequest });
-        const state = authReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState,
-            refreshTokenExpiryDate: state.refreshTokenExpiryDate
-        });
+    it('should handle registerUser action', () => {
+        const action = registerUser({ req: { email: 'test@example.com', password: 'password', confirmPassword: 'password' } });
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual(initialAuthState);
     });
 
-    it('should handle signInUserSuccess', () => {
-        const authData: AuthData = {
-            isAuthenticated: true,
-            accessToken: 'authToken',
-            refreshToken: 'refreshToken',
-            refreshTokenExpiryDate: new Date()
-        };
-        const userData: UserData = { email: "userName" };
-        const action = signInUserSuccess({ authData: authData, userData: userData });
-        const state = authReducer(initialState, action);
+    it('should handle registerSuccess action', () => {
+        const action = registerSuccess({ userAuth: mockUserAuth });
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState,
-            isAuthenticated: true,
-            accessToken: authData.accessToken,
-            refreshToken: authData.refreshToken,
-            refreshTokenExpiryDate: authData.refreshTokenExpiryDate,
+            ...initialAuthState,
+            userAuth: mockUserAuth,
+            isRegistrationSuccess: true,
             error: null
         });
     });
 
-    it('should handle signInUserFailure', () => {
-        const error = 'Error!';
+    it('should handle registerFailure action', () => {
+        const error = 'Registration failed';
+        const action = registerFailure({ error });
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual({
+            ...initialAuthState,
+            error
+        });
+    });
+
+    it('should handle signInUser action', () => {
+        const req: UserAuthenticationRequest =
+        {
+            login: 'test@example.com',
+            password: 'password',
+        }
+        const action = signInUser({ req: req });
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual(initialAuthState);
+    });
+
+    it('should handle signInUserSuccess action', () => {
+        const action = signInUserSuccess({ userAuth: mockUserAuth });
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual({
+            ...initialAuthState,
+            userAuth: mockUserAuth,
+            error: null
+        });
+    });
+
+    it('should handle signInUserFailure action', () => {
+        const error = 'Sign in failed';
         const action = signInUserFailure({ error });
-        const state = authReducer(initialState, action);
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState,
-            refreshTokenExpiryDate: state.refreshTokenExpiryDate,
+            ...initialAuthState,
             error
         });
     });
 
-    it('should handle getAuthDataSuccess', () => {
-        const authData: AuthData = {
-            isAuthenticated: true,
-            accessToken: 'authToken',
-            refreshToken: 'refreshToken',
-            refreshTokenExpiryDate: new Date()
-        };
-        const userData: UserData = { email: "userName" };
-        const action = getAuthDataSuccess({ authData: authData, userData: userData });
-        const state = authReducer(initialState, action);
+    it('should handle refreshAccessToken action', () => {
+        const action = refreshAccessToken({ authToken: mockAuthToken });
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState,
-            isAuthenticated: authData.isAuthenticated,
-            accessToken: authData.accessToken,
-            refreshToken: authData.refreshToken,
-            refreshTokenExpiryDate: authData.refreshTokenExpiryDate,
+            ...initialAuthState,
+            isRefreshSuccessful: false,
             error: null
         });
     });
 
-    it('should handle getAuthDataFailure', () => {
-        const action = getAuthDataFailure();
-        const state = authReducer(initialState, action);
+    it('should handle refreshAccessTokenSuccess action', () => {
+        const action = refreshAccessTokenSuccess({ authToken: mockAuthToken });
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState,
-            refreshTokenExpiryDate: state.refreshTokenExpiryDate
-        });
-    });
-
-    it('should handle logOutUserSuccess', () => {
-        const action = logOutUserSuccess();
-        const state = authReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState,
-            refreshTokenExpiryDate: state.refreshTokenExpiryDate
-        });
-    });
-
-    it('should handle refreshAccessTokenSuccess', () => {
-        const accessToken: AuthToken = {
-            accessToken: 'newAccessToken',
-            refreshToken: 'newRefreshToken',
-            refreshTokenExpiryDate: new Date()
-        };
-        const action = refreshAccessTokenSuccess({ authToken: accessToken });
-        const state = authReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState,
-            isAuthenticated: true,
-            accessToken: accessToken.accessToken,
-            refreshToken: accessToken.refreshToken,
-            refreshTokenExpiryDate: accessToken.refreshTokenExpiryDate,
+            ...initialAuthState,
             isRefreshSuccessful: true,
+            userAuth: {
+                ...initialAuthState.userAuth,
+                authToken: mockAuthToken
+            },
             error: null
         });
     });
 
-    it('should handle refreshAccessTokenFailure', () => {
-        const error = 'Error!';
+    it('should handle refreshAccessTokenFailure action', () => {
+        const error = 'Refresh token failed';
         const action = refreshAccessTokenFailure({ error });
-        const state = authReducer(initialState, action);
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState,
-            refreshTokenExpiryDate: state.refreshTokenExpiryDate,
+            ...initialAuthState,
             error
         });
     });
-});
 
-describe('UserDataReducer', () => {
-    const initialState: UserDataState = {
-        email: "",
-        error: null
-    };
-
-    it('should return the initial state', () => {
-        const action = { type: 'Unknown' } as any;
-        const state = userDataReducer(initialState, action);
-        expect(state).toBe(initialState);
-    });
-
-    it('should handle signInUser', () => {
-        const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-        const action = signInUser({ req: authRequest });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState
-        });
-    });
-
-    it('should handle signInUserSuccess', () => {
-        const userData: UserData = {
-            email: 'user',
-        };
-        const action = signInUserSuccess({ userData, authData: { isAuthenticated: true, accessToken: 'authToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() } });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState,
-            email: userData.email,
-            error: null
-        });
-    });
-
-    it('should handle signInUserFailure', () => {
-        const action = signInUserFailure({ error: 'Error!' });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState
-        });
-    });
-
-    it('should handle getAuthDataSuccess', () => {
-        const userData: UserData = {
-            email: 'user',
-        };
-        const action = getAuthDataSuccess({ userData, authData: { isAuthenticated: true, accessToken: 'authToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() } });
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState,
-            email: userData.email,
-            error: null
-        });
-    });
-
-    it('should handle getAuthDataFailure', () => {
-        const action = getAuthDataFailure();
-        const state = userDataReducer(initialState, action);
-        expect(state).toEqual({
-            ...initialState
-        });
-    });
-
-    it('should handle logOutUserSuccess', () => {
+    it('should handle logOutUserSuccess action', () => {
         const action = logOutUserSuccess();
-        const state = userDataReducer(initialState, action);
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual(initialAuthState);
+    });
+
+    it('should handle getAuthDataSuccess action', () => {
+        const action = getAuthDataSuccess({ userAuth: mockUserAuth });
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState
+            ...initialAuthState,
+            userAuth: mockUserAuth,
+            error: null
         });
     });
 
-    it('should handle refreshAccessTokenFailure', () => {
-        const action = refreshAccessTokenFailure({ error: 'Error!' });
-        const state = userDataReducer(initialState, action);
+    it('should handle getAuthDataFailure action', () => {
+        const action = getAuthDataFailure();
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual(initialAuthState);
+    });
+
+    it('should handle updateUserData action', () => {
+        const action = updateUserData({ req: { email: 'test@example.com', oldPassword: 'oldPassword', password: 'newPassword' } });
+        const state = authReducer(initialAuthState, action);
         expect(state).toEqual({
-            ...initialState
+            ...initialAuthState,
+            isUpdateSuccess: false,
+            error: null
+        });
+    });
+
+    it('should handle updateUserDataSuccess action', () => {
+        const action = updateUserDataSuccess({ req: { email: 'test@example.com', oldPassword: 'oldPassword', password: 'newPassword' } });
+        const state = authReducer(initialAuthState, action);
+        expect(state.isUpdateSuccess).toBeTrue();
+    });
+
+    it('should handle updateUserDataFailure action', () => {
+        const error = 'Update user failed';
+        const action = updateUserDataFailure({ error });
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual({
+            ...initialAuthState,
+            isUpdateSuccess: false,
+            error
+        });
+    });
+
+    it('should handle deleteUserSuccess action', () => {
+        const action = deleteUserSuccess();
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual(initialAuthState);
+    });
+
+    it('should handle deleteUserFailure action', () => {
+        const error = 'Delete user failed';
+        const action = deleteUserFailure({ error });
+        const state = authReducer(initialAuthState, action);
+        expect(state).toEqual({
+            ...initialAuthState,
+            error
         });
     });
 });

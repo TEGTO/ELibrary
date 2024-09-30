@@ -1,12 +1,12 @@
-import { Author, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest } from "../../shared";
+import { Author, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from "../../shared";
 import { authorActions } from "./library.actions";
 
 const error = { message: 'An error occurred' };
 describe('Author Actions', () => {
     // Get Paginated
     it('should create getPaginated action for authors', () => {
-        const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
-        const action = authorActions.getPaginated({ request });
+        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+        const action = authorActions.getPaginated({ request: request });
         expect(action.type).toBe('[Library] Get Paginated Authors');
         expect(action.request).toBe(request);
     });
@@ -26,7 +26,8 @@ describe('Author Actions', () => {
 
     // Get Total Amount
     it('should create getTotalAmount action for authors', () => {
-        const action = authorActions.getTotalAmount();
+        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+        const action = authorActions.getTotalAmount({ request: request });
         expect(action.type).toBe('[Library] Get Total Authors Amount');
     });
 

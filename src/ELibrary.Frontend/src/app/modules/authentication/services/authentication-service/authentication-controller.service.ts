@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { deleteUser as deleteUserAuth, getAuthData as getUserAuth, logOutUser, refreshAccessToken, registerUser, selectAuthErrors, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccess, selectUserAuth, signInUser, updateUserData } from '../..';
+import { deleteUser, getAuthData, logOutUser, refreshAccessToken, registerUser, selectAuthErrors, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccess, selectUserAuth, signInUser, updateUserData } from '../..';
 import { AuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
 import { AuthenticationService } from './authentication-service';
 
@@ -20,7 +20,7 @@ export class AuthenticationControllerService implements AuthenticationService {
     return this.store.select(selectIsRegistrationSuccess);
   }
   getUserAuth(): Observable<UserAuth> {
-    this.store.dispatch(getUserAuth());
+    this.store.dispatch(getAuthData());
     return this.store.select(selectUserAuth);
   }
   signInUser(req: UserAuthenticationRequest): void {
@@ -34,7 +34,7 @@ export class AuthenticationControllerService implements AuthenticationService {
     return this.store.select(selectIsRefreshSuccessful);
   }
   deleteUserAuth(): void {
-    this.store.dispatch(deleteUserAuth());
+    this.store.dispatch(deleteUser());
   }
   updateUserAuth(req: UserUpdateRequest): Observable<boolean> {
     this.store.dispatch(updateUserData({ req: req }));

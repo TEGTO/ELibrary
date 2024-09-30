@@ -107,7 +107,7 @@ describe('RegisterComponent', () => {
     });
 
     authService.registerUser.and.returnValue(of(true));
-    authService.getRegistrationErrors.and.returnValue(of(null));
+    authService.getAuthErrors.and.returnValue(of(null));
 
     fixture.detectChanges();
 
@@ -128,7 +128,7 @@ describe('RegisterComponent', () => {
 
     component.formGroup.setValue(formValues);
     authService.registerUser.and.returnValue(of(false));
-    authService.getRegistrationErrors.and.returnValue(of('Registration failed'));
+    authService.getAuthErrors.and.returnValue(of('Registration failed'));
 
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
     fixture.detectChanges();
@@ -146,7 +146,7 @@ describe('RegisterComponent', () => {
 
     component.formGroup.setValue(formValues);
     authService.registerUser.and.returnValue(of(false));
-    authService.getRegistrationErrors.and.returnValue(of('Server error'));
+    authService.getAuthErrors.and.returnValue(of('Server error'));
 
     component.registerUser();
 
@@ -170,13 +170,4 @@ describe('RegisterComponent', () => {
     expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['An error occurred during registration.']);
   });
 
-  it('should clean up subscriptions on destroy', () => {
-    const spy = spyOn(component['destroy$'], 'next').and.callThrough();
-    const completeSpy = spyOn(component['destroy$'], 'complete').and.callThrough();
-
-    component.ngOnDestroy();
-
-    expect(spy).toHaveBeenCalled();
-    expect(completeSpy).toHaveBeenCalled();
-  });
 });

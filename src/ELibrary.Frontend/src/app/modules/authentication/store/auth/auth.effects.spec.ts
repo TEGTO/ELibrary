@@ -1,97 +1,39 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
-import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
-import { AuthData, AuthenticationApiService, AuthToken, LocalStorageService, UserAuthenticationRequest, UserAuthenticationResponse, UserData } from "../../../shared";
-import { AuthEffects, RegistrationEffects } from "./auth.effects";
+import { deleteUser, deleteUserFailure, deleteUserSuccess, getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
+import { AuthenticationApiService, AuthToken, LocalStorageService, UserAuth } from "../../../shared";
+import { AuthEffects } from "./auth.effects";
 
-describe('RegistrationEffects', () => {
-    let actions$: Observable<any>;
-    let effects: RegistrationEffects;
-    let mockApiService: jasmine.SpyObj<AuthenticationApiService>;
-
-    beforeEach(() => {
-        mockApiService = jasmine.createSpyObj('AuthenticationApiService', ['registerUser']);
-
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            providers: [
-                RegistrationEffects,
-                provideMockActions(() => actions$),
-                { provide: AuthenticationApiService, useValue: mockApiService }
-            ]
-        });
-
-        effects = TestBed.inject(RegistrationEffects);
-    });
-
-    describe('registerUser$', () => {
-        it('should dispatch registerSuccess on successful registerUser', (done) => {
-            const registrationRequest = {
-                userName: 'user',
-                password: 'password',
-                confirmPassword: 'password',
-                userInfo: {
-                    name: "",
-                    lastName: "",
-                    dateOfBirth: new Date(),
-                    address: ""
-                }
-            };
-            const action = registerUser({ req: registrationRequest });
-            const outcome = registerSuccess();
-
-            actions$ = of(action);
-            mockApiService.registerUser.and.returnValue(of({}));
-
-            effects.registerUser$.subscribe(result => {
-                expect(result).toEqual(outcome);
-                expect(mockApiService.registerUser).toHaveBeenCalledWith(registrationRequest);
-                done();
-            });
-        });
-
-        it('should dispatch registerFailure on failed registerUser', (done) => {
-            const registrationRequest = {
-                userName: 'user',
-                password: 'password',
-                confirmPassword: 'password',
-                userInfo: {
-                    name: "",
-                    lastName: "",
-                    dateOfBirth: new Date(),
-                    address: ""
-                }
-            };
-            const action = registerUser({ req: registrationRequest });
-            const error = new Error('Error!');
-            const outcome = registerFailure({ error: error.message });
-
-            actions$ = of(action);
-            mockApiService.registerUser.and.returnValue(throwError(error));
-
-            effects.registerUser$.subscribe(result => {
-                expect(result).toEqual(outcome);
-                expect(mockApiService.registerUser).toHaveBeenCalledWith(registrationRequest);
-                done();
-            });
-        });
-    });
-});
-
-describe('SignInEffects', () => {
+describe('AuthEffects', () => {
     let actions$: Observable<any>;
     let effects: AuthEffects;
     let mockApiService: jasmine.SpyObj<AuthenticationApiService>;
     let mockLocalStorage: jasmine.SpyObj<LocalStorageService>;
 
+    const mockUserAuth: UserAuth = {
+        isAuthenticated: true,
+        authToken: {
+            accessToken: 'mockAccessToken',
+            refreshToken: 'mockRefreshToken',
+            refreshTokenExpiryDate: new Date(),
+        },
+        email: 'test@example.com',
+        roles: ['CLIENT']
+    };
+
+    const mockAuthToken: AuthToken = {
+        accessToken: 'newAccessToken',
+        refreshToken: 'newRefreshToken',
+        refreshTokenExpiryDate: new Date(),
+    };
+
     beforeEach(() => {
-        mockApiService = jasmine.createSpyObj('AuthenticationApiService', ['loginUser', 'refreshToken', 'updateUser']);
+        mockApiService = jasmine.createSpyObj('AuthenticationApiService', ['registerUser', 'loginUser', 'refreshToken', 'updateUser', 'deleteUser']);
         mockLocalStorage = jasmine.createSpyObj('LocalStorageService', ['setItem', 'getItem', 'removeItem']);
 
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
             providers: [
                 AuthEffects,
                 provideMockActions(() => actions$),
@@ -103,39 +45,57 @@ describe('SignInEffects', () => {
         effects = TestBed.inject(AuthEffects);
     });
 
-    describe('signInUser$', () => {
-        it('should dispatch signInUserSuccess on successful signInUser', (done) => {
-            const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-            const response: UserAuthenticationResponse = {
-                authToken: { accessToken: 'accessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() },
-                email: 'user',
-            };
-            const authData: AuthData = {
-                isAuthenticated: true,
-                accessToken: response.authToken.accessToken,
-                refreshToken: response.authToken.refreshToken,
-                refreshTokenExpiryDate: response.authToken.refreshTokenExpiryDate
-            };
-            const userData: UserData = { email: response.email };
-            const action = signInUser({ req: authRequest });
-            const outcome = signInUserSuccess({ authData, userData });
+    describe('registerUser$', () => {
+        it('should dispatch registerSuccess on successful registerUser', (done) => {
+            const action = registerUser({ req: { email: 'test@example.com', password: 'password', confirmPassword: 'password' } });
+            const outcome = registerSuccess({ userAuth: mockUserAuth });
 
             actions$ = of(action);
-            mockApiService.loginUser.and.returnValue(of(response));
+            mockApiService.registerUser.and.returnValue(of(mockUserAuth));
 
-            effects.singInUser$.subscribe(result => {
+            effects.registerUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.loginUser).toHaveBeenCalledWith(authRequest);
-                expect(mockLocalStorage.setItem).toHaveBeenCalledWith('authData', JSON.stringify(authData));
-                expect(mockLocalStorage.setItem).toHaveBeenCalledWith('userData', JSON.stringify(userData));
+                expect(mockApiService.registerUser).toHaveBeenCalledWith(action.req);
+                expect(mockLocalStorage.setItem).toHaveBeenCalledWith('userAuth', JSON.stringify(mockUserAuth));
                 done();
             });
         });
 
-        it('should dispatch signInUserFailure on failed signInUser', (done) => {
-            const authRequest: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-            const action = signInUser({ req: authRequest });
-            const error = new Error('Error!');
+        it('should dispatch registerFailure on failed registerUser', (done) => {
+            const action = registerUser({ req: { email: 'test@example.com', password: 'password', confirmPassword: 'password' } });
+            const error = new Error('Registration failed');
+            const outcome = registerFailure({ error: error.message });
+
+            actions$ = of(action);
+            mockApiService.registerUser.and.returnValue(throwError(error));
+
+            effects.registerUser$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockApiService.registerUser).toHaveBeenCalledWith(action.req);
+                done();
+            });
+        });
+    });
+
+    describe('signInUser$', () => {
+        it('should dispatch signInUserSuccess on successful login', (done) => {
+            const action = signInUser({ req: { login: 'test@example.com', password: 'password' } });
+            const outcome = signInUserSuccess({ userAuth: mockUserAuth });
+
+            actions$ = of(action);
+            mockApiService.loginUser.and.returnValue(of(mockUserAuth));
+
+            effects.singInUser$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockApiService.loginUser).toHaveBeenCalledWith(action.req);
+                expect(mockLocalStorage.setItem).toHaveBeenCalledWith('userAuth', JSON.stringify(mockUserAuth));
+                done();
+            });
+        });
+
+        it('should dispatch signInUserFailure on failed login', (done) => {
+            const action = signInUser({ req: { login: 'test@example.com', password: 'password' } });
+            const error = new Error('Login failed');
             const outcome = signInUserFailure({ error: error.message });
 
             actions$ = of(action);
@@ -143,36 +103,29 @@ describe('SignInEffects', () => {
 
             effects.singInUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.loginUser).toHaveBeenCalledWith(authRequest);
+                expect(mockApiService.loginUser).toHaveBeenCalledWith(action.req);
                 done();
             });
         });
     });
 
-    describe('getAuthUser$', () => {
-        it('should dispatch getAuthDataSuccess if auth data is present in local storage', (done) => {
-            const authData: AuthData = { isAuthenticated: true, accessToken: 'accessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-            const userData: UserData = { email: 'user' };
+    describe('getAuthData$', () => {
+        it('should dispatch getAuthDataSuccess if auth data exists in local storage', (done) => {
             const action = getAuthData();
-            const outcome = getAuthDataSuccess({ authData, userData });
+            const outcome = getAuthDataSuccess({ userAuth: mockUserAuth });
 
-            mockLocalStorage.getItem.and.callFake((key: string) => {
-                if (key === 'authData') return JSON.stringify(authData);
-                if (key === 'userData') return JSON.stringify(userData);
-                return null;
-            });
+            mockLocalStorage.getItem.and.returnValue(JSON.stringify(mockUserAuth));
 
             actions$ = of(action);
 
-            effects.getAuthUser$.subscribe(result => {
-                expect(result.type).toEqual(outcome.type);
-                expect(mockLocalStorage.getItem).toHaveBeenCalledWith('authData');
-                expect(mockLocalStorage.getItem).toHaveBeenCalledWith('userData');
+            effects.getAuthData$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockLocalStorage.getItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
                 done();
             });
         });
 
-        it('should dispatch getAuthDataFailure if no auth data is present in local storage', (done) => {
+        it('should dispatch getAuthDataFailure if auth data does not exist', (done) => {
             const action = getAuthData();
             const outcome = getAuthDataFailure();
 
@@ -180,56 +133,53 @@ describe('SignInEffects', () => {
 
             actions$ = of(action);
 
-            effects.getAuthUser$.subscribe(result => {
+            effects.getAuthData$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockLocalStorage.getItem).toHaveBeenCalledWith('authData');
-                expect(mockLocalStorage.getItem).toHaveBeenCalledWith('userData');
+                expect(mockLocalStorage.getItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
                 done();
             });
         });
     });
 
     describe('logOutUser$', () => {
-        it('should dispatch logOutUserSuccess and remove items from local storage', (done) => {
+        it('should dispatch logOutUserSuccess and clear auth data from local storage', (done) => {
             const action = logOutUser();
             const outcome = logOutUserSuccess();
-
-            mockLocalStorage.getItem.and.returnValue('someValue');
 
             actions$ = of(action);
 
             effects.logOutUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('authData');
-                expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('userData');
+                expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
                 done();
             });
         });
     });
 
     describe('refreshToken$', () => {
-        it('should dispatch refreshAccessTokenSuccess on successful refreshToken', (done) => {
-            const authToken: AuthToken = { accessToken: 'newAccessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-            const action = refreshAccessToken({ authToken: authToken });
-            const outcome = refreshAccessTokenSuccess({ authToken: authToken });
+        it('should dispatch refreshAccessTokenSuccess on successful token refresh', (done) => {
+            const action = refreshAccessToken({ authToken: mockAuthToken });
+            const outcome = refreshAccessTokenSuccess({ authToken: mockAuthToken });
 
-            mockLocalStorage.getItem.and.returnValue(JSON.stringify({ isAuthenticated: true, accessToken: 'oldAccessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() }));
+            mockLocalStorage.getItem.and.returnValue(JSON.stringify(mockUserAuth));
 
             actions$ = of(action);
-            mockApiService.refreshToken.and.returnValue(of(authToken));
+            mockApiService.refreshToken.and.returnValue(of(mockAuthToken));
 
             effects.refreshToken$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.refreshToken).toHaveBeenCalledWith(authToken);
-                expect(mockLocalStorage.setItem).toHaveBeenCalledWith('authData', JSON.stringify({ isAuthenticated: true, accessToken: 'newAccessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: authToken.refreshTokenExpiryDate }));
+                expect(mockApiService.refreshToken).toHaveBeenCalledWith(action.authToken);
+                expect(mockLocalStorage.setItem).toHaveBeenCalledWith(effects.storageUserAuthKey, JSON.stringify({
+                    ...mockUserAuth,
+                    authToken: mockAuthToken
+                }));
                 done();
             });
         });
 
-        it('should dispatch refreshAccessTokenFailure on failed refreshToken', (done) => {
-            const authToken: AuthToken = { accessToken: 'newAccessToken', refreshToken: 'refreshToken', refreshTokenExpiryDate: new Date() };
-            const action = refreshAccessToken({ authToken: authToken });
-            const error = new Error('Error!');
+        it('should dispatch refreshAccessTokenFailure on failed token refresh', (done) => {
+            const action = refreshAccessToken({ authToken: mockAuthToken });
+            const error = new Error('Token refresh failed');
             const outcome = refreshAccessTokenFailure({ error: error.message });
 
             actions$ = of(action);
@@ -237,8 +187,80 @@ describe('SignInEffects', () => {
 
             effects.refreshToken$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.refreshToken).toHaveBeenCalledWith(authToken);
-                expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('authData');
+                expect(mockApiService.refreshToken).toHaveBeenCalledWith(action.authToken);
+                expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
+                done();
+            });
+        });
+    });
+
+    describe('updateUserData$', () => {
+        it('should dispatch updateUserDataSuccess on successful user update', (done) => {
+            const action = updateUserData({ req: { email: 'test@example.com', oldPassword: 'password', password: 'newPassword' } });
+            const outcome = updateUserDataSuccess({ req: action.req });
+
+            mockLocalStorage.getItem.and.returnValue(JSON.stringify(mockUserAuth));
+            mockApiService.updateUser.and.returnValue(of());
+
+            actions$ = of(action);
+
+            effects.updateUserData$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockApiService.updateUser).toHaveBeenCalledWith(action.req);
+                expect(mockLocalStorage.setItem).toHaveBeenCalledWith(effects.storageUserAuthKey, JSON.stringify({
+                    ...mockUserAuth,
+                    email: action.req.email
+                }));
+                done();
+            });
+        });
+
+        it('should dispatch updateUserDataFailure on failed user update', (done) => {
+            const action = updateUserData({ req: { email: 'test@example.com', oldPassword: 'password', password: 'newPassword' } });
+            const error = new Error('Update failed');
+            const outcome = updateUserDataFailure({ error: error.message });
+
+            mockApiService.updateUser.and.returnValue(throwError(error));
+
+            actions$ = of(action);
+
+            effects.updateUserData$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockApiService.updateUser).toHaveBeenCalledWith(action.req);
+                done();
+            });
+        });
+    });
+
+    describe('deleteUser$', () => {
+        it('should dispatch deleteUserSuccess on successful user deletion', (done) => {
+            const action = deleteUser();
+            const outcome = deleteUserSuccess();
+
+            mockApiService.deleteUser.and.returnValue(of());
+
+            actions$ = of(action);
+
+            effects.deleteUser$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockApiService.deleteUser).toHaveBeenCalled();
+                expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
+                done();
+            });
+        });
+
+        it('should dispatch deleteUserFailure on failed user deletion', (done) => {
+            const action = deleteUser();
+            const error = new Error('Delete failed');
+            const outcome = deleteUserFailure({ error: error.message });
+
+            mockApiService.deleteUser.and.returnValue(throwError(error));
+
+            actions$ = of(action);
+
+            effects.deleteUser$.subscribe(result => {
+                expect(result).toEqual(outcome);
+                expect(mockApiService.deleteUser).toHaveBeenCalled();
                 done();
             });
         });

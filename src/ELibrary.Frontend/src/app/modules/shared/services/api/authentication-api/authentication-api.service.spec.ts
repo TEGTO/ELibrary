@@ -1,7 +1,7 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { AuthToken, URLDefiner, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest } from '../../..';
-import { AuthenticationApiService } from './authentication-api.service';
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { AuthToken, URLDefiner, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from "../../..";
+import { AuthenticationApiService } from "./authentication-api.service";
 
 describe('AuthenticationApiService', () => {
   let service: AuthenticationApiService;
@@ -33,18 +33,20 @@ describe('AuthenticationApiService', () => {
   });
 
   it('should login user', () => {
-    const expectedReq = `/api/auth/login`;
+    const expectedReq = `/api/user/login`;
     const request: UserAuthenticationRequest = {
       login: 'login',
       password: 'password'
     };
-    const response: UserAuthenticationResponse = {
+    const response: UserAuth = {
+      isAuthenticated: true,
       authToken: {
         accessToken: 'accessToken',
         refreshToken: 'refreshToken',
         refreshTokenExpiryDate: new Date()
       },
       email: 'userName',
+      roles: ['user']
     };
 
     service.loginUser(request).subscribe(res => {
@@ -53,33 +55,40 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/auth/login');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/user/login');
     req.flush(response);
   });
 
   it('should register user', () => {
-    const expectedReq = `/api/auth/register`;
+    const expectedReq = `/api/user/register`;
     const request: UserRegistrationRequest = {
-      userName: 'userName',
+      email: 'user@example.com',
       password: 'password',
-      confirmPassword: 'confirmPassword',
-      userInfo: {
-        name: "",
-        lastName: "",
-        dateOfBirth: new Date(),
-        address: ""
-      }
+      confirmPassword: 'password'
+    };
+    const response: UserAuth = {
+      isAuthenticated: true,
+      authToken: {
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        refreshTokenExpiryDate: new Date()
+      },
+      email: 'user@example.com',
+      roles: ['user']
     };
 
-    service.registerUser(request).subscribe();
+    service.registerUser(request).subscribe(res => {
+      expect(res).toEqual(response);
+    });
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/auth/register');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/user/register');
+    req.flush(response);
   });
 
   it('should refresh token', () => {
-    const expectedReq = `/api/auth/refresh`;
+    const expectedReq = `/api/user/refresh`;
     const request: AuthToken = {
       accessToken: 'oldAccessToken',
       refreshToken: 'oldRefreshToken',
@@ -97,18 +106,69 @@ describe('AuthenticationApiService', () => {
 
     const req = httpTestingController.expectOne(expectedReq);
     expect(req.request.method).toBe('POST');
-    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/auth/refresh');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/user/refresh');
     req.flush(response);
   });
 
-  it('should handle error on login', () => {
-    const expectedReq = `/api/auth/login`;
-    const request: UserAuthenticationRequest = {
-      login: 'login',
-      password: 'password'
+  it('should update user', () => {
+    const expectedReq = `/api/user/update`;
+    const request: UserUpdateRequest = {
+      email: 'updated@example.com',
+      oldPassword: 'oldPassword',
+      password: 'newPassword'
     };
 
-    service.loginUser(request).subscribe(
+    service.updateUser(request).subscribe(res => {
+      expect(res.status).toBe(200);
+    });
+
+    const req = httpTestingController.expectOne(expectedReq);
+    expect(req.request.method).toBe('PUT');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/user/update');
+    req.flush({}, { status: 200, statusText: 'OK' });
+  });
+
+  it('should delete user', () => {
+    const expectedReq = `/api/user/delete`;
+
+    service.deleteUser().subscribe(res => {
+      expect(res.status).toBe(200);
+    });
+
+    const req = httpTestingController.expectOne(expectedReq);
+    expect(req.request.method).toBe('DELETE');
+    expect(mockUrlDefiner.combineWithUserApiUrl).toHaveBeenCalledWith('/user/delete');
+    req.flush({}, { status: 200, statusText: 'OK' });
+  });
+
+  it('should handle error on register user', () => {
+    const expectedReq = `/api/user/register`;
+    const request: UserRegistrationRequest = {
+      email: 'user@example.com',
+      password: 'password',
+      confirmPassword: 'password'
+    };
+
+    service.registerUser(request).subscribe(
+      () => fail('Expected an error, not a success'),
+      (error) => {
+        expect(error).toBeTruthy();
+      }
+    );
+
+    const req = httpTestingController.expectOne(expectedReq);
+    req.flush('Error', { status: 400, statusText: 'Bad Request' });
+  });
+
+  it('should handle error on refresh token', () => {
+    const expectedReq = `/api/user/refresh`;
+    const request: AuthToken = {
+      accessToken: 'oldAccessToken',
+      refreshToken: 'oldRefreshToken',
+      refreshTokenExpiryDate: new Date()
+    };
+
+    service.refreshToken(request).subscribe(
       () => fail('Expected an error, not a success'),
       (error) => {
         expect(error).toBeTruthy();

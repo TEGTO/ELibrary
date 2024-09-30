@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { AuthenticationService } from '../..';
-import { AuthData, AuthToken } from '../../../shared';
+import { AuthToken, getDefaultUserAuth, UserAuth } from '../../../shared';
 import { AuthInterceptor } from './auth-interceptor.service';
 
 describe('AuthInterceptor', () => {
@@ -20,16 +20,15 @@ describe('AuthInterceptor', () => {
     refreshTokenExpiryDate: new Date(new Date().getTime() + 60000) // 1 minute in the future
   };
 
-  const mockAuthData: AuthData = {
+  const mockUserAuth: UserAuth = {
+    ...getDefaultUserAuth(),
     isAuthenticated: true,
-    accessToken: validAccessToken,
-    refreshToken: 'refresh-token',
-    refreshTokenExpiryDate: new Date(new Date().getTime() + 60000) // 1 minute in the future
+    authToken: mockAuthToken
   };
-  let authDataSubject: BehaviorSubject<AuthData>;
+  let authDataSubject: BehaviorSubject<UserAuth>;
 
   beforeEach(() => {
-    authDataSubject = new BehaviorSubject<AuthData>(mockAuthData);
+    authDataSubject = new BehaviorSubject<UserAuth>(mockUserAuth);
     authService = jasmine.createSpyObj('AuthenticationService', ['getAuthData', 'getAuthErrors', 'refreshToken', 'logOutUser']);
     authService.getUserAuth.and.returnValue(authDataSubject.asObservable());
     authService.getAuthErrors.and.returnValue(of(null));
@@ -90,12 +89,15 @@ describe('AuthInterceptor', () => {
   });
 
   it('should refresh token if access token is expired', (done) => {
-    const newAuthData: AuthData = {
-      ...mockAuthData,
-      accessToken: 'new-access-token'
-    };
+    // const newUserAuth: UserAuth = {
+    //   ...mockUserAuth,
+    //   authToken:{
+    //     ...mockUserAuth.authToken,
+    //     accessToken: 'new-access-token'
+    //   }
+    // };
 
-    authService.getUserAuth.and.returnValue(of({ ...mockAuthData, accessToken: expiredAccessToken }));
+    authService.getUserAuth.and.returnValue(of({ ...mockUserAuth, accessToken: expiredAccessToken }));
     authService.refreshToken.and.returnValue(of(true));
 
     httpClient.get('/test').subscribe(response => {

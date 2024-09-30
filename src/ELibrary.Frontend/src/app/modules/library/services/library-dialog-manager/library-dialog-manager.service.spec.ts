@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AuthorChangeDialogComponent, BookChangeDialogComponent, ConfirmMenuComponent, GenreChangeDialogComponent } from '../..';
-import { Author, Book, Genre } from '../../../shared';
+import { AuthorChangeDialogComponent, BookChangeDialogComponent, GenreChangeDialogComponent, PublisherChangeDialogComponent } from '../..';
+import { Author, Book, Genre, getDefaultAuthor, getDefaultBook, getDefaultGenre, getDefaultPublisher, Publisher } from '../../../shared';
 import { LibraryDialogManagerService } from './library-dialog-manager.service';
 
 describe('LibraryDialogManagerService', () => {
@@ -25,47 +26,23 @@ describe('LibraryDialogManagerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open confirm menu dialog', () => {
-    const dialogRef = {} as MatDialogRef<any>;
-    mockMatDialog.open.and.returnValue(dialogRef);
-
-    const result = service.openConfirmMenu();
-
-    expect(mockMatDialog.open).toHaveBeenCalledWith(ConfirmMenuComponent, {
-      height: '200px',
-      width: '450px'
-    });
-    expect(result).toBe(dialogRef);
-  });
-
   it('should open book details menu dialog', () => {
-    const book: Book = {
-      id: 1,
-      name: 'Book Title',
-      publicationDate: new Date(),
-      author: { id: 1, name: 'Author Name', lastName: 'Author LastName', dateOfBirth: new Date() },
-      genre: { id: 1, name: 'Genre Name' }
-    };
+    const book: Book = getDefaultBook();
     const dialogRef = {} as MatDialogRef<any>;
     mockMatDialog.open.and.returnValue(dialogRef);
 
     const result = service.openBookDetailsMenu(book);
 
     expect(mockMatDialog.open).toHaveBeenCalledWith(BookChangeDialogComponent, {
-      height: '460px',
-      width: '450px',
+      height: '660px',
+      width: '650px',
       data: book
     });
     expect(result).toBe(dialogRef);
   });
 
   it('should open author details menu dialog', () => {
-    const author: Author = {
-      id: 1,
-      name: 'Author Name',
-      lastName: 'Author LastName',
-      dateOfBirth: new Date()
-    };
+    const author: Author = getDefaultAuthor();
     const dialogRef = {} as MatDialogRef<any>;
     mockMatDialog.open.and.returnValue(dialogRef);
 
@@ -80,19 +57,31 @@ describe('LibraryDialogManagerService', () => {
   });
 
   it('should open genre details menu dialog', () => {
-    const genre: Genre = {
-      id: 1,
-      name: 'Genre Name'
-    };
+    const genre: Genre = getDefaultGenre();
     const dialogRef = {} as MatDialogRef<any>;
     mockMatDialog.open.and.returnValue(dialogRef);
 
     const result = service.openGenreDetailsMenu(genre);
 
     expect(mockMatDialog.open).toHaveBeenCalledWith(GenreChangeDialogComponent, {
-      height: '220px',
+      height: '230px',
       width: '450px',
       data: genre
+    });
+    expect(result).toBe(dialogRef);
+  });
+
+  it('should open publisher details menu dialog', () => {
+    const publisher: Publisher = getDefaultPublisher();
+    const dialogRef = {} as MatDialogRef<any>;
+    mockMatDialog.open.and.returnValue(dialogRef);
+
+    const result = service.openPublisherDetailsMenu(publisher);
+
+    expect(mockMatDialog.open).toHaveBeenCalledWith(PublisherChangeDialogComponent, {
+      height: '230px',
+      width: '450px',
+      data: publisher
     });
     expect(result).toBe(dialogRef);
   });

@@ -1,29 +1,23 @@
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest } from "../../../shared";
-import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerUser, registerFailure as registerUserFailure, registerSuccess as registerUserSuccess, signInUser, signInUserFailure, signInUserSuccess } from "./auth.actions";
+import { AuthToken, getDefaultUserAuth, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from "../../../shared";
+import { getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerSuccess, registerUser, registerFailure as registerUserFailure, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "./auth.actions";
 
-describe('Registration Actions', () => {
+describe('Authentication Actions', () => {
     const error = { message: 'An error occurred' };
 
     describe('Register User Actions', () => {
         it('should create registerUser action', () => {
             const req: UserRegistrationRequest =
             {
-                userName: 'user',
+                email: 'email',
                 password: 'password',
                 confirmPassword: 'password',
-                userInfo: {
-                    name: "",
-                    lastName: "",
-                    dateOfBirth: new Date(),
-                    address: ""
-                }
             }
             const action = registerUser({ req: req });
             expect(action.type).toBe('[Registration] Register New User');
             expect(action.req).toBe(req);
         });
         it('should create registerUserSuccess action', () => {
-            const action = registerUserSuccess();
+            const action = registerSuccess({ userAuth: getDefaultUserAuth() });
             expect(action.type).toBe('[Registration] Register New User Success');
         });
         it('should create registerUserFailure action', () => {
@@ -32,10 +26,6 @@ describe('Registration Actions', () => {
             expect(action.error).toEqual(error);
         });
     });
-});
-
-describe('Authentication Actions', () => {
-    const error = { message: 'An error occurred' };
 
     describe('Sign In Actions', () => {
         it('should create signInUser action', () => {
@@ -49,21 +39,10 @@ describe('Authentication Actions', () => {
             expect(action.req).toBe(req);
         });
         it('should create signInUserSuccess action', () => {
-            const authData: AuthData =
-            {
-                isAuthenticated: true,
-                accessToken: "authToken",
-                refreshToken: "refreshToken",
-                refreshTokenExpiryDate: new Date()
-            };
-            const userData: UserData =
-            {
-                email: "userName",
-            };
-            const action = signInUserSuccess({ authData: authData, userData: userData });
+            const userAuth: UserAuth = getDefaultUserAuth();
+            const action = signInUserSuccess({ userAuth: userAuth });
             expect(action.type).toBe('[Auth] Sing In By User Data Success');
-            expect(action.authData).toBe(authData);
-            expect(action.userData).toBe(userData);
+            expect(action.userAuth).toBe(userAuth);
         });
         it('should create signInUserFailure action', () => {
             const action = signInUserFailure({ error });
@@ -77,24 +56,13 @@ describe('Authentication Actions', () => {
             const action = getAuthData();
             expect(action.type).toBe('[Auth] Get Authenticated Data');
         });
-        it('should create signInUserSuccess action', () => {
-            const authData: AuthData =
-            {
-                isAuthenticated: true,
-                accessToken: "authToken",
-                refreshToken: "refreshToken",
-                refreshTokenExpiryDate: new Date()
-            };
-            const userData: UserData =
-            {
-                email: "userName",
-            };
-            const action = getAuthDataSuccess({ authData: authData, userData: userData });
+        it('should create getAuthDataSuccess action', () => {
+            const userAuth: UserAuth = getDefaultUserAuth();
+            const action = getAuthDataSuccess({ userAuth: userAuth });
             expect(action.type).toBe('[Auth] Get Authenticated Data Success');
-            expect(action.authData).toBe(authData);
-            expect(action.userData).toBe(userData);
+            expect(action.userAuth).toBe(userAuth);
         });
-        it('should create signInUserFailure action', () => {
+        it('should create getAuthDataFailure action', () => {
             const action = getAuthDataFailure();
             expect(action.type).toBe('[Auth] Get Authenticated Data Failure');
         });
@@ -136,6 +104,34 @@ describe('Authentication Actions', () => {
             it('should create refreshAccessTokenFailure action', () => {
                 const action = refreshAccessTokenFailure({ error });
                 expect(action.type).toBe('[Auth] Refresh Access Token Failure');
+                expect(action.error).toEqual(error);
+            });
+        });
+
+        describe('Update User Actions', () => {
+            it('should create updateUserData action', () => {
+                const req: UserUpdateRequest = {
+                    oldPassword: "",
+                    password: "",
+                    email: ""
+                }
+                const action = updateUserData({ req: req });
+                expect(action.type).toBe('[Auth] Update User Data');
+                expect(action.req).toBe(req);
+            });
+            it('should create updateUserDataSuccess action', () => {
+                const req: UserUpdateRequest = {
+                    oldPassword: "",
+                    password: "",
+                    email: ""
+                }
+                const action = updateUserDataSuccess({ req: req });
+                expect(action.type).toBe('[Auth] Update User Data Success');
+                expect(action.req).toBe(req);
+            });
+            it('should create updateUserDataFailure action', () => {
+                const action = updateUserDataFailure({ error });
+                expect(action.type).toBe('[Auth] Update User Data Failure');
                 expect(action.error).toEqual(error);
             });
         });

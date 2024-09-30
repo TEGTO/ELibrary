@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CreateGenreRequest, Genre, UpdateGenreRequest, URLDefiner } from '../../../..';
+import { CreateGenreRequest, Genre, LibraryFilterRequest, UpdateGenreRequest, URLDefiner } from '../../../..';
 import { GenreApiService } from './genre-api.service';
 
 describe('GenreApiService', () => {
@@ -52,7 +52,7 @@ describe('GenreApiService', () => {
 
   it('should get paginated genres', () => {
     const expectedReq = `/api/genre/pagination`;
-    const request = { pageNumber: 1, pageSize: 10 };
+    const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
     const response: Genre[] = [
       { id: 1, name: 'Fantasy' },
       { id: 2, name: 'Science Fiction' }
@@ -70,9 +70,10 @@ describe('GenreApiService', () => {
 
   it('should get the total number of genres', () => {
     const expectedReq = `/api/genre/amount`;
+    const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
     const response = 50;
 
-    service.getItemTotalAmount().subscribe(res => {
+    service.getItemTotalAmount(request).subscribe(res => {
       expect(res).toEqual(response);
     });
 

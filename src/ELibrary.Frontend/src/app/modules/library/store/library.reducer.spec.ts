@@ -1,107 +1,237 @@
-import { authorActions, bookActions, genreActions } from "..";
-import { Author, Book, Genre } from "../../shared";
-import { LibraryState, libraryReducer } from "./library.reducer";
+import { authorActions, bookActions, genreActions, publisherActions } from "..";
+import { Author, Book, Genre, getDefaultBook, Publisher } from "../../shared";
+import { authorReducer, AuthorState, bookReducer, BookState, genreReducer, GenreState, publisherReducer, PublisherState } from "./library.reducer";
 
 describe('Library Reducer', () => {
-    const initialState: LibraryState = {
-        books: [],
+    //#region Author Tests
+    const initialAuthorState: AuthorState = {
         authors: [],
-        genres: [],
-        totalBookAmount: 0,
         totalAuthorAmount: 0,
-        totalGenreAmount: 0,
         error: null
     };
-
-    it('should handle getPaginatedSuccess for books', () => {
-        const books: Book[] = [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }];
-        const action = bookActions.getPaginatedSuccess({ entities: books });
-        const newState = libraryReducer(initialState, action);
-
-        expect(newState.books).toEqual(books);
-        expect(newState.error).toBeNull();
-    });
-
-    it('should handle getPaginatedFailure for books', () => {
-        const error = 'Failed to fetch books';
-        const action = bookActions.getPaginatedFailure({ error });
-        const newState = libraryReducer(initialState, action);
-
-        expect(newState.error).toEqual(error);
-    });
-
-    it('should handle getTotalAmountSuccess for books', () => {
-        const amount = 10;
-        const action = bookActions.getTotalAmountSuccess({ amount });
-        const newState = libraryReducer(initialState, action);
-
-        expect(newState.totalBookAmount).toEqual(amount);
-        expect(newState.error).toBeNull();
-    });
-
-    it('should handle createSuccess for books', () => {
-        const newBook: Book = { id: 2, name: 'Book 2', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } };
-        const action = bookActions.createSuccess({ entity: newBook });
-        const newState = libraryReducer(initialState, action);
-
-        expect(newState.books).toContain(newBook);
-        expect(newState.totalBookAmount).toEqual(1);
-        expect(newState.error).toBeNull();
-    });
-
-    it('should handle updateSuccess for books', () => {
-        const initialStateWithBooks: LibraryState = {
-            ...initialState,
-            books: [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
-        };
-        const updatedBook: Book = {
-            id: 1,
-            name: 'Updated Book 1',
-            publicationDate: new Date(),
-            author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() },
-            genre: { id: 1, name: 'Genre 1' }
-        };
-        const action = bookActions.updateSuccess({ entity: updatedBook });
-        const newState = libraryReducer(initialStateWithBooks, action);
-
-        expect(newState.books[0].name).toEqual(updatedBook.name);
-        expect(newState.error).toBeNull();
-    });
-
-    it('should handle deleteByIdSuccess for books', () => {
-        const initialStateWithBooks: LibraryState = {
-            ...initialState,
-            books: [{ id: 1, name: 'Book 1', publicationDate: new Date(), author: { id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }, genre: { id: 1, name: 'Genre 1' } }],
-            totalBookAmount: 1
-        };
-        const action = bookActions.deleteByIdSuccess({ id: 1 });
-        const newState = libraryReducer(initialStateWithBooks, action);
-
-        expect(newState.books.length).toEqual(0);
-        expect(newState.totalBookAmount).toEqual(0);
-        expect(newState.error).toBeNull();
-    });
-
-    // For other entities tests are simmilar
 
     it('should handle getPaginatedSuccess for authors', () => {
         const authors: Author[] = [{ id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }];
         const action = authorActions.getPaginatedSuccess({ entities: authors });
-        const newState = libraryReducer(initialState, action);
+        const newState = authorReducer(initialAuthorState, action);
 
         expect(newState.authors).toEqual(authors);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle createSuccess for authors', () => {
+        const newAuthor: Author = { id: 2, name: 'Author 2', lastName: 'Last 2', dateOfBirth: new Date() };
+        const action = authorActions.createSuccess({ entity: newAuthor });
+        const newState = authorReducer(initialAuthorState, action);
+
+        expect(newState.authors).toContain(newAuthor);
+        expect(newState.totalAuthorAmount).toEqual(1);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle deleteByIdSuccess for authors', () => {
+        const initialStateWithAuthors: AuthorState = {
+            ...initialAuthorState,
+            authors: [{ id: 1, name: 'Author 1', lastName: 'Last 1', dateOfBirth: new Date() }],
+            totalAuthorAmount: 1
+        };
+        const action = authorActions.deleteByIdSuccess({ id: 1 });
+        const newState = authorReducer(initialStateWithAuthors, action);
+
+        expect(newState.authors.length).toEqual(0);
+        expect(newState.totalAuthorAmount).toEqual(0);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getTotalAmountSuccess for authors', () => {
+        const amount = 5;
+        const action = authorActions.getTotalAmountSuccess({ amount });
+        const newState = authorReducer(initialAuthorState, action);
+
+        expect(newState.totalAuthorAmount).toEqual(amount);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getPaginatedFailure for authors', () => {
+        const error = 'Failed to fetch authors';
+        const action = authorActions.getPaginatedFailure({ error });
+        const newState = authorReducer(initialAuthorState, action);
+
+        expect(newState.error).toEqual(error);
+    });
+    //#endregion
+
+    //#region Genre Tests
+    const initialGenreState: GenreState = {
+        genres: [],
+        totalGenreAmount: 0,
+        error: null
+    };
+
+    it('should handle getPaginatedSuccess for genres', () => {
+        const genres: Genre[] = [{ id: 1, name: 'Genre 1' }];
+        const action = genreActions.getPaginatedSuccess({ entities: genres });
+        const newState = genreReducer(initialGenreState, action);
+
+        expect(newState.genres).toEqual(genres);
         expect(newState.error).toBeNull();
     });
 
     it('should handle createSuccess for genres', () => {
         const newGenre: Genre = { id: 2, name: 'Genre 2' };
         const action = genreActions.createSuccess({ entity: newGenre });
-        const newState = libraryReducer(initialState, action);
+        const newState = genreReducer(initialGenreState, action);
 
         expect(newState.genres).toContain(newGenre);
         expect(newState.totalGenreAmount).toEqual(1);
         expect(newState.error).toBeNull();
     });
 
-    //And so on...
+    it('should handle deleteByIdSuccess for genres', () => {
+        const initialStateWithGenres: GenreState = {
+            ...initialGenreState,
+            genres: [{ id: 1, name: 'Genre 1' }],
+            totalGenreAmount: 1
+        };
+        const action = genreActions.deleteByIdSuccess({ id: 1 });
+        const newState = genreReducer(initialStateWithGenres, action);
+
+        expect(newState.genres.length).toEqual(0);
+        expect(newState.totalGenreAmount).toEqual(0);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getTotalAmountSuccess for genres', () => {
+        const amount = 7;
+        const action = genreActions.getTotalAmountSuccess({ amount });
+        const newState = genreReducer(initialGenreState, action);
+
+        expect(newState.totalGenreAmount).toEqual(amount);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getPaginatedFailure for genres', () => {
+        const error = 'Failed to fetch genres';
+        const action = genreActions.getPaginatedFailure({ error });
+        const newState = genreReducer(initialGenreState, action);
+
+        expect(newState.error).toEqual(error);
+    });
+    //#endregion
+
+    //#region Publisher Tests
+    const initialPublisherState: PublisherState = {
+        publishers: [],
+        totalPublisherAmount: 0,
+        error: null
+    };
+
+    it('should handle getPaginatedSuccess for publishers', () => {
+        const publishers: Publisher[] = [{ id: 1, name: 'Publisher 1' }];
+        const action = publisherActions.getPaginatedSuccess({ entities: publishers });
+        const newState = publisherReducer(initialPublisherState, action);
+
+        expect(newState.publishers).toEqual(publishers);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle createSuccess for publishers', () => {
+        const newPublisher: Publisher = { id: 2, name: 'Publisher 2' };
+        const action = publisherActions.createSuccess({ entity: newPublisher });
+        const newState = publisherReducer(initialPublisherState, action);
+
+        expect(newState.publishers).toContain(newPublisher);
+        expect(newState.totalPublisherAmount).toEqual(1);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle deleteByIdSuccess for publishers', () => {
+        const initialStateWithPublishers: PublisherState = {
+            ...initialPublisherState,
+            publishers: [{ id: 1, name: 'Publisher 1' }],
+            totalPublisherAmount: 1
+        };
+        const action = publisherActions.deleteByIdSuccess({ id: 1 });
+        const newState = publisherReducer(initialStateWithPublishers, action);
+
+        expect(newState.publishers.length).toEqual(0);
+        expect(newState.totalPublisherAmount).toEqual(0);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getTotalAmountSuccess for publishers', () => {
+        const amount = 3;
+        const action = publisherActions.getTotalAmountSuccess({ amount });
+        const newState = publisherReducer(initialPublisherState, action);
+
+        expect(newState.totalPublisherAmount).toEqual(amount);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getPaginatedFailure for publishers', () => {
+        const error = 'Failed to fetch publishers';
+        const action = publisherActions.getPaginatedFailure({ error });
+        const newState = publisherReducer(initialPublisherState, action);
+
+        expect(newState.error).toEqual(error);
+    });
+    //#endregion
+
+    //#region Book Tests
+    const initialBookState: BookState = {
+        books: [],
+        totalBookAmount: 0,
+        error: null
+    };
+
+    it('should handle getPaginatedSuccess for books', () => {
+        const books: Book[] = [getDefaultBook(), getDefaultBook()];
+        const action = bookActions.getPaginatedSuccess({ entities: books });
+        const newState = bookReducer(initialBookState, action);
+
+        expect(newState.books).toEqual(books);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle createSuccess for books', () => {
+        const newBook: Book = getDefaultBook();
+        const action = bookActions.createSuccess({ entity: newBook });
+        const newState = bookReducer(initialBookState, action);
+
+        expect(newState.books).toContain(newBook);
+        expect(newState.totalBookAmount).toEqual(1);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle deleteByIdSuccess for books', () => {
+        const initialStateWithBooks: BookState = {
+            ...initialBookState,
+            books: [getDefaultBook()],
+            totalBookAmount: 1
+        };
+        const action = bookActions.deleteByIdSuccess({ id: 1 });
+        const newState = bookReducer(initialStateWithBooks, action);
+
+        expect(newState.books.length).toEqual(0);
+        expect(newState.totalBookAmount).toEqual(0);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getTotalAmountSuccess for books', () => {
+        const amount = 8;
+        const action = bookActions.getTotalAmountSuccess({ amount });
+        const newState = bookReducer(initialBookState, action);
+
+        expect(newState.totalBookAmount).toEqual(amount);
+        expect(newState.error).toBeNull();
+    });
+
+    it('should handle getPaginatedFailure for books', () => {
+        const error = 'Failed to fetch books';
+        const action = bookActions.getPaginatedFailure({ error });
+        const newState = bookReducer(initialBookState, action);
+
+        expect(newState.error).toEqual(error);
+    });
+    //#endregion
 });

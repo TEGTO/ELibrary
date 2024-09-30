@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { AuthenticationService } from '../..';
+import { getDefaultUserAuth } from '../../../shared';
 import { AuthenticatedComponent } from './authenticated.component';
 
 describe('AuthenticatedComponent', () => {
@@ -25,7 +26,7 @@ describe('AuthenticatedComponent', () => {
     component = fixture.componentInstance;
     authService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
 
-    authService.getUserData.and.returnValue(of({ userName: 'John Doe' }));
+    authService.getUserAuth.and.returnValue(of(getDefaultUserAuth()));
   }));
 
   beforeEach(() => {
@@ -40,10 +41,7 @@ describe('AuthenticatedComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(authService.getUserData).toHaveBeenCalled();
-    component.userData$.subscribe((data) => {
-      expect(data.email).toEqual('John Doe');
-    });
+    expect(authService.getUserAuth).toHaveBeenCalled();
   });
 
   it('should call logOutUser on logout button click', () => {

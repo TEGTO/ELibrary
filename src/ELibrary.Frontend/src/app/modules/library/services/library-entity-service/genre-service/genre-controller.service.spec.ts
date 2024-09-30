@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { genreActions, selectGenreAmount, selectGenres } from '../../..';
-import { CreateGenreRequest, Genre, GenreApiService, PaginatedRequest, UpdateGenreRequest } from '../../../../shared';
+import { CreateGenreRequest, Genre, GenreApiService, LibraryFilterRequest, UpdateGenreRequest } from '../../../../shared';
 import { GenreControllerService } from './genre-controller.service';
 
 describe('GenreControllerService', () => {
@@ -57,7 +58,7 @@ describe('GenreControllerService', () => {
     });
 
     it('should dispatch getPaginated action and return paginated genres', (done) => {
-        const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
+        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
         store.select.and.returnValue(of(mockGenreData));
 
         service.getPaginated(request).subscribe(result => {
@@ -69,9 +70,10 @@ describe('GenreControllerService', () => {
 
     it('should dispatch getTotalAmount action and return total amount of genres', (done) => {
         store.select.and.returnValue(of(mockTotalAmount));
+        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
 
-        service.getItemTotalAmount().subscribe(result => {
-            expect(store.dispatch).toHaveBeenCalledWith(genreActions.getTotalAmount());
+        service.getItemTotalAmount(request).subscribe(result => {
+            expect(store.dispatch).toHaveBeenCalledWith(genreActions.getTotalAmount({ request: request }));
             expect(result).toEqual(mockTotalAmount);
             done();
         });

@@ -42,7 +42,7 @@ export class AuthEffects {
             )
         )
     );
-    getAuthUser$ = createEffect(() =>
+    getAuthData$ = createEffect(() =>
         this.actions$.pipe(
             ofType(getAuthData),
             mergeMap(() => {

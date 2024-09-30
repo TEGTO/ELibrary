@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Author, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest, URLDefiner } from '../../../..';
+import { Author, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest, URLDefiner } from '../../../..';
 import { AuthorApiService } from './author-api.service';
 
 describe('AuthorApiService', () => {
@@ -54,9 +54,10 @@ describe('AuthorApiService', () => {
 
   it('should get paginated authors', () => {
     const expectedReq = `/api/author/pagination`;
-    const request: PaginatedRequest = {
+    const request: LibraryFilterRequest = {
       pageNumber: 1,
-      pageSize: 10
+      pageSize: 10,
+      containsName: ""
     };
     const response: Author[] = [
       { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') },
@@ -76,8 +77,13 @@ describe('AuthorApiService', () => {
   it('should get the total number of authors', () => {
     const expectedReq = `/api/author/amount`;
     const response = 100;
+    const request: LibraryFilterRequest = {
+      pageNumber: 1,
+      pageSize: 10,
+      containsName: ""
+    };
 
-    service.getItemTotalAmount().subscribe(res => {
+    service.getItemTotalAmount(request).subscribe(res => {
       expect(res).toEqual(response);
     });
 

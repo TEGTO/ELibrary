@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../..';
-import { AuthData, SnackbarManager } from '../../../shared';
+import { getDefaultUserAuth, SnackbarManager, UserAuth } from '../../../shared';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
@@ -81,11 +81,9 @@ describe('LoginComponent', () => {
   });
 
   it('should call signInUser on valid form submission', () => {
-    const authData: AuthData = {
+    const userAuth: UserAuth = {
+      ...getDefaultUserAuth(),
       isAuthenticated: true,
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      refreshTokenExpiryDate: new Date()
     };
 
     component.formGroup.setValue({
@@ -93,7 +91,7 @@ describe('LoginComponent', () => {
       password: 'password123'
     });
 
-    authService.getUserAuth.and.returnValue(of(authData));
+    authService.getUserAuth.and.returnValue(of(userAuth));
     authService.getAuthErrors.and.returnValue(of(null));
 
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
@@ -107,11 +105,9 @@ describe('LoginComponent', () => {
   });
 
   it('should display error messages on login failure', () => {
-    const authData: AuthData = {
+    const userAuth: UserAuth = {
+      ...getDefaultUserAuth(),
       isAuthenticated: false,
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      refreshTokenExpiryDate: new Date()
     };
 
     component.formGroup.setValue({
@@ -119,7 +115,7 @@ describe('LoginComponent', () => {
       password: 'password123'
     });
 
-    authService.getUserAuth.and.returnValue(of(authData));
+    authService.getUserAuth.and.returnValue(of(userAuth));
     authService.getAuthErrors.and.returnValue(of('Login failed'));
 
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
@@ -135,14 +131,12 @@ describe('LoginComponent', () => {
       password: 'password123'
     });
 
-    const authData: AuthData = {
+    const userAuth: UserAuth = {
+      ...getDefaultUserAuth(),
       isAuthenticated: false,
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-      refreshTokenExpiryDate: new Date()
     };
 
-    authService.getUserAuth.and.returnValue(of(authData));
+    authService.getUserAuth.and.returnValue(of(userAuth));
     authService.getAuthErrors.and.returnValue(of('Server error'));
 
     component.signInUser();
@@ -179,12 +173,7 @@ describe('LoginComponent', () => {
       password: 'wrongpassword'
     });
 
-    authService.getUserAuth.and.returnValue(of({
-      isAuthenticated: false,
-      accessToken: "",
-      refreshToken: "",
-      refreshTokenExpiryDate: new Date()
-    }));
+    authService.getUserAuth.and.returnValue(of(getDefaultUserAuth()));
     authService.getAuthErrors.and.returnValue(of('Invalid login credentials'));
 
     component.signInUser();

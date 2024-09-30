@@ -1,23 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { getAuthData, logOutUser, refreshAccessToken, registerUser, selectIsRefreshSuccessful, selectUserAuth, signInUser } from '../..';
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest } from '../../../shared';
+import { getAuthData, logOutUser, refreshAccessToken, registerUser, signInUser, updateUserData } from '../..';
+import { AuthToken, getDefaultAuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
 import { AuthenticationControllerService } from './authentication-controller.service';
 
 describe('AuthenticationControllerService', () => {
   let service: AuthenticationControllerService;
   let store: jasmine.SpyObj<Store>;
 
-  const mockAuthData: AuthData = {
+  const mockUserAuth: UserAuth = {
     isAuthenticated: true,
-    accessToken: 'authToken',
-    refreshToken: 'refreshToken',
-    refreshTokenExpiryDate: new Date()
-  };
-
-  const mockUserData: UserData = {
-    email: 'user',
+    authToken: getDefaultAuthToken(),
+    email: 'user@example.com',
+    roles: ['user']
   };
 
   beforeEach(() => {
@@ -32,22 +28,14 @@ describe('AuthenticationControllerService', () => {
 
     service = TestBed.inject(AuthenticationControllerService);
     store = TestBed.inject(Store) as jasmine.SpyObj<Store>;
-    store.select.and.returnValue(of(mockAuthData));
+    store.select.and.returnValue(of(mockUserAuth));
   });
 
   it('should dispatch registerUser action and return isSuccess observable', (done) => {
-    const userRegistrationData: UserRegistrationRequest =
-    {
-      userName: 'user',
+    const userRegistrationData: UserRegistrationRequest = {
+      email: 'user@example.com',
       password: 'password',
-      confirmPassword: 'password',
-      userInfo: {
-        name: "",
-        lastName: "",
-        dateOfBirth: new Date(),
-        address: ""
-      }
-
+      confirmPassword: 'password'
     };
     store.select.and.returnValue(of(true));
 
@@ -58,33 +46,50 @@ describe('AuthenticationControllerService', () => {
     });
   });
 
-  it('should return registration errors observable', (done) => {
-    store.select.and.returnValue(of('Error'));
-
-    service.getRegistrationErrors().subscribe(result => {
-      expect(result).toBe('Error');
-      done();
-    });
-  });
-
-  it('should dispatch signInUser action and return authData observable', (done) => {
+  it('should dispatch signInUser action and not return an observable', () => {
     const userAuthData: UserAuthenticationRequest = { login: 'user@example.com', password: 'password' };
-    store.select.and.returnValue(of(mockAuthData));
 
     service.signInUser(userAuthData);
-    service.getUserAuth().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(signInUser({ req: userAuthData }));
-      expect(result).toEqual(mockAuthData);
+    expect(store.dispatch).toHaveBeenCalledWith(signInUser({ req: userAuthData }));
+  });
+
+  it('should dispatch logOutUser action', () => {
+    service.logOutUser();
+    expect(store.dispatch).toHaveBeenCalledWith(logOutUser());
+  });
+
+  it('should dispatch refreshAccessToken action and return isRefreshSuccessful observable', (done) => {
+    const accessToken: AuthToken = { accessToken: 'newToken', refreshToken: 'newRefresh', refreshTokenExpiryDate: new Date() };
+    store.select.and.returnValue(of(true));
+
+    service.refreshToken(accessToken).subscribe(result => {
+      expect(result).toBe(true);
+      expect(store.dispatch).toHaveBeenCalledWith(refreshAccessToken({ authToken: accessToken }));
       done();
     });
   });
 
-  it('should dispatch getAuthData action and return authData observable', (done) => {
-    store.select.and.returnValue(of(mockAuthData));
+  it('should dispatch updateUserData action and return isUpdateSuccess observable', (done) => {
+    const userUpdateRequest: UserUpdateRequest = {
+      email: 'updated@example.com',
+      oldPassword: 'oldPassword',
+      password: 'newPassword'
+    };
+    store.select.and.returnValue(of(true));
+
+    service.updateUserAuth(userUpdateRequest).subscribe(result => {
+      expect(result).toBe(true);
+      expect(store.dispatch).toHaveBeenCalledWith(updateUserData({ req: userUpdateRequest }));
+      done();
+    });
+  });
+
+  it('should dispatch getUserAuth action and return userAuth observable', (done) => {
+    store.select.and.returnValue(of(mockUserAuth));
 
     service.getUserAuth().subscribe(result => {
+      expect(result).toEqual(mockUserAuth);
       expect(store.dispatch).toHaveBeenCalledWith(getAuthData());
-      expect(result).toEqual(mockAuthData);
       done();
     });
   });
@@ -93,53 +98,6 @@ describe('AuthenticationControllerService', () => {
     store.select.and.returnValue(of('Error'));
 
     service.getAuthErrors().subscribe(result => {
-      expect(result).toBe('Error');
-      done();
-    });
-  });
-
-  it('should dispatch logOutUser action and return authData observable', (done) => {
-    store.select.and.returnValue(of(mockAuthData));
-
-    service.logOutUser();
-    service.getUserAuth().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(logOutUser());
-      expect(result).toEqual(mockAuthData);
-      done();
-    });
-  });
-
-  it('should dispatch refreshAccessToken action and return authData observable', (done) => {
-    const accessToken: AuthToken = { accessToken: 'newToken', refreshToken: 'newRefresh', refreshTokenExpiryDate: new Date() };
-    // @ts-ignore
-    store.select.withArgs(selectIsRefreshSuccessful).and.returnValue(of(true));
-    // @ts-ignore
-    store.select.withArgs(selectUserAuth).and.returnValue(of(mockAuthData));
-
-    service.refreshToken(accessToken).subscribe(result => {
-      expect(result).toEqual(true);
-    });
-    service.getUserAuth().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(refreshAccessToken({ authToken: accessToken }));
-      expect(result).toEqual(mockAuthData);
-      done();
-    });
-  });
-
-  it('should dispatch getAuthData action and return userData observable', (done) => {
-    store.select.and.returnValue(of(mockUserData));
-
-    service.getUserData().subscribe(result => {
-      expect(store.dispatch).toHaveBeenCalledWith(getAuthData());
-      expect(result).toEqual(mockUserData);
-      done();
-    });
-  });
-
-  it('should return user errors observable', (done) => {
-    store.select.and.returnValue(of('Error'));
-
-    service.getUserErrors().subscribe(result => {
       expect(result).toBe('Error');
       done();
     });
