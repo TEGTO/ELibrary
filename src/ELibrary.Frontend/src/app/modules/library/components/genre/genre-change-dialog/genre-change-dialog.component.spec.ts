@@ -4,17 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Genre } from '../../../../shared';
+import { Genre, ValidationMessage } from '../../../../shared';
 import { GenreChangeDialogComponent } from './genre-change-dialog.component';
 
 describe('GenreChangeDialogComponent', () => {
   let component: GenreChangeDialogComponent;
   let fixture: ComponentFixture<GenreChangeDialogComponent>;
   let dialogRef: jasmine.SpyObj<MatDialogRef<GenreChangeDialogComponent>>;
+  let validationMessageSpy: jasmine.SpyObj<ValidationMessage>;
   const mockGenre: Genre = { id: 1, name: 'Horror' };
 
   beforeEach(async () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    validationMessageSpy = jasmine.createSpyObj<ValidationMessage>(['getValidationMessage']);
+    validationMessageSpy.getValidationMessage.and.returnValue({ hasError: false, message: "" });
 
     await TestBed.configureTestingModule({
       declarations: [GenreChangeDialogComponent],
@@ -26,7 +29,8 @@ describe('GenreChangeDialogComponent', () => {
       ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: mockGenre },
-        { provide: MatDialogRef, useValue: dialogRefSpy }
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        { provide: ValidationMessage, useValue: validationMessageSpy }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -55,6 +59,7 @@ describe('GenreChangeDialogComponent', () => {
   });
 
   it('should display validation error message when name is empty', () => {
+    validationMessageSpy.getValidationMessage.and.returnValue({ hasError: true, message: "Name is required." });
     component.formGroup.get('name')?.setValue('');
     fixture.detectChanges();
 

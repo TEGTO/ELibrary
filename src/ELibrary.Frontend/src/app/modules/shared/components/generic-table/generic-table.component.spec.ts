@@ -24,8 +24,7 @@ describe('GenericTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GenericTableComponent],
-      imports: [MatPaginatorModule, BrowserAnimationsModule]
+      imports: [GenericTableComponent, MatPaginatorModule, BrowserAnimationsModule]
     }).compileComponents();
   });
 

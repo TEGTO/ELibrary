@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { BookService, LibraryDialogManager } from '../../../../../library';
-import { Book, GenericTableComponent, getDefaultBook } from '../../../../../shared';
+import { BookService, CREATE_BOOK_COMMAND_HANDLER, CreateBookCommand, DELETE_BOOK_COMMAND_HANDLER, DeleteBookCommand, UPDATE_BOOK_COMMAND_HANDLER, UpdateBookCommand } from '../../../../../library';
+import { Book, CommandHandler, GenericTableComponent, getDefaultBook } from '../../../../../shared';
 import { BookTableComponent } from './book-table.component';
 
 describe('BookTableComponent', () => {
   let component: BookTableComponent;
   let fixture: ComponentFixture<BookTableComponent>;
-  let mockDialogManager: jasmine.SpyObj<LibraryDialogManager>;
   let mockBookService: jasmine.SpyObj<BookService>;
+  let mockCreateBookCommandHandler: jasmine.SpyObj<CommandHandler<CreateBookCommand>>;
+  let mockUpdateBookCommandHandler: jasmine.SpyObj<CommandHandler<UpdateBookCommand>>;
+  let mockDeleteBookCommandHandler: jasmine.SpyObj<CommandHandler<DeleteBookCommand>>;
 
   const mockItems: Book[] = [
     getDefaultBook(),
@@ -20,27 +24,37 @@ describe('BookTableComponent', () => {
   const mockAmount = 2;
 
   beforeEach(async () => {
-    mockDialogManager = jasmine.createSpyObj('LibraryDialogManager', [
-      'openBookDetailsMenu',
-      'openConfirmMenu'
-    ]);
-
     mockBookService = jasmine.createSpyObj('BookService', [
       'getItemTotalAmount',
-      'getBooksPaginated',
+      'getPaginated',
       'createBook',
       'updateBook',
       'deleteBookById'
+    ]);
+
+    mockCreateBookCommandHandler = jasmine.createSpyObj<CommandHandler<CreateBookCommand>>([
+      'dispatch',
+    ]);
+
+    mockUpdateBookCommandHandler = jasmine.createSpyObj<CommandHandler<UpdateBookCommand>>([
+      'dispatch',
+    ]);
+
+    mockDeleteBookCommandHandler = jasmine.createSpyObj<CommandHandler<DeleteBookCommand>>([
+      'dispatch',
     ]);
 
     mockBookService.getItemTotalAmount.and.returnValue(of(mockAmount));
     mockBookService.getPaginated.and.returnValue(of(mockItems));
 
     await TestBed.configureTestingModule({
-      declarations: [BookTableComponent, GenericTableComponent],
+      imports: [GenericTableComponent, BrowserAnimationsModule],
+      declarations: [BookTableComponent],
       providers: [
-        { provide: LibraryDialogManager, useValue: mockDialogManager },
-        { provide: BookService, useValue: mockBookService }
+        { provide: BookService, useValue: mockBookService },
+        { provide: CREATE_BOOK_COMMAND_HANDLER, useValue: mockCreateBookCommandHandler },
+        { provide: UPDATE_BOOK_COMMAND_HANDLER, useValue: mockUpdateBookCommandHandler },
+        { provide: DELETE_BOOK_COMMAND_HANDLER, useValue: mockDeleteBookCommandHandler }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -56,10 +70,10 @@ describe('BookTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize and call pageChange on ngOnInit', () => {
-    spyOn(component, 'onPageChange');
+  it('should initialize and fetch paginated items', () => {
+    spyOn<any>(component, 'fetchPaginatedItems');
     component.ngOnInit();
-    expect(component.onPageChange).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
+    expect(component["fetchPaginatedItems"]).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
   });
 
   it('should bind data to generic-table component', () => {
@@ -69,7 +83,11 @@ describe('BookTableComponent', () => {
       publicationDate: item.publicationDate,
       author: `${item.author.name} ${item.author.lastName}`,
       genre: item.genre.name,
-      publisher: item.publisher.name
+      publisher: item.publisher.name,
+      price: item.price,
+      coverType: item.coverType,
+      pageAmount: item.pageAmount,
+      stockAmount: item.stockAmount,
     })));
     fixture.detectChanges();
 
@@ -83,7 +101,11 @@ describe('BookTableComponent', () => {
       publicationDate: item.publicationDate,
       author: `${item.author.name} ${item.author.lastName}`,
       genre: item.genre.name,
-      publisher: item.publisher.name
+      publisher: item.publisher.name,
+      price: item.price,
+      coverType: item.coverType,
+      pageAmount: item.pageAmount,
+      stockAmount: item.stockAmount,
     })));
     expect(componentInstance.totalItemAmount).toBe(mockAmount);
   });
@@ -101,50 +123,38 @@ describe('BookTableComponent', () => {
         publicationDate: item.publicationDate,
         author: `${item.author.name} ${item.author.lastName}`,
         genre: item.genre.name,
-        publisher: item.publisher.name
+        publisher: item.publisher.name,
+        price: item.price,
+        coverType: item.coverType,
+        pageAmount: item.pageAmount,
+        stockAmount: item.stockAmount,
       })));
     });
   });
 
-  it('should open create dialog and call createBook on confirmation', () => {
-    const mockBook: Book = getDefaultBook();
-    const dialogRef = { afterClosed: () => of(mockBook) };
-    mockDialogManager.openBookDetailsMenu.and.returnValue(dialogRef as any);
-
-    spyOn(component, 'createNew').and.callThrough();
+  it('should dispatch create book command', () => {
 
     component.createNew();
     fixture.detectChanges();
 
-    expect(mockDialogManager.openBookDetailsMenu).toHaveBeenCalled();
-    expect(mockBookService.create).toHaveBeenCalled();
+    expect(mockCreateBookCommandHandler.dispatch).toHaveBeenCalled();
   });
 
-  it('should open update dialog and call updateBook on confirmation', () => {
+  it('should dispatch update book command', () => {
     const mockBook: Book = getDefaultBook();
-    const dialogRef = { afterClosed: () => of(mockBook) };
-    mockDialogManager.openBookDetailsMenu.and.returnValue(dialogRef as any);
-
-    spyOn(component, 'update').and.callThrough();
 
     component.update(mockBook);
     fixture.detectChanges();
 
-    expect(mockDialogManager.openBookDetailsMenu).toHaveBeenCalledWith(mockBook);
-    expect(mockBookService.update).toHaveBeenCalled();
+    expect(mockUpdateBookCommandHandler.dispatch).toHaveBeenCalled();
   });
 
-  it('should open confirmation dialog and call deleteBookById on confirmation', () => {
+  it('should dispatch delete book command', () => {
     const mockBook: Book = mockItems[0];
-    const dialogRef = { afterClosed: () => of(true) };
-    mockDialogManager.openConfirmMenu.and.returnValue(dialogRef as any);
-
-    spyOn(component, 'delete').and.callThrough();
 
     component.delete(mockBook);
     fixture.detectChanges();
 
-    expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
-    expect(mockBookService.deleteById).toHaveBeenCalledWith(mockBook.id);
+    expect(mockDeleteBookCommandHandler.dispatch).toHaveBeenCalled();
   });
 });

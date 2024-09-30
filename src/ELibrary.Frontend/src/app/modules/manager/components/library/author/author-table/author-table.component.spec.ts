@@ -2,132 +2,125 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { AuthorService, LibraryDialogManager } from '../../../../../library';
-import { Author, GenericTableComponent } from '../../../../../shared';
+import { AuthorService, CREATE_AUTHOR_COMMAND_HANDLER, CreateAuthorCommand, DELETE_AUTHOR_COMMAND_HANDLER, DeleteAuthorCommand, UPDATE_AUTHOR_COMMAND_HANDLER, UpdateAuthorCommand } from '../../../../../library';
+import { Author, CommandHandler, GenericTableComponent, getDefaultAuthor } from '../../../../../shared';
 import { AuthorTableComponent } from './author-table.component';
 
 describe('AuthorTableComponent', () => {
-  let component: AuthorTableComponent;
-  let fixture: ComponentFixture<AuthorTableComponent>;
-  let mockDialogManager: jasmine.SpyObj<LibraryDialogManager>;
-  let mockAuthorService: jasmine.SpyObj<AuthorService>;
+    let component: AuthorTableComponent;
+    let fixture: ComponentFixture<AuthorTableComponent>;
+    let mockAuthorService: jasmine.SpyObj<AuthorService>;
+    let mockCreateAuthorCommandHandler: jasmine.SpyObj<CommandHandler<CreateAuthorCommand>>;
+    let mockUpdateAuthorCommandHandler: jasmine.SpyObj<CommandHandler<UpdateAuthorCommand>>;
+    let mockDeleteAuthorCommandHandler: jasmine.SpyObj<CommandHandler<DeleteAuthorCommand>>;
 
-  const mockItems: Author[] = [
-    { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') },
-    { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-01-01') }
-  ];
-  const mockAmount = 2;
-
-  beforeEach(async () => {
-    mockDialogManager = jasmine.createSpyObj('LibraryDialogManager', [
-      'openAuthorDetailsMenu',
-      'openConfirmMenu'
-    ]);
-
-    mockAuthorService = jasmine.createSpyObj('AuthorService', [
-      'getItemTotalAmount',
-      'getAuthorsPaginated',
-      'createAuthor',
-      'updateAuthor',
-      'deleteAuthorById'
-    ]);
-
-    mockAuthorService.getItemTotalAmount.and.returnValue(of(mockAmount));
-    mockAuthorService.getPaginated.and.returnValue(of(mockItems));
-
-    await TestBed.configureTestingModule({
-      declarations: [AuthorTableComponent, GenericTableComponent],
-      providers: [
-        { provide: LibraryDialogManager, useValue: mockDialogManager },
-        { provide: AuthorService, useValue: mockAuthorService }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AuthorTableComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should initialize and call pageChange on ngOnInit', () => {
-    spyOn(component, 'onPageChange');
-    component.ngOnInit();
-    expect(component.onPageChange).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
-  });
-
-  it('should bind data to generic-table component', () => {
-    component.items$ = of(mockItems);
-    fixture.detectChanges();
-
-    const genericTable = fixture.debugElement.query(By.directive(GenericTableComponent));
-    expect(genericTable).toBeTruthy();
-
-    const componentInstance = genericTable.componentInstance as GenericTableComponent;
-    expect(componentInstance.items).toEqual(mockItems);
-    expect(componentInstance.totalItemAmount).toBe(mockAmount);
-  });
-
-  it('should handle pageChange and update items$', () => {
-    const mockItems = [
-      { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') },
-      { id: 2, name: 'Jane', lastName: 'Smith', dateOfBirth: new Date('1990-01-01') }
+    const mockItems: Author[] = [
+        getDefaultAuthor(),
+        getDefaultAuthor(),
     ];
-    mockAuthorService.getPaginated.and.returnValue(of(mockItems));
+    const mockAmount = 2;
 
-    component.onPageChange({ pageIndex: 1, pageSize: 10 });
-    fixture.detectChanges();
+    beforeEach(async () => {
+        mockAuthorService = jasmine.createSpyObj('AuthorService', [
+            'getItemTotalAmount',
+            'getPaginated',
+            'createAuthor',
+            'updateAuthor',
+            'deleteAuthorById'
+        ]);
 
-    component.items$.subscribe(items => {
-      expect(items).toEqual(mockItems.slice(0, 10));
+        mockCreateAuthorCommandHandler = jasmine.createSpyObj<CommandHandler<CreateAuthorCommand>>([
+            'dispatch',
+        ]);
+
+        mockUpdateAuthorCommandHandler = jasmine.createSpyObj<CommandHandler<UpdateAuthorCommand>>([
+            'dispatch',
+        ]);
+
+        mockDeleteAuthorCommandHandler = jasmine.createSpyObj<CommandHandler<DeleteAuthorCommand>>([
+            'dispatch',
+        ]);
+
+        mockAuthorService.getItemTotalAmount.and.returnValue(of(mockAmount));
+        mockAuthorService.getPaginated.and.returnValue(of(mockItems));
+
+        await TestBed.configureTestingModule({
+            imports: [GenericTableComponent, BrowserAnimationsModule],
+            declarations: [AuthorTableComponent],
+            providers: [
+                { provide: AuthorService, useValue: mockAuthorService },
+                { provide: CREATE_AUTHOR_COMMAND_HANDLER, useValue: mockCreateAuthorCommandHandler },
+                { provide: UPDATE_AUTHOR_COMMAND_HANDLER, useValue: mockUpdateAuthorCommandHandler },
+                { provide: DELETE_AUTHOR_COMMAND_HANDLER, useValue: mockDeleteAuthorCommandHandler }
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        }).compileComponents();
     });
-  });
 
-  it('should open create dialog and call createAuthor on confirmation', () => {
-    const mockAuthor: Author = { id: 0, name: '', lastName: '', dateOfBirth: new Date() };
-    const dialogRef = { afterClosed: () => of(mockAuthor) };
-    mockDialogManager.openAuthorDetailsMenu.and.returnValue(dialogRef as any);
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AuthorTableComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-    spyOn(component, 'createNew').and.callThrough();
+    it('should create the component', () => {
+        expect(component).toBeTruthy();
+    });
 
-    component.createNew();
-    fixture.detectChanges();
+    it('should initialize and fetch paginated items', () => {
+        spyOn<any>(component, 'fetchPaginatedItems');
+        component.ngOnInit();
+        expect(component["fetchPaginatedItems"]).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
+    });
 
-    expect(mockDialogManager.openAuthorDetailsMenu).toHaveBeenCalled();
-    expect(mockAuthorService.create).toHaveBeenCalled();
-  });
+    it('should bind data to generic-table component', () => {
+        component.items$ = of(mockItems);
+        fixture.detectChanges();
 
-  it('should open update dialog and call updateAuthor on confirmation', () => {
-    const mockAuthor: Author = { id: 1, name: 'Updated Name', lastName: 'Updated LastName', dateOfBirth: new Date('1990-01-01') };
-    const dialogRef = { afterClosed: () => of(mockAuthor) };
-    mockDialogManager.openAuthorDetailsMenu.and.returnValue(dialogRef as any);
+        const genericTable = fixture.debugElement.query(By.directive(GenericTableComponent));
+        expect(genericTable).toBeTruthy();
 
-    spyOn(component, 'update').and.callThrough();
+        const componentInstance = genericTable.componentInstance as GenericTableComponent;
+        expect(componentInstance.items).toEqual(mockItems);
+        expect(componentInstance.totalItemAmount).toBe(mockAmount);
+    });
 
-    component.update(mockAuthor);
-    fixture.detectChanges();
+    it('should handle pageChange and update items$', () => {
+        mockAuthorService.getPaginated.and.returnValue(of(mockItems));
 
-    expect(mockDialogManager.openAuthorDetailsMenu).toHaveBeenCalledWith(mockAuthor);
-    expect(mockAuthorService.update).toHaveBeenCalled();
-  });
+        component.onPageChange({ pageIndex: 1, pageSize: 10 });
+        fixture.detectChanges();
 
-  it('should open confirmation dialog and call deleteAuthorById on confirmation', () => {
-    const mockAuthor: Author = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date('1980-01-01') };
-    const dialogRef = { afterClosed: () => of(true) };
-    mockDialogManager.openConfirmMenu.and.returnValue(dialogRef as any);
+        component.items$.subscribe(items => {
+            expect(items).toEqual(mockItems);
+        });
+    });
 
-    spyOn(component, 'delete').and.callThrough();
+    it('should dispatch create author command', () => {
 
-    component.delete(mockAuthor);
-    fixture.detectChanges();
+        component.createNew();
+        fixture.detectChanges();
 
-    expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
-    expect(mockAuthorService.deleteById).toHaveBeenCalledWith(mockAuthor.id);
-  });
+        expect(mockCreateAuthorCommandHandler.dispatch).toHaveBeenCalled();
+    });
+
+    it('should dispatch update author command', () => {
+        const mockAuthor: Author = getDefaultAuthor();
+
+        component.update(mockAuthor);
+        fixture.detectChanges();
+
+        expect(mockUpdateAuthorCommandHandler.dispatch).toHaveBeenCalled();
+    });
+
+    it('should dispatch delete author command', () => {
+        const mockAuthor: Author = mockItems[0];
+
+        component.delete(mockAuthor);
+        fixture.detectChanges();
+
+        expect(mockDeleteAuthorCommandHandler.dispatch).toHaveBeenCalled();
+    });
 });

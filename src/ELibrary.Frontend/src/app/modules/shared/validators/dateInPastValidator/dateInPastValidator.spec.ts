@@ -1,7 +1,7 @@
 import { FormControl } from "@angular/forms";
 import { dateInPastValidator } from "./dateInPastValidator";
 
-describe('minDateValidator', () => {
+describe('dateInPastValidator', () => {
 
     it('should return null for a valid date in the past', () => {
         const control = new FormControl('1990-01-01');
@@ -16,7 +16,7 @@ describe('minDateValidator', () => {
         const control = new FormControl(futureDate.toISOString().split('T')[0]);
         const validator = dateInPastValidator();
         const result = validator(control);
-        expect(result).toEqual({ invalidDateOfBirth: 'Date must be in the past' });
+        expect(result).toEqual({ dateInPast: 'Date must be in the past' });
     });
 
     it('should return null for a valid date format and a date in the past', () => {

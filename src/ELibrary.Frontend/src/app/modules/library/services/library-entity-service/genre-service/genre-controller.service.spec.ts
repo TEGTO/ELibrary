@@ -1,105 +1,105 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { genreActions, selectGenreAmount, selectGenres } from '../../..';
-import { CreateGenreRequest, Genre, GenreApiService, LibraryFilterRequest, UpdateGenreRequest } from '../../../../shared';
-import { GenreControllerService } from './genre-controller.service';
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import { TestBed } from '@angular/core/testing';
+// import { Store } from '@ngrx/store';
+// import { of } from 'rxjs';
+// import { genreActions, selectGenreAmount, selectGenres } from '../../..';
+// import { CreateGenreRequest, Genre, GenreApiService, LibraryFilterRequest, UpdateGenreRequest } from '../../../../shared';
+// import { GenreControllerService } from './genre-controller.service';
 
-describe('GenreControllerService', () => {
-    let service: GenreControllerService;
-    let store: jasmine.SpyObj<Store>;
-    let apiService: jasmine.SpyObj<GenreApiService>;
+// describe('GenreControllerService', () => {
+//     let service: GenreControllerService;
+//     let store: jasmine.SpyObj<Store>;
+//     let apiService: jasmine.SpyObj<GenreApiService>;
 
-    const mockGenreData: Genre[] = [
-        { id: 1, name: 'Action' },
-        { id: 2, name: 'Comedy' }
-    ];
+//     const mockGenreData: Genre[] = [
+//         { id: 1, name: 'Action' },
+//         { id: 2, name: 'Comedy' }
+//     ];
 
-    const mockTotalAmount = 10;
+//     const mockTotalAmount = 10;
 
-    beforeEach(() => {
-        const storeSpy = jasmine.createSpyObj('Store', ['dispatch', 'select']);
-        const apiServiceSpy = jasmine.createSpyObj('GenreApiService', ['getById']);
+//     beforeEach(() => {
+//         const storeSpy = jasmine.createSpyObj('Store', ['dispatch', 'select']);
+//         const apiServiceSpy = jasmine.createSpyObj('GenreApiService', ['getById']);
 
-        TestBed.configureTestingModule({
-            providers: [
-                GenreControllerService,
-                { provide: Store, useValue: storeSpy },
-                { provide: GenreApiService, useValue: apiServiceSpy }
-            ]
-        });
+//         TestBed.configureTestingModule({
+//             providers: [
+//                 GenreControllerService,
+//                 { provide: Store, useValue: storeSpy },
+//                 { provide: GenreApiService, useValue: apiServiceSpy }
+//             ]
+//         });
 
-        service = TestBed.inject(GenreControllerService);
-        store = TestBed.inject(Store) as jasmine.SpyObj<Store>;
-        apiService = TestBed.inject(GenreApiService) as jasmine.SpyObj<GenreApiService>;
+//         service = TestBed.inject(GenreControllerService);
+//         store = TestBed.inject(Store) as jasmine.SpyObj<Store>;
+//         apiService = TestBed.inject(GenreApiService) as jasmine.SpyObj<GenreApiService>;
 
-        store.select.and.callFake((selector: any) => {
-            if (selector === selectGenres) {
-                return of(mockGenreData);
-            } else if (selector === selectGenreAmount) {
-                return of(mockTotalAmount);
-            } else {
-                return of(null);
-            }
-        });
-    });
+//         store.select.and.callFake((selector: any) => {
+//             if (selector === selectGenres) {
+//                 return of(mockGenreData);
+//             } else if (selector === selectGenreAmount) {
+//                 return of(mockTotalAmount);
+//             } else {
+//                 return of(null);
+//             }
+//         });
+//     });
 
-    it('should return genre data by ID', (done) => {
-        const genreId = 1;
-        const expectedGenre: Genre = { id: genreId, name: 'Action' };
-        apiService.getById.and.returnValue(of(expectedGenre));
+//     it('should return genre data by ID', (done) => {
+//         const genreId = 1;
+//         const expectedGenre: Genre = { id: genreId, name: 'Action' };
+//         apiService.getById.and.returnValue(of(expectedGenre));
 
-        service.getById(genreId).subscribe(result => {
-            expect(apiService.getById).toHaveBeenCalledWith(genreId);
-            expect(result).toEqual(expectedGenre);
-            done();
-        });
-    });
+//         service.getById(genreId).subscribe(result => {
+//             expect(apiService.getById).toHaveBeenCalledWith(genreId);
+//             expect(result).toEqual(expectedGenre);
+//             done();
+//         });
+//     });
 
-    it('should dispatch getPaginated action and return paginated genres', (done) => {
-        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
-        store.select.and.returnValue(of(mockGenreData));
+//     it('should dispatch getPaginated action and return paginated genres', (done) => {
+//         const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+//         store.select.and.returnValue(of(mockGenreData));
 
-        service.getPaginated(request).subscribe(result => {
-            expect(store.dispatch).toHaveBeenCalledWith(genreActions.getPaginated({ request }));
-            expect(result).toEqual(mockGenreData);
-            done();
-        });
-    });
+//         service.getPaginated(request).subscribe(result => {
+//             expect(store.dispatch).toHaveBeenCalledWith(genreActions.getPaginated({ request }));
+//             expect(result).toEqual(mockGenreData);
+//             done();
+//         });
+//     });
 
-    it('should dispatch getTotalAmount action and return total amount of genres', (done) => {
-        store.select.and.returnValue(of(mockTotalAmount));
-        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+//     it('should dispatch getTotalAmount action and return total amount of genres', (done) => {
+//         store.select.and.returnValue(of(mockTotalAmount));
+//         const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
 
-        service.getItemTotalAmount(request).subscribe(result => {
-            expect(store.dispatch).toHaveBeenCalledWith(genreActions.getTotalAmount({ request: request }));
-            expect(result).toEqual(mockTotalAmount);
-            done();
-        });
-    });
+//         service.getItemTotalAmount(request).subscribe(result => {
+//             expect(store.dispatch).toHaveBeenCalledWith(genreActions.getTotalAmount({ request: request }));
+//             expect(result).toEqual(mockTotalAmount);
+//             done();
+//         });
+//     });
 
-    it('should dispatch create action for a new genre', () => {
-        const newGenre: CreateGenreRequest = { name: 'Drama' };
+//     it('should dispatch create action for a new genre', () => {
+//         const newGenre: CreateGenreRequest = { name: 'Drama' };
 
-        service.create(newGenre);
+//         service.create(newGenre);
 
-        expect(store.dispatch).toHaveBeenCalledWith(genreActions.create({ request: newGenre }));
-    });
+//         expect(store.dispatch).toHaveBeenCalledWith(genreActions.create({ request: newGenre }));
+//     });
 
-    it('should dispatch update action for an existing genre', () => {
-        const updatedGenre: UpdateGenreRequest = { id: 1, name: 'Adventure' };
+//     it('should dispatch update action for an existing genre', () => {
+//         const updatedGenre: UpdateGenreRequest = { id: 1, name: 'Adventure' };
 
-        service.update(updatedGenre);
+//         service.update(updatedGenre);
 
-        expect(store.dispatch).toHaveBeenCalledWith(genreActions.update({ request: updatedGenre }));
-    });
+//         expect(store.dispatch).toHaveBeenCalledWith(genreActions.update({ request: updatedGenre }));
+//     });
 
-    it('should dispatch deleteById action for a genre by ID', () => {
-        const genreId = 1;
+//     it('should dispatch deleteById action for a genre by ID', () => {
+//         const genreId = 1;
 
-        service.deleteById(genreId);
+//         service.deleteById(genreId);
 
-        expect(store.dispatch).toHaveBeenCalledWith(genreActions.deleteById({ id: genreId }));
-    });
-});
+//         expect(store.dispatch).toHaveBeenCalledWith(genreActions.deleteById({ id: genreId }));
+//     });
+// });

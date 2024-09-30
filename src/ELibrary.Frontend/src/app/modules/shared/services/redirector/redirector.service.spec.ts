@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RedirectorService } from './redirector.service';
 
-describe('RedirectorContollerService', () => {
+describe('RedirectorService', () => {
   let mockRouter: jasmine.SpyObj<Router>;
   let service: RedirectorService;
 
@@ -34,8 +34,8 @@ describe('RedirectorContollerService', () => {
   });
 
   it('should navigate to some path', () => {
-    let somePath = "some path";
+    const somePath = "some path";
     service.redirectTo(somePath);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([somePath]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([somePath], jasmine.any(Object));
   });
 });

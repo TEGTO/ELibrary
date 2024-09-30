@@ -1,6 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { Book, BookFilterRequest, CreateBookRequest, getDefaultAuthor, getDefaultBook, getDefaultGenre, getDefaultPublisher, UpdateBookRequest, URLDefiner } from '../../../..';
 import { BookApiService } from './book-api.service';
 
@@ -117,7 +116,7 @@ describe('BookApiService', () => {
     });
 
     const req = httpTestingController.expectOne(expectedReq);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe('POST');
     expect(mockUrlDefiner.combineWithLibraryApiUrl).toHaveBeenCalledWith('/book/amount');
     req.flush(response);
   });
@@ -201,7 +200,7 @@ describe('BookApiService', () => {
     const expectedReq = `/api/book/1`;
 
     service.deleteById(1).subscribe(res => {
-      expect(res).toBeNull();
+      expect(res.body).toBeNull();
     });
 
     const req = httpTestingController.expectOne(expectedReq);

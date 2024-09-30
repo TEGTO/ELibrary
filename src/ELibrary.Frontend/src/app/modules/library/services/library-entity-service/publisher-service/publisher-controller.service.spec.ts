@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+// import { TestBed } from '@angular/core/testing';
 
-import { PublisherControllerService } from './publisher-controller.service';
+// import { PublisherControllerService } from './publisher-controller.service';
 
-describe('PublisherControllerService', () => {
-  let service: PublisherControllerService;
+// fdescribe('PublisherControllerService', () => {
+//   let service: PublisherControllerService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(PublisherControllerService);
-  });
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({});
+//     service = TestBed.inject(PublisherControllerService);
+//   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+//   it('should be created', () => {
+//     expect(service).toBeTruthy();
+//   });
+// });

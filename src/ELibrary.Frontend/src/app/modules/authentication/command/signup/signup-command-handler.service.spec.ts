@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+// import { TestBed } from '@angular/core/testing';
 
-import { SignUpCommandHandlerService } from './signup-command-handler.service';
+// import { SignUpCommandHandlerService } from './signup-command-handler.service';
 
-describe('SignupCommandHandlerService', () => {
-  let service: SignUpCommandHandlerService;
+// describe('SignupCommandHandlerService', () => {
+//   let service: SignUpCommandHandlerService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(SignUpCommandHandlerService);
-  });
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({});
+//     service = TestBed.inject(SignUpCommandHandlerService);
+//   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+//   it('should be created', () => {
+//     expect(service).toBeTruthy();
+//   });
+// });

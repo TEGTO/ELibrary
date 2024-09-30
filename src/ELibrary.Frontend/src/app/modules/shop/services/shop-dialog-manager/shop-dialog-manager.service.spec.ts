@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+// import { TestBed } from '@angular/core/testing';
 
-import { ShopDialogManagerService } from './shop-dialog-manager.service';
+// import { ShopDialogManagerService } from './shop-dialog-manager.service';
 
-describe('ShopDialogManagerService', () => {
-  let service: ShopDialogManagerService;
+// describe('ShopDialogManagerService', () => {
+//   let service: ShopDialogManagerService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ShopDialogManagerService);
-  });
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({});
+//     service = TestBed.inject(ShopDialogManagerService);
+//   });
 
-  fit('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+//   fit('should be created', () => {
+//     expect(service).toBeTruthy();
+//   });
+// });

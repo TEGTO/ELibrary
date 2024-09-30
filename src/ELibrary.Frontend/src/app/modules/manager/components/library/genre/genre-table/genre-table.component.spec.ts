@@ -1,43 +1,60 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { GenreService, LibraryDialogManager } from '../../../../../library';
-import { GenericTableComponent, Genre } from '../../../../../shared';
+import { CREATE_GENRE_COMMAND_HANDLER, CreateGenreCommand, DELETE_GENRE_COMMAND_HANDLER, DeleteGenreCommand, GenreService, UPDATE_GENRE_COMMAND_HANDLER, UpdateGenreCommand } from '../../../../../library';
+import { CommandHandler, GenericTableComponent, Genre, getDefaultGenre } from '../../../../../shared';
 import { GenreTableComponent } from './genre-table.component';
 
 describe('GenreTableComponent', () => {
   let component: GenreTableComponent;
   let fixture: ComponentFixture<GenreTableComponent>;
-  let mockDialogManager: jasmine.SpyObj<LibraryDialogManager>;
   let mockGenreService: jasmine.SpyObj<GenreService>;
+  let mockCreateGenreCommandHandler: jasmine.SpyObj<CommandHandler<CreateGenreCommand>>;
+  let mockUpdateGenreCommandHandler: jasmine.SpyObj<CommandHandler<UpdateGenreCommand>>;
+  let mockDeleteGenreCommandHandler: jasmine.SpyObj<CommandHandler<DeleteGenreCommand>>;
 
-  const mockItems = [{ id: 1, name: 'Fiction' }, { id: 2, name: 'Non-Fiction' }];
+  const mockItems = [
+    getDefaultGenre(),
+    getDefaultGenre()
+  ];
   const mockAmount = 100;
 
   beforeEach(async () => {
-    mockDialogManager = jasmine.createSpyObj('LibraryDialogManager', [
-      'openGenreDetailsMenu',
-      'openConfirmMenu'
-    ]);
-
     mockGenreService = jasmine.createSpyObj('GenreService', [
       'getItemTotalAmount',
-      'getGenresPaginated',
+      'getPaginated',
       'createGenre',
       'updateGenre',
       'deleteGenreById'
+    ]);
+
+    mockCreateGenreCommandHandler = jasmine.createSpyObj<CommandHandler<CreateGenreCommand>>([
+      'dispatch',
+    ]);
+
+    mockUpdateGenreCommandHandler = jasmine.createSpyObj<CommandHandler<UpdateGenreCommand>>([
+      'dispatch',
+    ]);
+
+    mockDeleteGenreCommandHandler = jasmine.createSpyObj<CommandHandler<DeleteGenreCommand>>([
+      'dispatch',
     ]);
 
     mockGenreService.getItemTotalAmount.and.returnValue(of(mockAmount));
     mockGenreService.getPaginated.and.returnValue(of(mockItems));
 
     await TestBed.configureTestingModule({
-      declarations: [GenreTableComponent, GenericTableComponent],
+      imports: [GenericTableComponent, BrowserAnimationsModule],
+      declarations: [GenreTableComponent],
       providers: [
-        { provide: LibraryDialogManager, useValue: mockDialogManager },
-        { provide: GenreService, useValue: mockGenreService }
+        { provide: GenreService, useValue: mockGenreService },
+        { provide: CREATE_GENRE_COMMAND_HANDLER, useValue: mockCreateGenreCommandHandler },
+        { provide: UPDATE_GENRE_COMMAND_HANDLER, useValue: mockUpdateGenreCommandHandler },
+        { provide: DELETE_GENRE_COMMAND_HANDLER, useValue: mockDeleteGenreCommandHandler }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -53,10 +70,10 @@ describe('GenreTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize and call pageChange on ngOnInit', () => {
-    spyOn(component, 'onPageChange');
+  it('should initialize and fetch paginated items', () => {
+    spyOn<any>(component, 'fetchPaginatedItems');
     component.ngOnInit();
-    expect(component.onPageChange).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
+    expect(component["fetchPaginatedItems"]).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
   });
 
   it('should bind data to generic-table component', () => {
@@ -72,7 +89,7 @@ describe('GenreTableComponent', () => {
   });
 
   it('should handle pageChange and update items$', () => {
-    const mockItems = [{ id: 1, name: 'Fiction' }, { id: 2, name: 'Non-Fiction' }];
+    const mockItems = [getDefaultGenre()];
     mockGenreService.getPaginated.and.returnValue(of(mockItems));
 
     component.onPageChange({ pageIndex: 1, pageSize: 10 });
@@ -83,45 +100,29 @@ describe('GenreTableComponent', () => {
     });
   });
 
-  it('should open create dialog and call createGenre on confirmation', () => {
-    const mockGenre: Genre = { id: 0, name: '' };
-    const dialogRef = { afterClosed: () => of(mockGenre) };
-    mockDialogManager.openGenreDetailsMenu.and.returnValue(dialogRef as any);
-
-    spyOn(component, 'createNew').and.callThrough();
+  it('should dispatch create genre command', () => {
 
     component.createNew();
     fixture.detectChanges();
 
-    expect(mockDialogManager.openGenreDetailsMenu).toHaveBeenCalledWith(mockGenre);
-    expect(mockGenreService.create).toHaveBeenCalled();
+    expect(mockCreateGenreCommandHandler.dispatch).toHaveBeenCalled();
   });
 
-  it('should open update dialog and call updateGenre on confirmation', () => {
-    const mockGenre: Genre = { id: 1, name: 'Updated Name' };
-    const dialogRef = { afterClosed: () => of(mockGenre) };
-    mockDialogManager.openGenreDetailsMenu.and.returnValue(dialogRef as any);
-
-    spyOn(component, 'update').and.callThrough();
+  it('should dispatch update genre command', () => {
+    const mockGenre: Genre = getDefaultGenre();
 
     component.update(mockGenre);
     fixture.detectChanges();
 
-    expect(mockDialogManager.openGenreDetailsMenu).toHaveBeenCalledWith(mockGenre);
-    expect(mockGenreService.update).toHaveBeenCalled();
+    expect(mockUpdateGenreCommandHandler.dispatch).toHaveBeenCalled();
   });
 
-  it('should open confirmation dialog and call deleteGenreById on confirmation', () => {
-    const mockGenre: Genre = { id: 1, name: 'Fiction' };
-    const dialogRef = { afterClosed: () => of(true) };
-    mockDialogManager.openConfirmMenu.and.returnValue(dialogRef as any);
-
-    spyOn(component, 'delete').and.callThrough();
+  it('should dispatch delete genre command', () => {
+    const mockGenre: Genre = getDefaultGenre();
 
     component.delete(mockGenre);
     fixture.detectChanges();
 
-    expect(mockDialogManager.openConfirmMenu).toHaveBeenCalled();
-    expect(mockGenreService.deleteById).toHaveBeenCalledWith(mockGenre.id);
+    expect(mockDeleteGenreCommandHandler.dispatch).toHaveBeenCalled();
   });
 });

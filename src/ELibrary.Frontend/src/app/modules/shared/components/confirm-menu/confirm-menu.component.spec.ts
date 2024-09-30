@@ -15,9 +15,9 @@ describe('ConfirmMenuComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         MatDialogModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        ConfirmMenuComponent
       ],
-      declarations: [ConfirmMenuComponent],
       providers: [
         { provide: MatDialogRef, useValue: mockDialogRef }
       ]

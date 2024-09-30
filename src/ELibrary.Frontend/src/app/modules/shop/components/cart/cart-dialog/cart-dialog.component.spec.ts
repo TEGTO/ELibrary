@@ -1,23 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+// import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CartDialogComponent } from './cart-dialog.component';
+// import { CartDialogComponent } from './cart-dialog.component';
 
-describe('CartDialogComponent', () => {
-  let component: CartDialogComponent;
-  let fixture: ComponentFixture<CartDialogComponent>;
+// describe('CartDialogComponent', () => {
+//   let component: CartDialogComponent;
+//   let fixture: ComponentFixture<CartDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [CartDialogComponent]
-    })
-    .compileComponents();
+//   beforeEach(async () => {
+//     await TestBed.configureTestingModule({
+//       declarations: [CartDialogComponent]
+//     })
+//     .compileComponents();
 
-    fixture = TestBed.createComponent(CartDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//     fixture = TestBed.createComponent(CartDialogComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

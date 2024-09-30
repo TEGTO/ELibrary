@@ -78,7 +78,7 @@ describe('GenreApiService', () => {
     });
 
     const req = httpTestingController.expectOne(expectedReq);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe('POST');
     expect(mockUrlDefiner.combineWithLibraryApiUrl).toHaveBeenCalledWith('/genre/amount');
     req.flush(response);
   });
@@ -128,7 +128,7 @@ describe('GenreApiService', () => {
     const expectedReq = `/api/genre/1`;
 
     service.deleteById(1).subscribe(res => {
-      expect(res).toBeNull();
+      expect(res.body).toBeNull();
     });
 
     const req = httpTestingController.expectOne(expectedReq);
