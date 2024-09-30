@@ -6,7 +6,8 @@ import { DialogManager } from "../../../shared/services/dialog-manager/dialog-ma
 @Injectable({
     providedIn: 'root'
 })
-export abstract class AuthenticationDialogManager extends DialogManager {
+export abstract class AuthenticationDialogManager implements DialogManager {
     abstract openLoginMenu(): MatDialogRef<any>;
     abstract openRegisterMenu(): MatDialogRef<any>;
+    abstract openConfirmMenu(): MatDialogRef<any>;
 }

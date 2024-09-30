@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BookStockReplenishmentComponent, CartDialogComponent, ClientChangeDialogComponent } from '../..';
 import { Client, DialogManagerService } from '../../../shared';
 import { ShopDialogManager } from './shop-dialog-manager';
@@ -8,7 +8,16 @@ import { ShopDialogManager } from './shop-dialog-manager';
 @Injectable({
   providedIn: 'root'
 })
-export class ShopDialogManagerService extends DialogManagerService implements ShopDialogManager {
+export class ShopDialogManagerService implements ShopDialogManager {
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly dialogManager: DialogManagerService
+  ) {
+  }
+
+  openConfirmMenu(): MatDialogRef<any> {
+    return this.dialogManager.openConfirmMenu();
+  }
   openCartMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(CartDialogComponent, {
       height: '640px',

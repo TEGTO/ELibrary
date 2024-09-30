@@ -8,19 +8,22 @@ import { AuthenticationDialogManager } from './authentication-dialog-manager';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationDialogManagerService extends DialogManagerService implements AuthenticationDialogManager {
+export class AuthenticationDialogManagerService implements AuthenticationDialogManager {
   isAuthenticated = false;
 
   constructor(
     private readonly authService: AuthenticationService,
-    protected override readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly dialogManager: DialogManagerService
   ) {
-    super(dialog);
     this.authService.getUserAuth().subscribe(data => {
       this.isAuthenticated = data.isAuthenticated;
     })
   }
 
+  openConfirmMenu(): MatDialogRef<any> {
+    return this.dialogManager.openConfirmMenu();
+  }
   openLoginMenu(): MatDialogRef<any, any> {
     let dialogRef: MatDialogRef<any, any>;
     if (this.isAuthenticated) {

@@ -1,23 +1,23 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { MakeOrderComponent } from './make-order.component';
+import { MakeOrderComponent } from './make-order.component';
 
-// describe('MakeOrderComponent', () => {
-//   let component: MakeOrderComponent;
-//   let fixture: ComponentFixture<MakeOrderComponent>;
+describe('MakeOrderComponent', () => {
+    let component: MakeOrderComponent;
+    let fixture: ComponentFixture<MakeOrderComponent>;
 
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       declarations: [MakeOrderComponent]
-//     })
-//     .compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [MakeOrderComponent]
+        })
+            .compileComponents();
 
-//     fixture = TestBed.createComponent(MakeOrderComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+        fixture = TestBed.createComponent(MakeOrderComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});
