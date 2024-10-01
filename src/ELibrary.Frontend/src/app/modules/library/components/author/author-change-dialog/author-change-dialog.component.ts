@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Author, dateInPastValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
+import { Author, dateInPastValidator, notEmptyString, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-author-change-dialog',
@@ -25,8 +25,8 @@ export class AuthorChangeDialogComponent implements OnInit {
   ngOnInit(): void {
     this.formGroup = new FormGroup(
       {
-        name: new FormControl(this.author.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
-        lastName: new FormControl(this.author.lastName, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
+        name: new FormControl(this.author.name, [Validators.required, notEmptyString, Validators.maxLength(256)]),
+        lastName: new FormControl(this.author.lastName, [Validators.required, notEmptyString, Validators.maxLength(256)]),
         dateOfBirth: new FormControl(this.author.dateOfBirth, [Validators.required, dateInPastValidator()]),
       });
   }

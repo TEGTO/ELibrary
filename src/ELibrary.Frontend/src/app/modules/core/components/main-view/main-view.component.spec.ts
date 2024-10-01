@@ -1,9 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { UserAuth } from '../../../shared';
+import { Roles, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
 import { MainViewComponent } from './main-view.component';
 
@@ -22,7 +22,7 @@ describe('MainViewComponent', () => {
             refreshTokenExpiryDate: new Date(),
         },
         email: 'test@example.com',
-        roles: ['CLIENT', 'MANAGER']
+        roles: [Roles.CLIENT, Roles.MANAGER, Roles.ADMINISTRATOR]
     };
 
     beforeEach(async () => {
@@ -35,9 +35,9 @@ describe('MainViewComponent', () => {
             providers: [
                 { provide: AuthenticationService, useValue: authServiceSpyObj },
                 { provide: ClientService, useValue: clientServiceSpyObj },
-                { provide: AuthenticationDialogManager, useValue: authDialogManagerSpyObj }
+                { provide: AuthenticationDialogManager, useValue: authDialogManagerSpyObj },
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA] // To avoid errors with custom elements like app-shopping-cart-button
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         authServiceSpy = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
@@ -80,28 +80,28 @@ describe('MainViewComponent', () => {
     });
 
     it('should return false for ManagerPolicy if the user does not have the MANAGER role', () => {
-        const result = component.checkManagerPolicy(['CLIENT']);
+        const result = component.checkManagerPolicy([Roles.CLIENT]);
         expect(result).toBeFalse();
     });
 
     it('should return true for AdminPolicy if the user has the ADMINISTRATOR role', () => {
-        const result = component.checkAdminPolicy(['ADMINISTRATOR']);
+        const result = component.checkAdminPolicy([Roles.ADMINISTRATOR]);
         expect(result).toBeTrue();
     });
 
     it('should return false for AdminPolicy if the user does not have the ADMINISTRATOR role', () => {
-        const result = component.checkAdminPolicy(['MANAGER']);
+        const result = component.checkAdminPolicy([Roles.MANAGER]);
         expect(result).toBeFalse();
     });
 
-    it('should render elements correctly when user is authenticated', () => {
+    it('should render elements correctly when user is authenticated', fakeAsync(() => {
         const compiled = fixture.nativeElement as HTMLElement;
         const cartButton = compiled.querySelector('app-shopping-cart-button');
         expect(cartButton).toBeTruthy();
 
-        const receiptButton = fixture.debugElement.query(By.css('span[mat-icon-button]')).nativeElement;
+        const receiptButton = fixture.debugElement.query(By.css('a[mat-icon-button]')).nativeElement;
         expect(receiptButton.textContent).toContain('receipt_long');
-    });
+    }));
 
     it('should not render admin button if user is not an admin', () => {
         const compiled = fixture.nativeElement as HTMLElement;
@@ -110,10 +110,10 @@ describe('MainViewComponent', () => {
     });
 
     it('should render admin button if user is an admin', () => {
-        component.userAuth$ = of({ ...mockUserAuth, roles: ['ADMINISTRATOR'] });
+        component.userAuth$ = of({ ...mockUserAuth, roles: [Roles.ADMINISTRATOR] });
         fixture.detectChanges();
 
-        const adminButton = fixture.debugElement.query(By.css('span[mat-icon-button]')).nativeElement;
-        expect(adminButton.textContent).toContain('admin_panel_settings');
+        const adminButton = fixture.debugElement.query(By.css('a[mat-icon-button]')).nativeElement;
+        expect(adminButton).toBeTruthy();
     });
 });

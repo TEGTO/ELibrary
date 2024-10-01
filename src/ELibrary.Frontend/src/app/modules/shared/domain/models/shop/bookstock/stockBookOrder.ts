@@ -1,4 +1,4 @@
-import { Client, StockBookChange } from "../../../..";
+import { Client, getDefaultClient, getDefaultStockBookChange, StockBookChange } from "../../../..";
 
 export enum StockBookOrderType {
     StockReplenishment, ClientOrder, ClientOrderCancel
@@ -11,6 +11,18 @@ export interface StockBookOrder {
     totalChangeAmount: number,
     client: Client,
     stockBookChanges: StockBookChange[]
+}
+
+export function getDefaultStockBookOrder(): StockBookOrder {
+    return {
+        id: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        type: StockBookOrderType.ClientOrder,
+        totalChangeAmount: 0,
+        client: getDefaultClient(),
+        stockBookChanges: [getDefaultStockBookChange()]
+    }
 }
 
 export function stockBookOrderTypeToString(type: StockBookOrderType): string {

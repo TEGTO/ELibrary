@@ -9,13 +9,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Author } from '../../../../shared';
+import { Author, ValidationMessage } from '../../../../shared';
 import { AuthorChangeDialogComponent } from './author-change-dialog.component';
 
 describe('AuthorChangeDialogComponent', () => {
     let component: AuthorChangeDialogComponent;
     let fixture: ComponentFixture<AuthorChangeDialogComponent>;
     let dialogRef: jasmine.SpyObj<MatDialogRef<AuthorChangeDialogComponent>>;
+    let mockValidationMessage: jasmine.SpyObj<ValidationMessage>;
 
     const mockAuthor: Author = {
         id: 1,
@@ -25,8 +26,10 @@ describe('AuthorChangeDialogComponent', () => {
     };
 
     beforeEach(async () => {
-
         const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+        mockValidationMessage = jasmine.createSpyObj<ValidationMessage>(['getValidationMessage']);
+
+        mockValidationMessage.getValidationMessage.and.returnValue({ hasError: false, message: "" });
 
         await TestBed.configureTestingModule({
             declarations: [AuthorChangeDialogComponent],
@@ -42,6 +45,7 @@ describe('AuthorChangeDialogComponent', () => {
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: mockAuthor },
                 { provide: MatDialogRef, useValue: dialogRefSpy },
+                { provide: ValidationMessage, useValue: mockValidationMessage },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();

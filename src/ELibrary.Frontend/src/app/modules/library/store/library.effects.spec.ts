@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { HttpResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
@@ -170,7 +171,7 @@ describe('AuthorEffects', () => {
             const outcome = authorActions.deleteByIdSuccess({ id });
 
             actions$ = of(action);
-            mockApiService.deleteById.and.returnValue(of());
+            mockApiService.deleteById.and.returnValue(of(new HttpResponse<void>));
 
             effects.deleteById$.subscribe(result => {
                 expect(result).toEqual(outcome);

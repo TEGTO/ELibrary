@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { dateRangeValidatorFrom, dateRangeValidatorTo, pageAmountRangeMaxValidator, pageAmountRangeMinValidator, priceRangeMaxValidator, priceRangeMinValidator } from '../../..';
-import { BookFilterRequest, CoverType, defaultBookFilterRequest, ValidationMessage } from '../../../../shared';
+import { BookFilterRequest, CoverType, dateRangeValidatorFrom, dateRangeValidatorTo, defaultBookFilterRequest as getDefaultBookFilterRequest, rangeMaxValidator, rangeMinValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-filter',
@@ -50,12 +49,12 @@ export class BookFilterComponent implements OnInit, OnDestroy {
       containsName: new FormControl(''),
       publicationFromUTC: new FormControl(null, [dateRangeValidatorFrom('publicationToUTC')]),
       publicationToUTC: new FormControl(null, [dateRangeValidatorTo('publicationFromUTC')]),
-      minPrice: new FormControl(null, [priceRangeMinValidator('maxPrice')]),
-      maxPrice: new FormControl(null, [priceRangeMaxValidator('minPrice')]),
+      minPrice: new FormControl(null, [rangeMinValidator(0, 'maxPrice')]),
+      maxPrice: new FormControl(null, [rangeMaxValidator(Number.MAX_SAFE_INTEGER, 'minPrice')]),
       onlyInStock: new FormControl(false),
       coverType: new FormControl(CoverType.Any, [Validators.required]),
-      minPageAmount: new FormControl(null, [pageAmountRangeMinValidator('maxPageAmount')]),
-      maxPageAmount: new FormControl(null, [pageAmountRangeMaxValidator('minPageAmount')]),
+      minPageAmount: new FormControl(null, [rangeMinValidator(0, 'maxPageAmount')]),
+      maxPageAmount: new FormControl(null, [rangeMaxValidator(Number.MAX_VALUE, 'minPageAmount')]),
       author: new FormControl(null),
       genre: new FormControl(null),
       publisher: new FormControl(null),
@@ -65,7 +64,7 @@ export class BookFilterComponent implements OnInit, OnDestroy {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
       const req: BookFilterRequest = {
-        ...defaultBookFilterRequest(),
+        ...getDefaultBookFilterRequest(),
         pageNumber: 0,
         pageSize: 0,
         containsName: formValues.containsName || "",
@@ -77,9 +76,9 @@ export class BookFilterComponent implements OnInit, OnDestroy {
         onlyInStock: formValues.onlyInStock,
         minPageAmount: formValues.minPageAmount,
         maxPageAmount: formValues.maxPageAmount,
-        authorId: formValues.author?.id,
-        genreId: formValues.genre?.id,
-        publisherId: formValues.publisher?.id,
+        authorId: formValues.author?.id ?? null,
+        genreId: formValues.genre?.id ?? null,
+        publisherId: formValues.publisher?.id ?? null,
       };
       this.filterChange.emit(req);
     }

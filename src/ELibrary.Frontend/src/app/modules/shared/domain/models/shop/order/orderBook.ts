@@ -1,4 +1,4 @@
-import { Book, CartBook } from "../../../..";
+import { Book, CartBook, getDefaultBook } from "../../../..";
 
 export interface OrderBook {
     id: string;
@@ -7,6 +7,14 @@ export interface OrderBook {
     book: Book;
 }
 
+export function getDefaultOrderBook(): OrderBook {
+    return {
+        id: "",
+        bookAmount: 0,
+        bookId: 0,
+        book: getDefaultBook()
+    }
+}
 export function mapCartBookToOrderBook(cartBook: CartBook): OrderBook {
     return {
         id: cartBook.id,

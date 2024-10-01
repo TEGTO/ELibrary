@@ -38,7 +38,18 @@ describe('AuthReducer', () => {
     it('should handle registerUser action', () => {
         const action = registerUser({ req: { email: 'test@example.com', password: 'password', confirmPassword: 'password' } });
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual(initialAuthState);
+        expect(
+            {
+                ...state, userAuth:
+                {
+                    ...state.userAuth, authToken:
+                    {
+                        ...state.userAuth.authToken,
+                        refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                    }
+                }
+            }
+        ).toEqual(initialAuthState);
     });
 
     it('should handle registerSuccess action', () => {
@@ -56,10 +67,16 @@ describe('AuthReducer', () => {
         const error = 'Registration failed';
         const action = registerFailure({ error });
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual({
-            ...initialAuthState,
-            error
-        });
+        expect({
+            ...state, userAuth:
+            {
+                ...state.userAuth, authToken:
+                {
+                    ...state.userAuth.authToken,
+                    refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                }
+            }
+        }).toEqual({ ...initialAuthState, error });
     });
 
     it('should handle signInUser action', () => {
@@ -70,7 +87,18 @@ describe('AuthReducer', () => {
         }
         const action = signInUser({ req: req });
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual(initialAuthState);
+        expect(
+            {
+                ...state, userAuth:
+                {
+                    ...state.userAuth, authToken:
+                    {
+                        ...state.userAuth.authToken,
+                        refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                    }
+                }
+            }
+        ).toEqual(initialAuthState);
     });
 
     it('should handle signInUserSuccess action', () => {
@@ -87,10 +115,16 @@ describe('AuthReducer', () => {
         const error = 'Sign in failed';
         const action = signInUserFailure({ error });
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual({
-            ...initialAuthState,
-            error
-        });
+        expect({
+            ...state, userAuth:
+            {
+                ...state.userAuth, authToken:
+                {
+                    ...state.userAuth.authToken,
+                    refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                }
+            }
+        }).toEqual({ ...initialAuthState, error });
     });
 
     it('should handle refreshAccessToken action', () => {
@@ -121,16 +155,33 @@ describe('AuthReducer', () => {
         const error = 'Refresh token failed';
         const action = refreshAccessTokenFailure({ error });
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual({
-            ...initialAuthState,
-            error
-        });
+        expect({
+            ...state, userAuth:
+            {
+                ...state.userAuth, authToken:
+                {
+                    ...state.userAuth.authToken,
+                    refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                }
+            }
+        }).toEqual({ ...initialAuthState, error });
     });
 
     it('should handle logOutUserSuccess action', () => {
         const action = logOutUserSuccess();
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual(initialAuthState);
+        expect(
+            {
+                ...state, userAuth:
+                {
+                    ...state.userAuth, authToken:
+                    {
+                        ...state.userAuth.authToken,
+                        refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                    }
+                }
+            }
+        ).toEqual(initialAuthState);
     });
 
     it('should handle getAuthDataSuccess action', () => {
@@ -146,7 +197,18 @@ describe('AuthReducer', () => {
     it('should handle getAuthDataFailure action', () => {
         const action = getAuthDataFailure();
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual(initialAuthState);
+        expect(
+            {
+                ...state, userAuth:
+                {
+                    ...state.userAuth, authToken:
+                    {
+                        ...state.userAuth.authToken,
+                        refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                    }
+                }
+            }
+        ).toEqual(initialAuthState);
     });
 
     it('should handle updateUserData action', () => {
@@ -179,7 +241,18 @@ describe('AuthReducer', () => {
     it('should handle deleteUserSuccess action', () => {
         const action = deleteUserSuccess();
         const state = authReducer(initialAuthState, action);
-        expect(state).toEqual(initialAuthState);
+        expect(
+            {
+                ...state, userAuth:
+                {
+                    ...state.userAuth, authToken:
+                    {
+                        ...state.userAuth.authToken,
+                        refreshTokenExpiryDate: initialAuthState.userAuth.authToken.refreshTokenExpiryDate
+                    }
+                }
+            }
+        ).toEqual(initialAuthState);
     });
 
     it('should handle deleteUserFailure action', () => {

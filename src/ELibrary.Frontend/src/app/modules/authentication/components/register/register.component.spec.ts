@@ -6,22 +6,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of, throwError } from 'rxjs';
-import { AuthenticationService } from '../..';
-import { SnackbarManager } from '../../../shared';
+import { AuthenticationService, SIGN_UP_COMMAND_HANDLER, SignUpCommand } from '../..';
+import { CommandHandler, SnackbarManager, ValidationMessage } from '../../../shared';
 import { RegisterComponent } from './register.component';
 
 describe('RegisterComponent', () => {
     let component: RegisterComponent;
     let fixture: ComponentFixture<RegisterComponent>;
-    let authService: jasmine.SpyObj<AuthenticationService>;
-    let snackbarManager: jasmine.SpyObj<SnackbarManager>;
-    let dialogRef: jasmine.SpyObj<MatDialogRef<RegisterComponent>>;
+    let signUpHandlerSpy: jasmine.SpyObj<CommandHandler<SignUpCommand>>;
 
     beforeEach(async () => {
         const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['registerUser', 'getRegistrationErrors']);
         const snackbarManagerSpy = jasmine.createSpyObj('SnackbarManager', ['openInfoSnackbar', 'openErrorSnackbar']);
         const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+        signUpHandlerSpy = jasmine.createSpyObj<CommandHandler<SignUpCommand>>(['dispatch']);
+        const validationMessageSpy = jasmine.createSpyObj<ValidationMessage>(['getValidationMessage']);
+
+        validationMessageSpy.getValidationMessage.and.returnValue({ hasError: false, message: "" });
 
         await TestBed.configureTestingModule({
             declarations: [RegisterComponent],
@@ -36,16 +37,15 @@ describe('RegisterComponent', () => {
                 { provide: AuthenticationService, useValue: authServiceSpy },
                 { provide: SnackbarManager, useValue: snackbarManagerSpy },
                 { provide: MatDialogRef, useValue: dialogRefSpy },
-                { provide: MAT_DIALOG_DATA, useValue: {} }
+                { provide: MAT_DIALOG_DATA, useValue: {} },
+                { provide: SIGN_UP_COMMAND_HANDLER, useValue: signUpHandlerSpy },
+                { provide: ValidationMessage, useValue: validationMessageSpy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(RegisterComponent);
         component = fixture.componentInstance;
-        authService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
-        snackbarManager = TestBed.inject(SnackbarManager) as jasmine.SpyObj<SnackbarManager>;
-        dialogRef = TestBed.inject(MatDialogRef) as jasmine.SpyObj<MatDialogRef<RegisterComponent>>;
 
         fixture.detectChanges();
     });
@@ -106,68 +106,12 @@ describe('RegisterComponent', () => {
             })
         });
 
-        authService.registerUser.and.returnValue(of(true));
-        authService.getAuthErrors.and.returnValue(of(null));
-
         fixture.detectChanges();
 
         fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
         fixture.detectChanges();
 
-        expect(authService.registerUser).toHaveBeenCalled();
-        expect(snackbarManager.openInfoSnackbar).toHaveBeenCalledWith('✔️ The registration is successful!', 5);
-        expect(dialogRef.close).toHaveBeenCalled();
-    });
-
-    it('should display error messages on registration failure', () => {
-        const formValues = {
-            userName: 'John Doe',
-            password: 'password123',
-            passwordConfirm: 'password123'
-        };
-
-        component.formGroup.setValue(formValues);
-        authService.registerUser.and.returnValue(of(false));
-        authService.getAuthErrors.and.returnValue(of('Registration failed'));
-
-        fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
-        fixture.detectChanges();
-
-        expect(authService.registerUser).toHaveBeenCalled();
-        expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Registration failed']);
-    });
-
-    it('should handle registration errors', () => {
-        const formValues = {
-            userName: 'John Doe',
-            password: 'password123',
-            passwordConfirm: 'password123'
-        };
-
-        component.formGroup.setValue(formValues);
-        authService.registerUser.and.returnValue(of(false));
-        authService.getAuthErrors.and.returnValue(of('Server error'));
-
-        component.registerUser();
-
-        expect(authService.registerUser).toHaveBeenCalled();
-        expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Server error']);
-    });
-
-    it('should handle unexpected errors during registration', () => {
-        const formValues = {
-            userName: 'John Doe',
-            password: 'password123',
-            passwordConfirm: 'password123'
-        };
-
-        component.formGroup.setValue(formValues);
-        authService.registerUser.and.returnValue(throwError(() => new Error('Unexpected error')));
-
-        component.registerUser();
-
-        expect(authService.registerUser).toHaveBeenCalled();
-        expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['An error occurred during registration.']);
+        expect(signUpHandlerSpy.dispatch).toHaveBeenCalled();
     });
 
 });

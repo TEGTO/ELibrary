@@ -36,7 +36,7 @@ export class BookChangeDialogComponent implements OnInit {
   }
   initializeForm(): void {
     this.formGroup = new FormGroup({
-      name: new FormControl(this.book?.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
+      name: new FormControl(this.book?.name, [Validators.required, notEmptyString, Validators.maxLength(256)]),
       publicationDate: new FormControl(this.book?.publicationDate ?? new Date(), [Validators.required]),
       price: new FormControl(this.book?.price, [Validators.required, Validators.min(0)]),
       coverType: new FormControl(this.book?.coverType ?? CoverType.Hard, [Validators.required]),

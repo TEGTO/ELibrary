@@ -2,8 +2,8 @@ import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
-import { AuthenticationService } from '../..';
-import { AuthToken, getDefaultUserAuth, UserAuth } from '../../../shared';
+import { AuthenticationService, LOG_OUT_COMMAND_HANDLER, LogOutCommand } from '../..';
+import { AuthToken, CommandHandler, getDefaultUserAuth, UserAuth } from '../../../shared';
 import { AuthInterceptor } from './auth-interceptor.service';
 
 describe('AuthInterceptor', () => {
@@ -13,6 +13,7 @@ describe('AuthInterceptor', () => {
     let httpMock: HttpTestingController;
     let httpClient: HttpClient;
     let authService: jasmine.SpyObj<AuthenticationService>;
+    let mockLogOutHandler: jasmine.SpyObj<CommandHandler<LogOutCommand>>;
 
     const mockAuthToken: AuthToken = {
         accessToken: validAccessToken,
@@ -29,15 +30,17 @@ describe('AuthInterceptor', () => {
 
     beforeEach(() => {
         authDataSubject = new BehaviorSubject<UserAuth>(mockUserAuth);
-        authService = jasmine.createSpyObj('AuthenticationService', ['getAuthData', 'getAuthErrors', 'refreshToken', 'logOutUser']);
+        authService = jasmine.createSpyObj('AuthenticationService', ['getUserAuth', 'getAuthErrors', 'refreshToken', 'logOutUser']);
         authService.getUserAuth.and.returnValue(authDataSubject.asObservable());
         authService.getAuthErrors.and.returnValue(of(null));
+        mockLogOutHandler = jasmine.createSpyObj<CommandHandler<LogOutCommand>>(['dispatch']);
 
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
                 { provide: AuthenticationService, useValue: authService },
+                { provide: LOG_OUT_COMMAND_HANDLER, useValue: mockLogOutHandler },
             ]
         });
 
@@ -83,21 +86,14 @@ describe('AuthInterceptor', () => {
             expect(response).toBeTruthy();
             done();
         });
-        expect(authService.logOutUser).toHaveBeenCalled();
+        expect(mockLogOutHandler.dispatch).toHaveBeenCalled();
         const httpRequest = httpMock.expectOne('/test');
         httpRequest.flush({});
     });
 
     it('should refresh token if access token is expired', (done) => {
-        // const newUserAuth: UserAuth = {
-        //   ...mockUserAuth,
-        //   authToken:{
-        //     ...mockUserAuth.authToken,
-        //     accessToken: 'new-access-token'
-        //   }
-        // };
 
-        authService.getUserAuth.and.returnValue(of({ ...mockUserAuth, accessToken: expiredAccessToken }));
+        authService.getUserAuth.and.returnValue(of({ ...mockUserAuth, authToken: { ...mockUserAuth.authToken, accessToken: expiredAccessToken } }));
         authService.refreshToken.and.returnValue(of(true));
 
         httpClient.get('/test').subscribe(response => {

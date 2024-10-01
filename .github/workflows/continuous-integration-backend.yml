@@ -7,15 +7,15 @@ on:
       - main
       - develop-release-1
     paths:
-      - 'src/ELibrary.Backend/**'
-      - 'test/**'
+      - "src/ELibrary.Backend/**"
+      - "test/**"
   pull_request:
     branches:
       - main
       - develop-release-1
     paths:
-      - 'src/ELibrary.Backend/**'
-      - 'test/**'
+      - "src/ELibrary.Backend/**"
+      - "test/**"
 
 jobs:
   run-all-tests:
@@ -25,8 +25,8 @@ jobs:
 
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x'
-        
+          dotnet-version: "8.x"
+
       - name: Cache .NET packages
         uses: actions/cache@v3
         with:
@@ -39,14 +39,58 @@ jobs:
         run: |
           dotnet restore src/ELibrary.Backend/ELibrary.Backend.sln
 
+      - name: Install coverage tools
+        run: |
+          dotnet tool install --global dotnet-coverage
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+
       - name: Build projects
         run: |
           dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
 
-      - name: Run unit tests
+      - name: Run unit tests with coverage
         run: |
-          dotnet test src/ELibrary.Backend/ELibrary.Backend.sln
+          dotnet-coverage collect dotnet test src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults -f xml -o coverage.xml
 
       - name: Check results
         run: |
           echo "Tests have been executed."
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ./TestResults
+
+      - name: Publish code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: coverage.xml
+
+      - name: Generate HTML report from coverage
+        run: |
+          reportgenerator -reports:coverage.xml -targetdir:./coverage-report -reporttypes:Html
+
+      - name: Zip HTML coverage report
+        run: |
+          zip -r coverage-report.zip ./coverage-report
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage-report.zip
+
+      - name: Publish build artifacts
+        run: dotnet publish src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --output ./output
+
+      - name: Archive build artifact
+        run: |
+          zip -r build-artifact.zip ./output
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: build-artifact.zip

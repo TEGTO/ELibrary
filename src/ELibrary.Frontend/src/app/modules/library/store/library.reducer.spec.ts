@@ -206,7 +206,7 @@ describe('Library Reducer', () => {
     it('should handle deleteByIdSuccess for books', () => {
         const initialStateWithBooks: BookState = {
             ...initialBookState,
-            books: [getDefaultBook()],
+            books: [{ ...getDefaultBook(), id: 1 }],
             totalBookAmount: 1
         };
         const action = bookActions.deleteByIdSuccess({ id: 1 });

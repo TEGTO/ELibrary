@@ -54,5 +54,4 @@ export * from "./store/library.actions";
 export * from "./store/library.effects";
 export * from "./store/library.reducer";
 export * from "./store/library.selector";
-export * from "./validators/book/bookValidators";
 

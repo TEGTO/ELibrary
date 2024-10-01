@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Genre, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
+import { Genre, notEmptyString, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-genre-change-dialog',
@@ -23,7 +23,7 @@ export class GenreChangeDialogComponent implements OnInit {
   ngOnInit(): void {
     this.formGroup = new FormGroup(
       {
-        name: new FormControl(this.genre.name, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
+        name: new FormControl(this.genre.name, [Validators.required, notEmptyString, Validators.maxLength(256)]),
       });
   }
 

@@ -25,6 +25,10 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             stockBookOrderService = new StockBookOrderService(repositoryMock.Object, eventDispatcherMock.Object);
             cancellationToken = CancellationToken.None;
         }
+        private IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class
+        {
+            return data.AsQueryable().BuildMock();
+        }
 
         [Test]
         public async Task AddStockBookOrderAsync_AddsStockBookOrderAndDispatchesEvent()
@@ -32,12 +36,14 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             // Arrange
             var stockBookOrder = new StockBookOrder();
             var newStockBookOrder = new StockBookOrder();
+            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
+            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
             repositoryMock.Setup(r => r.AddAsync(stockBookOrder, cancellationToken)).ReturnsAsync(newStockBookOrder);
             eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
             // Act
             var result = await stockBookOrderService.AddStockBookOrderAsync(stockBookOrder, cancellationToken);
             // Assert
-            Assert.That(result, Is.EqualTo(newStockBookOrder));
+            Assert.That(result.Id, Is.EqualTo(newStockBookOrder.Id));
             repositoryMock.Verify(r => r.AddAsync(stockBookOrder, cancellationToken), Times.Once);
             eventDispatcherMock.Verify(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken), Times.Once);
         }
@@ -46,7 +52,10 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         {
             // Arrange
             var order = CreateOrder();
-            repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(new StockBookOrder());
+            var stockBookOrder = new StockBookOrder();
+            repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(stockBookOrder);
+            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
+            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
             eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
             // Act
             await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, StockBookOrderType.ClientOrder, cancellationToken);
@@ -59,7 +68,10 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         {
             // Arrange
             var order = CreateOrder();
-            repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(new StockBookOrder());
+            var stockBookOrder = new StockBookOrder();
+            repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(stockBookOrder);
+            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
+            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
             eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
             // Act
             await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(order, StockBookOrderType.ClientOrderCancel, cancellationToken);
@@ -79,6 +91,8 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
                     new StockBookChange { ChangeAmount = 10 }
                 }
             };
+            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
+            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
             repositoryMock.Setup(r => r.AddAsync(stockBookOrder, cancellationToken)).ReturnsAsync(stockBookOrder);
             eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
             // Act

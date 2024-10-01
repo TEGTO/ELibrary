@@ -2,29 +2,28 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
-import { AuthenticationDialogManager, AuthenticationService } from '../..';
-import { getDefaultUserAuth, SnackbarManager, UserAuth } from '../../../shared';
+import { AuthenticationDialogManager, SIGN_IN_COMMAND_HANDLER, SignInCommand } from '../..';
+import { CommandHandler, ValidationMessage } from '../../../shared';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
     let component: LoginComponent;
     let fixture: ComponentFixture<LoginComponent>;
-    let authService: jasmine.SpyObj<AuthenticationService>;
-    let snackbarManager: jasmine.SpyObj<SnackbarManager>;
     let authDialogManager: jasmine.SpyObj<AuthenticationDialogManager>;
-    let dialogRef: jasmine.SpyObj<MatDialogRef<LoginComponent>>;
+    let signInCommandHandlerSpy: jasmine.SpyObj<CommandHandler<SignInCommand>>;
 
     beforeEach(waitForAsync(() => {
-        const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['singInUser', 'getAuthData', 'getAuthErrors']);
-        const snackbarManagerSpy = jasmine.createSpyObj('SnackbarManager', ['openErrorSnackbar']);
         const authDialogManagerSpy = jasmine.createSpyObj('AuthenticationDialogManager', ['openRegisterMenu']);
         const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const getValidationMessageSpy = jasmine.createSpyObj<ValidationMessage>(['getValidationMessage']);
+        signInCommandHandlerSpy = jasmine.createSpyObj<CommandHandler<SignInCommand>>(['dispatch']);
+
+        getValidationMessageSpy.getValidationMessage.and.returnValue({ hasError: false, message: "" });
 
         TestBed.configureTestingModule({
             declarations: [LoginComponent],
@@ -37,21 +36,17 @@ describe('LoginComponent', () => {
                 NoopAnimationsModule,
             ],
             providers: [
-                { provide: AuthenticationService, useValue: authServiceSpy },
-                { provide: SnackbarManager, useValue: snackbarManagerSpy },
                 { provide: AuthenticationDialogManager, useValue: authDialogManagerSpy },
                 { provide: MatDialogRef, useValue: dialogRefSpy },
-                { provide: MAT_DIALOG_DATA, useValue: {} }
+                { provide: SIGN_IN_COMMAND_HANDLER, useValue: signInCommandHandlerSpy },
+                { provide: ValidationMessage, useValue: getValidationMessageSpy }
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(LoginComponent);
         component = fixture.componentInstance;
-        authService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
-        snackbarManager = TestBed.inject(SnackbarManager) as jasmine.SpyObj<SnackbarManager>;
         authDialogManager = TestBed.inject(AuthenticationDialogManager) as jasmine.SpyObj<AuthenticationDialogManager>;
-        dialogRef = TestBed.inject(MatDialogRef) as jasmine.SpyObj<MatDialogRef<LoginComponent>>;
 
         fixture.detectChanges();
     }));
@@ -81,68 +76,15 @@ describe('LoginComponent', () => {
     });
 
     it('should call signInUser on valid form submission', () => {
-        const userAuth: UserAuth = {
-            ...getDefaultUserAuth(),
-            isAuthenticated: true,
-        };
-
         component.formGroup.setValue({
             login: 'john@example.com',
-            password: 'password123'
+            password: 'Password123;'
         });
-
-        authService.getUserAuth.and.returnValue(of(userAuth));
-        authService.getAuthErrors.and.returnValue(of(null));
 
         fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
         fixture.detectChanges();
 
-        expect(authService.signInUser).toHaveBeenCalledWith({
-            login: 'john@example.com',
-            password: 'password123'
-        });
-        expect(dialogRef.close).toHaveBeenCalled();
-    });
-
-    it('should display error messages on login failure', () => {
-        const userAuth: UserAuth = {
-            ...getDefaultUserAuth(),
-            isAuthenticated: false,
-        };
-
-        component.formGroup.setValue({
-            login: 'john@example.com',
-            password: 'password123'
-        });
-
-        authService.getUserAuth.and.returnValue(of(userAuth));
-        authService.getAuthErrors.and.returnValue(of('Login failed'));
-
-        fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
-        fixture.detectChanges();
-
-        expect(authService.signInUser).toHaveBeenCalled();
-        expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Login failed']);
-    });
-
-    it('should handle login errors', () => {
-        component.formGroup.setValue({
-            login: 'john@example.com',
-            password: 'password123'
-        });
-
-        const userAuth: UserAuth = {
-            ...getDefaultUserAuth(),
-            isAuthenticated: false,
-        };
-
-        authService.getUserAuth.and.returnValue(of(userAuth));
-        authService.getAuthErrors.and.returnValue(of('Server error'));
-
-        component.signInUser();
-
-        expect(authService.signInUser).toHaveBeenCalled();
-        expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Server error']);
+        expect(signInCommandHandlerSpy.dispatch).toHaveBeenCalled();
     });
 
     it('should open register menu on link click', () => {
@@ -165,21 +107,5 @@ describe('LoginComponent', () => {
         fixture.detectChanges();
 
         expect(passwordInput.type).toBe('password');
-    });
-
-    it('should clear form and open error snackbar on sign in error', () => {
-        component.formGroup.setValue({
-            login: 'test@example.com',
-            password: 'wrongpassword'
-        });
-
-        authService.getUserAuth.and.returnValue(of(getDefaultUserAuth()));
-        authService.getAuthErrors.and.returnValue(of('Invalid login credentials'));
-
-        component.signInUser();
-        fixture.detectChanges();
-
-        expect(component.formGroup.valid).toBeTrue();
-        expect(snackbarManager.openErrorSnackbar).toHaveBeenCalledWith(['Invalid login credentials']);
     });
 });

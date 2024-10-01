@@ -1,5 +1,7 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { of } from 'rxjs';
 import { PublisherService } from '../../../..';
 import { Publisher, ValidationMessage } from '../../../../../shared';
@@ -22,11 +24,15 @@ describe('PublisherInputComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [PublisherInputComponent],
-            imports: [ReactiveFormsModule],
+            imports: [
+                ReactiveFormsModule,
+                MatAutocompleteModule
+            ],
             providers: [
                 { provide: PublisherService, useValue: publisherServiceSpy },
                 { provide: ValidationMessage, useValue: validationMessageSpy }
-            ]
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(PublisherInputComponent);
@@ -37,7 +43,6 @@ describe('PublisherInputComponent', () => {
         publisherService.getPaginated.and.returnValue(of(mockPublishers));
 
         component.formGroup = new FormGroup({
-            publisher: new FormControl(null)
         });
     });
 
@@ -112,8 +117,9 @@ describe('PublisherInputComponent', () => {
     it('should calculate selection size based on items', () => {
         component.items = mockPublishers;
         const selectionSize = component.selectionSize;
-
-        expect(selectionSize).toBe(component.amountItemsInView * component.itemHeight);
+        expect(selectionSize).toBe(component.items.length > component.amountItemsInView
+            ? component.amountItemsInView * component.itemHeight
+            : component.items.length * component.itemHeight + 5);
     });
 
     it('should set up scroll listeners', () => {
