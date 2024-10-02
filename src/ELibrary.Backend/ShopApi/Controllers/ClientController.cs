@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = Policy.REQUIRE_CLIENT_ROLE)]
     [Route("client")]
     [ApiController]
     public class ClientController : ControllerBase

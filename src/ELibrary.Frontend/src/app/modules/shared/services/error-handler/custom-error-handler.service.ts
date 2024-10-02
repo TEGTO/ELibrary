@@ -1,17 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
+import { SnackbarManager } from '../..';
 import { ErrorHandler } from './error-handler';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomErrorHandler implements ErrorHandler {
+
+  constructor(
+    private readonly snackbarManager: SnackbarManager
+  ) { }
+
   handleError(error: any): string {
     let errorMessage;
     if (error.message) {
       errorMessage = error.message;
     }
     console.error(errorMessage);
+    this.snackbarManager.openErrorSnackbar([errorMessage]);
+
     return errorMessage;
   }
 
@@ -29,6 +37,7 @@ export class CustomErrorHandler implements ErrorHandler {
       errorMessage = `An unknown error occurred! (${statusCode})`
     }
     console.error(errorMessage);
+    this.snackbarManager.openErrorSnackbar([errorMessage]);
     return errorMessage;
   }
 

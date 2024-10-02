@@ -6,6 +6,7 @@ import { ClientUpdateOrderRequest, CreateOrderRequest, ManagerUpdateOrderRequest
     providedIn: 'root'
 })
 export abstract class OrderService {
+    abstract managerGetOrderById(id: number): Observable<Order>;
     abstract getPaginatedOrders(req: PaginatedRequest): Observable<Order[]>;
     abstract getOrderTotalAmount(): Observable<number>;
     abstract createOrder(req: CreateOrderRequest): Observable<{ isSuccess: boolean, error: unknown }>;

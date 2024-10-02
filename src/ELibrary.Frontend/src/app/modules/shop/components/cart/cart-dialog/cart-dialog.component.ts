@@ -102,8 +102,8 @@ export class CartDialogComponent implements OnInit, OnDestroy {
     this.deleteCartBookHandler.dispatch(command);
   }
 
-  getBookPage(cartBook: CartBook): number {
-    return cartBook.book.id;
+  getBookPage(cartBook: CartBook): string {
+    return cartBook.book.id.toString();
   }
 
   makeOrder() {

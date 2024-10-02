@@ -93,7 +93,7 @@ export class ProductPageComponent implements OnInit {
     return this.currenctyApplier.applyCurrencyPipe(value);
   }
 
-  getBookPage(book: Book): number {
-    return book.id;
+  getBookPage(book: Book): string {
+    return book.id.toString();
   }
 }

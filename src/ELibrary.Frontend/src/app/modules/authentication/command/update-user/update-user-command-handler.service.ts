@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { catchError, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { AuthenticationService, mapUpdateUserCommandToUserUpdateRequest, UpdateUserCommand } from '../..';
 import { CommandHandler, SnackbarManager } from '../../../shared';
 
@@ -37,18 +37,6 @@ export class UpdateUserCommandHandlerService extends CommandHandler<UpdateUserCo
           this.cleanUp();
         }
       }),
-      switchMap(isSuccess => isSuccess ? of() : this.authService.getAuthErrors()),
-      tap(errors => {
-        if (errors) {
-          this.snackbarManager.openErrorSnackbar(errors.split('\n'));
-          this.cleanUp();
-        }
-      }),
-      catchError(() => {
-        this.snackbarManager.openErrorSnackbar(['An error occurred during updating.']);
-        this.cleanUp();
-        return of();
-      })
     ).subscribe();
   }
 }

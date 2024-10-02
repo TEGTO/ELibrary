@@ -170,6 +170,32 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
                 await manager.CancelOrderAsync(orderId, client, CancellationToken.None));
         }
         [Test]
+        public async Task GetOrderByIdAsync_ValidRequest_ReturnsMappedOrder()
+        {
+            // Arrange
+            var order = new Order { Id = 1 };
+            orderServiceMock.Setup(service => service.GetOrderByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(order);
+            mapperMock.Setup(mapper => mapper.Map<OrderResponse>(It.IsAny<Order>()))
+                .Returns((Order order) => new OrderResponse { Id = order.Id });
+            // Act
+            var result = await manager.GetOrderByIdAsync(1, CancellationToken.None);
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.EqualTo(order.Id));
+            Assert.That(result.TotalPrice, Is.EqualTo(order.TotalPrice));
+        }
+        [Test]
+        public async Task GetOrderByIdAsync_InvalidRequest_ReturnsNullOrder()
+        {
+            // Arrange
+            orderServiceMock.Setup(service => service.GetOrderByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()));
+            // Act
+            var result = await manager.GetOrderByIdAsync(2, CancellationToken.None);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+        [Test]
         public async Task GetPaginatedOrdersAsync_ValidRequest_ReturnsMappedOrders()
         {
             // Arrange

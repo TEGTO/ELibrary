@@ -1,7 +1,7 @@
 import { Client, getDefaultClient, getDefaultStockBookChange, StockBookChange } from "../../../..";
 
 export enum StockBookOrderType {
-    StockReplenishment, ClientOrder, ClientOrderCancel
+    StockReplenishment, ClientOrder, ClientOrderCancel, ManagerOrderCancel
 }
 export interface StockBookOrder {
     id: number,
@@ -33,6 +33,8 @@ export function stockBookOrderTypeToString(type: StockBookOrderType): string {
             return "Client Order"
         case StockBookOrderType.ClientOrderCancel:
             return "Client Order Cancel"
+        case StockBookOrderType.ManagerOrderCancel:
+            return "Manager Order Cancel"
         default:
             return "";
     }

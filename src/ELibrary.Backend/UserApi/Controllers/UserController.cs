@@ -33,7 +33,7 @@ namespace UserApi.Controllers
             var response = await userManager.LoginUserAsync(request);
             return Ok(response);
         }
-        [Authorize]
+        [Authorize(Policy = Policy.REQUIRE_CLIENT_ROLE)]
         [HttpPut("update")]
         public async Task<IActionResult> Update(UserUpdateDataRequest request, CancellationToken cancellationToken)
         {

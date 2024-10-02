@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatest, map, Observable } from 'rxjs';
-import { cancelOrder, createOrder, getOrders, getOrderTotalAmount, managerCancelOrder, managerGetOrderTotalAmount, managerGetPaginatedOrders, managerUpdateOrder, selectIsCreateSuccess, selectManagerOrders, selectManagerOrderTotalAmount, selectOrderErrors, selectOrders, selectOrderTotalAmount, updateOrder } from '../..';
+import { cancelOrder, createOrder, getOrders, getOrderTotalAmount, managerCancelOrder, managerGetOrderById, managerGetOrderTotalAmount, managerGetPaginatedOrders, managerUpdateOrder, selectIsCreateSuccess, selectManagerOrderById, selectManagerOrders, selectManagerOrderTotalAmount, selectOrderErrors, selectOrders, selectOrderTotalAmount, updateOrder } from '../..';
 import { ClientUpdateOrderRequest, CreateOrderRequest, ManagerUpdateOrderRequest, Order, PaginatedRequest } from '../../../shared';
 import { OrderService } from './order-service';
 
@@ -37,6 +37,10 @@ export class OrderControllerService implements OrderService {
   }
   clientCancelOrder(id: number): void {
     this.store.dispatch(cancelOrder({ id: id }));
+  }
+  managerGetOrderById(id: number): Observable<Order> {
+    this.store.dispatch(managerGetOrderById({ id: id }));
+    return this.store.select(selectManagerOrderById(id));
   }
   managerGetPaginatedOrders(req: PaginatedRequest): Observable<Order[]> {
     this.store.dispatch(managerGetPaginatedOrders({ req: req }));

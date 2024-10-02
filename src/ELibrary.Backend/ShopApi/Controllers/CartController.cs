@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Authentication.Identity;
+using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = Policy.REQUIRE_CLIENT_ROLE)]
     [Route("cart")]
     [ApiController]
     public class CartController : ControllerBase

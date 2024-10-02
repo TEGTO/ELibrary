@@ -7,6 +7,8 @@ export const pathes =
     manager_genres: 'genres',
     manager_authors: 'authors',
     manager_publishers: 'publishers',
+    manager_orders: 'orders',
+    manager_orders_details: 'orders/:id',
 
     client: "",
     client_products: "",
@@ -20,11 +22,11 @@ export const pathes =
 export const redirectPathes =
 {
     manager_bookstock: `${pathes.manager}/${pathes.manager_bookstock}`,
-    manager_bookstock_details: `${pathes.manager}/${pathes.manager_bookstock}`,
     manager_books: `${pathes.manager}/${pathes.manager_books}`,
     manager_genres: `${pathes.manager}/${pathes.manager_genres}`,
     manager_authors: `${pathes.manager}/${pathes.manager_authors}`,
     manager_publishers: `${pathes.manager}/${pathes.manager_publishers}`,
+    manager_orders: `${pathes.manager}/${pathes.manager_orders}`,
 
     client_products: `${pathes.client}/${pathes.client_products}`,
     client_productInfo: `${pathes.client}`,

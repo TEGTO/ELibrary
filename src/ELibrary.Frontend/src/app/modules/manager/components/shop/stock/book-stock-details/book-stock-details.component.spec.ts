@@ -4,8 +4,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
 import { BehaviorSubject, of, throwError } from "rxjs";
-import { CurrencyPipeApplier, getDefaultStockBookOrder, RedirectorService, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from "../../../../shared";
-import { BookstockOrderService } from "../../../../shop";
+import { CurrencyPipeApplier, getDefaultStockBookOrder, RedirectorService, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from "../../../../../shared";
+import { BookstockOrderService } from "../../../../../shop";
 import { BookStockDetailsComponent } from "./book-stock-details.component";
 
 describe('BookStockDetailsComponent', () => {

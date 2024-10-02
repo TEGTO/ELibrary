@@ -30,6 +30,9 @@ export class MainViewComponent implements OnInit {
   openLoginMenu() {
     this.authDialogManager.openLoginMenu();
   }
+  checkClientPolicy(roles: string[]) {
+    return Policy.checkPolicy(PolicyType.ClientPolicy, roles);
+  }
   checkManagerPolicy(roles: string[]) {
     return Policy.checkPolicy(PolicyType.ManagerPolicy, roles);
   }

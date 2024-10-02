@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReducer, on } from "@ngrx/store";
-import { cancelOrderFailure, cancelOrderSuccess, createOrder, createOrderFailure, createOrderSuccess, getOrderAmountFailure, getOrderAmountSuccess, getOrdersFailure, getOrdersSuccess, managerCancelOrderFailure, managerCancelOrderSuccess, managerGetOrderAmountFailure, managerGetOrderAmountSuccess, managerGetPaginatedOrdersFailure, managerGetPaginatedOrdersSuccess, managerUpdateOrderFailure, managerUpdateOrderSuccess, updateOrderFailure, updateOrderSuccess } from "../..";
+import { cancelOrderFailure, cancelOrderSuccess, createOrder, createOrderFailure, createOrderSuccess, getOrderAmountFailure, getOrderAmountSuccess, getOrdersFailure, getOrdersSuccess, managerCancelOrderFailure, managerCancelOrderSuccess, managerGetOrderAmountFailure, managerGetOrderAmountSuccess, managerGetOrderByIdFailure, managerGetOrderByIdSuccess, managerGetPaginatedOrdersFailure, managerGetPaginatedOrdersSuccess, managerUpdateOrderFailure, managerUpdateOrderSuccess, updateOrderFailure, updateOrderSuccess } from "../..";
 import { Order, OrderStatus } from "../../../shared";
 
 //#region Client
@@ -53,7 +53,7 @@ export const orderReducer = createReducer(
         error: null
     })),
     on(createOrderFailure, (state, { error: error }) => ({
-        ...initialOrderState,
+        ...state,
         error: error
     })),
 
@@ -65,7 +65,7 @@ export const orderReducer = createReducer(
         }
     )),
     on(updateOrderFailure, (state, { error: error }) => ({
-        ...initialOrderState,
+        ...state,
         error: error
     })),
 
@@ -79,7 +79,7 @@ export const orderReducer = createReducer(
         error: null
     })),
     on(cancelOrderFailure, (state, { error: error }) => ({
-        ...initialOrderState,
+        ...state,
         error: error
     })),
 );
@@ -102,6 +102,16 @@ const initialManagerOrderState: ManagerOrderState = {
 
 export const managerOrderReducer = createReducer(
     initialManagerOrderState,
+
+    on(managerGetOrderByIdSuccess, (state, { order: order }) => ({
+        ...state,
+        orders: [...state.orders, order],
+        error: null
+    })),
+    on(managerGetOrderByIdFailure, (state, { error: error }) => ({
+        ...state,
+        error: error
+    })),
 
     on(managerGetPaginatedOrdersSuccess, (state, { orders: orders }) => ({
         ...state,
@@ -131,7 +141,7 @@ export const managerOrderReducer = createReducer(
         }
     )),
     on(managerUpdateOrderFailure, (state, { error: error }) => ({
-        ...initialManagerOrderState,
+        ...state,
         error: error
     })),
 
@@ -147,7 +157,7 @@ export const managerOrderReducer = createReducer(
         }
     )),
     on(managerCancelOrderFailure, (state, { error: error }) => ({
-        ...initialManagerOrderState,
+        ...state,
         error: error
     })),
 );

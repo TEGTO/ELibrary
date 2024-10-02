@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ManagerCancelOrderCommand, OrderService } from '../../..';
+import { take } from 'rxjs';
+import { ManagerCancelOrderCommand, OrderService, ShopDialogManager } from '../../..';
 import { CommandHandler } from '../../../../shared';
 
 @Injectable({
@@ -9,12 +10,18 @@ export class ManagerCancelOrderCommandHandlerService extends CommandHandler<Mana
 
   constructor(
     private readonly orderService: OrderService,
+    private readonly dialogManager: ShopDialogManager
   ) {
     super();
   }
 
   dispatch(command: ManagerCancelOrderCommand): void {
-    this.orderService.managerCancelOrder(command.order.id);
+    this.dialogManager.openConfirmMenu().afterClosed().pipe(
+      take(1)
+    ).subscribe(result => {
+      if (result === true) {
+        this.orderService.managerCancelOrder(command.order.id);
+      }
+    });
   }
-
 }

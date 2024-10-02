@@ -14,4 +14,5 @@ export class ManagerTableComponent {
   get authorPath() { return pathes.manager_authors; }
   get genrePath() { return pathes.manager_genres; }
   get publisherPath() { return pathes.manager_publishers; }
+  get orderPath() { return pathes.manager_orders; }
 }

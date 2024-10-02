@@ -1,5 +1,5 @@
 import { InjectionToken } from "@angular/core";
-import { AddBookStockOrderCommand, AddClientCommand, CartAddBookCommand, ClientAddOrderCommand, ClientCancelOrderCommand, ClientUpdateOrderCommand, DeleteCartBookCommand, DeleteClientCommand, ManagerCancelOrderCommand, ManagerUpdateOrderCommand, UpdateCartBookCommand, UpdateClientCommand } from "..";
+import { AddBookStockOrderCommand, AddClientCommand, CartAddBookCommand, ClientAddOrderCommand, ClientCancelOrderCommand, ClientUpdateOrderCommand, DeleteCartBookCommand, DeleteClientCommand, ManagerCancelOrderCommand, ManagerOrderDetailsCommand, ManagerUpdateOrderCommand, UpdateCartBookCommand, UpdateClientCommand } from "..";
 import { CommandHandler } from "../../shared";
 
 
@@ -16,5 +16,6 @@ export const CLIENT_UPDATE_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHan
 export const CLIENT_CANCEL_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ClientCancelOrderCommand>>('ClientCancelOrderCommandHandler');
 export const MANAGER_UPDATE_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ManagerUpdateOrderCommand>>('ManagerUpdateOrderCommandHandler');
 export const MANAGER_CANCEL_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ManagerCancelOrderCommand>>('ManagerCancelOrderCommandHandler');
+export const MANAGER_ORDER_DETAILS_COMMAND_HANDLER = new InjectionToken<CommandHandler<ManagerOrderDetailsCommand>>('ManagerOrderDetailsCommandHandler');
 
 export const ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<AddBookStockOrderCommand>>('AddBookStockOrderCommandHandler');

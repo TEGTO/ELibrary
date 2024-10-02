@@ -2,13 +2,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { CommandHandler, GenericTableComponent, getDefaultStockBookOrder, LocaleService, StockBookOrder } from '../../../../shared';
-import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, BookstockOrderService } from '../../../../shop';
-import { BookStockComponent } from './book-stock.component';
+import { CommandHandler, GenericTableComponent, getDefaultStockBookOrder, LocaleService, StockBookOrder } from '../../../../../shared';
+import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, BookstockOrderService } from '../../../../../shop';
+import { BookStockTableComponent } from './book-stock-table.component';
 
-describe('BookStockComponent', () => {
-    let component: BookStockComponent;
-    let fixture: ComponentFixture<BookStockComponent>;
+describe('BookStockTableComponent', () => {
+    let component: BookStockTableComponent;
+    let fixture: ComponentFixture<BookStockTableComponent>;
     let stockOrderService: jasmine.SpyObj<BookstockOrderService>;
     let mockAddHandler: jasmine.SpyObj<CommandHandler<any>>;
 
@@ -23,7 +23,7 @@ describe('BookStockComponent', () => {
 
         await TestBed.configureTestingModule({
             imports: [GenericTableComponent, BrowserAnimationsModule],
-            declarations: [BookStockComponent],
+            declarations: [BookStockTableComponent],
             providers: [
                 { provide: BookstockOrderService, useValue: stockOrderServiceSpy },
                 { provide: LocaleService, useValue: localeServiceSpy },
@@ -31,7 +31,7 @@ describe('BookStockComponent', () => {
             ],
         }).compileComponents();
 
-        fixture = TestBed.createComponent(BookStockComponent);
+        fixture = TestBed.createComponent(BookStockTableComponent);
         component = fixture.componentInstance;
         stockOrderService = TestBed.inject(BookstockOrderService) as jasmine.SpyObj<BookstockOrderService>;
         mockAddHandler = TestBed.inject(ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER) as jasmine.SpyObj<CommandHandler<any>>;

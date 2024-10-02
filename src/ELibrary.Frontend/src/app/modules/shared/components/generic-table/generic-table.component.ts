@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, PipeTransform, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { RouterModule } from '@angular/router';
-import { TableColumn } from '../..';
+import { RedirectorService, TableColumn } from '../..';
 
 @Component({
   selector: 'app-generic-table',
@@ -32,6 +32,10 @@ export class GenericTableComponent implements OnInit {
 
   pageSize!: number;
   private defaultPagination = { pageIndex: 0, pageSize: this.initialPageSize };
+
+  constructor(
+    private readonly redirector: RedirectorService
+  ) { }
 
   ngOnInit(): void {
     this.pageSize = this.initialPageSize;
@@ -63,5 +67,9 @@ export class GenericTableComponent implements OnInit {
       this.paginator.pageIndex = this.defaultPagination.pageIndex;
       this.pageSize = this.defaultPagination.pageSize;
     }
+  }
+
+  navigateTo(path: string) {
+    this.redirector.redirectTo(path);
   }
 }

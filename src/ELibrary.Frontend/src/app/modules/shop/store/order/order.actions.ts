@@ -72,6 +72,19 @@ export const cancelOrderFailure = createAction(
 
 //#region  Manager
 
+export const managerGetOrderById = createAction(
+    '[Order] Manager Get Order By Id',
+    props<{ id: number }>()
+);
+export const managerGetOrderByIdSuccess = createAction(
+    '[Order] Manager Get Order By Id Success',
+    props<{ order: Order }>()
+);
+export const managerGetOrderByIdFailure = createAction(
+    '[Order] Manager Get Order By Id Failure',
+    props<{ error: any }>()
+);
+
 export const managerGetPaginatedOrders = createAction(
     '[Order] Manager Get Paginated Orders',
     props<{ req: PaginatedRequest }>()

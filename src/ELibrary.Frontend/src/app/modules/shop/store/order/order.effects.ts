@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { cancelOrder, cancelOrderFailure, cancelOrderSuccess, createOrder, createOrderFailure, createOrderSuccess, getOrderAmountFailure, getOrderAmountSuccess, getOrders, getOrdersFailure, getOrdersSuccess, getOrderTotalAmount, managerCancelOrder, managerCancelOrderFailure, managerCancelOrderSuccess, managerGetOrderAmountFailure, managerGetOrderAmountSuccess, managerGetOrderTotalAmount, managerGetPaginatedOrders, managerGetPaginatedOrdersFailure, managerGetPaginatedOrdersSuccess, managerUpdateOrder, managerUpdateOrderFailure, managerUpdateOrderSuccess, updateOrder, updateOrderFailure, updateOrderSuccess } from "../..";
+import { cancelOrder, cancelOrderFailure, cancelOrderSuccess, createOrder, createOrderFailure, createOrderSuccess, getOrderAmountFailure, getOrderAmountSuccess, getOrders, getOrdersFailure, getOrdersSuccess, getOrderTotalAmount, managerCancelOrder, managerCancelOrderFailure, managerCancelOrderSuccess, managerGetOrderAmountFailure, managerGetOrderAmountSuccess, managerGetOrderById, managerGetOrderByIdFailure, managerGetOrderByIdSuccess, managerGetOrderTotalAmount, managerGetPaginatedOrders, managerGetPaginatedOrdersFailure, managerGetPaginatedOrdersSuccess, managerUpdateOrder, managerUpdateOrderFailure, managerUpdateOrderSuccess, updateOrder, updateOrderFailure, updateOrderSuccess } from "../..";
 import { OrderApiService } from "../../../shared";
 
 @Injectable()
@@ -66,6 +66,18 @@ export class OrderEffects {
                 this.apiService.cancelOrder(action.id).pipe(
                     map(() => cancelOrderSuccess({ id: action.id })),
                     catchError(error => of(cancelOrderFailure({ error: error.message })))
+                )
+            )
+        )
+    );
+
+    managerGetOrderById$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(managerGetOrderById),
+            mergeMap((action) =>
+                this.apiService.managerGetOrderById(action.id).pipe(
+                    map((response) => managerGetOrderByIdSuccess({ order: response })),
+                    catchError(error => of(managerGetOrderByIdFailure({ error: error.message })))
                 )
             )
         )

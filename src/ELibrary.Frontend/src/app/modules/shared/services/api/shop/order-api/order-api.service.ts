@@ -35,6 +35,12 @@ export class OrderApiService extends BaseApiService {
       catchError((error) => this.handleError(error))
     );
   }
+  managerGetOrderById(id: number): Observable<Order> {
+    return this.httpClient.get<OrderResponse>(this.combinePathWithOrderApiUrl(`/manager/${id}`)).pipe(
+      map((response) => mapOrderResponseToOrder(response)),
+      catchError((error) => this.handleError(error)),
+    );
+  }
   managerGetPaginatedOrders(request: PaginatedRequest): Observable<Order[]> {
     return this.httpClient.post<OrderResponse[]>(this.combinePathWithOrderApiUrl(`/manager/pagination`), request).pipe(
       map((response) => response.map(x => mapOrderResponseToOrder(x))),

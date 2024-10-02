@@ -13,14 +13,14 @@ export interface ClientResponse {
 }
 export function mapClientResponseToClient(response: ClientResponse): Client {
     return {
-        id: response.id,
-        userId: response.userId,
-        name: response.name,
-        middleName: response.middleName,
-        lastName: response.lastName,
-        dateOfBirth: new Date(response.dateOfBirth),
-        address: response.address,
-        phone: response.phone,
-        email: response.email,
+        id: response?.id,
+        userId: response?.userId,
+        name: response?.name,
+        middleName: response?.middleName,
+        lastName: response?.lastName,
+        dateOfBirth: new Date(response?.dateOfBirth),
+        address: response?.address,
+        phone: response?.phone,
+        email: response?.email,
     };
 }

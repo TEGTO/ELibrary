@@ -5,7 +5,7 @@ namespace LibraryShopEntities.Domain.Entities.Shop
 {
     public enum StockBookOrderType
     {
-        StockReplenishment, ClientOrder, ClientOrderCancel
+        StockReplenishment, ClientOrder, ClientOrderCancel, ManagerOrderCancel
     }
     public class StockBookOrder : ITrackable
     {

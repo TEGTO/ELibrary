@@ -22,14 +22,14 @@ namespace ShopApi.Features.OrderFeature.Services
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
             return
-                await GetQueryableOrderWithBook(queryable)
+                await GetQueryableOrder(queryable)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
         public async Task<int> GetOrderAmountAsync(string clientId, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
             return
-                await GetQueryableOrderWithBook(queryable)
+                await GetQueryableOrder(queryable)
                 .Where(x => x.ClientId == clientId)
                 .CountAsync();
         }
@@ -37,7 +37,7 @@ namespace ShopApi.Features.OrderFeature.Services
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
             return
-                await GetQueryableOrderWithBook(queryable)
+                await GetQueryableOrder(queryable)
                 .CountAsync();
         }
         public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(PaginationRequest pagination, CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ namespace ShopApi.Features.OrderFeature.Services
             List<Order> orders = new List<Order>();
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
 
-            orders.AddRange(await GetQueryableOrderWithBook(queryable)
+            orders.AddRange(await GetQueryableOrder(queryable)
                                      .OrderByDescending(b => b.CreatedAt)
                                      .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                                      .Take(pagination.PageSize)
@@ -58,7 +58,7 @@ namespace ShopApi.Features.OrderFeature.Services
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
 
             orders.AddRange(
-            await GetQueryableOrderWithBook(queryable)
+            await GetQueryableOrder(queryable)
             .Where(t => t.ClientId == id)
             .OrderByDescending(b => b.CreatedAt)
             .Skip((pagination.PageNumber - 1) * pagination.PageSize)
@@ -88,7 +88,7 @@ namespace ShopApi.Features.OrderFeature.Services
             var newOrder = await repository.AddAsync(order, cancellationToken);
             var orderQueryable = await repository.GetQueryableAsync<Order>(cancellationToken);
 
-            return await GetQueryableOrderWithBook(orderQueryable).FirstAsync(x => x.Id == newOrder.Id, cancellationToken);
+            return await GetQueryableOrder(orderQueryable).FirstAsync(x => x.Id == newOrder.Id, cancellationToken);
         }
         public async Task<Order> UpdateOrderAsync(Order order, CancellationToken cancellationToken)
         {
@@ -100,10 +100,15 @@ namespace ShopApi.Features.OrderFeature.Services
                 throw new InvalidOperationException("Order is not found.");
             }
 
+            if (orderInDb.OrderStatus == OrderStatus.Canceled)
+            {
+                throw new InvalidOperationException("Canceled orders are not changeable!");
+            }
+
             orderInDb.Copy(order);
             await repository.UpdateAsync(orderInDb, cancellationToken);
 
-            return await GetQueryableOrderWithBook(queryable).FirstAsync(x => x.Id == orderInDb.Id, cancellationToken);
+            return await GetQueryableOrder(queryable).FirstAsync(x => x.Id == orderInDb.Id, cancellationToken);
         }
         public async Task DeleteOrderAsync(int id, CancellationToken cancellationToken)
         {
@@ -116,14 +121,15 @@ namespace ShopApi.Features.OrderFeature.Services
 
         #region Private Helpers
 
-        private IQueryable<Order> GetQueryableOrderWithBook(IQueryable<Order> queryable)
+        private IQueryable<Order> GetQueryableOrder(IQueryable<Order> queryable)
         {
             return
                 queryable
                 .AsSplitQuery()
                 .AsNoTracking()
                 .Include(x => x.OrderBooks)
-                    .ThenInclude(book => book.Book);
+                    .ThenInclude(book => book.Book)
+                .Include(x => x.Client);
         }
 
         #endregion

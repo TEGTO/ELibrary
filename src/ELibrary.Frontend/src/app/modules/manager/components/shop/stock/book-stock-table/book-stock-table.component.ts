@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CommandHandler, GenericTableComponent, LocaleService, LocalizedDatePipe, PaginatedRequest, redirectPathes, stockBookOrderTypeToString } from '../../../../shared';
-import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, AddBookStockOrderCommand, BookstockOrderService } from '../../../../shop';
+import { CommandHandler, GenericTableComponent, getClientName, LocaleService, LocalizedDatePipe, PaginatedRequest, redirectPathes, stockBookOrderTypeToString } from '../../../../../shared';
+import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, AddBookStockOrderCommand, BookstockOrderService } from '../../../../../shop';
 
 interface StockOrderItem {
   id: number,
@@ -14,10 +14,10 @@ interface StockOrderItem {
 }
 @Component({
   selector: 'app-book-stock',
-  templateUrl: './book-stock.component.html',
-  styleUrl: './book-stock.component.scss'
+  templateUrl: './book-stock-table.component.html',
+  styleUrl: './book-stock-table.component.scss'
 })
-export class BookStockComponent implements OnInit {
+export class BookStockTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;
 
   items$!: Observable<StockOrderItem[]>;
@@ -26,7 +26,7 @@ export class BookStockComponent implements OnInit {
   private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Id', field: 'id', linkPath: (item: any) => `${redirectPathes.manager_bookstock}/${item.id}` },
-    { header: 'Created At', field: 'createdAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()) },
+    { header: 'Created At', field: 'createdAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()), pipeArgs: [true] },
     { header: 'Client', field: 'clientName' },
     { header: 'Type', field: 'type' },
     { header: 'Stock Change', field: 'totalChangeAmount' },
@@ -58,7 +58,7 @@ export class BookStockComponent implements OnInit {
         createdAt: x.createdAt,
         type: stockBookOrderTypeToString(x.type),
         totalChangeAmount: this.getTotalChangeAmountString(x.totalChangeAmount),
-        clientName: x.client.name,
+        clientName: getClientName(x.client),
         changes: x.stockBookChanges.length,
       })))
     );

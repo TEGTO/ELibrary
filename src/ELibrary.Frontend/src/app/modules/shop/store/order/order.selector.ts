@@ -24,6 +24,10 @@ export const selectOrderErrors = createSelector(
 );
 
 export const selectManagerOrderState = createFeatureSelector<ManagerOrderState>('managerorder');
+export const selectManagerOrderById = (orderId: number) => createSelector(
+    selectManagerOrderState,
+    (state: ManagerOrderState) => state.orders.find(order => order.id === orderId)!
+);
 export const selectManagerOrders = createSelector(
     selectManagerOrderState,
     (state: ManagerOrderState) => state.orders

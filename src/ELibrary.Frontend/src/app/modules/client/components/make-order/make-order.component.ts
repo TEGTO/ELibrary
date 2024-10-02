@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, map, Observable, tap } from 'rxjs';
-import { CartBook, Client, CommandHandler, CurrencyPipeApplier, getDefaultOrder, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, redirectPathes, ValidationMessage } from '../../../shared';
+import { CartBook, Client, CommandHandler, CurrencyPipeApplier, getDefaultOrder, getOrderCreateMinDate, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, redirectPathes, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 
 @Component({
@@ -48,13 +48,11 @@ export class MakeOrderComponent implements OnInit {
   }
 
   initializeForm(client: Client): void {
-    const nextDay = new Date();
-    nextDay.setDate(nextDay.getDate() + 1);
-    nextDay.setHours(0, 0, 0, 0);
+
     this.formGroup = new FormGroup(
       {
         payment: new FormControl(PaymentMethod.Cash, [Validators.required]),
-        deliveryTime: new FormControl(nextDay, [Validators.required, minDateValidator(nextDay)]),
+        deliveryTime: new FormControl(getOrderCreateMinDate(), [Validators.required, minDateValidator(getOrderCreateMinDate())]),
         address: new FormControl(client.address, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
       });
   }
@@ -70,8 +68,8 @@ export class MakeOrderComponent implements OnInit {
   trackById(index: number, cartBook: CartBook): number {
     return cartBook.bookId;
   }
-  getBookPage(cartBook: CartBook): number {
-    return cartBook.book.id;
+  getBookPage(cartBook: CartBook): string {
+    return cartBook.book.id.toString();
   }
   getTotalPrice(cartBooks: CartBook[]): number {
     return cartBooks.reduce((total, cartBook) => {

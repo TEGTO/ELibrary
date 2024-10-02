@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = Policy.REQUIRE_CLIENT_ROLE)]
     [Route("order")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -101,6 +101,19 @@ namespace ShopApi.Controllers
 
         #region Manager Endpoints
 
+        [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
+        [HttpGet("manager/{id}")]
+        public async Task<ActionResult<OrderResponse>> ManagerGetOrderById(int id, CancellationToken cancellationToken)
+        {
+            var order = await orderManager.GetOrderByIdAsync(id, cancellationToken);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(order);
+        }
         [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/pagination")]

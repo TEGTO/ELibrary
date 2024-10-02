@@ -180,6 +180,30 @@ namespace ShopApi.Controllers.Tests
             Assert.IsInstanceOf<OkResult>(result);
         }
         [Test]
+        public async Task ManagerGetOrderById_ValidId_ReturnsOkWithOrder()
+        {
+            // Arrange
+            var order = new OrderResponse { Id = 1, DeliveryAddress = "Address 1" };
+            mockOrderManager.Setup(moch => moch.GetOrderByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(order);
+            // Act
+            var result = await orderController.ManagerGetOrderById(1, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(order));
+        }
+        [Test]
+        public async Task ManagerGetOrderById_InvalidId_ReturnsNotFound()
+        {
+            // Arrange
+            mockOrderManager.Setup(moch => moch.GetOrderByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()));
+            // Act
+            var result = await orderController.ManagerGetOrderById(2, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<NotFoundResult>(result.Result);
+        }
+        [Test]
         public async Task ManagerGetPaginatedOrders_ReturnsOkWithPaginatedOrders()
         {
             // Arrange

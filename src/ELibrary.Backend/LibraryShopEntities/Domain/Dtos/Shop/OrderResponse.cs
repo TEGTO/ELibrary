@@ -13,6 +13,7 @@ namespace LibraryShopEntities.Domain.Dtos.Shop
         public DateTime DeliveryTime { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
+        public ClientResponse Client { get; set; }
         public List<BookListingResponse> OrderBooks { get; set; }
     }
 }

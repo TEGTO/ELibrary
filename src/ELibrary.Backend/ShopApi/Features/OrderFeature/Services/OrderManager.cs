@@ -81,6 +81,11 @@ namespace ShopApi.Features.OrderFeature.Services
 
         #region Manager
 
+        public async Task<OrderResponse?> GetOrderByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            var order = await orderService.GetOrderByIdAsync(id, cancellationToken);
+            return mapper.Map<OrderResponse>(order);
+        }
         public async Task<IEnumerable<OrderResponse>> GetPaginatedOrdersAsync(PaginationRequest request, CancellationToken cancellationToken)
         {
             var orders = await orderService.GetPaginatedOrdersAsync(request, cancellationToken);
@@ -107,6 +112,8 @@ namespace ShopApi.Features.OrderFeature.Services
 
             order.OrderStatus = OrderStatus.Canceled;
             var canceledOrder = await orderService.UpdateOrderAsync(order, cancellationToken);
+
+            await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(canceledOrder, StockBookOrderType.ManagerOrderCancel, cancellationToken);
 
             return mapper.Map<OrderResponse>(canceledOrder);
         }

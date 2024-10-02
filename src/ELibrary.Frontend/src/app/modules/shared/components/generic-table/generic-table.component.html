@@ -27,7 +27,9 @@
             <tr class="bg-white border-b hover:bg-gray-50" *ngFor="let item of items">
                 <td *ngFor="let column of columns" class="px-6 py-4 truncate">
                     <ng-container *ngIf="column.linkPath; else normalCell">
-                        <a [href]="column.linkPath(item)" class="text-blue-600 hover:underline">
+                        <a tabindex="1" (keypress)="navigateTo(column.linkPath(item))"
+                            (click)="navigateTo(column.linkPath(item))"
+                            class="text-blue-600 hover:underline hover:cursor-pointer">
                             {{ item[column.field] }}
                         </a>
                     </ng-container>

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getDefaultOrder, getOrderStatusString, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, redirectPathes, ValidationMessage } from '../../../shared';
+import { Client, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getOrderStatusString, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, redirectPathes, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
 @Component({
@@ -83,7 +83,7 @@ export class OrderHistoryComponent implements OnInit {
     this.orderFormGroups.set(order.id, new FormGroup(
       {
         payment: new FormControl(order.paymentMethod),
-        deliveryTime: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(order.deliveryTime)]),
+        deliveryTime: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
         address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
       })
     );
@@ -106,8 +106,7 @@ export class OrderHistoryComponent implements OnInit {
     const formValues = { ... this.orderFormGroups.get(order.id)!.value };
     const updatedOrder: Order =
     {
-      ...getDefaultOrder(),
-      id: order.id,
+      ...order,
       deliveryAddress: formValues.address,
       deliveryTime: formValues.deliveryTime,
     };
@@ -118,7 +117,7 @@ export class OrderHistoryComponent implements OnInit {
     this.updateOrderHandler.dispatch(command);
   }
 
-  deleteOrder(order: Order) {
+  cancelOrder(order: Order) {
     const command: ClientCancelOrderCommand =
     {
       order: order
@@ -126,8 +125,8 @@ export class OrderHistoryComponent implements OnInit {
     this.cancelOrderHandler.dispatch(command);
   }
 
-  getBookPage(orderBook: OrderBook): number {
-    return orderBook.book.id;
+  getBookPage(orderBook: OrderBook): string {
+    return orderBook.book.id.toString();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   applyCurrencyPipe(value: any): any {

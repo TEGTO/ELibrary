@@ -23,3 +23,6 @@ export function getDefaultClient(): Client {
         email: ""
     }
 }
+export function getClientName(client: Client): string {
+    return `${client.name} ${client.middleName} ${client.lastName}`;
+}

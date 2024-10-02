@@ -136,7 +136,7 @@ describe('OrderHistoryComponent', () => {
 
     it('should call cancelOrder on deleteOrder', () => {
         const order = mockOrders[0];
-        component.deleteOrder(order);
+        component.cancelOrder(order);
         expect(mockCancelOrderHandler.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ order }));
     });
 });

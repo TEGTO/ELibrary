@@ -22,6 +22,8 @@ namespace Authentication
             services.AddSingleton(jwtSettings);
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(Policy.REQUIRE_CLIENT_ROLE,
+                    policy => policy.RequireRole(Roles.CLIENT, Roles.MANAGER, Roles.ADMINISTRATOR));
                 options.AddPolicy(Policy.REQUIRE_MANAGER_ROLE,
                     policy => policy.RequireRole(Roles.MANAGER, Roles.ADMINISTRATOR));
                 options.AddPolicy(Policy.REQUIRE_ADMIN_ROLE,

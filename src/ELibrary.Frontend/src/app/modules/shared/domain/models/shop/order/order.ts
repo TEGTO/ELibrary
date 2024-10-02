@@ -1,4 +1,4 @@
-import { OrderBook } from "../../../..";
+import { Client, getDefaultClient, OrderBook } from "../../../..";
 
 export enum OrderStatus {
     Canceled = -1, InProcessing, Processed, Packed, Delivered
@@ -16,6 +16,7 @@ export interface Order {
     deliveryTime: Date,
     orderStatus: OrderStatus,
     paymentMethod: PaymentMethod,
+    client: Client,
     orderBooks: OrderBook[]
 }
 
@@ -30,6 +31,7 @@ export function getDefaultOrder(): Order {
         deliveryTime: new Date(),
         orderStatus: OrderStatus.InProcessing,
         paymentMethod: PaymentMethod.Cash,
+        client: getDefaultClient(),
         orderBooks: []
     };
 }
@@ -49,4 +51,31 @@ export function getOrderStatusString(orderStatus: OrderStatus): string {
         default:
             return "";
     }
+}
+export function getOrderUpdateStatuses(): { value: OrderStatus, name: string }[] {
+    return [
+        { value: OrderStatus.InProcessing, name: 'In Processing' },
+        { value: OrderStatus.Processed, name: 'Processed' },
+        { value: OrderStatus.Packed, name: 'Packed' },
+    ]
+}
+export function getOrderPaymentMethodString(payment: PaymentMethod): string {
+    switch (payment) {
+        case PaymentMethod.Cash:
+            return 'Cash';
+        default:
+            return "";
+    }
+}
+export function getOrderCreateMinDate(): Date {
+    const nextDay = new Date();
+    nextDay.setDate(nextDay.getDate() + 1);
+    nextDay.setHours(0, 0, 0, 0);
+    return nextDay;
+}
+export function getCreatedOrderMinDate(order: Order): Date {
+    const nextDay = new Date();
+    nextDay.setDate(nextDay.getDate() + 1);
+    nextDay.setHours(0, 0, 0, 0);
+    return order.deliveryTime > nextDay ? nextDay : order.deliveryTime;
 }

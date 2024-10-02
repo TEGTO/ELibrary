@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ManagerUpdateOrderCommand, OrderService } from '../../..';
+import { take } from 'rxjs';
+import { ManagerUpdateOrderCommand, OrderService, ShopDialogManager } from '../../..';
 import { CommandHandler, mapOrderToManagerUpdateOrderRequest } from '../../../../shared';
 
 @Injectable({
@@ -9,12 +10,19 @@ export class ManagerUpdateOrderCommandHandlerService extends CommandHandler<Mana
 
   constructor(
     private readonly orderService: OrderService,
+    private readonly dialogManager: ShopDialogManager
   ) {
     super();
   }
 
   dispatch(command: ManagerUpdateOrderCommand): void {
-    this.orderService.managerUpdateOrder(mapOrderToManagerUpdateOrderRequest(command.order));
+    this.dialogManager.openConfirmMenu().afterClosed().pipe(
+      take(1)
+    ).subscribe(result => {
+      if (result === true) {
+        this.orderService.managerUpdateOrder(mapOrderToManagerUpdateOrderRequest(command.order));
+      }
+    });
   }
 
 }

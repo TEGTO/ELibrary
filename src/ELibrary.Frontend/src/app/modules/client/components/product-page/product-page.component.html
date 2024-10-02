@@ -31,7 +31,7 @@
 </ng-template>
 <ng-template #book let-book="book" let-bookAdded="bookAdded">
     <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
-        <a [href]="getBookPage(book)"
+        <a [routerLink]="getBookPage(book)"
             class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 relative">
             <div class="book__cover relative">
                 <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
