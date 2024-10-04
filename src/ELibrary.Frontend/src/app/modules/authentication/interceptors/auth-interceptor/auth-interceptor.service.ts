@@ -14,6 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private decodedToken: JwtPayload | null = null;
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private isAuthenticated = false;
 
   constructor(
     private readonly authService: AuthenticationService,
@@ -36,7 +37,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<object>> {
     let authReq = req;
-    if (authReq.url.includes('/refresh')) {
+    if (authReq.url.includes('/refresh') || !this.isAuthenticated) {
       return next.handle(authReq);
     }
     if (this.authToken != null) {
@@ -103,6 +104,9 @@ export class AuthInterceptor implements HttpInterceptor {
   }
   private processAuthData(data: UserAuth): void {
     this.authToken = data.authToken;
-    this.decodedToken = this.tryDecodeToken(this.authToken.accessToken);
+    this.isAuthenticated = data.isAuthenticated;
+    if (this.isAuthenticated) {
+      this.decodedToken = this.tryDecodeToken(this.authToken.accessToken);
+    }
   }
 }

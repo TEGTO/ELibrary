@@ -26,11 +26,6 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
 
                 bookInDb.StockAmount += stockBookChange.ChangeAmount;
 
-                if (bookInDb.StockAmount < 0)
-                {
-                    throw new InvalidDataException("Invalid book stock amount, must be greater or equal to 0!");
-                }
-
                 await repository.UpdateAsync(bookInDb, cancellationToken);
             }
         }

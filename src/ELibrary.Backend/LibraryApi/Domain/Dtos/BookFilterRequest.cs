@@ -4,8 +4,8 @@ namespace LibraryApi.Domain.Dtos
 {
     public class BookFilterRequest : LibraryFilterRequest
     {
-        public DateTime? PublicationFromUTC { get; set; }
-        public DateTime? PublicationToUTC { get; set; }
+        public DateTime? PublicationFrom { get; set; }
+        public DateTime? PublicationTo { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public CoverType? CoverType { get; set; }

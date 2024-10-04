@@ -49,8 +49,9 @@ export class CartDialogComponent implements OnInit, OnDestroy {
     return this.scollSize;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getMaxAmount(book: Book): number {
-    return environment.maxOrderAmount > book.stockAmount ? book.stockAmount : environment.maxOrderAmount;
+    return environment.maxOrderAmount;
   }
 
   trackById(index: number, cartBook: CartBook): number {
@@ -113,5 +114,8 @@ export class CartDialogComponent implements OnInit, OnDestroy {
       matDialogRef: this.dialogRef
     }
     this.clientAddOrderHandler.dispatch(command);
+  }
+  checkIfInStock(book: Book): boolean {
+    return book.stockAmount > 0;
   }
 }

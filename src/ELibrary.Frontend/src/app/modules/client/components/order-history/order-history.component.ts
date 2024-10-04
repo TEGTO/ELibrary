@@ -149,7 +149,7 @@ export class OrderHistoryComponent implements OnInit {
   isOrderProcessing(order: Order): boolean {
     return order.orderStatus === OrderStatus.InProcessing;
   }
-  isOrderDelivered(order: Order): boolean {
-    return order.orderStatus === OrderStatus.Delivered;
+  isOrderCompleted(order: Order): boolean {
+    return order.orderStatus === OrderStatus.Completed;
   }
 }

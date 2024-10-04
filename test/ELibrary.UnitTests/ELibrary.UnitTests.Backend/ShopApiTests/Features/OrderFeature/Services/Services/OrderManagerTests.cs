@@ -162,7 +162,7 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             // Arrange
             var client = new Client { Id = "client123" };
             var orderId = 1;
-            var order = new Order { Id = orderId, ClientId = client.Id, OrderStatus = OrderStatus.Delivered };
+            var order = new Order { Id = orderId, ClientId = client.Id, OrderStatus = OrderStatus.Processed };
             orderServiceMock.Setup(service => service.GetOrderByIdAsync(orderId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(order);
             // Act & Assert
@@ -217,7 +217,7 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
         public async Task UpdateOrderAsync_ValidRequest_ReturnsMappedUpdatedOrder()
         {
             // Arrange
-            var updateRequest = new ManagerUpdateOrderRequest { Id = 1, DeliveryAddress = "New Address", OrderStatus = OrderStatus.Packed };
+            var updateRequest = new ManagerUpdateOrderRequest { Id = 1, DeliveryAddress = "New Address" };
             var order = new Order { Id = 1, DeliveryAddress = "Old Address" };
             var updatedOrder = new Order { Id = 1, DeliveryAddress = "New Address" };
             var orderResponse = new OrderResponse { Id = 1, DeliveryAddress = "New Address" };

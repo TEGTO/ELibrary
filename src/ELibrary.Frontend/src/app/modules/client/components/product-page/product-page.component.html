@@ -23,12 +23,6 @@
         <p class="text-lg text-gray-600">No items found. Please adjust your filters.</p>
     </div>
 </ng-template>
-<!-- Loading spinner -->
-<ng-template #loading>
-    <div class="loading-spinner-container">
-        <mat-spinner diameter="80"></mat-spinner>
-    </div>
-</ng-template>
 <ng-template #book let-book="book" let-bookAdded="bookAdded">
     <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
         <a [routerLink]="getBookPage(book)"
@@ -37,18 +31,18 @@
                 <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
                     onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
                 <!-- Gray Overlay with Centered "Out of Stock" Text -->
-                <div *ngIf="book.stockAmount === 0"
+                <div *ngIf="!checkIfInStock(book)"
                     class="absolute inset-0 bg-gray-100/70 flex items-center justify-center text-red-600 font-bold text-xs">
                     Out of Stock
                 </div>
             </div>
             <div class="duration-50">
                 <div class="book__name font-bold truncate-big"
-                    [ngClass]="book.stockAmount > 0 ? 'text-gray-700' : 'text-gray-300'">
+                    [ngClass]="checkIfInStock(book) ? 'text-gray-700' : 'text-gray-300'">
                     {{ book.name }}
                 </div>
                 <div class="book__author truncate-small"
-                    [ngClass]="book.stockAmount > 0 ? 'text-gray-400' : 'text-gray-300'">
+                    [ngClass]="checkIfInStock(book) ? 'text-gray-400' : 'text-gray-300'">
                     {{ book.author.name + ' ' + book.author.lastName }}
                 </div>
             </div>
@@ -59,9 +53,9 @@
             </div>
             <ng-container *ngIf="!bookAdded; else addedToCart">
                 <button class="py-1 px-1 rounded inline-flex items-center" (click)="addBookToCart(book)"
-                    [disabled]="book.stockAmount === 0" [ngClass]="{
-                            'hover:bg-gray-200 text-green-600': book.stockAmount > 0,
-                            'bg-gray-300 text-gray-400': book.stockAmount === 0
+                    [disabled]="!checkIfInStock(book)" [ngClass]="{
+                            'hover:bg-gray-200 text-green-600': checkIfInStock(book),
+                            'bg-gray-300 text-gray-400': !checkIfInStock(book)
                         }">
                     <span class="material-icons">shopping_cart</span>
                 </button>
@@ -74,4 +68,8 @@
             </ng-template>
         </div>
     </div>
+</ng-template>
+<!-- Loading -->
+<ng-template #loading>
+    <app-loading></app-loading>
 </ng-template>

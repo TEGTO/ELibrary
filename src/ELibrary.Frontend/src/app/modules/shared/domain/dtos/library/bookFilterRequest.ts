@@ -1,8 +1,8 @@
 import { CoverType, LibraryFilterRequest } from "../../..";
 
 export interface BookFilterRequest extends LibraryFilterRequest {
-    publicationFromUTC: Date | null;
-    publicationToUTC: Date | null;
+    publicationFrom: Date | null;
+    publicationTo: Date | null;
     minPrice: number | null;
     maxPrice: number | null;
     coverType: CoverType | null;
@@ -19,8 +19,8 @@ export function defaultBookFilterRequest(): BookFilterRequest {
         containsName: "",
         pageNumber: 0,
         pageSize: 0,
-        publicationFromUTC: null,
-        publicationToUTC: null,
+        publicationFrom: null,
+        publicationTo: null,
         minPrice: null,
         maxPrice: null,
         coverType: null,

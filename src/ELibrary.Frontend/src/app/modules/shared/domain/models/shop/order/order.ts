@@ -1,7 +1,7 @@
 import { Client, getDefaultClient, OrderBook } from "../../../..";
 
 export enum OrderStatus {
-    Canceled = -1, InProcessing, Processed, Packed, Delivered
+    Canceled = -1, InProcessing, Processed, Delivering, Completed
 }
 export enum PaymentMethod {
     Cash
@@ -44,10 +44,10 @@ export function getOrderStatusString(orderStatus: OrderStatus): string {
             return 'In Processing';
         case OrderStatus.Processed:
             return 'Processed';
-        case OrderStatus.Packed:
-            return 'Packed';
-        case OrderStatus.Delivered:
-            return 'Delivered';
+        case OrderStatus.Delivering:
+            return 'Delivering';
+        case OrderStatus.Completed:
+            return 'Completed';
         default:
             return "";
     }
@@ -56,7 +56,8 @@ export function getOrderUpdateStatuses(): { value: OrderStatus, name: string }[]
     return [
         { value: OrderStatus.InProcessing, name: 'In Processing' },
         { value: OrderStatus.Processed, name: 'Processed' },
-        { value: OrderStatus.Packed, name: 'Packed' },
+        { value: OrderStatus.Delivering, name: 'Delivering' },
+        { value: OrderStatus.Completed, name: 'Completed' },
     ]
 }
 export function getOrderPaymentMethodString(payment: PaymentMethod): string {

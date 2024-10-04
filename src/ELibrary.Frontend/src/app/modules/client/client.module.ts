@@ -10,12 +10,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule, Routes } from '@angular/router';
 import { ClientViewComponent, CreateClientComponent, MakeOrderComponent, OrderHistoryComponent, ProductInfoComponent, ProductPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
-import { ClientGuard, pathes, PolicyType, RoleGuard } from '../shared';
+import { ClientGuard, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
 import { ShopModule } from '../shop/shop.module';
 
 const routes: Routes = [
@@ -64,10 +63,10 @@ const routes: Routes = [
     CommonModule,
     LibraryModule,
     ShopModule,
-    MatProgressSpinnerModule,
     MatFormFieldModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
+    LoadingComponent,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,

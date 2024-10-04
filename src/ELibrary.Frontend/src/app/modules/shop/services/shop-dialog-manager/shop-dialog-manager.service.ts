@@ -39,9 +39,9 @@ export class ShopDialogManagerService implements ShopDialogManager {
   }
   openReplenishmentMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(BookStockReplenishmentComponent, {
-      height: '400px',
+      height: '430px',
       width: '550px',
-      maxHeight: '400px',
+      maxHeight: '430px',
       maxWidth: '550px',
     });
     return dialogRef;

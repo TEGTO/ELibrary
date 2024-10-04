@@ -1,0 +1,80 @@
+<div class="bg-zinc-50 body">
+    <div class="rounded-lg flex flex-col gap-12">
+        <div class="statistics-wrapper">
+            <ng-container *ngIf="statistics$ | async as item; else loading">
+                <ng-container *ngTemplateOutlet="details;  context: { statistics: item}"></ng-container>
+            </ng-container>
+        </div>
+        <div class="w-full px-6">
+            <app-book-statistics-filter (filterChange)="getBookStatistics($event)"></app-book-statistics-filter>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #details let-statistics="statistics">
+    <div class="statistics mr-2 h-full w-full p-10 pt-0">
+        <div class="w-full flex gap-10">
+            <div class="h-full w-5/12 pt-5 flex">
+                <div class="grow flex flex-col gap-1">
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">In Cart Copies (At The Moment)</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">In Order Copies</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Sold Copies</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Canceled Copies</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Average Price (At The Moment)</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Stock Amount (At The Moment)</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Earned Money</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                </div>
+                <div class="pl-2 flex flex-col gap-1">
+                    <div class="statistics__detail-value text-gray-400 flex justify-between">
+                        <span>{{ statistics.inCartCopies}}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400 flex justify-between">
+                        <span>{{ statistics.inOrderCopies }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ statistics.soldCopies }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ statistics.canceledOrders }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ applyCurrencyPipe(statistics.averagePrice) }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ statistics.stockAmount }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ applyCurrencyPipe(statistics.earnedMoney) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!--Loading-->
+<ng-template #loading>
+    <app-loading></app-loading>
+</ng-template>

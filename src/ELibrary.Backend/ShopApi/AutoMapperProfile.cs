@@ -6,6 +6,8 @@ using LibraryShopEntities.Domain.Entities.Shop;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.ClientFeature.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
+using ShopApi.Features.StatisticsFeature.Domain.Dtos;
+using ShopApi.Features.StatisticsFeature.Domain.Models;
 using ShopApi.Features.StockBookOrderFeature.Dtos;
 
 namespace ShopApi
@@ -43,6 +45,10 @@ namespace ShopApi
             CreateMap<CreateStockBookOrderRequest, StockBookOrder>();
             CreateMap<StockBookChangeRequest, StockBookChange>();
             CreateMap<StockBookChange, StockBookChangeResponse>();
+
+            CreateMap<StatisticsBook, Book>();
+            CreateMap<GetBookStatisticsRequest, GetBookStatistics>();
+            CreateMap<BookStatistics, BookStatisticsResponse>();
         }
     }
 }

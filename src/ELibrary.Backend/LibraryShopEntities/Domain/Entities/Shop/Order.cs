@@ -5,7 +5,7 @@ namespace LibraryShopEntities.Domain.Entities.Shop
 {
     public enum OrderStatus
     {
-        Canceled = -1, InProcessing, Processed, Packed, Delivered
+        Canceled = -1, InProcessing, Processed, Delivering, Completed
     }
     public enum PaymentMethod
     {

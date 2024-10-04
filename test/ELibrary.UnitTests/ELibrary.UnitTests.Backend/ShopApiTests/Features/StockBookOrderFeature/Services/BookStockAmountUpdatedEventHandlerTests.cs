@@ -41,7 +41,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         }
 
         [Test]
-        public void HandleAsync_WhenStockAmountBecomesNegative_ThrowsException()
+        public async Task HandleAsync_WhenStockAmountBecomesNegative_UpdatesStockAmount()
         {
             // Arrange
             var book = new Book { Id = 1, StockAmount = 2 };
@@ -50,10 +50,11 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             var bookEvent = new BookStockAmountUpdatedEvent(stockBookOrder);
             var books = new List<Book> { book }.AsQueryable().BuildMock();
             repositoryMock.Setup(r => r.GetQueryableAsync<Book>(It.IsAny<CancellationToken>())).ReturnsAsync(books);
-            // Act & Assert
-            var ex = Assert.ThrowsAsync<InvalidDataException>(async () => await handler.HandleAsync(bookEvent, cancellationToken));
-            Assert.That(ex.Message, Is.EqualTo("Invalid book stock amount, must be greater or equal to 0!"));
-            repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Book>(), cancellationToken), Times.Never);
+            // Act
+            await handler.HandleAsync(bookEvent, cancellationToken);
+            // Assert
+            Assert.That(book.StockAmount, Is.EqualTo(-3));
+            repositoryMock.Verify(r => r.UpdateAsync(book, cancellationToken), Times.Once);
         }
         [Test]
         public async Task HandleAsync_WhenMultipleBooks_UpdatesStockAmountForEach()

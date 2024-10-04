@@ -110,13 +110,13 @@ namespace LibraryApi.Services
                 {
                     query = query.Where(b => b.CoverType == bookFilter.CoverType);
                 }
-                if (bookFilter.PublicationFromUTC.HasValue)
+                if (bookFilter.PublicationFrom.HasValue)
                 {
-                    query = query.Where(b => b.PublicationDate >= bookFilter.PublicationFromUTC);
+                    query = query.Where(b => b.PublicationDate >= bookFilter.PublicationFrom);
                 }
-                if (bookFilter.PublicationToUTC.HasValue)
+                if (bookFilter.PublicationTo.HasValue)
                 {
-                    query = query.Where(b => b.PublicationDate <= bookFilter.PublicationToUTC);
+                    query = query.Where(b => b.PublicationDate <= bookFilter.PublicationTo);
                 }
                 if (bookFilter.MinPrice.HasValue)
                 {

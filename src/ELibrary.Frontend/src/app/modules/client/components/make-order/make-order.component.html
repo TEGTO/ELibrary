@@ -86,12 +86,6 @@
         </div>
     </div>
 </ng-template>
-<!-- Loading spinner -->
-<ng-template #loading>
-    <div class="loading-spinner-container">
-        <mat-spinner diameter="80"></mat-spinner>
-    </div>
-</ng-template>
 <!-- Book -->
 <ng-template #book let-cartBook="cartBook">
     <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
@@ -119,4 +113,8 @@
             </div>
         </div>
     </div>
+</ng-template>
+<!-- Loading -->
+<ng-template #loading>
+    <app-loading></app-loading>
 </ng-template>

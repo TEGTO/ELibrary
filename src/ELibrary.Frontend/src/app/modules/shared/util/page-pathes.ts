@@ -9,6 +9,7 @@ export const pathes =
     manager_publishers: 'publishers',
     manager_orders: 'orders',
     manager_orders_details: 'orders/:id',
+    manager_statistics: 'statistics',
 
     client: "",
     client_products: "",

@@ -9,6 +9,7 @@ using ShopApi;
 using ShopApi.Features.CartFeature.Services;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Services;
+using ShopApi.Features.StatisticsFeature.Services;
 using ShopApi.Features.StockBookOrderFeature.Models;
 using ShopApi.Features.StockBookOrderFeature.Services;
 
@@ -40,6 +41,7 @@ builder.Services.AddSingleton<IClientManager, ClientManager>();
 builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
+builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 #endregion

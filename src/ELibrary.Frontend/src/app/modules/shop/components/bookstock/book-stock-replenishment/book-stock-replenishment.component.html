@@ -10,8 +10,11 @@
         </ng-container>
     </div>
     <div class="flex justify-start items-center">
-        <button class="font-medium text-blue-600 hover:text-blue-400" (click)="addFormGroup()">
-            <span class="material-icons">add</span>
+        <button
+            class="flex items-center mt-1 pl-4 gap-2 p-2 rounded-lg border text-gray-700 font-bold hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+            (click)="addFormGroup()">
+            <span>Add</span>
+            <span class="!text-2xl text-blue-600 material-icons">add</span>
         </button>
     </div>
 
@@ -25,8 +28,8 @@
 
 <ng-template #stockBookChange let-formGroup="formGroup">
     <form id="replenishment" [formGroup]="formGroup" class="content__form space-y-1">
-        <div class="flex w-full">
-            <div class="flex gap-2 w-10/12">
+        <div class="flex w-full gap-3">
+            <div class="flex gap-2 w-9/12">
                 <mat-error *ngIf="hasBeenTriedSubmitted">Book field must be set.</mat-error>
                 <app-book-input [formGroup]="formGroup" class="w-8/12"></app-book-input>
                 <mat-form-field class="!w-4/12">
@@ -35,9 +38,12 @@
                         formControlName="amount">
                 </mat-form-field>
             </div>
-            <div class="delete-button flex w-2/12 justify-center items-center">
-                <button class="text-red-600 hover:text-red-500" (click)="deleteFormGroup(formGroup)">
-                    <span class="material-icons">do_not_disturb_on</span>
+            <div class="delete-button flex w-3/12 justify-center items-center">
+                <button
+                    class="flex items-center pl-4 gap-2 p-2 rounded-lg border text-gray-700 font-bold hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    (click)="deleteFormGroup(formGroup)">
+                    <span>Remove</span>
+                    <span class="!text-2xl text-red-600 material-icons">do_not_disturb_on</span>
                 </button>
             </div>
         </div>

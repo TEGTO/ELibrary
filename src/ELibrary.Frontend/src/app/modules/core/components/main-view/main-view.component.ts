@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
 import { Policy, PolicyType, redirectPathes, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
@@ -23,8 +23,13 @@ export class MainViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userAuth$ = this.authService.getUserAuth();
-    this.clientService.getClient();
+    this.userAuth$ = this.authService.getUserAuth().pipe(
+      tap((userAuth) => {
+        if (userAuth.isAuthenticated) {
+          this.clientService.getClient();
+        }
+      })
+    );
   }
 
   openLoginMenu() {

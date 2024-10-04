@@ -96,4 +96,7 @@ export class ProductPageComponent implements OnInit {
   getBookPage(book: Book): string {
     return book.id.toString();
   }
+  checkIfInStock(book: Book): boolean {
+    return book.stockAmount > 0;
+  }
 }
