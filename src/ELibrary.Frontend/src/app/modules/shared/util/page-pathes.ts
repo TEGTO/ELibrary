@@ -1,5 +1,7 @@
 export const pathes =
 {
+    admin: "admin",
+
     manager: 'manager',
     manager_bookstock: 'bookstock',
     manager_bookstock_details: 'bookstock/:id',

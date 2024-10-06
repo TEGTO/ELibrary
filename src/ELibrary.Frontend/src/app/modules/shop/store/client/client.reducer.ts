@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReducer, on } from "@ngrx/store";
-import { createClientFailure, createClientSuccess, deleteClientFailure, deleteClientSuccess, getClientFailure, getClientSuccess, updateClientFailure, updateClientSuccess } from "../..";
+import { createClientFailure, createClientSuccess, getClientFailure, getClientSuccess, updateClientFailure, updateClientSuccess } from "../..";
 import { Client } from "../../../shared";
 
 export interface ClientState {
@@ -40,15 +40,6 @@ export const clientReducer = createReducer(
         error: null
     })),
     on(updateClientFailure, (state, { error: error }) => ({
-        ...initialClientState,
-        error: error
-    })),
-
-    on(deleteClientSuccess, () => ({
-        ...initialClientState,
-        error: null
-    })),
-    on(deleteClientFailure, (state, { error: error }) => ({
         ...initialClientState,
         error: error
     })),

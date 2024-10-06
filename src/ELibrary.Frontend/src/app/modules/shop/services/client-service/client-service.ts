@@ -9,6 +9,4 @@ export abstract class ClientService {
     abstract getClient(): Observable<Client | null>;
     abstract createClient(req: CreateClientRequest): void;
     abstract updateClient(req: UpdateClientRequest): void;
-    abstract deleteClient(): void;
-
 }

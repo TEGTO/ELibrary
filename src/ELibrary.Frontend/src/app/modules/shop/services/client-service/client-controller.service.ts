@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { createClient, deleteClient, getClient, selectClient, updateClient } from '../..';
+import { createClient, getClient, selectClient, updateClient } from '../..';
 import { Client, CreateClientRequest, UpdateClientRequest } from '../../../shared';
 import { ClientService } from './client-service';
 
@@ -23,8 +23,5 @@ export class ClientControllerService implements ClientService {
   }
   updateClient(req: UpdateClientRequest): void {
     this.store.dispatch(updateClient({ req: req }));
-  }
-  deleteClient(): void {
-    this.store.dispatch(deleteClient());
   }
 }

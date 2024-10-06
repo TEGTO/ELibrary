@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { createClient, createClientFailure, createClientSuccess, deleteClient, deleteClientFailure, deleteClientSuccess, getClient, getClientFailure, getClientSuccess, updateClient, updateClientFailure, updateClientSuccess } from "../..";
+import { createClient, createClientFailure, createClientSuccess, getClient, getClientFailure, getClientSuccess, updateClient, updateClientFailure, updateClientSuccess } from "../..";
 import { ClientApiService } from "../../../shared";
 
 @Injectable()
@@ -42,18 +42,6 @@ export class ClientEffects {
                 this.apiService.update(action.req).pipe(
                     map(response => updateClientSuccess({ client: response })),
                     catchError(error => of(updateClientFailure({ error: error.message })))
-                )
-            )
-        )
-    );
-
-    deleteClient$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(deleteClient),
-            mergeMap(() =>
-                this.apiService.delete().pipe(
-                    map(() => deleteClientSuccess()),
-                    catchError(error => of(deleteClientFailure({ error: error.message })))
                 )
             )
         )

@@ -39,14 +39,3 @@ export const updateClientFailure = createAction(
     '[Client] Update Client Failure',
     props<{ error: any }>()
 );
-
-export const deleteClient = createAction(
-    '[Client] Delete Client',
-);
-export const deleteClientSuccess = createAction(
-    '[Client] Delete Client Success',
-);
-export const deleteClientFailure = createAction(
-    '[Client] Delete Client Failure',
-    props<{ error: any }>()
-);

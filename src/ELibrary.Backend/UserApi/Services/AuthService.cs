@@ -202,12 +202,12 @@ namespace UserApi.Services
         }
         private IQueryable<User> ApplyFilter(IQueryable<User> query, GetUserFilterRequest userFilter)
         {
-            if (!string.IsNullOrEmpty(userFilter.ContainsString))
+            if (!string.IsNullOrEmpty(userFilter.ContainsInfo))
             {
                 query = query.Where(b =>
-                   b.Email.Contains(userFilter.ContainsString)
-                || b.UserName.Contains(userFilter.ContainsString)
-                || b.Id.Contains(userFilter.ContainsString)
+                   b.Email.Contains(userFilter.ContainsInfo)
+                || b.UserName.Contains(userFilter.ContainsInfo)
+                || b.Id.Contains(userFilter.ContainsInfo)
                 );
             }
             return query

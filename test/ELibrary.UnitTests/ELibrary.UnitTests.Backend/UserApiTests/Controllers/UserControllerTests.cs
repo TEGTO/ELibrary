@@ -127,7 +127,7 @@ namespace UserApi.Controllers.Tests
             userManagerMock.Setup(m => m.AdminDeleteUserAsync(login))
                            .Returns(Task.CompletedTask);
             // Act
-            var result = await userController.AdminDelete(login);
+            var result = await userController.AdminDeleteUser(login);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
             userManagerMock.Verify(m => m.AdminDeleteUserAsync(login), Times.Once);
@@ -140,7 +140,7 @@ namespace UserApi.Controllers.Tests
             userManagerMock.Setup(m => m.AdminDeleteUserAsync(login))
                            .ThrowsAsync(new InvalidOperationException("Delete failed"));
             // Act + Assert
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await userController.AdminDelete(login));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await userController.AdminDeleteUser(login));
         }
         [Test]
         public async Task AdminGetPaginatedUsers_ValidRequest_ReturnsOk()
@@ -182,11 +182,17 @@ namespace UserApi.Controllers.Tests
         {
             // Arrange
             var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
+            var response = new AdminUserResponse();
+            userManagerMock.Setup(m => m.AdminUpdateUserAsync(updateRequest, It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(response);
             // Act
             var result = await userController.AdminUpdate(updateRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<OkResult>(result);
-            userManagerMock.Verify(m => m.AdminUpdateUserAsync(It.IsAny<AdminUserUpdateDataRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+            userManagerMock.Verify(x => x.AdminUpdateUserAsync(updateRequest, It.IsAny<CancellationToken>()), Times.Once);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsInstanceOf<AdminUserResponse>(okResult?.Value);
+            Assert.That(okResult?.Value, Is.EqualTo(response));
         }
         [Test]
         public void AdminUpdate_InvalidRequest_ThrowsAuthorizationException()

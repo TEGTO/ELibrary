@@ -24,6 +24,10 @@ const routes: Routes = [
     path: "", component: MainViewComponent,
     children: [
       {
+        path: pathes.admin,
+        loadChildren: () => import('../admin/admin.module').then(m => m.AdminModule),
+      },
+      {
         path: pathes.manager,
         loadChildren: () => import('../manager/manager.module').then(m => m.ManagerModule),
       },

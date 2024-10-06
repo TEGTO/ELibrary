@@ -7,15 +7,16 @@ namespace UserApi.Services
 {
     public interface IUserManager
     {
-        public Task AdminDeleteUserAsync(string login);
-        public Task<AdminUserResponse> AdminRegisterUserAsync(AdminUserRegistrationRequest request);
-        public Task AdminUpdateUserAsync(AdminUserUpdateDataRequest request, CancellationToken cancellationToken);
-        public Task<IEnumerable<AdminUserResponse>> GetPaginatedUsersAsync(GetUserFilterRequest filter, CancellationToken cancellationToken);
-        public Task<int> GetPaginatedUserTotalAmountAsync(GetUserFilterRequest filter, CancellationToken cancellationToken);
-        public Task<AdminUserResponse> GetUserByInfoAsync(string info);
         public Task<UserAuthenticationResponse> LoginUserAsync(UserAuthenticationRequest request);
         public Task<AuthToken> RefreshTokenAsync(AuthToken request);
         public Task<UserAuthenticationResponse> RegisterUserAsync(UserRegistrationRequest request);
+        public Task DeleteUserAsync(ClaimsPrincipal user, CancellationToken cancellationToken);
+        public Task<AdminUserResponse> GetUserByInfoAsync(string info);
+        public Task<IEnumerable<AdminUserResponse>> GetPaginatedUsersAsync(GetUserFilterRequest filter, CancellationToken cancellationToken);
+        public Task<int> GetPaginatedUserTotalAmountAsync(GetUserFilterRequest filter, CancellationToken cancellationToken);
         public Task UpdateUserAsync(UserUpdateDataRequest request, ClaimsPrincipal userClaims, CancellationToken cancellationToken);
+        public Task AdminDeleteUserAsync(string login);
+        public Task<AdminUserResponse> AdminRegisterUserAsync(AdminUserRegistrationRequest request);
+        public Task<AdminUserResponse> AdminUpdateUserAsync(AdminUserUpdateDataRequest request, CancellationToken cancellationToken);
     }
 }

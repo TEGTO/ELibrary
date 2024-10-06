@@ -9,7 +9,7 @@ namespace UserApi.Validators
         public GetUserFilterRequestValidator(PaginationConfiguration paginationConfiguration)
         {
             Include(new PaginationRequestValidator(paginationConfiguration));
-            RuleFor(x => x.ContainsString).NotNull().MaximumLength(256);
+            RuleFor(x => x.ContainsInfo).NotNull().MaximumLength(256);
         }
     }
 }

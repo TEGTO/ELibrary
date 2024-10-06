@@ -68,10 +68,10 @@ namespace UserApi.Services
                 Roles = roles
             };
         }
-        public async Task UpdateUserAsync(UserUpdateDataRequest request, ClaimsPrincipal userClaims, CancellationToken cancellationToken)
+        public async Task UpdateUserAsync(UserUpdateDataRequest request, ClaimsPrincipal userPricipal, CancellationToken cancellationToken)
         {
             var updateData = mapper.Map<UserUpdateData>(request);
-            var user = await authService.GetUserAsync(userClaims);
+            var user = await authService.GetUserAsync(userPricipal);
 
             var identityErrors = await authService.UpdateUserAsync(user, updateData, false);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
@@ -81,6 +81,11 @@ namespace UserApi.Services
             var tokenData = mapper.Map<AccessTokenData>(request);
             var newToken = await authService.RefreshTokenAsync(tokenData, expiryInDays);
             return mapper.Map<AuthToken>(newToken);
+        }
+        public async Task DeleteUserAsync(ClaimsPrincipal userPricipal, CancellationToken cancellationToken)
+        {
+            var user = await authService.GetUserAsync(userPricipal);
+            await authService.DeleteUserAsync(user);
         }
 
         #region Admin Operations
@@ -131,7 +136,7 @@ namespace UserApi.Services
         {
             return await authService.GetUserTotalAmountAsync(filter, cancellationToken);
         }
-        public async Task AdminUpdateUserAsync(AdminUserUpdateDataRequest request, CancellationToken cancellationToken)
+        public async Task<AdminUserResponse> AdminUpdateUserAsync(AdminUserUpdateDataRequest request, CancellationToken cancellationToken)
         {
             var updateData = mapper.Map<UserUpdateData>(request);
             var user = await authService.GetUserByUserInfoAsync(request.CurrentLogin);
@@ -141,6 +146,8 @@ namespace UserApi.Services
 
             identityErrors = await authService.SetUserRolesAsync(user, request.Roles);
             if (Utilities.HasErrors(identityErrors, out errorResponse)) throw new AuthorizationException(errorResponse);
+
+            return mapper.Map<AdminUserResponse>(user);
         }
         public async Task AdminDeleteUserAsync(string info)
         {

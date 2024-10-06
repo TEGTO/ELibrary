@@ -46,6 +46,12 @@ namespace UserApi.Controllers
             var token = await userManager.RefreshTokenAsync(request);
             return Ok(token);
         }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(CancellationToken cancellationToken)
+        {
+            await userManager.DeleteUserAsync(User, cancellationToken);
+            return Ok();
+        }
 
         #endregion
 
@@ -81,14 +87,14 @@ namespace UserApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPut("admin/update")]
-        public async Task<IActionResult> AdminUpdate(AdminUserUpdateDataRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<AdminUserResponse>> AdminUpdate(AdminUserUpdateDataRequest request, CancellationToken cancellationToken)
         {
-            await userManager.AdminUpdateUserAsync(request, cancellationToken);
-            return Ok();
+            var response = await userManager.AdminUpdateUserAsync(request, cancellationToken);
+            return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpDelete("admin/delete/{info}")]
-        public async Task<IActionResult> AdminDelete(string info)
+        public async Task<IActionResult> AdminDeleteUser(string info)
         {
             await userManager.AdminDeleteUserAsync(info);
             return Ok();

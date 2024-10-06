@@ -62,7 +62,6 @@ namespace ShopApi.Controllers
             var response = await clientManager.GetClientForUserAsync(id, cancellationToken);
             return Ok(response);
         }
-
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPost("admin/{id}")]
         public async Task<ActionResult<ClientResponse>> AdminCreateClient(string id, [FromBody] CreateClientRequest request, CancellationToken cancellationToken)
@@ -70,7 +69,6 @@ namespace ShopApi.Controllers
             var response = await clientManager.CreateClientForUserAsync(id, request, cancellationToken);
             return Created("", response);
         }
-
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPut("admin/{id}")]
         public async Task<ActionResult<ClientResponse>> AdminUpdateClient(string id, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
