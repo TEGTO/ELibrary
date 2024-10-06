@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getOrderStatusString, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, redirectPathes, ValidationMessage } from '../../../shared';
+import { Client, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getOrderDeliveryMethods, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
 @Component({
@@ -26,7 +26,9 @@ export class OrderHistoryComponent implements OnInit {
   client$!: Observable<Client>;
   totalAmount$!: Observable<number>;
 
-  get redirectToProductsPagePath() { return redirectPathes.client_products; }
+  get redirectToProductsPagePath() { return getProductsPath(); }
+  get paymentMethods() { return getPaymentMethods(); }
+  get deliveryMethods() { return getOrderDeliveryMethods(); }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -82,9 +84,10 @@ export class OrderHistoryComponent implements OnInit {
   initializeForm(order: Order): void {
     this.orderFormGroups.set(order.id, new FormGroup(
       {
-        payment: new FormControl(order.paymentMethod),
+        payment: new FormControl(order.paymentMethod, [Validators.required]),
         deliveryTime: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
         address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
+        delivery: new FormControl(order.deliveryMethod, [Validators.required]),
       })
     );
 
@@ -101,14 +104,19 @@ export class OrderHistoryComponent implements OnInit {
   deliveryTimeInput(order: Order) {
     return this.orderFormGroups.get(order.id)!.get('deliveryTime')!;
   }
+  deliveryInput(order: Order) {
+    return this.orderFormGroups.get(order.id)!.get('delivery')!;
+  }
 
   updateOrder(order: Order) {
     const formValues = { ... this.orderFormGroups.get(order.id)!.value };
     const updatedOrder: Order =
     {
       ...order,
+      paymentMethod: formValues.payment,
       deliveryAddress: formValues.address,
       deliveryTime: formValues.deliveryTime,
+      deliveryMethod: formValues.delivery,
     };
     const command: ClientUpdateOrderCommand =
     {
@@ -125,8 +133,8 @@ export class OrderHistoryComponent implements OnInit {
     this.cancelOrderHandler.dispatch(command);
   }
 
-  getBookPage(orderBook: OrderBook): string {
-    return orderBook.book.id.toString();
+  getBookPage(orderBook: OrderBook): string[] {
+    return [`/${getProductInfoPath(orderBook.book.id)}`];
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   applyCurrencyPipe(value: any): any {

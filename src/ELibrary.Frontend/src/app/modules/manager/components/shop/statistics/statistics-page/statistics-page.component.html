@@ -1,15 +1,14 @@
 <div class="bg-zinc-50 body">
     <div class="rounded-lg flex flex-col gap-12">
-        <div class="statistics-wrapper">
-            <ng-container *ngIf="statistics$ | async as item; else loading">
+        <ng-container *ngIf="statistics$ | async as item; else loading">
+            <div class="statistics-wrapper">
                 <ng-container *ngTemplateOutlet="details;  context: { statistics: item}"></ng-container>
-            </ng-container>
-        </div>
+            </div>
+        </ng-container>
         <div class="w-full px-6">
             <app-book-statistics-filter (filterChange)="getBookStatistics($event)"></app-book-statistics-filter>
         </div>
     </div>
-
 </div>
 
 <ng-template #details let-statistics="statistics">
@@ -76,5 +75,7 @@
 
 <!--Loading-->
 <ng-template #loading>
-    <app-loading></app-loading>
+    <div class="h-52">
+        <app-loading></app-loading>
+    </div>
 </ng-template>

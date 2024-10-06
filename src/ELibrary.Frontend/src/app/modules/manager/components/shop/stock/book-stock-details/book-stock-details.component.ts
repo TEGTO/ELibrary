@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, map, Observable, of, switchMap } from 'rxjs';
-import { Book, Client, CurrencyPipeApplier, getClientName, RedirectorService, StockBookChange, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from '../../../../../shared';
+import { Book, Client, CurrencyPipeApplier, getClientName, getProductInfoPath, RedirectorService, StockBookChange, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from '../../../../../shared';
 import { BookstockOrderService } from '../../../../../shop';
 
 @Component({
@@ -56,8 +56,8 @@ export class BookStockDetailsComponent implements OnInit {
   applyCurrencyPipe(value: any): any {
     return this.currenctyApplier.applyCurrencyPipe(value);
   }
-  getBookPage(book: Book) {
-    return book.id.toString();
+  getBookPage(book: Book): string[] {
+    return [`/${getProductInfoPath(book.id)}`];
   }
   calculateSelectionSize(bookAmount: number): number {
     return this.scrollSizePerObject * bookAmount > this.scollSize ? this.scollSize : this.scrollSizePerObject * bookAmount;

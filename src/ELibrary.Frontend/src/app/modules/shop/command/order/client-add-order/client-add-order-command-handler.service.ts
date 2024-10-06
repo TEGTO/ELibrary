@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { CartService, ClientAddOrderCommand, OrderService } from '../../..';
-import { CommandHandler, mapOrderBookToDeleteCartBookFromCartRequest, mapOrderToCreateOrderRequest, RedirectorService, redirectPathes, SnackbarManager } from '../../../../shared';
+import { clientMakeOrderPath, clientOrderHistoryPath, CommandHandler, mapOrderBookToDeleteCartBookFromCartRequest, mapOrderToCreateOrderRequest, RedirectorService, SnackbarManager } from '../../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class ClientAddOrderCommandHandlerService extends CommandHandler<ClientAd
       if (command.matDialogRef) {
         command.matDialogRef.close();
       }
-      this.redirector.redirectTo(redirectPathes.client_makeOrder);
+      this.redirector.redirectTo(clientMakeOrderPath());
     }
     else {
       this.orderService.createOrder(mapOrderToCreateOrderRequest(command.order))
@@ -42,7 +42,7 @@ export class ClientAddOrderCommandHandlerService extends CommandHandler<ClientAd
         .subscribe(
           (result) => {
             if (result.isSuccess) {
-              this.redirector.redirectTo(redirectPathes.client_order_history);
+              this.redirector.redirectTo(clientOrderHistoryPath());
               this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
               const requests = command.order!.orderBooks.map(x => mapOrderBookToDeleteCartBookFromCartRequest(x));
               this.cartService.deleteBooksFromCart(requests);

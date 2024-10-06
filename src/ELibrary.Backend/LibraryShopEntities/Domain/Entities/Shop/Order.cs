@@ -5,11 +5,15 @@ namespace LibraryShopEntities.Domain.Entities.Shop
 {
     public enum OrderStatus
     {
-        Canceled = -1, InProcessing, Processed, Delivering, Completed
+        Canceled = -1, InProcessing, Completed
     }
     public enum PaymentMethod
     {
         Cash
+    }
+    public enum DeliveryMethod
+    {
+        SelfPickup, AddressDelivery
     }
 
     public class Order : ITrackable
@@ -35,6 +39,8 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public OrderStatus OrderStatus { get; set; }
         [Required]
         public PaymentMethod PaymentMethod { get; set; }
+        [Required]
+        public DeliveryMethod DeliveryMethod { get; set; }
         public List<OrderBook> OrderBooks { get; set; } = new List<OrderBook>();
         [Required]
         public string ClientId { get; set; } = default!;
@@ -46,6 +52,8 @@ namespace LibraryShopEntities.Domain.Entities.Shop
             this.DeliveryAddress = other.DeliveryAddress;
             this.DeliveryTime = other.DeliveryTime;
             this.OrderStatus = other.OrderStatus;
+            this.PaymentMethod = other.PaymentMethod;
+            this.DeliveryMethod = other.DeliveryMethod;
         }
     }
 }

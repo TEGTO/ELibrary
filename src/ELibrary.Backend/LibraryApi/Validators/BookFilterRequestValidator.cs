@@ -1,15 +1,15 @@
 ﻿using FluentValidation;
 using LibraryApi.Domain.Dtos;
+using Shared.Validators;
 
 namespace LibraryApi.Validators
 {
-    public class BookPaginationRequestValidator : AbstractValidator<BookFilterRequest>
+    public class BookFilterRequestValidator : AbstractValidator<BookFilterRequest>
     {
-        public BookPaginationRequestValidator()
+        public BookFilterRequestValidator(PaginationConfiguration paginationConfiguration)
         {
+            Include(new PaginationRequestValidator(paginationConfiguration));
             RuleFor(x => x.ContainsName).NotNull().MaximumLength(256);
-            RuleFor(x => x.PageNumber).NotNull().GreaterThanOrEqualTo(0);
-            RuleFor(x => x.PageSize).NotNull().GreaterThanOrEqualTo(0);
             RuleFor(x => x.PublicationFrom).LessThanOrEqualTo(x => x.PublicationTo).When(x => x.PublicationFrom != null && x.PublicationTo != null);
             RuleFor(x => x.PublicationTo).GreaterThanOrEqualTo(x => x.PublicationFrom).When(x => x.PublicationFrom != null && x.PublicationTo != null);
             RuleFor(x => x.MinPrice).LessThanOrEqualTo(x => x.MaxPrice).When(x => x.MinPrice != null && x.MaxPrice != null);

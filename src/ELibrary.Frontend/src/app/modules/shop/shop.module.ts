@@ -1,3 +1,4 @@
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -41,6 +42,9 @@ import { InputRangeDirective, LoadingComponent } from '../shared';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
+    NgxMatDatetimePickerModule,
     InputRangeDirective,
     ScrollingModule,
     MatExpansionModule,

@@ -11,7 +11,6 @@ import { getDefaultStockBookChange, StockBookChange, ValidationMessageService } 
 })
 export class BookStockReplenishmentComponent implements OnInit {
   items: FormGroup[] = [];
-  hasBeenTriedSubmitted = false;
 
   get maxAmount() { return environment.maxOrderAmount; }
 

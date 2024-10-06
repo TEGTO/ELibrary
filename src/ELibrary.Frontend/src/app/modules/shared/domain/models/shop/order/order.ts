@@ -1,10 +1,13 @@
 import { Client, getDefaultClient, OrderBook } from "../../../..";
 
 export enum OrderStatus {
-    Canceled = -1, InProcessing, Processed, Delivering, Completed
+    Canceled = -1, InProcessing, Completed
 }
 export enum PaymentMethod {
     Cash
+}
+export enum DeliveryMethod {
+    SelfPickup, AddressDelivery
 }
 export interface Order {
     id: number,
@@ -16,6 +19,7 @@ export interface Order {
     deliveryTime: Date,
     orderStatus: OrderStatus,
     paymentMethod: PaymentMethod,
+    deliveryMethod: DeliveryMethod,
     client: Client,
     orderBooks: OrderBook[]
 }
@@ -31,6 +35,7 @@ export function getDefaultOrder(): Order {
         deliveryTime: new Date(),
         orderStatus: OrderStatus.InProcessing,
         paymentMethod: PaymentMethod.Cash,
+        deliveryMethod: DeliveryMethod.SelfPickup,
         client: getDefaultClient(),
         orderBooks: []
     };
@@ -42,10 +47,6 @@ export function getOrderStatusString(orderStatus: OrderStatus): string {
             return 'Canceled';
         case OrderStatus.InProcessing:
             return 'In Processing';
-        case OrderStatus.Processed:
-            return 'Processed';
-        case OrderStatus.Delivering:
-            return 'Delivering';
         case OrderStatus.Completed:
             return 'Completed';
         default:
@@ -54,10 +55,8 @@ export function getOrderStatusString(orderStatus: OrderStatus): string {
 }
 export function getOrderUpdateStatuses(): { value: OrderStatus, name: string }[] {
     return [
-        { value: OrderStatus.InProcessing, name: 'In Processing' },
-        { value: OrderStatus.Processed, name: 'Processed' },
-        { value: OrderStatus.Delivering, name: 'Delivering' },
-        { value: OrderStatus.Completed, name: 'Completed' },
+        { value: OrderStatus.InProcessing, name: getOrderStatusString(OrderStatus.InProcessing) },
+        { value: OrderStatus.Completed, name: getOrderStatusString(OrderStatus.Completed) },
     ]
 }
 export function getOrderPaymentMethodString(payment: PaymentMethod): string {
@@ -68,15 +67,36 @@ export function getOrderPaymentMethodString(payment: PaymentMethod): string {
             return "";
     }
 }
+export function getDeliveryMethodsString(delivery: DeliveryMethod): string {
+    switch (delivery) {
+        case DeliveryMethod.SelfPickup:
+            return 'Self Pickup';
+        case DeliveryMethod.AddressDelivery:
+            return 'Address Delivery';
+        default:
+            return "";
+    }
+}
+
 export function getOrderCreateMinDate(): Date {
     const nextDay = new Date();
     nextDay.setDate(nextDay.getDate() + 1);
-    nextDay.setHours(0, 0, 0, 0);
+    nextDay.setHours(6, 0, 0, 0);
     return nextDay;
 }
 export function getCreatedOrderMinDate(order: Order): Date {
-    const nextDay = new Date();
-    nextDay.setDate(nextDay.getDate() + 1);
-    nextDay.setHours(0, 0, 0, 0);
-    return order.deliveryTime > nextDay ? nextDay : order.deliveryTime;
+    const minDate = getOrderCreateMinDate();
+    return order.deliveryTime > minDate ? minDate : order.deliveryTime;
+}
+
+export function getOrderDeliveryMethods(): { value: DeliveryMethod, name: string }[] {
+    return [
+        { value: DeliveryMethod.SelfPickup, name: getDeliveryMethodsString(DeliveryMethod.SelfPickup) },
+        { value: DeliveryMethod.AddressDelivery, name: getDeliveryMethodsString(DeliveryMethod.AddressDelivery) },
+    ]
+}
+export function getPaymentMethods(): { value: PaymentMethod, name: string }[] {
+    return [
+        { value: PaymentMethod.Cash, name: getOrderPaymentMethodString(PaymentMethod.Cash) },
+    ]
 }

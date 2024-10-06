@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Exceptions;
 using System.Security.Claims;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
@@ -108,7 +109,7 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var login = "adminuser";
             var adminResponse = new AdminUserResponse { Email = "adminuser@example.com" };
-            userManagerMock.Setup(m => m.GetUserThatContainsAsync(login))
+            userManagerMock.Setup(m => m.GetUserByInfoAsync(login))
                            .ReturnsAsync(adminResponse);
             // Act
             var result = await userController.AdminGetUser(login);
@@ -140,6 +141,64 @@ namespace UserApi.Controllers.Tests
                            .ThrowsAsync(new InvalidOperationException("Delete failed"));
             // Act + Assert
             Assert.ThrowsAsync<InvalidOperationException>(async () => await userController.AdminDelete(login));
+        }
+        [Test]
+        public async Task AdminGetPaginatedUsers_ValidRequest_ReturnsOk()
+        {
+            // Arrange
+            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var paginatedUsers = new List<AdminUserResponse>
+            {
+                new AdminUserResponse { Email = "user1@example.com" },
+                new AdminUserResponse { Email = "user2@example.com" }
+            };
+            userManagerMock.Setup(m => m.GetPaginatedUsersAsync(filter, It.IsAny<CancellationToken>()))
+                           .ReturnsAsync(paginatedUsers);
+            // Act
+            var result = await userController.AdminGetPaginatedUsers(filter, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(paginatedUsers));
+        }
+        [Test]
+        public async Task AdminGetPaginatedUserAmount_ValidRequest_ReturnsOk()
+        {
+            // Arrange
+            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var totalUsers = 100;
+
+            userManagerMock.Setup(m => m.GetPaginatedUserTotalAmountAsync(filter, It.IsAny<CancellationToken>()))
+                           .ReturnsAsync(totalUsers);
+            // Act
+            var result = await userController.AdminGetPaginatedUserAmount(filter, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(totalUsers));
+        }
+        [Test]
+        public async Task AdminUpdate_ValidRequest_ReturnsOk()
+        {
+            // Arrange
+            var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
+            // Act
+            var result = await userController.AdminUpdate(updateRequest, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+            userManagerMock.Verify(m => m.AdminUpdateUserAsync(It.IsAny<AdminUserUpdateDataRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+        [Test]
+        public void AdminUpdate_InvalidRequest_ThrowsAuthorizationException()
+        {
+            // Arrange
+            var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
+            userManagerMock.Setup(m => m.AdminUpdateUserAsync(It.IsAny<AdminUserUpdateDataRequest>(), It.IsAny<CancellationToken>()))
+                           .ThrowsAsync(new AuthorizationException(["Authorization failed."]));
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userController.AdminUpdate(updateRequest, CancellationToken.None));
+            Assert.That(ex.Message, Is.EqualTo("Authorization error occurred."));
+            Assert.That(ex.Errors.First(), Is.EqualTo("Authorization failed."));
         }
     }
 }

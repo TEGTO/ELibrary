@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Middlewares;
+using Shared.Validators;
 
 namespace Shared
 {
@@ -32,6 +33,12 @@ namespace Shared
             services.AddValidatorsFromAssemblyContaining<ExceptionMiddleware>();
             services.AddValidatorsFromAssemblyContaining(type);
             ValidatorOptions.Global.LanguageManager.Enabled = false;
+            return services;
+        }
+        public static IServiceCollection AddPaginationConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            var paginationConf = new PaginationConfiguration(int.Parse(configuration[Configuration.MAX_PAGINATION_PAGE_SIZE]!));
+            services.AddSingleton(paginationConf);
             return services;
         }
         public static IServiceCollection AddApplicationCors(this IServiceCollection services, IConfiguration configuration, string allowSpecificOrigins, bool isDevelopment)

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, map, Observable, tap } from 'rxjs';
-import { CartBook, Client, CommandHandler, CurrencyPipeApplier, getDefaultOrder, getOrderCreateMinDate, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, redirectPathes, ValidationMessage } from '../../../shared';
+import { CartBook, Client, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultOrder, getOrderCreateMinDate, getOrderDeliveryMethods, getPaymentMethods, getProductInfoPath, getProductsPath, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 
 @Component({
@@ -24,7 +24,10 @@ export class MakeOrderComponent implements OnInit {
   get deliveryAddressInput() { return this.formGroup.get('address')!; }
   get deliveryTimeInput() { return this.formGroup.get('deliveryTime')!; }
   get paymentMethodInput() { return this.formGroup.get('payment')!; }
-  get redirectToProductsPagePath() { return redirectPathes.client_products; }
+  get deliveryMethodInput() { return this.formGroup.get('delivery')!; }
+  get redirectToProductsPagePath() { return getProductsPath(); }
+  get paymentMethods() { return getPaymentMethods(); }
+  get deliveryMethods() { return getOrderDeliveryMethods(); }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -54,6 +57,7 @@ export class MakeOrderComponent implements OnInit {
         payment: new FormControl(PaymentMethod.Cash, [Validators.required]),
         deliveryTime: new FormControl(getOrderCreateMinDate(), [Validators.required, minDateValidator(getOrderCreateMinDate())]),
         address: new FormControl(client.address, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
+        delivery: new FormControl(DeliveryMethod.SelfPickup, [Validators.required]),
       });
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,8 +72,8 @@ export class MakeOrderComponent implements OnInit {
   trackById(index: number, cartBook: CartBook): number {
     return cartBook.bookId;
   }
-  getBookPage(cartBook: CartBook): string {
-    return cartBook.book.id.toString();
+  getBookPage(cartBook: CartBook): string[] {
+    return [`/${getProductInfoPath(cartBook.book.id)}`];
   }
   getTotalPrice(cartBooks: CartBook[]): number {
     return cartBooks.reduce((total, cartBook) => {
@@ -84,6 +88,7 @@ export class MakeOrderComponent implements OnInit {
       deliveryAddress: formValues.address,
       deliveryTime: formValues.deliveryTime,
       paymentMethod: formValues.payment,
+      deliveryMethod: formValues.delivery,
       orderBooks: books.map(x => mapCartBookToOrderBook(x))
     };
     const command: ClientAddOrderCommand =

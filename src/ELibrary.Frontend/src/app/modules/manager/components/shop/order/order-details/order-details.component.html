@@ -42,6 +42,10 @@
                     <span class="detail-header__dots">⠀</span>
                 </div>
                 <div class="order__detail-header text-gray-400">
+                    <span class="font-semibold">Delivery Method</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="order__detail-header text-gray-400">
                     <span class="font-semibold">Order Amount</span>
                     <span class="detail-header__dots">⠀</span>
                 </div>
@@ -65,6 +69,10 @@
                     <span class="font-semibold">Client Email</span>
                     <span class="detail-header__dots">⠀</span>
                 </div>
+                <div class="order__detail-header text-gray-400">
+                    <span class="font-semibold">Client Phone</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
             </div>
             <div class="pl-2 flex flex-col gap-1">
                 <div class="order__detail-value text-gray-400 flex justify-between">
@@ -73,8 +81,8 @@
                 <div class="order__detail-value text-gray-400 flex justify-between">
                     <span>{{ order.createdAt | date:'dd/MM/YYYY, HH:mm'}}</span>
                 </div>
-                <div class="order__detail-value"
-                    [ngClass]="{'text-red-500 font-bold': isOrderCanceled(order), 'text-gray-400':  !isOrderCanceled(order) }">
+                <div class="order__detail-value text-gray-400"
+                    [ngClass]="{'text-red-500 font-bold': isOrderCanceled(order), 'text-green-700 font-bold':  isOrderCompleted(order) }">
                     <span>{{ getOrderStatusString(order) }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
@@ -82,6 +90,9 @@
                 </div>
                 <div class="order__detail-value text-gray-400">
                     <span>{{ order.deliveryAddress }}</span>
+                </div>
+                <div class="order__detail-value text-gray-400">
+                    <span>{{ getDeliveryMethodString(order) }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
                     <span>{{ order.orderAmount }}</span>
@@ -100,6 +111,9 @@
                 </div>
                 <div class="order__detail-value text-gray-400">
                     <span>{{ order.client.email }}</span>
+                </div>
+                <div class="order__detail-value text-gray-400">
+                    <span>{{ order.client.phone }}</span>
                 </div>
             </div>
         </div>
@@ -139,15 +153,15 @@
                     </mat-select>
                 </mat-form-field>
                 <div class="px-5 pl-10 w-6/12 flex justify-end gap-2 h-12">
-                    <button form="order" type="button" (click)="cancelOrder(order)" [disabled]="isOrderCanceled(order)"
-                        class="flex items-center pl-4 gap-1 p-2 rounded-lg border
+                    <button form="order" type="button" (click)="cancelOrder(order)"
+                        [disabled]="orderUnchangeable(order)" class="flex items-center pl-4 gap-1 p-2 rounded-lg border
                                         text-gray-700 font-bold 
                                         hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out 
                                         disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
                         <span>Cancel</span>
                         <span class="!text-2xl text-red-600 material-icons">delete</span>
                     </button>
-                    <button id="send-button" form="order" type="submit" [disabled]="isOrderCanceled(order)" class="flex items-center pl-4 gap-1 p-2 rounded-lg border
+                    <button id="send-button" form="order" type="submit" [disabled]="orderUnchangeable(order)" class="flex items-center pl-4 gap-1 p-2 rounded-lg border
                                         text-gray-700 font-bold 
                                         hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out 
                                         disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">

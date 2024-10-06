@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, DELETE_CART_BOOK_COMMAND_HANDLER, DeleteCartBookCommand, UPDATE_CART_BOOK_COMMAND_HANDLER, UpdateCartBookCommand } from '../../..';
 import { environment } from '../../../../../../environment/environment';
-import { Book, CartBook, CommandHandler, CurrencyPipeApplier, redirectPathes } from '../../../../shared';
+import { Book, CartBook, CommandHandler, CurrencyPipeApplier, getProductInfoPath, getProductsPath } from '../../../../shared';
 
 @Component({
   selector: 'app-cart-dialog',
@@ -20,7 +20,7 @@ export class CartDialogComponent implements OnInit, OnDestroy {
   private inputChangeSubjectMap = new Map<number, Subject<number>>();
   private destroy$ = new Subject<void>();
 
-  get booksUrlPath() { return redirectPathes.client_products; }
+  get booksUrlPath() { return getProductsPath(); }
 
   constructor(
     private readonly cartService: CartService,
@@ -103,10 +103,9 @@ export class CartDialogComponent implements OnInit, OnDestroy {
     this.deleteCartBookHandler.dispatch(command);
   }
 
-  getBookPage(cartBook: CartBook): string {
-    return cartBook.book.id.toString();
+  getBookPage(cartBook: CartBook): string[] {
+    return [`/${getProductInfoPath(cartBook.book.id)}`];
   }
-
   makeOrder() {
     const command: ClientAddOrderCommand =
     {

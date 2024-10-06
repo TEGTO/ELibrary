@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs';
 import { AddClientCommand, ClientService, ShopDialogManager } from '../../..';
-import { CommandHandler, getDefaultClient, mapClientToCreateClientRequest, RedirectorService, redirectPathes } from '../../../../shared';
+import { clientAddInformationPath, CommandHandler, getDefaultClient, mapClientToCreateClientRequest, RedirectorService } from '../../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class AddClientCommandHandlerService extends CommandHandler<AddClientComm
 
   dispatch(command: AddClientCommand): void {
     if (command.redirectAfter) {
-      this.redirector.redirectTo(redirectPathes.client_addInformation, { redirectTo: command.redirectAfter });
+      this.redirector.redirectTo(clientAddInformationPath(), { redirectTo: command.redirectAfter });
     }
     else {
       this.shopDialog.openClientChangeMenu(getDefaultClient()).afterClosed().pipe(

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { Policy, PolicyType, redirectPathes, UserAuth } from '../../../shared';
+import { clientOrderHistoryPath, getManagerBooksPath, Policy, PolicyType, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
 
 @Component({
@@ -13,8 +13,8 @@ import { ClientService } from '../../../shop';
 export class MainViewComponent implements OnInit {
   userAuth$!: Observable<UserAuth>;
 
-  get managerPath() { return redirectPathes.manager_books; }
-  get orderHistoryPath() { return redirectPathes.client_order_history; }
+  get managerPath() { return getManagerBooksPath(); }
+  get orderHistoryPath() { return clientOrderHistoryPath(); }
 
   constructor(
     private readonly authService: AuthenticationService,

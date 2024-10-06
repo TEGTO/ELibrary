@@ -2,7 +2,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CommandHandler, GenericTableComponent, getClientName, getOrderStatusString, LocaleService, LocalizedDatePipe, Order, PaginatedRequest, redirectPathes } from '../../../../../shared';
+import { CommandHandler, GenericTableComponent, getClientName, getManagerOrderDetailsPath, getOrderStatusString, LocaleService, LocalizedDatePipe, Order, PaginatedRequest } from '../../../../../shared';
 import { MANAGER_ORDER_DETAILS_COMMAND_HANDLER, ManagerOrderDetailsCommand, OrderService } from '../../../../../shop';
 
 interface OrderItem {
@@ -27,7 +27,7 @@ export class OrderTableComponent implements OnInit {
 
   private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
-    { header: 'Id', field: 'id', linkPath: (item: any) => `${redirectPathes.manager_orders}/${item.id}` },
+    { header: 'Id', field: 'id', linkPath: (item: any) => getManagerOrderDetailsPath(item.id) },
     { header: 'Created At', field: 'createdAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()) },
     { header: 'Total Price', field: 'totalPrice', pipe: new CurrencyPipe(this.localeService.getLocale(), this.localeService.getCurrency()) },
     { header: 'Delivery Time', field: 'deliveryTime', pipe: new LocalizedDatePipe(this.localeService.getLocale()), pipeArgs: [true] },

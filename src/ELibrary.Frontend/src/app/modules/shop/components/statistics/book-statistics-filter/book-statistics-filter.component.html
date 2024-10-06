@@ -1,29 +1,73 @@
-<mat-accordion class="w-full">
-    <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
-        <mat-expansion-panel-header>
-            <mat-panel-title class="text-gray-700 font-bold"> Filters </mat-panel-title>
-        </mat-expansion-panel-header>
-        <form [formGroup]="formGroup" class="flex justify-start">
-            <div class="flex flex-col flex-wrap p-5 justify-center gap-2 w-full max-w-2xl">
-                <div class="flex flex-row gap-5">
-                    <mat-form-field class="w-1/2">
-                        <mat-label>Date From</mat-label>
-                        <input matInput [matDatepicker]="fromPicker" formControlName="fromUTC" />
-                        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #fromPicker></mat-datepicker>
-                        <mat-error
-                            *ngIf="validateInputField(fromUTCInput).hasError">{{validateInputField(fromUTCInput).message}}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field class="w-1/2">
-                        <mat-label>Date To</mat-label>
-                        <input matInput [matDatepicker]="toPicker" formControlName="toUTC" />
-                        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #toPicker></mat-datepicker>
-                        <mat-error
-                            *ngIf="validateInputField(toUTCInput).hasError">{{validateInputField(toUTCInput).message}}</mat-error>
-                    </mat-form-field>
-                </div>
+<div>
+    <div class="flex gap-10">
+        <app-book-input [formGroup]="formGroup" class="w-1/2"></app-book-input>
+        <form [formGroup]="formGroup" class="w-1/2">
+            <div class="flex gap-2">
+                <mat-form-field>
+                    <mat-label>Date From</mat-label>
+                    <input matInput [ngxMatDatetimePicker]="fromPicker" formControlName="fromUTC" [readonly]="true">
+                    <ngx-mat-datepicker-toggle [for]="fromPicker" matSuffix></ngx-mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker [showSeconds]="false" #fromPicker></ngx-mat-datetime-picker>
+                    <mat-error
+                        *ngIf="validateInputField(fromUTCInput).hasError">{{validateInputField(fromUTCInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Date To</mat-label>
+                    <input matInput [ngxMatDatetimePicker]="toPicker" formControlName="toUTC" [readonly]="true">
+                    <ngx-mat-datepicker-toggle [for]="toPicker" matSuffix></ngx-mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #toPicker></ngx-mat-datetime-picker>
+                    <mat-error
+                        *ngIf="validateInputField(toUTCInput).hasError">{{validateInputField(toUTCInput).message}}</mat-error>
+                </mat-form-field>
             </div>
         </form>
-    </mat-expansion-panel>
-</mat-accordion>
+    </div>
+    @if (includeBooks.length > 0) {
+    <cdk-virtual-scroll-viewport [itemSize]="itemHeight" class="content__books"
+        [style.height.px]="calculateSelectionSize()">
+        <ng-container *cdkVirtualFor="let item of includeBooks; trackBy: trackById;">
+            <div class="books__wrapper">
+                <ng-container *ngTemplateOutlet="booktemplate; context: { book: item }"></ng-container>
+            </div>
+        </ng-container>
+    </cdk-virtual-scroll-viewport>
+    }
+    @else {
+    <div class="border rounded-2xl flex items-center justify-center h-96">
+        <p class="text-lg text-gray-600">
+            Statistics are kept for all books. Select books to filter.
+        </p>
+    </div>
+    }
+</div>
+
+<!-- Book -->
+<ng-template #booktemplate let-book="book">
+    <div class="book mr-2 h-72 w-11/12 p-6 border-t border-gray-200">
+        <div class="w-full flex justify-between items-center">
+            <div class=" flex flex gap-5">
+                <a class="book__cover hover:cursor-pointer" [routerLink]="getBookPage(book)">
+                    <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
+                        onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                </a>
+                <a class="h-full flex flex-col items-start pt-5">
+                    <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
+                        [routerLink]="getBookPage(book)">
+                        {{ book.name }}
+                    </a>
+                    <div class="book__author text-gray-400 truncate">
+                        {{ book.author.name + ' '+ book.author.lastName }}
+                    </div>
+                </a>
+            </div>
+            <div class="text-gray-700 truncate text-lg">
+                {{ applyCurrencyPipe(book.price) }} x 1
+            </div>
+            <button (click)="deleteBook(book)"
+                class="flex items-center pl-4 gap-2 p-2 rounded-lg border text-gray-700 font-bold hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                <span>Remove</span>
+                <span class="!text-2xl text-red-600 material-icons">do_not_disturb_on</span>
+            </button>
+        </div>
+    </div>
+</ng-template>

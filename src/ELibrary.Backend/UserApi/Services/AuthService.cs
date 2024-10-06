@@ -1,8 +1,10 @@
 ﻿using Authentication.Models;
 using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using UserApi.Domain.Dtos.Requests;
 using UserApi.Domain.Models;
 using UserEntities.Domain.Entities;
 
@@ -29,7 +31,7 @@ namespace UserApi.Services
         }
         public async Task<AccessTokenData> LoginUserAsync(LoginUserParams loginParams)
         {
-            var user = await GetUserByLoginAsync(loginParams.Login);
+            var user = await GetUserByUserInfoAsync(loginParams.Login);
 
             if (user == null || !await userManager.CheckPasswordAsync(user, loginParams.Password))
             {
@@ -46,11 +48,34 @@ namespace UserApi.Services
             var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
             return id.IsNullOrEmpty() ? null : await userManager.FindByIdAsync(id!);
         }
-        public async Task<User?> GetUserByLoginAsync(string login)
+        public async Task<User?> GetUserByUserInfoAsync(string info)
         {
-            var user = await userManager.FindByEmailAsync(login);
-            user = user == null ? await userManager.FindByNameAsync(login) : user;
+            var user = await userManager.FindByEmailAsync(info);
+            user = user == null ? await userManager.FindByNameAsync(info) : user;
+            user = user == null ? await userManager.FindByIdAsync(info) : user;
             return user;
+        }
+        public async Task<IEnumerable<User>> GetPaginatedUsersAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        {
+            var queryable = userManager.Users.AsNoTracking();
+            List<User> paginatedUsers = new List<User>();
+
+            queryable = ApplyFilter(queryable, filter);
+
+            paginatedUsers.AddRange(await queryable
+                  .Skip((filter.PageNumber - 1) * filter.PageSize)
+                  .Take(filter.PageSize)
+                  .ToListAsync(cancellationToken));
+
+            return paginatedUsers;
+        }
+        public async Task<int> GetUserTotalAmountAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        {
+            var queryable = userManager.Users.AsNoTracking();
+
+            queryable = ApplyFilter(queryable, filter);
+
+            return await queryable.CountAsync(cancellationToken);
         }
         public async Task<List<IdentityError>> SetUserRolesAsync(User user, List<string> roles)
         {
@@ -174,6 +199,19 @@ namespace UserApi.Services
             .Select(g => g.First())
             .ToList();
             return identityErrors;
+        }
+        private IQueryable<User> ApplyFilter(IQueryable<User> query, GetUserFilterRequest userFilter)
+        {
+            if (!string.IsNullOrEmpty(userFilter.ContainsString))
+            {
+                query = query.Where(b =>
+                   b.Email.Contains(userFilter.ContainsString)
+                || b.UserName.Contains(userFilter.ContainsString)
+                || b.Id.Contains(userFilter.ContainsString)
+                );
+            }
+            return query
+                 .OrderByDescending(b => b.RegistredAtUtc);
         }
 
         #endregion

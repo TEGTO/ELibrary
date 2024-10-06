@@ -88,17 +88,6 @@ namespace ShopApi.Controllers.Tests
             Assert.That(okResult.Value, Is.EqualTo(updatedClientResponse));
         }
         [Test]
-        public async Task DeleteClient_ReturnsOk()
-        {
-            // Arrange
-            mockClientManager.Setup(cf => cf.DeleteClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-            // Act
-            var result = await clientController.DeleteClient(CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<OkResult>(result);
-        }
-        [Test]
         public async Task AdminGetClient_ReturnsOkWithClientResponse()
         {
             // Arrange
@@ -141,17 +130,6 @@ namespace ShopApi.Controllers.Tests
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
             Assert.That(okResult.Value, Is.EqualTo(updatedClientResponse));
-        }
-        [Test]
-        public async Task AdminDeleteClient_ReturnsOk()
-        {
-            // Arrange
-            mockClientManager.Setup(acf => acf.DeleteClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-            // Act
-            var result = await clientController.AdminDeleteClient("admin-user-id", CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<OkResult>(result);
         }
     }
 }

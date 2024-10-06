@@ -44,7 +44,7 @@ export const boockstockOrderReducer = createReducer(
         error: null
     })),
     on(createBookstockOrderFailure, (state, { error: error }) => ({
-        ...initialBookstockOrderState,
+        ...state,
         error: error
     })),
 );

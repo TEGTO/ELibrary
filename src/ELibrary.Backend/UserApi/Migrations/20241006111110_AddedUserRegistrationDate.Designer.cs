@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserEntities.Data;
@@ -11,9 +12,11 @@ using UserEntities.Data;
 namespace UserApi.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    partial class UserIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006111110_AddedUserRegistrationDate")]
+    partial class AddedUserRegistrationDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -93,7 +93,21 @@
                                     <label for="payment">Payment</label>
                                     <div>
                                         <mat-radio-group id="payment" formControlName="payment">
-                                            <mat-radio-button [value]="0">Cash</mat-radio-button>
+                                            <mat-radio-button *ngFor="let item of paymentMethods"
+                                                [value]="item.value">{{item.name}}</mat-radio-button>
+                                            <mat-error
+                                                *ngIf="validateInputField(paymentInput(order)).hasError">{{validateInputField(paymentInput(order)).message}}</mat-error>
+                                        </mat-radio-group>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="delivery">Delivery</label>
+                                    <div>
+                                        <mat-radio-group id="delivery" formControlName="delivery">
+                                            <mat-radio-button *ngFor="let item of deliveryMethods"
+                                                [value]="item.value">{{item.name}}</mat-radio-button>
+                                            <mat-error
+                                                *ngIf="validateInputField(deliveryInput(order)).hasError">{{validateInputField(deliveryInput(order)).message}}</mat-error>
                                         </mat-radio-group>
                                     </div>
                                 </div>

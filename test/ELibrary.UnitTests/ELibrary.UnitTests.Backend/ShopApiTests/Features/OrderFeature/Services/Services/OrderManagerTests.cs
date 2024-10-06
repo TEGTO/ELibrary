@@ -162,7 +162,7 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             // Arrange
             var client = new Client { Id = "client123" };
             var orderId = 1;
-            var order = new Order { Id = orderId, ClientId = client.Id, OrderStatus = OrderStatus.Processed };
+            var order = new Order { Id = orderId, ClientId = client.Id, OrderStatus = OrderStatus.Completed };
             orderServiceMock.Setup(service => service.GetOrderByIdAsync(orderId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(order);
             // Act & Assert

@@ -47,6 +47,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
+builder.Services.AddPaginationConfiguration(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

@@ -57,6 +57,9 @@ export class ValidationMessageService implements ValidationMessage {
     else if (input.hasError('noSpaces')) {
       return { hasError: true, message: 'Input must not contain spaces.' };
     }
+    else if (input.hasError('invalidSelectInput')) {
+      return { hasError: true, message: 'Item must be selected.' };
+    }
     return { hasError: false, message: "" };
   }
 }

@@ -44,6 +44,8 @@ builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
+
+builder.Services.AddPaginationConfiguration(builder.Configuration);
 #endregion
 
 builder.Services.AddMemoryCache();

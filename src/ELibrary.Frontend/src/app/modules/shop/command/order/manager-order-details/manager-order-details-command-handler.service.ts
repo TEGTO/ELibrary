@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ManagerOrderDetailsCommand } from '../../..';
-import { CommandHandler, RedirectorService, redirectPathes } from '../../../../shared';
+import { CommandHandler, getManagerOrderDetailsPath, RedirectorService } from '../../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,6 @@ export class ManagerOrderDetailsCommandHandlerService extends CommandHandler<Man
   }
 
   dispatch(command: ManagerOrderDetailsCommand): void {
-    this.redirector.redirectTo(`${redirectPathes.manager_orders}/${command.order.id}`);
+    this.redirector.redirectTo(getManagerOrderDetailsPath(command.order.id));
   }
 }

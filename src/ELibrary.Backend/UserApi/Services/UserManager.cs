@@ -52,7 +52,7 @@ namespace UserApi.Services
         }
         public async Task<UserAuthenticationResponse> LoginUserAsync(UserAuthenticationRequest request)
         {
-            var user = await authService.GetUserByLoginAsync(request.Login);
+            var user = await authService.GetUserByUserInfoAsync(request.Login);
             if (user == null) throw new UnauthorizedAccessException();
 
             var loginParams = new LoginUserParams(request.Login, request.Password, expiryInDays);
@@ -97,21 +97,44 @@ namespace UserApi.Services
             errors.AddRange(await authService.SetUserRolesAsync(user, request.Roles));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            return await GetUserThatContainsAsync(request.Email);
+            return await GetUserByInfoAsync(request.Email);
         }
-        public async Task<AdminUserResponse> GetUserThatContainsAsync(string str)
+        public async Task<AdminUserResponse> GetUserByInfoAsync(string info)
         {
-            var user = await authService.GetUserByLoginAsync(str);
-            if (user == null) throw new KeyNotFoundException("User not found");
+            var user = await authService.GetUserByUserInfoAsync(info);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User is not found!");
+            }
 
             var response = mapper.Map<AdminUserResponse>(user);
             response.Roles = await authService.GetUserRolesAsync(user);
             return response;
         }
+        public async Task<IEnumerable<AdminUserResponse>> GetPaginatedUsersAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        {
+            var users = await authService.GetPaginatedUsersAsync(filter, cancellationToken);
+
+            var responses = new List<AdminUserResponse>();
+
+            foreach (var user in users)
+            {
+                var response = mapper.Map<AdminUserResponse>(user);
+                response.Roles = await authService.GetUserRolesAsync(user);
+                responses.Add(response);
+            }
+
+            return responses;
+        }
+        public async Task<int> GetPaginatedUserTotalAmountAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        {
+            return await authService.GetUserTotalAmountAsync(filter, cancellationToken);
+        }
         public async Task AdminUpdateUserAsync(AdminUserUpdateDataRequest request, CancellationToken cancellationToken)
         {
             var updateData = mapper.Map<UserUpdateData>(request);
-            var user = await authService.GetUserByLoginAsync(request.CurrentLogin);
+            var user = await authService.GetUserByUserInfoAsync(request.CurrentLogin);
 
             var identityErrors = await authService.UpdateUserAsync(user, updateData, true);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
@@ -119,9 +142,9 @@ namespace UserApi.Services
             identityErrors = await authService.SetUserRolesAsync(user, request.Roles);
             if (Utilities.HasErrors(identityErrors, out errorResponse)) throw new AuthorizationException(errorResponse);
         }
-        public async Task AdminDeleteUserAsync(string login)
+        public async Task AdminDeleteUserAsync(string info)
         {
-            var user = await authService.GetUserByLoginAsync(login);
+            var user = await authService.GetUserByUserInfoAsync(info);
             var result = await authService.DeleteUserAsync(user);
             if (Utilities.HasErrors(result.Errors.ToList(), out var errorResponse)) throw new AuthorizationException(errorResponse);
         }

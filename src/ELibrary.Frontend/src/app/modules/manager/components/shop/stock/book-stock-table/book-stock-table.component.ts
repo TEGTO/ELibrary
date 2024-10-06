@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CommandHandler, GenericTableComponent, getClientName, LocaleService, LocalizedDatePipe, PaginatedRequest, redirectPathes, stockBookOrderTypeToString } from '../../../../../shared';
+import { CommandHandler, GenericTableComponent, getClientName, getManagerBookStockDetailsPath, LocaleService, LocalizedDatePipe, PaginatedRequest, stockBookOrderTypeToString } from '../../../../../shared';
 import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, AddBookStockOrderCommand, BookstockOrderService } from '../../../../../shop';
 
 interface StockOrderItem {
@@ -25,7 +25,7 @@ export class BookStockTableComponent implements OnInit {
 
   private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
-    { header: 'Id', field: 'id', linkPath: (item: any) => `${redirectPathes.manager_bookstock}/${item.id}` },
+    { header: 'Id', field: 'id', linkPath: (item: any) => getManagerBookStockDetailsPath(item.id) },
     { header: 'Created At', field: 'createdAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()), pipeArgs: [true] },
     { header: 'Client', field: 'clientName' },
     { header: 'Type', field: 'type' },

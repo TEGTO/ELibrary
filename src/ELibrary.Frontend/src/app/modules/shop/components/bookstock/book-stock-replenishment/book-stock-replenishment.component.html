@@ -17,7 +17,6 @@
             <span class="!text-2xl text-blue-600 material-icons">add</span>
         </button>
     </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
@@ -30,7 +29,6 @@
     <form id="replenishment" [formGroup]="formGroup" class="content__form space-y-1">
         <div class="flex w-full gap-3">
             <div class="flex gap-2 w-9/12">
-                <mat-error *ngIf="hasBeenTriedSubmitted">Book field must be set.</mat-error>
                 <app-book-input [formGroup]="formGroup" class="w-8/12"></app-book-input>
                 <mat-form-field class="!w-4/12">
                     <mat-label>Amount</mat-label>

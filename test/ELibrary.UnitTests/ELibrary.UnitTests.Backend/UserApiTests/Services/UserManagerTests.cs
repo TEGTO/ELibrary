@@ -35,32 +35,61 @@ namespace UserApi.Services.Tests
         }
 
         [Test]
-        public async Task GetUserByLoginAsync_UserExists_ReturnsAdminUserResponse()
+        public async Task GetUserByUserInfoAsync_UserExists_ReturnsAdminUserResponse()
         {
             // Arrange
             var login = "adminuser";
             var user = new User { UserName = login, Email = "adminuser@example.com" };
             var roles = new List<string> { "Admin" };
             var adminResponse = new AdminUserResponse { Email = "adminuser@example.com" };
-            authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(login)).ReturnsAsync(user);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
             authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
-            var result = await userManager.GetUserThatContainsAsync(login);
+            var result = await userManager.GetUserByInfoAsync(login);
             // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Email, Is.EqualTo("adminuser@example.com"));
             Assert.That(result.Roles, Is.EqualTo(roles));
         }
         [Test]
-        public void GetUserByLoginAsync_UserDoesNotExist_ThrowsKeyNotFoundException()
+        public void GetUserByUserInfoAsync_UserDoesNotExist_ThrowsKeyNotFoundException()
         {
             // Arrange
             var login = "nonexistentuser";
-            authServiceMock.Setup(a => a.GetUserByLoginAsync(login)).ReturnsAsync((User)null);
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(login)).ReturnsAsync((User)null);
             // Act & Assert
-            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () => await userManager.GetUserThatContainsAsync(login));
-            Assert.That(ex.Message, Is.EqualTo("User not found"));
+            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () => await userManager.GetUserByInfoAsync(login));
+            Assert.That(ex.Message, Is.EqualTo("User is not found!"));
+        }
+        [Test]
+        public async Task GetPaginatedUsersAsync_ValidRequest_ReturnsUsersWithRoles()
+        {
+            // Arrange
+            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var users = new List<User> { new User { Email = "user1@example.com" }, new User { Email = "user2@example.com" } };
+            var roles = new List<string> { "User" };
+            var userResponse = new AdminUserResponse { Email = "user1@example.com", Roles = roles };
+            authServiceMock.Setup(a => a.GetPaginatedUsersAsync(filter, It.IsAny<CancellationToken>())).ReturnsAsync(users);
+            mapperMock.Setup(m => m.Map<AdminUserResponse>(It.IsAny<User>())).Returns(userResponse);
+            authServiceMock.Setup(a => a.GetUserRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+            // Act
+            var result = await userManager.GetPaginatedUsersAsync(filter, CancellationToken.None);
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(2));
+            Assert.That(result.First().Email, Is.EqualTo("user1@example.com"));
+        }
+        [Test]
+        public async Task GetPaginatedUserTotalAmountAsync_ValidRequest_ReturnsTotalCount()
+        {
+            // Arrange
+            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var totalCount = 100;
+            authServiceMock.Setup(a => a.GetUserTotalAmountAsync(filter, It.IsAny<CancellationToken>())).ReturnsAsync(totalCount);
+            // Act
+            var result = await userManager.GetPaginatedUserTotalAmountAsync(filter, CancellationToken.None);
+            // Assert
+            Assert.That(result, Is.EqualTo(totalCount));
         }
         [Test]
         public async Task RegisterUserAsync_ValidRequest_ReturnsUserAuthenticationResponse()
@@ -106,7 +135,7 @@ namespace UserApi.Services.Tests
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
             var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
             var roles = new List<string> { "User" };
-            authServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login)).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(loginRequest.Login)).ReturnsAsync(user);
             authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>())).ReturnsAsync(tokenData);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
             authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
@@ -122,7 +151,7 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
-            authServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login)).ReturnsAsync((User)null);
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(loginRequest.Login)).ReturnsAsync((User)null);
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userManager.LoginUserAsync(loginRequest));
         }
@@ -183,7 +212,7 @@ namespace UserApi.Services.Tests
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>())).ReturnsAsync(IdentityResult.Success);
             authServiceMock.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles)).ReturnsAsync(new List<IdentityError>());
-            authServiceMock.Setup(a => a.GetUserByLoginAsync(It.IsAny<string>())).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
             authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
@@ -203,6 +232,62 @@ namespace UserApi.Services.Tests
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.AdminRegisterUserAsync(adminRequest));
             Assert.That(ex.Errors.First(), Is.EqualTo("Admin registration failed"));
+        }
+        [Test]
+        public async Task AdminUpdateUserAsync_ValidRequest_UpdatesUserAndRoles()
+        {
+            // Arrange
+            var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
+            var user = new User { UserName = "user1" };
+            var identityErrors = new List<IdentityError>();
+            mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(new UserUpdateData());
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
+            authServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(identityErrors);
+            // Act
+            await userManager.AdminUpdateUserAsync(updateRequest, CancellationToken.None);
+            // Assert
+            authServiceMock.Verify(a => a.UpdateUserAsync(user, It.IsAny<UserUpdateData>(), true), Times.Once);
+            authServiceMock.Verify(a => a.SetUserRolesAsync(user, updateRequest.Roles), Times.Once);
+        }
+        [Test]
+        public void AdminUpdateUserAsync_FailedUpdate_ThrowsAuthorizationException()
+        {
+            // Arrange
+            var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
+            var user = new User { UserName = "user1" };
+            var identityErrors = new List<IdentityError> { new IdentityError { Description = "Update failed" } };
+            mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(new UserUpdateData());
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.AdminUpdateUserAsync(updateRequest, CancellationToken.None));
+            Assert.That(ex.Errors.First(), Is.EqualTo("Update failed"));
+        }
+        [Test]
+        public async Task AdminDeleteUserAsync_ValidRequest_DeletesUserSuccessfully()
+        {
+            // Arrange
+            var user = new User { UserName = "user1" };
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Success);
+            // Act
+            await userManager.AdminDeleteUserAsync("user1");
+            // Assert
+            authServiceMock.Verify(a => a.DeleteUserAsync(user), Times.Once);
+        }
+        [Test]
+        public void AdminDeleteUserAsync_FailedDelete_ThrowsAuthorizationException()
+        {
+            // Arrange
+            var user = new User { UserName = "user1" };
+            var identityErrors = new List<IdentityError> { new IdentityError { Description = "Deletion failed" } };
+            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            authServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.AdminDeleteUserAsync("user1"));
+            Assert.That(ex.Errors.First(), Is.EqualTo("Deletion failed"));
         }
     }
 }

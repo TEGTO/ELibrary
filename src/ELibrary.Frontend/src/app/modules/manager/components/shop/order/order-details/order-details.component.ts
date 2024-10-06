@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, map, Observable, of, switchMap } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getClientName, getCreatedOrderMinDate, getOrderPaymentMethodString, getOrderStatusString, getOrderUpdateStatuses, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, RedirectorService, ValidationMessage } from '../../../../../shared';
+import { Client, CommandHandler, CurrencyPipeApplier, getClientName, getCreatedOrderMinDate, getDeliveryMethodsString, getOrderPaymentMethodString, getOrderStatusString, getOrderUpdateStatuses, getProductInfoPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, RedirectorService, ValidationMessage } from '../../../../../shared';
 import { MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HANDLER, ManagerCancelOrderCommand, ManagerUpdateOrderCommand, OrderService } from '../../../../../shop';
 
 @Component({
@@ -12,8 +12,7 @@ import { MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HAND
 })
 export class OrderDetailsComponent implements OnInit {
   readonly itemHeight = 200;
-  readonly amountItemsInView = 3;
-  readonly scrollSizePerObject = 220;
+  readonly scrollSizePerObject = 200;
   readonly scollSize = 420;
   private formGroup!: FormGroup;
 
@@ -67,7 +66,7 @@ export class OrderDetailsComponent implements OnInit {
         });
     }
 
-    if (this.isOrderCanceled(order)) {
+    if (this.isOrderCanceled(order) || this.isOrderCompleted(order)) {
       this.formGroup.disable();
     }
 
@@ -78,8 +77,8 @@ export class OrderDetailsComponent implements OnInit {
   applyCurrencyPipe(value: any): any {
     return this.currenctyApplier.applyCurrencyPipe(value);
   }
-  getBookPage(orderBook: OrderBook): string {
-    return orderBook.bookId.toString();
+  getBookPage(orderBook: OrderBook): string[] {
+    return [`/${getProductInfoPath(orderBook.bookId)}`];
   }
   calculateSelectionSize(bookAmount: number): number {
     return this.scrollSizePerObject * bookAmount > this.scollSize ? this.scollSize : this.scrollSizePerObject * bookAmount;
@@ -92,6 +91,9 @@ export class OrderDetailsComponent implements OnInit {
   }
   getOrderBookPrice(orderBook: OrderBook): number {
     return orderBook.book.price * orderBook.bookAmount;
+  }
+  getDeliveryMethodString(order: Order) {
+    return getDeliveryMethodsString(order.deliveryMethod);
   }
   getOrderStatusString(order: Order): string {
     return getOrderStatusString(order.orderStatus);
@@ -106,8 +108,14 @@ export class OrderDetailsComponent implements OnInit {
     }
     this.managerCancelOrderHandler.dispatch(command);
   }
+  orderUnchangeable(order: Order): boolean {
+    return this.isOrderCanceled(order) || this.isOrderCompleted(order);
+  }
   isOrderCanceled(order: Order): boolean {
     return order.orderStatus === OrderStatus.Canceled;
+  }
+  isOrderCompleted(order: Order) {
+    return order.orderStatus === OrderStatus.Completed;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   validateInputField(input: AbstractControl<any, any>) {

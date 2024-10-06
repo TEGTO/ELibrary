@@ -51,13 +51,6 @@ namespace ShopApi.Controllers
             var response = await clientManager.UpdateClientForUserAsync(userId, request, cancellationToken);
             return Ok(response);
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteClient(CancellationToken cancellationToken)
-        {
-            var userId = GetUserId();
-            await clientManager.DeleteClientForUserAsync(userId, cancellationToken);
-            return Ok();
-        }
         #endregion
 
         #region Admin Endpoints
@@ -84,14 +77,6 @@ namespace ShopApi.Controllers
         {
             var response = await clientManager.UpdateClientForUserAsync(id, request, cancellationToken);
             return Ok(response);
-        }
-
-        [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
-        [HttpDelete("admin/{id}")]
-        public async Task<IActionResult> AdminDeleteClient(string id, CancellationToken cancellationToken)
-        {
-            await clientManager.DeleteClientForUserAsync(id, cancellationToken);
-            return Ok();
         }
 
         #endregion

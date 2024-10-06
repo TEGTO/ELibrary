@@ -20,18 +20,44 @@ export const pathes =
     client_order_history: "history",
 };
 
-export const redirectPathes =
-{
-    manager_bookstock: `${pathes.manager}/${pathes.manager_bookstock}`,
-    manager_books: `${pathes.manager}/${pathes.manager_books}`,
-    manager_genres: `${pathes.manager}/${pathes.manager_genres}`,
-    manager_authors: `${pathes.manager}/${pathes.manager_authors}`,
-    manager_publishers: `${pathes.manager}/${pathes.manager_publishers}`,
-    manager_orders: `${pathes.manager}/${pathes.manager_orders}`,
+export function getManagerBookStockPath() {
+    return `${pathes.manager}/${pathes.manager_bookstock}`;
+}
+export function getManagerBookStockDetailsPath(id: number) {
+    return `${pathes.manager}/${pathes.manager_bookstock}/${id}`;
+}
+export function getManagerBooksPath() {
+    return `${pathes.manager}/${pathes.manager_books}`;
+}
+export function getManagerGenresPath() {
+    return `${pathes.manager}/${pathes.manager_genres}`;
+}
+export function getManagerAuthorsPath() {
+    return `${pathes.manager}/${pathes.manager_authors}`;
+}
+export function getManagerPublishersPath() {
+    return `${pathes.manager}/${pathes.manager_publishers}`;
+}
+export function getManagerOrdersPath() {
+    return `${pathes.manager}/${pathes.manager_orders}`;
+}
+export function getManagerOrderDetailsPath(id: number) {
+    return `${pathes.manager}/${pathes.manager_orders}/${id}`;
+}
 
-    client_products: `${pathes.client}/${pathes.client_products}`,
-    client_productInfo: `${pathes.client}`,
-    client_makeOrder: `${pathes.client}/${pathes.client_order}/${pathes.client_order_makeOrder}`,
-    client_addInformation: `${pathes.client}/${pathes.client_order}/${pathes.client_order_addInformation}`,
-    client_order_history: `${pathes.client}/${pathes.client_order}/${pathes.client_order_history}`
-};
+export function getProductsPath() {
+    return `${pathes.manager}/${pathes.manager_orders}`;
+}
+export function getProductInfoPath(id: number) {
+    return `${id}`;
+}
+
+export function clientMakeOrderPath() {
+    return `${pathes.client}/${pathes.client_order}/${pathes.client_order_makeOrder}`;
+}
+export function clientOrderHistoryPath() {
+    return `${pathes.client}/${pathes.client_order}/${pathes.client_order_history}`;
+}
+export function clientAddInformationPath() {
+    return `${pathes.client}/${pathes.client_order}/${pathes.client_order_addInformation}`;
+}

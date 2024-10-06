@@ -35,6 +35,7 @@ builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 
+builder.Services.AddPaginationConfiguration(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

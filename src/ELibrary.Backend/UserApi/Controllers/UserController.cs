@@ -59,10 +59,24 @@ namespace UserApi.Controllers
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
-        [HttpGet("admin/{login}")]
-        public async Task<ActionResult<AdminUserResponse>> AdminGetUser(string str)
+        [HttpGet("admin/users/{info}")]
+        public async Task<ActionResult<AdminUserResponse>> AdminGetUser(string info)
         {
-            var response = await userManager.GetUserThatContainsAsync(str);
+            var response = await userManager.GetUserByInfoAsync(info);
+            return Ok(response);
+        }
+        [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
+        [HttpPost("admin/users")]
+        public async Task<ActionResult<IEnumerable<AdminUserResponse>>> AdminGetPaginatedUsers(GetUserFilterRequest request, CancellationToken cancellationToken)
+        {
+            var response = await userManager.GetPaginatedUsersAsync(request, cancellationToken);
+            return Ok(response);
+        }
+        [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
+        [HttpPost("admin/users/amount")]
+        public async Task<ActionResult<int>> AdminGetPaginatedUserAmount(GetUserFilterRequest request, CancellationToken cancellationToken)
+        {
+            var response = await userManager.GetPaginatedUserTotalAmountAsync(request, cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
@@ -73,10 +87,10 @@ namespace UserApi.Controllers
             return Ok();
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
-        [HttpDelete("admin/delete/{login}")]
-        public async Task<IActionResult> AdminDelete(string login)
+        [HttpDelete("admin/delete/{info}")]
+        public async Task<IActionResult> AdminDelete(string info)
         {
-            await userManager.AdminDeleteUserAsync(login);
+            await userManager.AdminDeleteUserAsync(info);
             return Ok();
         }
 

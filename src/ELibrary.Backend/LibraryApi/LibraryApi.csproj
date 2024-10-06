@@ -26,6 +26,7 @@
 		<ProjectReference Include="..\Authentication\Authentication.csproj" />
 		<ProjectReference Include="..\LibraryShopEntities\LibraryShopEntities.csproj" />
 		<ProjectReference Include="..\Shared\Shared.csproj" />
+		<ProjectReference Include="..\ShopApi\ShopApi.csproj" />
 	</ItemGroup>
 
 </Project>

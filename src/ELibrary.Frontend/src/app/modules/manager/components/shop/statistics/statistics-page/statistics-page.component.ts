@@ -22,7 +22,6 @@ export class StatisticsPageComponent implements OnInit {
   }
 
   getBookStatistics(getStats: GetBookStatistics) {
-    console.log("fff");
     this.statistics$ = this.statisticsService.getBookStatistics(getStats);
   }
 

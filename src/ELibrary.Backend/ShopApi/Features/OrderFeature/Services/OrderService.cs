@@ -100,9 +100,9 @@ namespace ShopApi.Features.OrderFeature.Services
                 throw new InvalidOperationException("Order is not found.");
             }
 
-            if (orderInDb.OrderStatus == OrderStatus.Canceled)
+            if (orderInDb.OrderStatus != OrderStatus.InProcessing)
             {
-                throw new InvalidOperationException("Canceled orders are not changeable!");
+                throw new InvalidOperationException("Orders that are not in processing cannot be changed!");
             }
 
             orderInDb.Copy(order);
