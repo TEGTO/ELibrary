@@ -4,7 +4,7 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 using ShopApi.Features.StockBookOrderFeature.Dtos;
 using ShopApi.Features.StockBookOrderFeature.Services;
 

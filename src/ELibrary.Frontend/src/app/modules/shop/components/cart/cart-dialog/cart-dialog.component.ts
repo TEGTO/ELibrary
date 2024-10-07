@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
-import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, DELETE_CART_BOOK_COMMAND_HANDLER, DeleteCartBookCommand, UPDATE_CART_BOOK_COMMAND_HANDLER, UpdateCartBookCommand } from '../../..';
+import { CartService, CLIENT_START_ADDING_ORDER_COMMAND_HANDLER, ClientStartAddingOrderCommand, DELETE_CART_BOOK_COMMAND_HANDLER, DeleteCartBookCommand, UPDATE_CART_BOOK_COMMAND_HANDLER, UpdateCartBookCommand } from '../../..';
 import { environment } from '../../../../../../environment/environment';
 import { Book, CartBook, CommandHandler, CurrencyPipeApplier, getProductInfoPath, getProductsPath } from '../../../../shared';
 
@@ -27,7 +27,7 @@ export class CartDialogComponent implements OnInit, OnDestroy {
     private readonly currencyApplier: CurrencyPipeApplier,
     @Inject(UPDATE_CART_BOOK_COMMAND_HANDLER) private readonly updateCartBookHanlder: CommandHandler<UpdateCartBookCommand>,
     @Inject(DELETE_CART_BOOK_COMMAND_HANDLER) private readonly deleteCartBookHandler: CommandHandler<DeleteCartBookCommand>,
-    @Inject(CLIENT_ADD_ORDER_COMMAND_HANDLER) private readonly clientAddOrderHandler: CommandHandler<ClientAddOrderCommand>,
+    @Inject(CLIENT_START_ADDING_ORDER_COMMAND_HANDLER) private readonly startAddingOrderHandler: CommandHandler<ClientStartAddingOrderCommand>,
     private readonly dialogRef: MatDialogRef<CartDialogComponent>,
   ) { }
 
@@ -107,12 +107,11 @@ export class CartDialogComponent implements OnInit, OnDestroy {
     return [`/${getProductInfoPath(cartBook.book.id)}`];
   }
   makeOrder() {
-    const command: ClientAddOrderCommand =
+    const command: ClientStartAddingOrderCommand =
     {
-      order: undefined,
       matDialogRef: this.dialogRef
     }
-    this.clientAddOrderHandler.dispatch(command);
+    this.startAddingOrderHandler.dispatch(command);
   }
   checkIfInStock(book: Book): boolean {
     return book.stockAmount > 0;

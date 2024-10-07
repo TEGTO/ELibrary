@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AdminDeleteUserCommand, AdminService } from '../../..';
+import { take } from 'rxjs';
+import { AdminDeleteUserCommand, AdminDialogManager, AdminService } from '../../..';
 import { CommandHandler } from '../../../../shared';
 
 @Injectable({
@@ -9,12 +10,18 @@ export class AdminDeleteUserCommandHandlerService extends CommandHandler<AdminDe
 
   constructor(
     private readonly adminService: AdminService,
+    private readonly dialogManager: AdminDialogManager,
   ) {
     super();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   dispatch(command: AdminDeleteUserCommand): void {
-
+    this.dialogManager.openConfirmMenu().afterClosed().pipe(
+      take(1)
+    ).subscribe(result => {
+      if (result === true) {
+        this.adminService.deleteUser(command.userId);
+      }
+    });
   }
 }

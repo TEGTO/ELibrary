@@ -2,7 +2,7 @@
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 using Shared.Repositories;
 
 namespace ShopApi.Features.OrderFeature.Services

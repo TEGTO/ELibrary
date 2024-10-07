@@ -1,5 +1,5 @@
 import { InjectionToken } from "@angular/core";
-import { AddBookStockOrderCommand, AddClientCommand, CartAddBookCommand, ClientAddOrderCommand, ClientCancelOrderCommand, ClientUpdateOrderCommand, DeleteCartBookCommand, ManagerCancelOrderCommand, ManagerOrderDetailsCommand, ManagerUpdateOrderCommand, UpdateCartBookCommand, UpdateClientCommand } from "..";
+import { AddBookStockOrderCommand, AddClientCommand, CartAddBookCommand, ClientAddOrderCommand, ClientCancelOrderCommand, ClientStartAddingOrderCommand, ClientUpdateOrderCommand, DeleteCartBookCommand, ManagerCancelOrderCommand, ManagerOrderDetailsCommand, ManagerUpdateOrderCommand, StartAddingClientCommand, UpdateCartBookCommand, UpdateClientCommand } from "..";
 import { CommandHandler } from "../../shared";
 
 
@@ -7,9 +7,11 @@ export const CART_ADD_BOOK_COMMAND_HANDLER = new InjectionToken<CommandHandler<C
 export const UPDATE_CART_BOOK_COMMAND_HANDLER = new InjectionToken<CommandHandler<UpdateCartBookCommand>>('UpdateCartBookCommandHandler');
 export const DELETE_CART_BOOK_COMMAND_HANDLER = new InjectionToken<CommandHandler<DeleteCartBookCommand>>('DeleteCartBookCommandHandler');
 
+export const START_ADDING_CLIENT_COMMAND_HANDLER = new InjectionToken<CommandHandler<StartAddingClientCommand>>('StartAddingClientCommandHandler');
 export const ADD_CLIENT_COMMAND_HANDLER = new InjectionToken<CommandHandler<AddClientCommand>>('AddClientCommandHandler');
 export const UPDATE_CLIENT_COMMAND_HANDLER = new InjectionToken<CommandHandler<UpdateClientCommand>>('UpdateClientCommandHandler');
 
+export const CLIENT_START_ADDING_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ClientStartAddingOrderCommand>>('ClientStartAddingOrderCommandHandler');
 export const CLIENT_ADD_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ClientAddOrderCommand>>('ClientAddOrderCommandHandler');
 export const CLIENT_UPDATE_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ClientUpdateOrderCommand>>('ClientUpdateOrderCommandHandler');
 export const CLIENT_CANCEL_ORDER_COMMAND_HANDLER = new InjectionToken<CommandHandler<ClientCancelOrderCommand>>('ClientCancelOrderCommandHandler');

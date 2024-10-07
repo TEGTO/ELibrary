@@ -94,7 +94,6 @@ export class MakeOrderComponent implements OnInit {
     const command: ClientAddOrderCommand =
     {
       order: order,
-      matDialogRef: undefined
     }
     this.addOrderHandler.dispatch(command);
   }

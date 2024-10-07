@@ -3,5 +3,6 @@ export interface AdminUser {
     userName: string;
     email: string;
     registredAt: Date;
+    updatedAt: Date;
     roles: string[];
 }

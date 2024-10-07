@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using MockQueryable.Moq;
 using Moq;
 using System.Security.Claims;
-using UserApi.Domain.Dtos.Requests;
+using UserApi.Domain.Dtos;
 using UserApi.Domain.Models;
 using UserEntities.Domain.Entities;
 
@@ -91,7 +91,7 @@ namespace UserApi.Services.Tests
                 new User { Id = "test-user-id-1", UserName = "testuser1" },
                 new User { Id = "test-user-id-2", UserName = "testuser2" }
             };
-            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 2 };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 2 };
             userManagerMock.Setup(x => x.Users).Returns(users.AsQueryable().BuildMock());
             // Act
             var result = await authService.GetPaginatedUsersAsync(filter, CancellationToken.None);
@@ -108,7 +108,7 @@ namespace UserApi.Services.Tests
                 new User { Id = "test-user-id-1", UserName = "testuser1" },
                 new User { Id = "test-user-id-2", UserName = "testuser2" }
             };
-            var filter = new GetUserFilterRequest();
+            var filter = new AdminGetUserFilter();
             userManagerMock.Setup(x => x.Users).Returns(users.AsQueryable().BuildMock());
             // Act
             var result = await authService.GetUserTotalAmountAsync(filter, CancellationToken.None);

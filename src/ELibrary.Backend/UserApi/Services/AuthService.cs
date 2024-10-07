@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using UserApi.Domain.Dtos.Requests;
+using UserApi.Domain.Dtos;
 using UserApi.Domain.Models;
 using UserEntities.Domain.Entities;
 
@@ -55,7 +55,7 @@ namespace UserApi.Services
             user = user == null ? await userManager.FindByIdAsync(info) : user;
             return user;
         }
-        public async Task<IEnumerable<User>> GetPaginatedUsersAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        public async Task<IEnumerable<User>> GetPaginatedUsersAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
         {
             var queryable = userManager.Users.AsNoTracking();
             List<User> paginatedUsers = new List<User>();
@@ -69,7 +69,7 @@ namespace UserApi.Services
 
             return paginatedUsers;
         }
-        public async Task<int> GetUserTotalAmountAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        public async Task<int> GetUserTotalAmountAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
         {
             var queryable = userManager.Users.AsNoTracking();
 
@@ -200,7 +200,7 @@ namespace UserApi.Services
             .ToList();
             return identityErrors;
         }
-        private IQueryable<User> ApplyFilter(IQueryable<User> query, GetUserFilterRequest userFilter)
+        private IQueryable<User> ApplyFilter(IQueryable<User> query, AdminGetUserFilter userFilter)
         {
             if (!string.IsNullOrEmpty(userFilter.ContainsInfo))
             {

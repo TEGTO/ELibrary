@@ -10,7 +10,7 @@ export class ValidationMessageService implements ValidationMessage {
 
   getValidationMessage(input: AbstractControl<any, any>): { hasError: boolean, message: string } {
     if (input.hasError('required')) {
-      return { hasError: true, message: "Input is required." };
+      return { hasError: true, message: "Field is required." };
     }
     else if (input.hasError('email')) {
       return { hasError: true, message: "Email must be valid." };

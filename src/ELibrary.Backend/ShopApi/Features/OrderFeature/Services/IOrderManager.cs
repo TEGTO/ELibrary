@@ -1,6 +1,6 @@
 ﻿using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
 
 namespace ShopApi.Features.OrderFeature.Services

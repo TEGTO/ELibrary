@@ -3,7 +3,7 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 using ShopApi.Features.StockBookOrderFeature.Dtos;
 using ShopApi.Features.StockBookOrderFeature.Services;
 

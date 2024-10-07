@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { CartService, ClientAddOrderCommand, OrderService } from '../../..';
-import { clientMakeOrderPath, clientOrderHistoryPath, CommandHandler, mapOrderBookToDeleteCartBookFromCartRequest, mapOrderToCreateOrderRequest, RedirectorService, SnackbarManager } from '../../../../shared';
+import { CommandHandler, getClientOrderHistoryPath, mapOrderBookToDeleteCartBookFromCartRequest, mapOrderToCreateOrderRequest, RedirectorService, SnackbarManager } from '../../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -28,31 +28,22 @@ export class ClientAddOrderCommandHandlerService extends CommandHandler<ClientAd
   }
 
   dispatch(command: ClientAddOrderCommand): void {
-    if (!command.order) {
-      if (command.matDialogRef) {
-        command.matDialogRef.close();
-      }
-      this.redirector.redirectTo(clientMakeOrderPath());
-    }
-    else {
-      this.orderService.createOrder(mapOrderToCreateOrderRequest(command.order))
-        .pipe(
-          takeUntil(this.destroy$)
-        )
-        .subscribe(
-          (result) => {
-            if (result.isSuccess) {
-              this.redirector.redirectTo(clientOrderHistoryPath());
-              this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
-              const requests = command.order!.orderBooks.map(x => mapOrderBookToDeleteCartBookFromCartRequest(x));
-              this.cartService.deleteBooksFromCart(requests);
-            }
-            else if (!result.isSuccess && result.error !== null) {
-              this.cleanUp();
-            }
+    this.orderService.createOrder(mapOrderToCreateOrderRequest(command.order))
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(
+        (result) => {
+          if (result.isSuccess) {
+            this.redirector.redirectTo(getClientOrderHistoryPath());
+            this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
+            const requests = command.order!.orderBooks.map(x => mapOrderBookToDeleteCartBookFromCartRequest(x));
+            this.cartService.deleteBooksFromCart(requests);
           }
-        );
-    }
+          else if (!result.isSuccess && result.error !== null) {
+            this.cleanUp();
+          }
+        }
+      );
   }
-
 }

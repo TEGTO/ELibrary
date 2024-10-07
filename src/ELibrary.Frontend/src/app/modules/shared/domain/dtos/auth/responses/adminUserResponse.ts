@@ -5,6 +5,7 @@ export interface AdminUserResponse {
     userName: string;
     email: string;
     registredAtUtc: Date;
+    updatedAtUtc: Date;
     roles: string[];
 }
 
@@ -14,6 +15,7 @@ export function mapAdminUserResponseToAdminUser(response: AdminUserResponse): Ad
         userName: response.userName,
         email: response.email,
         registredAt: new Date(response.registredAtUtc),
+        updatedAt: new Date(response.updatedAtUtc),
         roles: response.roles
     }
 }

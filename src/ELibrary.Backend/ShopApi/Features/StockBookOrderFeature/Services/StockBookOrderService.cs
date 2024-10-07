@@ -2,7 +2,7 @@
 using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 using Shared.Repositories;
 using ShopApi.Features.StockBookOrderFeature.Models;
 

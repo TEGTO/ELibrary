@@ -1,5 +1,9 @@
-import { AdminUserUpdateDataRequest, Command } from "../../../../shared";
+import { Command } from "../../../../shared";
 
 export interface AdminUpdateUserCommand extends Command {
-    updaterRequest: AdminUserUpdateDataRequest
+    currentLogin: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    roles: string[];
 }

@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 
 namespace Shared.Validators.Tests
 {

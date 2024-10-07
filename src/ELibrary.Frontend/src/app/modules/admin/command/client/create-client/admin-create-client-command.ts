@@ -1,6 +1,12 @@
-import { Command, CreateClientRequest } from "../../../../shared";
+import { Command } from "../../../../shared";
 
 export interface AdminCreateClientCommand extends Command {
     userId: string;
-    createRequest: CreateClientRequest;
+    name: string;
+    middleName: string;
+    lastName: string;
+    dateOfBirth: Date;
+    address: string;
+    phone: string;
+    email: string;
 }

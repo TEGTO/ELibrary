@@ -1,5 +1,5 @@
 ﻿using LibraryShopEntities.Domain.Entities.Shop;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 
 namespace ShopApi.Features.StockBookOrderFeature.Services
 {

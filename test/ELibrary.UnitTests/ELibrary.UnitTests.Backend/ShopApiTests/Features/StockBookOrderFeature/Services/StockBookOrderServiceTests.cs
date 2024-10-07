@@ -3,7 +3,7 @@ using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Shop;
 using MockQueryable.Moq;
 using Moq;
-using Shared.Dtos;
+using Shared.Domain.Dtos;
 using Shared.Repositories;
 using ShopApi.Features.StockBookOrderFeature.Models;
 

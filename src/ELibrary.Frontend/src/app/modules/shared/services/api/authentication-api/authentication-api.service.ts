@@ -1,7 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
-import { AdminUser, AdminUserRegistrationRequest, AdminUserResponse, AdminUserUpdateDataRequest, AuthToken, AuthTokenResponse, GetUserFilterRequest, mapAdminUserResponseToAdminUser, mapAuthTokenResponseToAuthToken, mapUserAuthenticationResponseToUserAuthentication, UserAuth, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest, UserUpdateRequest } from '../../..';
+import { AdminGetUserFilter, AdminUser, AdminUserRegistrationRequest, AdminUserResponse, AdminUserUpdateDataRequest, AuthToken, AuthTokenResponse, mapAdminUserResponseToAdminUser, mapAuthTokenResponseToAuthToken, mapUserAuthenticationResponseToUserAuthentication, UserAuth, UserAuthenticationRequest, UserAuthenticationResponse, UserRegistrationRequest, UserUpdateRequest } from '../../..';
 import { BaseApiService } from '../base-api/base-api.service';
 
 @Injectable({
@@ -56,13 +56,13 @@ export class AuthenticationApiService extends BaseApiService {
       catchError((resp) => this.handleError(resp))
     );
   }
-  adminGetPaginatedUsers(req: GetUserFilterRequest): Observable<AdminUser[]> {
+  adminGetPaginatedUsers(req: AdminGetUserFilter): Observable<AdminUser[]> {
     return this.httpClient.post<AdminUserResponse[]>(this.combinePathWithAuthApiUrl(`/admin/users`), req).pipe(
       map((response) => response.map(x => mapAdminUserResponseToAdminUser(x))),
       catchError((resp) => this.handleError(resp))
     );
   }
-  adminGetPaginatedUserAmount(req: GetUserFilterRequest): Observable<number> {
+  adminGetPaginatedUserAmount(req: AdminGetUserFilter): Observable<number> {
     return this.httpClient.post<number>(this.combinePathWithAuthApiUrl(`/admin/users/amount`), req).pipe(
       catchError((resp) => this.handleError(resp))
     );
@@ -73,9 +73,8 @@ export class AuthenticationApiService extends BaseApiService {
       catchError((resp) => this.handleError(resp))
     );
   }
-  adminDeleteUser(id: string): Observable<AdminUser> {
-    return this.httpClient.delete<AdminUserResponse>(this.combinePathWithAuthApiUrl(`/admin/delete/${id}`)).pipe(
-      map((response) => mapAdminUserResponseToAdminUser(response)),
+  adminDeleteUser(id: string): Observable<HttpResponse<void>> {
+    return this.httpClient.delete<void>(this.combinePathWithAuthApiUrl(`/admin/delete/${id}`), { observe: 'response' }).pipe(
       catchError((resp) => this.handleError(resp))
     );
   }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Client, CreateClientRequest, GetUserFilterRequest, UpdateClientRequest } from "../../shared";
+import { AdminGetUserFilter, AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Client, CreateClientRequest, UpdateClientRequest } from "../../shared";
 
 //#region User
 
@@ -32,7 +32,7 @@ export const registerUserFailure = createAction(
 
 export const getPaginatedUsers = createAction(
     '[Admin] Get Paginated Users',
-    props<{ req: GetUserFilterRequest }>()
+    props<{ req: AdminGetUserFilter }>()
 );
 export const getPaginatedUsersSuccess = createAction(
     '[Admin] Get Paginated Users Success',
@@ -45,7 +45,7 @@ export const getPaginatedUsersFailure = createAction(
 
 export const getPaginatedUserAmount = createAction(
     '[Admin] Get Paginated User Amount',
-    props<{ req: GetUserFilterRequest }>()
+    props<{ req: AdminGetUserFilter }>()
 );
 export const getPaginatedUserAmountSuccess = createAction(
     '[Admin] Get Paginated User Amount Success',

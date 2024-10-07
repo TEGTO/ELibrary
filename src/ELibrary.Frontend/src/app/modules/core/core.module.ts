@@ -14,7 +14,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent, MainViewComponent } from '.';
 import { AuthInterceptor } from '../authentication';
 import { AuthenticationModule } from '../authentication/authentication.module';
-import { CurrencyPipeApplier, CurrencyPipeApplierService, CustomErrorHandler, ErrorHandler, pathes, ValidationMessage, ValidationMessageService } from '../shared';
+import { CurrencyPipeApplier, CurrencyPipeApplierService, CustomErrorHandler, ErrorHandler, pathes, RouteReader, RouteReaderService, ValidationMessage, ValidationMessageService } from '../shared';
 import { ShopModule } from '../shop/shop.module';
 
 registerLocaleData(localeUa, 'uk-UA');
@@ -64,6 +64,7 @@ const routes: Routes = [
     { provide: ErrorHandler, useClass: CustomErrorHandler },
     { provide: ValidationMessage, useClass: ValidationMessageService },
     { provide: CurrencyPipeApplier, useClass: CurrencyPipeApplierService },
+    { provide: RouteReader, useClass: RouteReaderService },
     { provide: LOCALE_ID, useValue: "uk-UA" },
     { provide: MAT_DATE_LOCALE, useValue: 'uk-UA' },
   ],

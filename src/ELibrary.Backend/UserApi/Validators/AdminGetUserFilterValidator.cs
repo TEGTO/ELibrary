@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using Shared.Validators;
-using UserApi.Domain.Dtos.Requests;
+using UserApi.Domain.Dtos;
 
 namespace UserApi.Validators
 {
-    public class GetUserFilterRequestValidator : AbstractValidator<GetUserFilterRequest>
+    public class AdminGetUserFilterValidator : AbstractValidator<AdminGetUserFilter>
     {
-        public GetUserFilterRequestValidator(PaginationConfiguration paginationConfiguration)
+        public AdminGetUserFilterValidator(PaginationConfiguration paginationConfiguration)
         {
             Include(new PaginationRequestValidator(paginationConfiguration));
             RuleFor(x => x.ContainsInfo).NotNull().MaximumLength(256);

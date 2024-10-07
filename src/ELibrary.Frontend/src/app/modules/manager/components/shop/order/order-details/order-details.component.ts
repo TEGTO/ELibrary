@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getClientName, getCreatedOrderMinDate, getDeliveryMethodsString, getOrderPaymentMethodString, getOrderStatusString, getOrderUpdateStatuses, getProductInfoPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, RedirectorService, ValidationMessage } from '../../../../../shared';
+import { Observable } from 'rxjs';
+import { Client, CommandHandler, CurrencyPipeApplier, getClientName, getCreatedOrderMinDate, getDeliveryMethodsString, getOrderPaymentMethodString, getOrderStatusString, getOrderUpdateStatuses, getProductInfoPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, RouteReader, ValidationMessage } from '../../../../../shared';
 import { MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HANDLER, ManagerCancelOrderCommand, ManagerUpdateOrderCommand, OrderService } from '../../../../../shop';
 
 @Component({
@@ -24,35 +24,17 @@ export class OrderDetailsComponent implements OnInit {
   constructor(
     private readonly validateInput: ValidationMessage,
     private readonly orderService: OrderService,
-    private readonly route: ActivatedRoute,
     private readonly currenctyApplier: CurrencyPipeApplier,
-    private readonly redirectService: RedirectorService,
+    private readonly routeReader: RouteReader,
+    private readonly route: ActivatedRoute,
     @Inject(MANAGER_CANCEL_ORDER_COMMAND_HANDLER) private readonly managerCancelOrderHandler: CommandHandler<ManagerCancelOrderCommand>,
     @Inject(MANAGER_UPDATE_ORDER_COMMAND_HANDLER) private readonly managerUpdateOrderHandler: CommandHandler<ManagerUpdateOrderCommand>
   ) { }
 
   ngOnInit(): void {
-    this.order$ = this.route.paramMap.pipe(
-      map(params => params.get('id')),
-      switchMap(id => {
-        if (!id) {
-          this.redirectService.redirectToHome();
-          return of();
-        }
-
-        const intId = parseInt(id, 10);
-        if (isNaN(intId)) {
-          this.redirectService.redirectToHome();
-          return of();
-        }
-
-        return this.orderService.managerGetOrderById(intId).pipe(
-          catchError(() => {
-            this.redirectService.redirectToHome();
-            return of();
-          })
-        );
-      })
+    this.order$ = this.routeReader.readIdInt(
+      this.route,
+      (id: number) => this.orderService.managerGetOrderById(id),
     );
   }
 

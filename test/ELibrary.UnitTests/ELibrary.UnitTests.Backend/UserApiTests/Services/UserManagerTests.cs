@@ -66,7 +66,7 @@ namespace UserApi.Services.Tests
         public async Task GetPaginatedUsersAsync_ValidRequest_ReturnsUsersWithRoles()
         {
             // Arrange
-            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             var users = new List<User> { new User { Email = "user1@example.com" }, new User { Email = "user2@example.com" } };
             var roles = new List<string> { "User" };
             var userResponse = new AdminUserResponse { Email = "user1@example.com", Roles = roles };
@@ -83,7 +83,7 @@ namespace UserApi.Services.Tests
         public async Task GetPaginatedUserTotalAmountAsync_ValidRequest_ReturnsTotalCount()
         {
             // Arrange
-            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             var totalCount = 100;
             authServiceMock.Setup(a => a.GetUserTotalAmountAsync(filter, It.IsAny<CancellationToken>())).ReturnsAsync(totalCount);
             // Act

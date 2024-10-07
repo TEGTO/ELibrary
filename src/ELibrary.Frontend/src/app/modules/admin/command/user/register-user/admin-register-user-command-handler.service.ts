@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AdminRegisterUserCommand, AdminService } from '../../..';
+import { AdminRegisterUserCommand, AdminService, mapAdminRegisterUserCommandToAdminUserRegistrationRequest } from '../../..';
 import { CommandHandler } from '../../../../shared';
 
 @Injectable({
@@ -13,8 +13,10 @@ export class AdminRegisterUserCommandHandlerService extends CommandHandler<Admin
     super();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  dispatch(command: AdminRegisterUserCommand): void {
 
+  dispatch(command: AdminRegisterUserCommand): void {
+    const req = mapAdminRegisterUserCommandToAdminUserRegistrationRequest(command);
+    this.adminService.registerUser(req);
+    command.matDialogRef.close();
   }
 }

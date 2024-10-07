@@ -73,14 +73,14 @@ namespace UserApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPost("admin/users")]
-        public async Task<ActionResult<IEnumerable<AdminUserResponse>>> AdminGetPaginatedUsers(GetUserFilterRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<AdminUserResponse>>> AdminGetPaginatedUsers(AdminGetUserFilter request, CancellationToken cancellationToken)
         {
             var response = await userManager.GetPaginatedUsersAsync(request, cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPost("admin/users/amount")]
-        public async Task<ActionResult<int>> AdminGetPaginatedUserAmount(GetUserFilterRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<int>> AdminGetPaginatedUserAmount(AdminGetUserFilter request, CancellationToken cancellationToken)
         {
             var response = await userManager.GetPaginatedUserTotalAmountAsync(request, cancellationToken);
             return Ok(response);

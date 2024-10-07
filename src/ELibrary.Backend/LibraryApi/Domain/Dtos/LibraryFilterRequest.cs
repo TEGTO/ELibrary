@@ -1,4 +1,4 @@
-﻿using Shared.Dtos;
+﻿using Shared.Domain.Dtos;
 
 namespace LibraryApi.Domain.Dtos
 {

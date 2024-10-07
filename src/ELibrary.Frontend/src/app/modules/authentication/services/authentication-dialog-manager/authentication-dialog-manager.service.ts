@@ -24,23 +24,21 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
   openConfirmMenu(): MatDialogRef<any> {
     return this.dialogManager.openConfirmMenu();
   }
-  openLoginMenu(): MatDialogRef<any, any> {
-    let dialogRef: MatDialogRef<any, any>;
-    if (this.isAuthenticated) {
-      dialogRef = this.dialog.open(AuthenticatedComponent, {
-        height: '440px',
-        width: '450px',
-      });
-    }
-    else {
-      dialogRef = this.dialog.open(LoginComponent, {
-        height: '345px',
-        width: '450px',
-      });
-    }
+  openLoginMenu(): MatDialogRef<any> {
+    const dialogRef = this.dialog.open(LoginComponent, {
+      height: '345px',
+      width: '450px',
+    });
     return dialogRef;
   }
-  openRegisterMenu(): MatDialogRef<any, any> {
+  openAuthenticatedMenu(): MatDialogRef<any> {
+    const dialogRef = this.dialog.open(AuthenticatedComponent, {
+      height: '440px',
+      width: '450px',
+    });
+    return dialogRef;
+  }
+  openRegisterMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(RegisterComponent, {
       height: '390px',
       width: '450px',

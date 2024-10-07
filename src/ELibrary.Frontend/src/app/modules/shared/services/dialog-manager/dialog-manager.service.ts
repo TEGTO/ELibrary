@@ -9,7 +9,7 @@ import { DialogManager } from './dialog-manager';
 })
 export abstract class DialogManagerService implements DialogManager {
   constructor(
-    protected readonly dialog: MatDialog
+    private readonly dialog: MatDialog
   ) {
   }
 

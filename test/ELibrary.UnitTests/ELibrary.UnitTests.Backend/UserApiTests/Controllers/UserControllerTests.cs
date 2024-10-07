@@ -146,7 +146,7 @@ namespace UserApi.Controllers.Tests
         public async Task AdminGetPaginatedUsers_ValidRequest_ReturnsOk()
         {
             // Arrange
-            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             var paginatedUsers = new List<AdminUserResponse>
             {
                 new AdminUserResponse { Email = "user1@example.com" },
@@ -165,7 +165,7 @@ namespace UserApi.Controllers.Tests
         public async Task AdminGetPaginatedUserAmount_ValidRequest_ReturnsOk()
         {
             // Arrange
-            var filter = new GetUserFilterRequest { PageNumber = 1, PageSize = 10 };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             var totalUsers = 100;
 
             userManagerMock.Setup(m => m.GetPaginatedUserTotalAmountAsync(filter, It.IsAny<CancellationToken>()))

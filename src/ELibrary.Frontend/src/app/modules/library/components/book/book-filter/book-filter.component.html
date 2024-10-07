@@ -22,7 +22,7 @@
                     <div class="flex flex-row gap-5">
                         <mat-form-field class="w-1/2">
                             <mat-label>Publication From</mat-label>
-                            <input matInput [matDatepicker]="fromPicker" formControlName="publicationFromUTC" />
+                            <input matInput [matDatepicker]="fromPicker" [formControl]="publicationFromUTCInput" />
                             <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
                             <mat-datepicker #fromPicker></mat-datepicker>
                             <mat-error
@@ -31,7 +31,7 @@
 
                         <mat-form-field class="w-1/2">
                             <mat-label>Publication To</mat-label>
-                            <input matInput [matDatepicker]="toPicker" formControlName="publicationToUTC" />
+                            <input matInput [matDatepicker]="toPicker" [formControl]="publicationToUTCInput" />
                             <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
                             <mat-datepicker #toPicker></mat-datepicker>
                             <mat-error
@@ -41,14 +41,14 @@
                     <div class="flex flex-row gap-5">
                         <mat-form-field class="w-1/2">
                             <mat-label>Min Price</mat-label>
-                            <input matInput type="number" formControlName="minPrice" />
+                            <input matInput type="number" [formControl]="minPriceInput" />
                             <mat-error
                                 *ngIf="validateInputField(minPriceInput).hasError">{{validateInputField(minPriceInput).message}}</mat-error>
                         </mat-form-field>
 
                         <mat-form-field class="w-1/2">
                             <mat-label>Max Price</mat-label>
-                            <input matInput type="number" formControlName="maxPrice" />
+                            <input matInput type="number" [formControl]="maxPriceInput" />
                             <mat-error
                                 *ngIf="validateInputField(maxPriceInput).hasError">{{validateInputField(maxPriceInput).message}}</mat-error>
                         </mat-form-field>
@@ -56,13 +56,13 @@
                     <div class="flex flex-row gap-5">
                         <mat-form-field class="w-1/2">
                             <mat-label>Min Page Amount</mat-label>
-                            <input matInput type="number" formControlName="minPageAmount" />
+                            <input matInput type="number" [formControl]="minPageAmountInput" />
                             <mat-error
                                 *ngIf="validateInputField(minPageAmountInput).hasError">{{validateInputField(minPageAmountInput).message}}</mat-error>
                         </mat-form-field>
                         <mat-form-field class="w-1/2">
                             <mat-label>Max Page Amount</mat-label>
-                            <input matInput type="number" formControlName="maxPageAmount" />
+                            <input matInput type="number" [formControl]="maxPageAmountInput" />
                             <mat-error
                                 *ngIf="validateInputField(maxPageAmountInput).hasError">{{validateInputField(maxPageAmountInput).message}}</mat-error>
                         </mat-form-field>
@@ -71,7 +71,7 @@
                         <div class="flex items-baseline gap-4">
                             <span>Cover Type:</span>
                             <div>
-                                <mat-radio-group id="cover" formControlName="coverType">
+                                <mat-radio-group id="cover" [formControl]="coverTypeInput">
                                     <mat-radio-button [value]="0">Any</mat-radio-button>
                                     <mat-radio-button [value]="1">Hard</mat-radio-button>
                                     <mat-radio-button [value]="2">Soft</mat-radio-button>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="flex items-baseline">
                             <span>Only In Stock:</span>
-                            <mat-checkbox formControlName="onlyInStock"></mat-checkbox>
+                            <mat-checkbox [formControl]="onlyInStockInput"></mat-checkbox>
                         </div>
                     </div>
                 </div>

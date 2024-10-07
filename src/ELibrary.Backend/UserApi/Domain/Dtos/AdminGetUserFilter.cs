@@ -1,11 +1,11 @@
-﻿using Shared.Dtos;
+﻿using Shared.Domain.Dtos;
 
-namespace UserApi.Domain.Dtos.Requests
+namespace UserApi.Domain.Dtos
 {
     /// <summary>
     /// ContainsInfo - login, username, email, id, etc...
     /// </summary>
-    public class GetUserFilterRequest : PaginationRequest
+    public class AdminGetUserFilter : PaginationRequest
     {
         public string ContainsInfo { get; set; }
     }

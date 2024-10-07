@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { createClient, deleteUser, getClient, getPaginatedUserAmount, getPaginatedUsers, getUser, registerUser, selectClientByUserId, selectUserById, selectUsers, selectUserTotalAmount, updateClient, updateUser } from '../..';
-import { AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Client, CreateClientRequest, GetUserFilterRequest, UpdateClientRequest } from '../../../shared';
+import { AdminGetUserFilter, AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Client, CreateClientRequest, UpdateClientRequest } from '../../../shared';
 import { AdminService } from './admin-service';
 
 @Injectable({
@@ -21,11 +21,11 @@ export class AdminControllerService implements AdminService {
   registerUser(req: AdminUserRegistrationRequest): void {
     this.store.dispatch(registerUser({ req: req }));
   }
-  getPaginatedUsers(req: GetUserFilterRequest): Observable<AdminUser[]> {
+  getPaginatedUsers(req: AdminGetUserFilter): Observable<AdminUser[]> {
     this.store.dispatch(getPaginatedUsers({ req: req }));
     return this.store.select(selectUsers);
   }
-  getPaginatedUserAmount(req: GetUserFilterRequest): Observable<number> {
+  getPaginatedUserAmount(req: AdminGetUserFilter): Observable<number> {
     this.store.dispatch(getPaginatedUserAmount({ req: req }));
     return this.store.select(selectUserTotalAmount);
   }

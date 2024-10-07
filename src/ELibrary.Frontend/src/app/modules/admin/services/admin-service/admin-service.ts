@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Client, CreateClientRequest, GetUserFilterRequest, UpdateClientRequest } from "../../../shared";
+import { AdminGetUserFilter, AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Client, CreateClientRequest, UpdateClientRequest } from "../../../shared";
 
 @Injectable({
     providedIn: 'root'
@@ -8,8 +8,8 @@ import { AdminUser, AdminUserRegistrationRequest, AdminUserUpdateDataRequest, Cl
 export abstract class AdminService {
     abstract getUserById(id: string): Observable<AdminUser>;
     abstract registerUser(req: AdminUserRegistrationRequest): void;
-    abstract getPaginatedUsers(req: GetUserFilterRequest): Observable<AdminUser[]>;
-    abstract getPaginatedUserAmount(req: GetUserFilterRequest): Observable<number>;
+    abstract getPaginatedUsers(req: AdminGetUserFilter): Observable<AdminUser[]>;
+    abstract getPaginatedUserAmount(req: AdminGetUserFilter): Observable<number>;
     abstract updateUser(req: AdminUserUpdateDataRequest): void;
     abstract deleteUser(id: string): void;
 

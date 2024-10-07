@@ -18,6 +18,11 @@ namespace UserEntities.Data
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.RegistredAtUtc = DateTime.UtcNow;
+                    entry.Entity.UpdatedAtUtc = DateTime.UtcNow;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.UpdatedAtUtc = DateTime.UtcNow;
                 }
             }
             return base.SaveChangesAsync(cancellationToken);

@@ -6,7 +6,7 @@ export interface SignUpCommand extends Command {
     password: string;
     confirmPassword: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    matDialogRef: MatDialogRef<any, any>;
+    matDialogRef: MatDialogRef<any>;
 }
 
 export function mapSignUpCommandToUserRegistrationRequest(command: SignUpCommand): UserRegistrationRequest {

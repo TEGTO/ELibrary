@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BookService } from '../../../library';
-import { Book, CommandHandler, CoverType, CurrencyPipeApplier, getDefaultBook, getStringCoverType, RedirectorService } from '../../../shared';
+import { Book, CommandHandler, CoverType, CurrencyPipeApplier, getStringCoverType, RouteReader } from '../../../shared';
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from '../../../shop';
 
 @Component({
@@ -18,34 +18,16 @@ export class ProductInfoComponent implements OnInit {
 
   constructor(
     private readonly bookService: BookService,
+    private readonly routeReader: RouteReader,
     private readonly route: ActivatedRoute,
-    private readonly redirectService: RedirectorService,
     private readonly currenctyApplier: CurrencyPipeApplier,
     @Inject(CART_ADD_BOOK_COMMAND_HANDLER) private readonly addBookToCartHandler: CommandHandler<CartAddBookCommand>
   ) { }
 
   ngOnInit(): void {
-    this.book$ = this.route.paramMap.pipe(
-      map(params => params.get('id')),
-      switchMap(id => {
-        if (!id) {
-          this.redirectService.redirectToHome();
-          return of(getDefaultBook());
-        }
-
-        const intId = parseInt(id, 10);
-        if (isNaN(intId)) {
-          this.redirectService.redirectToHome();
-          return of(getDefaultBook());
-        }
-
-        return this.bookService.getById(intId).pipe(
-          catchError(() => {
-            this.redirectService.redirectToHome();
-            return of(getDefaultBook());
-          })
-        );
-      })
+    this.book$ = this.routeReader.readIdInt(
+      this.route,
+      (id: number) => this.bookService.getById(id),
     );
   }
 

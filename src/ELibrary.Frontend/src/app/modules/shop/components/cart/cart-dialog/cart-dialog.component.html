@@ -53,7 +53,8 @@
         <!-- Book Cover with "Out of Stock" Overlay -->
         <div class="w-full flex justify-between">
             <div class="flex flex gap-5">
-                <a class="book__cover hover:cursor-pointer relative" [routerLink]="getBookPage(cartBook)">
+                <a class="book__cover hover:cursor-pointer relative" mat-dialog-close
+                    [routerLink]="getBookPage(cartBook)">
                     <img class="h-42 w-24" crossorigin='anonymous' [src]="cartBook.book.coverImgUrl" alt="Book cover"
                         onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
 
@@ -65,7 +66,7 @@
                 </a>
                 <a class="h-full flex flex-col items-start pt-5">
                     <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
-                        [routerLink]="getBookPage(cartBook)">
+                        mat-dialog-close [routerLink]="getBookPage(cartBook)">
                         {{ cartBook.book.name }}
                     </a>
                     <div class="book__author text-gray-400 truncate">

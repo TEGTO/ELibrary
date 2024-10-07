@@ -53,7 +53,7 @@ namespace UserApi.Services
         public async Task<UserAuthenticationResponse> LoginUserAsync(UserAuthenticationRequest request)
         {
             var user = await authService.GetUserByUserInfoAsync(request.Login);
-            if (user == null) throw new UnauthorizedAccessException();
+            if (user == null) throw new UnauthorizedAccessException("Invalid authentication! Wrong password or login!");
 
             var loginParams = new LoginUserParams(request.Login, request.Password, expiryInDays);
             var token = await authService.LoginUserAsync(loginParams);
@@ -117,7 +117,7 @@ namespace UserApi.Services
             response.Roles = await authService.GetUserRolesAsync(user);
             return response;
         }
-        public async Task<IEnumerable<AdminUserResponse>> GetPaginatedUsersAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AdminUserResponse>> GetPaginatedUsersAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
         {
             var users = await authService.GetPaginatedUsersAsync(filter, cancellationToken);
 
@@ -132,7 +132,7 @@ namespace UserApi.Services
 
             return responses;
         }
-        public async Task<int> GetPaginatedUserTotalAmountAsync(GetUserFilterRequest filter, CancellationToken cancellationToken)
+        public async Task<int> GetPaginatedUserTotalAmountAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
         {
             return await authService.GetUserTotalAmountAsync(filter, cancellationToken);
         }
@@ -147,7 +147,10 @@ namespace UserApi.Services
             identityErrors = await authService.SetUserRolesAsync(user, request.Roles);
             if (Utilities.HasErrors(identityErrors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            return mapper.Map<AdminUserResponse>(user);
+            var response = mapper.Map<AdminUserResponse>(user);
+            response.Roles = await authService.GetUserRolesAsync(user);
+
+            return response;
         }
         public async Task AdminDeleteUserAsync(string info)
         {

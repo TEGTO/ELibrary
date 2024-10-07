@@ -1,6 +1,12 @@
-import { Command, UpdateClientRequest } from "../../../../shared";
+import { Command } from "../../../../shared";
 
 export interface AdminUpdateClientCommand extends Command {
     userId: string;
-    updateRequest: UpdateClientRequest;
+    name: string;
+    middleName: string;
+    lastName: string;
+    dateOfBirth: Date;
+    address: string;
+    phone: string;
+    email: string;
 }

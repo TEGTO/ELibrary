@@ -1,6 +1,8 @@
 export const pathes =
 {
     admin: "admin",
+    admin_userTable: "users",
+    admin_userInfo: "users/:id",
 
     manager: 'manager',
     manager_bookstock: 'bookstock',
@@ -54,12 +56,16 @@ export function getProductInfoPath(id: number) {
     return `${id}`;
 }
 
-export function clientMakeOrderPath() {
+export function getClientMakeOrderPath() {
     return `${pathes.client}/${pathes.client_order}/${pathes.client_order_makeOrder}`;
 }
-export function clientOrderHistoryPath() {
+export function getClientOrderHistoryPath() {
     return `${pathes.client}/${pathes.client_order}/${pathes.client_order_history}`;
 }
-export function clientAddInformationPath() {
+export function getClientAddInformationPath() {
     return `${pathes.client}/${pathes.client_order}/${pathes.client_order_addInformation}`;
+}
+
+export function getAdminUserInfoPath(id: string) {
+    return `${pathes.admin}/${pathes.admin_userTable}/${id}`;
 }

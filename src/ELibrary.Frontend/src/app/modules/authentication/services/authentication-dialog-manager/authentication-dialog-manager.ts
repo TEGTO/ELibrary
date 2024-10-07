@@ -10,4 +10,5 @@ export abstract class AuthenticationDialogManager implements DialogManager {
     abstract openLoginMenu(): MatDialogRef<any>;
     abstract openRegisterMenu(): MatDialogRef<any>;
     abstract openConfirmMenu(): MatDialogRef<any>;
+    abstract openAuthenticatedMenu(): MatDialogRef<any>;
 }

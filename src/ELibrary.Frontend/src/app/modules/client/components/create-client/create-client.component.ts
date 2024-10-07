@@ -47,9 +47,7 @@ export class CreateClientComponent implements OnInit, OnDestroy {
   }
 
   addClient() {
-    const command: AddClientCommand = {
-      redirectAfter: undefined
-    }
+    const command: AddClientCommand = {}
     this.addClientHandler.dispatch(command);
   }
 }

@@ -1,4 +1,4 @@
-﻿namespace Shared.Dtos
+﻿namespace Shared.Domain.Dtos
 {
     public class PaginationRequest
     {

@@ -12,5 +12,7 @@ namespace UserEntities.Domain.Entities
         public DateTime? RefreshTokenExpiryTime { get; set; }
         [Required]
         public DateTime RegistredAtUtc { get; set; }
+        [Required]
+        public DateTime UpdatedAtUtc { get; set; }
     }
 }

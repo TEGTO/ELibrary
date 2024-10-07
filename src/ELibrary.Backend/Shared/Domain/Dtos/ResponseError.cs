@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Shared.Dtos
+namespace Shared.Domain.Dtos
 {
     public class ResponseError
     {

@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { clientOrderHistoryPath, getManagerBooksPath, Policy, PolicyType, UserAuth } from '../../../shared';
+import { AuthenticationService, START_LOGIN_COMMAND_HANDLER, StartLoginCommand } from '../../../authentication';
+import { CommandHandler, getClientOrderHistoryPath, getManagerBooksPath, Policy, PolicyType, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
 
 @Component({
@@ -14,12 +14,12 @@ export class MainViewComponent implements OnInit {
   userAuth$!: Observable<UserAuth>;
 
   get managerPath() { return getManagerBooksPath(); }
-  get orderHistoryPath() { return clientOrderHistoryPath(); }
+  get orderHistoryPath() { return getClientOrderHistoryPath(); }
 
   constructor(
     private readonly authService: AuthenticationService,
     private readonly clientService: ClientService,
-    private readonly authDialogManager: AuthenticationDialogManager
+    @Inject(START_LOGIN_COMMAND_HANDLER) private readonly loginHandler: CommandHandler<StartLoginCommand>
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +33,8 @@ export class MainViewComponent implements OnInit {
   }
 
   openLoginMenu() {
-    this.authDialogManager.openLoginMenu();
+    const command: StartLoginCommand = {};
+    this.loginHandler.dispatch(command);
   }
   checkClientPolicy(roles: string[]) {
     return Policy.checkPolicy(PolicyType.ClientPolicy, roles);

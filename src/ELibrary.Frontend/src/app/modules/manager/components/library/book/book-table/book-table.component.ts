@@ -3,7 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { BookService, CREATE_BOOK_COMMAND_HANDLER, CreateBookCommand, DELETE_BOOK_COMMAND_HANDLER, DeleteBookCommand, UPDATE_BOOK_COMMAND_HANDLER, UpdateBookCommand } from '../../../../../library';
-import { Book, BookFilterRequest, CommandHandler, defaultBookFilterRequest, GenericTableComponent, getProductInfoPath, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { Book, BookFilterRequest, CommandHandler, GenericTableComponent, defaultBookFilterRequest as getDefaultBookFilterRequest, getProductInfoPath, LocaleService, LocalizedDatePipe } from '../../../../../shared';
 
 interface BookItem {
   id: number;
@@ -25,7 +25,7 @@ export class BookTableComponent implements OnInit {
   items$!: Observable<BookItem[]>;
   totalAmount$!: Observable<number>;
 
-  private filterReq: BookFilterRequest = defaultBookFilterRequest();
+  private filterReq: BookFilterRequest = getDefaultBookFilterRequest();
   private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Name', field: 'name', linkPath: (item: any) => getProductInfoPath(item.id) },

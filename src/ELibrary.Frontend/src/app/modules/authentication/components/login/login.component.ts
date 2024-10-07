@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
-import { AuthenticationDialogManager, passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand } from '../../index';
+import { passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand, START_REGISTRATION_COMMAND_HANDLER, StartRegistrationCommand } from '../../index';
 
 @Component({
   selector: 'app-auth-login',
@@ -20,8 +20,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   get passwordInput() { return this.formGroup.get('password')!; }
 
   constructor(
-    private readonly authDialogManager: AuthenticationDialogManager,
     @Inject(SIGN_IN_COMMAND_HANDLER) private readonly signInHandler: CommandHandler<SignInCommand>,
+    @Inject(START_REGISTRATION_COMMAND_HANDLER) private readonly startRegistrationHandler: CommandHandler<StartRegistrationCommand>,
     private readonly dialogRef: MatDialogRef<LoginComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -51,11 +51,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   openRegisterMenuOnKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      this.authDialogManager.openRegisterMenu();
+      const command: StartRegistrationCommand = {};
+      this.startRegistrationHandler.dispatch(command);
     }
   }
   openRegisterMenu() {
-    this.authDialogManager.openRegisterMenu();
+    const command: StartRegistrationCommand = {};
+    this.startRegistrationHandler.dispatch(command);
   }
   signInUser() {
     if (this.formGroup.valid) {

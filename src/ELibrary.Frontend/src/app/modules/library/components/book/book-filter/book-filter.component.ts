@@ -18,12 +18,14 @@ export class BookFilterComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   get containsNameInput() { return this.formGroup.get('containsName')! as FormControl; }
-  get publicationFromUTCInput() { return this.formGroup.get('publicationFromUTC')!; }
-  get publicationToUTCInput() { return this.formGroup.get('publicationToUTC')!; }
-  get minPriceInput() { return this.formGroup.get('minPrice')!; }
-  get maxPriceInput() { return this.formGroup.get('maxPrice')!; }
-  get minPageAmountInput() { return this.formGroup.get('minPageAmount')!; }
-  get maxPageAmountInput() { return this.formGroup.get('maxPageAmount')!; }
+  get publicationFromUTCInput() { return this.formGroup.get('publicationFromUTC')! as FormControl; }
+  get publicationToUTCInput() { return this.formGroup.get('publicationToUTC')! as FormControl; }
+  get minPriceInput() { return this.formGroup.get('minPrice')! as FormControl; }
+  get maxPriceInput() { return this.formGroup.get('maxPrice')! as FormControl; }
+  get minPageAmountInput() { return this.formGroup.get('minPageAmount')! as FormControl; }
+  get maxPageAmountInput() { return this.formGroup.get('maxPageAmount')! as FormControl; }
+  get coverTypeInput() { return this.formGroup.get('coverType')! as FormControl; }
+  get onlyInStockInput() { return this.formGroup.get('onlyInStock')! as FormControl; }
 
   constructor(
     private readonly validateInput: ValidationMessage,

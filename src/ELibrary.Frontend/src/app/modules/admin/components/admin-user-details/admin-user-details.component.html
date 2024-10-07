@@ -1,0 +1,57 @@
+<div class="bg-zinc-50 body">
+    <div class=" buser buser-gray-200 rounded-lg">
+        <ng-container *ngIf="user$ | async as item">
+            <ng-container *ngTemplateOutlet="details;  context: { user: item}"></ng-container>
+            <!-- <ng-container *ngTemplateOutlet="edit; context: { user: item }"></ng-container> -->
+            <!-- <cdk-virtual-scroll-viewport [itemSize]="itemHeight" class="content__books"
+                [style.height.px]="calculateSelectionSize(item.userBooks.length)">
+                <ng-container *cdkVirtualFor="let userBook of item.userBooks; trackBy: trackById;">
+                    <div class="books__wrapper">
+                        <ng-container *ngTemplateOutlet="book; context: { userBook: userBook }"></ng-container>
+                    </div>
+                </ng-container>
+            </cdk-virtual-scroll-viewport> -->
+        </ng-container>
+    </div>
+
+</div>
+
+<!-- User -->
+<ng-template #details let-user="user">
+    <div class="user mr-2 h-full w-full px-10 pt-0">
+        <div id="userDetails" class="h-full w-8/12 pt-5 flex">
+            <div class="grow flex flex-col gap-1">
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">Id</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">User Name (Is Email)</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">Registred At</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">Updated At</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+            </div>
+            <div class="pl-2 flex flex-col gap-1">
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>#{{ user.id }}</span>
+                </div>
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>{{ user.userName }}</span>
+                </div>
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>{{ user.registredAt | date:'dd/MM/YYYY, HH:mm'}}</span>
+                </div>
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>{{ user.updatedAt | date:'dd/MM/YYYY, HH:mm'}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

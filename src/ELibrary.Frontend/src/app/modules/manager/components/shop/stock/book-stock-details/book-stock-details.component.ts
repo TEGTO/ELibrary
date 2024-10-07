@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
-import { Book, Client, CurrencyPipeApplier, getClientName, getProductInfoPath, RedirectorService, StockBookChange, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from '../../../../../shared';
+import { Observable } from 'rxjs';
+import { Book, Client, CurrencyPipeApplier, getClientName, getProductInfoPath, RouteReader, StockBookChange, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from '../../../../../shared';
 import { BookstockOrderService } from '../../../../../shop';
 
 @Component({
@@ -19,33 +19,15 @@ export class BookStockDetailsComponent implements OnInit {
 
   constructor(
     private readonly stockOrderService: BookstockOrderService,
+    private readonly routeReader: RouteReader,
     private readonly route: ActivatedRoute,
     private readonly currenctyApplier: CurrencyPipeApplier,
-    private readonly redirectService: RedirectorService,
   ) { }
 
   ngOnInit(): void {
-    this.order$ = this.route.paramMap.pipe(
-      map(params => params.get('id')),
-      switchMap(id => {
-        if (!id) {
-          this.redirectService.redirectToHome();
-          return of();
-        }
-
-        const intId = parseInt(id, 10);
-        if (isNaN(intId)) {
-          this.redirectService.redirectToHome();
-          return of();
-        }
-
-        return this.stockOrderService.getById(intId).pipe(
-          catchError(() => {
-            this.redirectService.redirectToHome();
-            return of();
-          })
-        );
-      })
+    this.order$ = this.routeReader.readIdInt(
+      this.route,
+      (id: number) => this.stockOrderService.getById(id),
     );
   }
 
