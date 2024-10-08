@@ -44,9 +44,10 @@
                     <mat-panel-description>
                         <div class="w-full flex justify-between">
                             <div class="flex gap-5">
-                                <span class="text-yellow-600" [ngClass]="{ 
-                                    '!text-red-500': isOrderCanceled(order), 
-                                    '!text-green-700': isOrderCompleted(order) 
+                                <span [ngClass]="{ 
+                                    'text-red-500': isOrderCanceled(order), 
+                                    'text-green-700': isOrderCompleted(order), 
+                                    'text-yellow-600': isOrderProcessing(order), 
                                     }">
                                     {{getOrderStatusString(order)}}
                                 </span>

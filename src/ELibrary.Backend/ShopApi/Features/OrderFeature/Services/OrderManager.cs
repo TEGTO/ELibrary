@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
-using Shared.Domain.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
 using ShopApi.Features.StockBookOrderFeature.Services;
 
@@ -22,14 +21,16 @@ namespace ShopApi.Features.OrderFeature.Services
 
         #region Client
 
-        public async Task<IEnumerable<OrderResponse>> GetPaginatedOrdersAsync(string clientId, PaginationRequest pagination, CancellationToken cancellationToken)
+        public async Task<IEnumerable<OrderResponse>> GetPaginatedOrdersAsync(GetOrdersFilter filter, Client client, CancellationToken cancellationToken)
         {
-            var orders = await orderService.GetPaginatedOrdersAsync(clientId, pagination, cancellationToken);
+            filter.ClientId = client.Id;
+            var orders = await orderService.GetPaginatedOrdersAsync(filter, cancellationToken);
             return orders.Select(mapper.Map<OrderResponse>);
         }
-        public async Task<int> GetOrderAmountAsync(string clientId, CancellationToken cancellationToken)
+        public async Task<int> GetOrderAmountAsync(GetOrdersFilter filter, Client client, CancellationToken cancellationToken)
         {
-            return await orderService.GetOrderAmountAsync(clientId, cancellationToken);
+            filter.ClientId = client.Id;
+            return await orderService.GetOrderAmountAsync(filter, cancellationToken);
         }
         public async Task<OrderResponse> CreateOrderAsync(CreateOrderRequest request, Client client, CancellationToken cancellationToken)
         {
@@ -86,14 +87,14 @@ namespace ShopApi.Features.OrderFeature.Services
             var order = await orderService.GetOrderByIdAsync(id, cancellationToken);
             return mapper.Map<OrderResponse>(order);
         }
-        public async Task<IEnumerable<OrderResponse>> GetPaginatedOrdersAsync(PaginationRequest request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<OrderResponse>> GetPaginatedOrdersAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
-            var orders = await orderService.GetPaginatedOrdersAsync(request, cancellationToken);
+            var orders = await orderService.GetPaginatedOrdersAsync(filter, cancellationToken);
             return orders.Select(mapper.Map<OrderResponse>);
         }
-        public async Task<int> GetOrderAmountAsync(CancellationToken cancellationToken)
+        public async Task<int> GetOrderAmountAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
-            return await orderService.GetOrderAmountAsync(cancellationToken);
+            return await orderService.GetOrderAmountAsync(filter, cancellationToken);
         }
         public async Task<OrderResponse> UpdateOrderAsync(ManagerUpdateOrderRequest request, CancellationToken cancellationToken)
         {

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getOrderDeliveryMethods, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, PaginatedRequest, ValidationMessage } from '../../../shared';
+import { Client, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getDefaultGetOrdersFilter, getOrderDeliveryMethods, GetOrdersFilter, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
 @Component({
@@ -45,7 +45,7 @@ export class OrderHistoryComponent implements OnInit {
       filter((client): client is Client => client !== null)
     );
 
-    this.totalAmount$ = this.orderService.getOrderTotalAmount();
+    this.totalAmount$ = this.orderService.getOrderTotalAmount(getDefaultGetOrdersFilter());
     this.fetchPaginatedItems(this.defaultPagination);
   }
 
@@ -55,8 +55,9 @@ export class OrderHistoryComponent implements OnInit {
     this.fetchPaginatedItems({ pageIndex: pageIndex, pageSize: this.pageSize });
   }
   private fetchPaginatedItems(pagination: { pageIndex: number, pageSize: number }): void {
-    const req: PaginatedRequest =
+    const req: GetOrdersFilter =
     {
+      ...getDefaultGetOrdersFilter(),
       pageNumber: pagination.pageIndex,
       pageSize: pagination.pageSize
     }

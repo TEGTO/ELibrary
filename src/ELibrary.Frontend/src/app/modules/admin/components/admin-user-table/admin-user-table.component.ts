@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { ADMIN_DELETE_USER_COMMAND_HANDLER, AdminDeleteUserCommand, AdminService, START_ADMIN_REGISTER_USER_COMMAND_HANDLER, StartAdminRegisterUserCommand } from '../..';
-import { AdminGetUserFilter, AdminUser, CommandHandler, GenericTableComponent, getAdminUserInfoPath, getDefaultAdminGetUserFilter, LocaleService, LocalizedDatePipe, RedirectorService } from '../../../shared';
+import { AdminGetUserFilter, AdminUser, CommandHandler, GenericTableComponent, getAdminUserPagePath, getDefaultAdminGetUserFilter, LocaleService, LocalizedDatePipe, RedirectorService } from '../../../shared';
 
 @Component({
   selector: 'app-admin-user-table',
@@ -18,7 +18,7 @@ export class AdminUserTableComponent implements OnInit {
   private defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { header: 'Id', field: 'id', linkPath: (item: any) => getAdminUserInfoPath(item.id) },
+    { header: 'Id', field: 'id', linkPath: (item: any) => getAdminUserPagePath(item.id) },
     { header: 'User Name', field: 'userName' },
     { header: 'Email', field: 'email' },
     { header: 'Registred At', field: 'registredAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()), pipeArgs: [true] },
@@ -73,7 +73,7 @@ export class AdminUserTableComponent implements OnInit {
     this.startRegisterHandler.dispatch(command);
   }
   update(item: AdminUser) {
-    this.redirector.redirectTo(getAdminUserInfoPath(item.id));
+    this.redirector.redirectTo(getAdminUserPagePath(item.id));
   }
   delete(item: AdminUser) {
     const command: AdminDeleteUserCommand = {

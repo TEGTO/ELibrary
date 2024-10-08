@@ -2,8 +2,8 @@
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Domain.Dtos;
 using Shared.Repositories;
+using ShopApi.Features.OrderFeature.Dtos;
 
 namespace ShopApi.Features.OrderFeature.Services
 {
@@ -25,46 +25,23 @@ namespace ShopApi.Features.OrderFeature.Services
                 await GetQueryableOrder(queryable)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
-        public async Task<int> GetOrderAmountAsync(string clientId, CancellationToken cancellationToken)
+        public async Task<int> GetOrderAmountAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
             return
-                await GetQueryableOrder(queryable)
-                .Where(x => x.ClientId == clientId)
-                .CountAsync();
+                await ApplyFilter(GetQueryableOrder(queryable), filter)
+                        .CountAsync();
         }
-        public async Task<int> GetOrderAmountAsync(CancellationToken cancellationToken)
-        {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            return
-                await GetQueryableOrder(queryable)
-                .CountAsync();
-        }
-        public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(PaginationRequest pagination, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
             List<Order> orders = new List<Order>();
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
 
-            orders.AddRange(await GetQueryableOrder(queryable)
+            orders.AddRange(await ApplyFilter(GetQueryableOrder(queryable), filter)
                                      .OrderByDescending(b => b.CreatedAt)
-                                     .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-                                     .Take(pagination.PageSize)
+                                     .Skip((filter.PageNumber - 1) * filter.PageSize)
+                                     .Take(filter.PageSize)
                                      .ToListAsync(cancellationToken));
-            return orders;
-        }
-        public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(string id, PaginationRequest pagination, CancellationToken cancellationToken)
-        {
-            List<Order> orders = new List<Order>();
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-
-            orders.AddRange(
-            await GetQueryableOrder(queryable)
-            .Where(t => t.ClientId == id)
-            .OrderByDescending(b => b.CreatedAt)
-            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-            .Take(pagination.PageSize)
-            .ToListAsync(cancellationToken));
-
             return orders;
         }
         public async Task<Order> CreateOrderAsync(Order order, CancellationToken cancellationToken)
@@ -130,6 +107,15 @@ namespace ShopApi.Features.OrderFeature.Services
                 .Include(x => x.OrderBooks)
                     .ThenInclude(book => book.Book)
                 .Include(x => x.Client);
+        }
+        private IQueryable<Order> ApplyFilter(IQueryable<Order> queryable, GetOrdersFilter filter)
+        {
+            if (filter.ClientId != null)
+            {
+                queryable = queryable.Where(t => t.ClientId == filter.ClientId);
+            }
+
+            return queryable;
         }
 
         #endregion

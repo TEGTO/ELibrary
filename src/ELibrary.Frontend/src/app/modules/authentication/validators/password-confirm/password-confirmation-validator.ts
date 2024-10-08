@@ -12,3 +12,10 @@ export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl):
     const passwordConfirm = control.value;
     return password === passwordConfirm ? null : { passwordNoMatch: true };
 };
+
+export const confirmPasswordValidatorGroup: ValidatorFn = (formGroup: AbstractControl): ValidationErrors | null => {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('passwordConfirm')?.value;
+
+    return password === confirmPassword ? null : { passwordNoMatch: true };
+};

@@ -2,7 +2,7 @@ export const pathes =
 {
     admin: "admin",
     admin_userTable: "users",
-    admin_userInfo: "users/:id",
+    admin_userPage: "users/:id",
 
     manager: 'manager',
     manager_bookstock: 'bookstock',
@@ -50,7 +50,7 @@ export function getManagerOrderDetailsPath(id: number) {
 }
 
 export function getProductsPath() {
-    return `${pathes.manager}/${pathes.manager_orders}`;
+    return `${pathes.client_products}`;
 }
 export function getProductInfoPath(id: number) {
     return `${id}`;
@@ -66,6 +66,9 @@ export function getClientAddInformationPath() {
     return `${pathes.client}/${pathes.client_order}/${pathes.client_order_addInformation}`;
 }
 
-export function getAdminUserInfoPath(id: string) {
+export function getAdminUerTable() {
+    return `${pathes.admin}/${pathes.admin_userTable}`;
+}
+export function getAdminUserPagePath(id: string) {
     return `${pathes.admin}/${pathes.admin_userTable}/${id}`;
 }

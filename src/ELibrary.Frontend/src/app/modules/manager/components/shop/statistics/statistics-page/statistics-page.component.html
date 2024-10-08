@@ -1,12 +1,15 @@
 <div class="bg-zinc-50 body">
-    <div class="rounded-lg flex flex-col gap-12">
-        <ng-container *ngIf="statistics$ | async as item; else loading">
-            <div class="statistics-wrapper">
-                <ng-container *ngTemplateOutlet="details;  context: { statistics: item}"></ng-container>
+    <div class="flex flex-col border border-gray-200 rounded-lg">
+        <div class="mx-8 mt-4 font-bold text-3xl text-gray-600">Statistics</div>
+        <div class="rounded-lg flex flex-col">
+            <ng-container *ngIf="statistics$ | async as item; else loading">
+                <div class="statistics-wrapper">
+                    <ng-container *ngTemplateOutlet="details;  context: { statistics: item}"></ng-container>
+                </div>
+            </ng-container>
+            <div class="w-full p-6">
+                <app-book-statistics-filter (filterChange)="getBookStatistics($event)"></app-book-statistics-filter>
             </div>
-        </ng-container>
-        <div class="w-full px-6">
-            <app-book-statistics-filter (filterChange)="getBookStatistics($event)"></app-book-statistics-filter>
         </div>
     </div>
 </div>

@@ -2,7 +2,6 @@
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Moq;
-using Shared.Domain.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
 using ShopApi.Features.OrderFeature.Services;
 using ShopApi.Features.StockBookOrderFeature.Services;
@@ -27,49 +26,70 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
         }
 
         [Test]
-        public async Task GetOrdersByClientIdAsync_ValidClientId_ReturnsMappedOrders()
+        public async Task GetPaginatedOrdersAsync_WithClient_ReturnsMappedOrders()
         {
             // Arrange
-            var clientId = "client123";
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
+            var client = new Client { Id = "client123" };
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             var orders = new List<Order> { new Order { Id = 1 }, new Order { Id = 2 } };
             var orderResponses = new List<OrderResponse> { new OrderResponse { Id = 1 }, new OrderResponse { Id = 2 } };
-            orderServiceMock.Setup(service => service.GetPaginatedOrdersAsync(clientId, paginationRequest, It.IsAny<CancellationToken>()))
+            orderServiceMock.Setup(service => service.GetPaginatedOrdersAsync(filter, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(orders);
             mapperMock.Setup(mapper => mapper.Map<OrderResponse>(It.IsAny<Order>()))
                 .Returns((Order order) => new OrderResponse { Id = order.Id });
             // Act
-            var result = await manager.GetPaginatedOrdersAsync(clientId, paginationRequest, CancellationToken.None);
+            var result = await manager.GetPaginatedOrdersAsync(filter, client, CancellationToken.None);
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(orderResponses.Count));
+            Assert.That(filter.ClientId, Is.EqualTo(client.Id));
+            Assert.That(result.First().Id, Is.EqualTo(orderResponses.First().Id));
+        }
+        [Test]
+        public async Task GetPaginatedOrdersAsync_WithoutClient_ReturnsMappedOrders()
+        {
+            // Arrange
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
+            var orders = new List<Order> { new Order { Id = 1 }, new Order { Id = 2 } };
+            var orderResponses = new List<OrderResponse> { new OrderResponse { Id = 1 }, new OrderResponse { Id = 2 } };
+            orderServiceMock.Setup(service => service.GetPaginatedOrdersAsync(filter, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(orders);
+            mapperMock.Setup(mapper => mapper.Map<OrderResponse>(It.IsAny<Order>()))
+                .Returns((Order order) => new OrderResponse { Id = order.Id });
+            // Act
+            var result = await manager.GetPaginatedOrdersAsync(filter, CancellationToken.None);
             // Assert
             Assert.That(result.Count(), Is.EqualTo(orderResponses.Count));
             Assert.That(result.First().Id, Is.EqualTo(orderResponses.First().Id));
         }
         [Test]
-        public async Task GetOrderAmountAsync_WithClientId_ReturnsOrderAmount()
+        public async Task GetOrderAmountAsync_WithClient_ReturnsOrderAmount()
         {
             // Arrange
-            var clientId = "test-client-id";
+            var client = new Client { Id = "client123" };
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             var expectedAmount = 5;
-            orderServiceMock.Setup(service => service.GetOrderAmountAsync(clientId, It.IsAny<CancellationToken>()))
+            orderServiceMock.Setup(service => service.GetOrderAmountAsync(filter, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedAmount);
             // Act
-            var result = await manager.GetOrderAmountAsync(clientId, CancellationToken.None);
+            var result = await manager.GetOrderAmountAsync(filter, client, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(expectedAmount));
-            orderServiceMock.Verify(service => service.GetOrderAmountAsync(clientId, It.IsAny<CancellationToken>()), Times.Once);
+            Assert.That(filter.ClientId, Is.EqualTo(client.Id));
+            orderServiceMock.Verify(service => service.GetOrderAmountAsync(filter, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
-        public async Task GetOrderAmountAsync_WithoutClientId_ReturnsOrderAmount()
+        public async Task GetOrderAmountAsync_WithoutClient_ReturnsOrderAmount()
         {
             // Arrange
             var expectedAmount = 10;
-            orderServiceMock.Setup(service => service.GetOrderAmountAsync(It.IsAny<CancellationToken>()))
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
+            orderServiceMock.Setup(service => service.GetOrderAmountAsync(filter, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedAmount);
             // Act
-            var result = await manager.GetOrderAmountAsync(CancellationToken.None);
+            var result = await manager.GetOrderAmountAsync(filter, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(expectedAmount));
-            orderServiceMock.Verify(service => service.GetOrderAmountAsync(It.IsAny<CancellationToken>()), Times.Once);
+            orderServiceMock.Verify(service => service.GetOrderAmountAsync(filter, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public async Task CreateOrderAsync_ValidRequest_ReturnsMappedOrder()
@@ -194,24 +214,6 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             var result = await manager.GetOrderByIdAsync(2, CancellationToken.None);
             // Assert
             Assert.That(result, Is.Null);
-        }
-        [Test]
-        public async Task GetPaginatedOrdersAsync_ValidRequest_ReturnsMappedOrders()
-        {
-            // Arrange
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
-            var orders = new List<Order> { new Order { Id = 1 }, new Order { Id = 2 } };
-            var orderResponses = new List<OrderResponse> { new OrderResponse { Id = 1 }, new OrderResponse { Id = 2 } };
-            orderServiceMock.Setup(service => service.GetPaginatedOrdersAsync(paginationRequest, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(orders);
-            mapperMock.Setup(mapper => mapper.Map<OrderResponse>(It.IsAny<Order>()))
-                .Returns((Order order) => new OrderResponse { Id = order.Id });
-            // Act
-            var result = await manager.GetPaginatedOrdersAsync(paginationRequest, CancellationToken.None);
-            // Assert
-            Assert.That(result.Count(), Is.EqualTo(orderResponses.Count));
-            Assert.That(result.First().Id, Is.EqualTo(orderResponses.First().Id));
-            Assert.That(result.Last().Id, Is.EqualTo(orderResponses.Last().Id));
         }
         [Test]
         public async Task UpdateOrderAsync_ValidRequest_ReturnsMappedUpdatedOrder()

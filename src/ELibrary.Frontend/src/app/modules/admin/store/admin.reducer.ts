@@ -21,7 +21,7 @@ export const adminReducer = createReducer(
 
     on(getUserSuccess, (state, { user: user }) => ({
         ...state,
-        users: [user, ...state.users],
+        users: [user],
         error: null
     })),
     on(getUserFailure, (state, { error: error }) => ({
@@ -32,6 +32,7 @@ export const adminReducer = createReducer(
     on(registerUserSuccess, (state, { user: user }) => ({
         ...state,
         users: [user, ...state.users],
+        userTotalAmount: state.userTotalAmount + 1,
         error: null
     })),
     on(registerUserFailure, (state, { error: error }) => ({
@@ -77,6 +78,7 @@ export const adminReducer = createReducer(
             users: state.users.filter(user =>
                 user.id !== id
             ),
+            userTotalAmount: state.userTotalAmount - 1,
             error: null
         }
     )),

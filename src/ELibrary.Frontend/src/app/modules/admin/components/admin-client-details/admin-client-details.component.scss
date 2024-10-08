@@ -5,14 +5,14 @@
     white-space: nowrap;
 }
 
-.user {
+.client {
     display: flex;
     flex-direction: column;
     align-items: start;
     align-content: center;
     position: relative;
 
-    .user__cover {
+    .client__cover {
         box-shadow: 2px 1px 6px 2px rgb(0 0 0 / 58%);
         margin-bottom: 1rem;
     }
@@ -27,7 +27,7 @@
     @include truncate;
 }
 
-.user__detail-header {
+.client__detail-header {
     position: relative;
     display: flex;
     align-items: center;
@@ -58,7 +58,7 @@
     }
 }
 
-.user__detail-value {
+.client__detail-value {
     @include truncate;
 }
 

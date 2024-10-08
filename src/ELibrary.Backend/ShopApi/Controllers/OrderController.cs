@@ -3,7 +3,6 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Domain.Dtos;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Dtos;
 using ShopApi.Features.OrderFeature.Services;
@@ -31,7 +30,7 @@ namespace ShopApi.Controllers
 
         [ResponseCache(Duration = 10)]
         [HttpPost("pagination")]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(PaginationRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
@@ -40,12 +39,12 @@ namespace ShopApi.Controllers
                 return BadRequest("Client is not found!");
             }
 
-            var orders = await orderManager.GetPaginatedOrdersAsync(client.Id, request, cancellationToken);
+            var orders = await orderManager.GetPaginatedOrdersAsync(request, client, cancellationToken);
             return Ok(orders);
         }
         [ResponseCache(Duration = 10)]
-        [HttpGet("amount")]
-        public async Task<ActionResult<int>> GetOrderAmount(CancellationToken cancellationToken)
+        [HttpPost("amount")]
+        public async Task<ActionResult<int>> GetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
             var client = await GetClientAsync(cancellationToken);
 
@@ -54,7 +53,7 @@ namespace ShopApi.Controllers
                 return BadRequest("Client is not found!");
             }
 
-            int amount = await orderManager.GetOrderAmountAsync(client.Id, cancellationToken);
+            int amount = await orderManager.GetOrderAmountAsync(request, client, cancellationToken);
             return Ok(amount);
         }
         [HttpPost]
@@ -117,17 +116,17 @@ namespace ShopApi.Controllers
         [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/pagination")]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> ManagerGetPaginatedOrders(PaginationRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> ManagerGetPaginatedOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
             var orders = await orderManager.GetPaginatedOrdersAsync(request, cancellationToken);
             return Ok(orders);
         }
         [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
-        [HttpGet("manager/amount")]
-        public async Task<ActionResult<int>> ManagerGetOrderAmount(CancellationToken cancellationToken)
+        [HttpPost("manager/amount")]
+        public async Task<ActionResult<int>> ManagerGetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            int amount = await orderManager.GetOrderAmountAsync(cancellationToken);
+            int amount = await orderManager.GetOrderAmountAsync(request, cancellationToken);
             return Ok(amount);
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]

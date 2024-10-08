@@ -40,6 +40,7 @@ export const boockstockOrderReducer = createReducer(
     on(createBookstockOrderSuccess, (state, { order: order }) => ({
         ...state,
         orders: [order, ...state.orders],
+        totalAmount: state.totalAmount + 1,
         isCreateSuccess: true,
         error: null
     })),

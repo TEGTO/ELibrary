@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs';
 import { AdminDeleteUserCommand, AdminDialogManager, AdminService } from '../../..';
-import { CommandHandler } from '../../../../shared';
+import { CommandHandler, getAdminUerTable, RedirectorService } from '../../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ export class AdminDeleteUserCommandHandlerService extends CommandHandler<AdminDe
   constructor(
     private readonly adminService: AdminService,
     private readonly dialogManager: AdminDialogManager,
+    private readonly redirector: RedirectorService,
   ) {
     super();
   }
@@ -21,6 +22,7 @@ export class AdminDeleteUserCommandHandlerService extends CommandHandler<AdminDe
     ).subscribe(result => {
       if (result === true) {
         this.adminService.deleteUser(command.userId);
+        this.redirector.redirectTo(getAdminUerTable())
       }
     });
   }

@@ -3,8 +3,8 @@ using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using MockQueryable.Moq;
 using Moq;
-using Shared.Domain.Dtos;
 using Shared.Repositories;
+using ShopApi.Features.OrderFeature.Dtos;
 using ShopApi.Features.OrderFeature.Services;
 
 namespace ShopApiTests.Features.OrderFeature.Services.Services
@@ -58,10 +58,10 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             Assert.IsNull(result);
         }
         [Test]
-        public async Task GetPaginatedAsync_ReturnsPaginatedOrders()
+        public async Task GetPaginatedOrdersAsync_ValidRequest_ReturnsPaginatedOrders()
         {
             // Arrange
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 2 };
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 2 };
             var orders = GetDbSetMock(new List<Order>
             {
                 new Order { Id = 1, DeliveryAddress = "Address 1" },
@@ -70,64 +70,28 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
             mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
                           .ReturnsAsync(orders);
             // Act
-            var result = await orderService.GetPaginatedOrdersAsync(paginationRequest, CancellationToken.None);
+            var result = await orderService.GetPaginatedOrdersAsync(filter, CancellationToken.None);
             // Assert
             Assert.That(result.Count(), Is.EqualTo(2));
             Assert.That(result.First().Id, Is.EqualTo(1));
+            Assert.That(result.Last().Id, Is.EqualTo(2));
         }
         [Test]
-        public async Task GetOrderAmountAsync_WithClientId_ReturnsOrderCount()
+        public async Task GetOrderAmountAsync_ValidData_ReturnsOrderCount()
         {
             // Arrange
-            var clientId = "test-client-id";
+            var filter = new GetOrdersFilter { ClientId = "test-client-id" };
             var orders = GetDbSetMock(new List<Order>
             {
-                new Order { Id = 1, ClientId = clientId },
-                new Order { Id = 2, ClientId = clientId }
-            });
-            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(orders);
-            // Act
-            var result = await orderService.GetOrderAmountAsync(clientId, CancellationToken.None);
-            // Assert
-            Assert.That(result, Is.EqualTo(2));
-            mockRepository.Verify(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()), Times.Once);
-        }
-        [Test]
-        public async Task GetOrderAmountAsync_WithoutClientId_ReturnsTotalOrderCount()
-        {
-            // Arrange
-            var orders = GetDbSetMock(new List<Order>
-            {
-                new Order { Id = 1, ClientId = "client1" },
-                new Order { Id = 2, ClientId = "client2" }
-            });
-            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(orders);
-            // Act
-            var result = await orderService.GetOrderAmountAsync(CancellationToken.None);
-            // Assert
-            Assert.That(result, Is.EqualTo(2));
-            mockRepository.Verify(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()), Times.Once);
-        }
-        [Test]
-        public async Task GetOrdersByClientIdAsync_ReturnsOrdersForClient()
-        {
-            // Arrange
-            var clientId = "test-client-id";
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
-            var orders = GetDbSetMock(new List<Order>
-            {
-                new Order { Id = 1, ClientId = clientId, DeliveryAddress = "Address 1" },
-                new Order { Id = 2, ClientId = clientId, DeliveryAddress = "Address 2" }
+                new Order { Id = 1, ClientId = "test-client-id" },
+                new Order { Id = 2, ClientId = "test-client-id" }
             });
             mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
                           .ReturnsAsync(orders);
             // Act
-            var result = await orderService.GetPaginatedOrdersAsync(clientId, paginationRequest, CancellationToken.None);
+            var result = await orderService.GetOrderAmountAsync(filter, CancellationToken.None);
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().ClientId, Is.EqualTo(clientId));
+            Assert.That(result, Is.EqualTo(2));
         }
         [Test]
         public async Task CreateOrderAsync_ReturnsCreatedOrder()

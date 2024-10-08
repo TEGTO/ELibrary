@@ -1,5 +1,6 @@
 <div class="bg-zinc-50 body">
     <div class=" border border-gray-200 rounded-lg">
+        <div class="mx-8 mt-4 font-bold text-3xl text-gray-600">Order</div>
         <ng-container *ngIf="order$ | async as item">
             <ng-container *ngTemplateOutlet="details;  context: { order: item}"></ng-container>
             <ng-container *ngTemplateOutlet="edit; context: { order: item }"></ng-container>
@@ -58,6 +59,10 @@
                     <span class="detail-header__dots">⠀</span>
                 </div>
                 <div class="order__detail-header text-gray-400">
+                    <span class="font-semibold">User Id</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="order__detail-header text-gray-400">
                     <span class="font-semibold">Client Id</span>
                     <span class="detail-header__dots">⠀</span>
                 </div>
@@ -81,8 +86,12 @@
                 <div class="order__detail-value text-gray-400 flex justify-between">
                     <span>{{ order.createdAt | date:'dd/MM/YYYY, HH:mm'}}</span>
                 </div>
-                <div class="order__detail-value text-gray-400"
-                    [ngClass]="{'text-red-500 font-bold': isOrderCanceled(order), 'text-green-700 font-bold':  isOrderCompleted(order) }">
+                <div class="order__detail-value font-bold" [ngClass]="
+                    {
+                     'text-red-500': isOrderCanceled(order),
+                     'text-green-700':  isOrderCompleted(order),
+                     'text-yellow-500': !isOrderCanceled(order) && !isOrderCompleted(order),
+                      }">
                     <span>{{ getOrderStatusString(order) }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
@@ -102,6 +111,9 @@
                 </div>
                 <div class="order__detail-value text-gray-400">
                     <span>{{ getOrderPaymentMethodString(order) }}</span>
+                </div>
+                <div class="order__detail-value text-gray-400">
+                    <span>{{ order.client.userId }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
                     <span>{{ order.client.id }}</span>

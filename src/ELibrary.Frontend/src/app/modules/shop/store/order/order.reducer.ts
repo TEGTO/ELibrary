@@ -44,6 +44,7 @@ export const orderReducer = createReducer(
     on(createOrder, (state) => ({
         ...state,
         isCreateSuccess: false,
+        totalAmount: state.totalAmount + 1,
         error: null
     })),
     on(createOrderSuccess, (state, { order: order }) => ({

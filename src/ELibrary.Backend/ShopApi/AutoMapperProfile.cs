@@ -3,6 +3,7 @@ using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
+using Shared.Domain.Dtos;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.ClientFeature.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
@@ -49,6 +50,8 @@ namespace ShopApi
             CreateMap<StatisticsBook, Book>();
             CreateMap<GetBookStatisticsRequest, GetBookStatistics>();
             CreateMap<BookStatistics, BookStatisticsResponse>();
+
+            CreateMap<PaginationRequest, GetOrdersFilter>();
         }
     }
 }

@@ -34,19 +34,19 @@ export class ClientApiService extends BaseApiService {
   //#region Admin
 
   adminGet(id: string): Observable<Client> {
-    return this.httpClient.get<ClientResponse>(this.combinePathWithClientApiUrl(`admin/${id}`)).pipe(
+    return this.httpClient.get<ClientResponse>(this.combinePathWithClientApiUrl(`/admin/${id}`)).pipe(
       map((response) => mapClientResponseToClient(response)),
-      catchError((error) => this.handleError(error)),
+      catchError((error) => this.handleNotFoundError(error)),
     );
   }
   adminCreate(id: string, request: CreateClientRequest): Observable<Client> {
-    return this.httpClient.post<ClientResponse>(this.combinePathWithClientApiUrl(`admin/${id}`), request).pipe(
+    return this.httpClient.post<ClientResponse>(this.combinePathWithClientApiUrl(`/admin/${id}`), request).pipe(
       map((response) => mapClientResponseToClient(response)),
       catchError((error) => this.handleError(error)),
     );
   }
   adminUpdate(id: string, request: UpdateClientRequest): Observable<ClientResponse> {
-    return this.httpClient.put<Client>(this.combinePathWithClientApiUrl(`admin/${id}`), request).pipe(
+    return this.httpClient.put<Client>(this.combinePathWithClientApiUrl(`/admin/${id}`), request).pipe(
       map((response) => mapClientResponseToClient(response)),
       catchError((error) => this.handleError(error)),
     );

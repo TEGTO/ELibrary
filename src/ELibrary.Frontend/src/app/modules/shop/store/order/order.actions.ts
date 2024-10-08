@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { ClientUpdateOrderRequest, CreateOrderRequest, ManagerUpdateOrderRequest, Order, PaginatedRequest } from "../../../shared";
+import { ClientUpdateOrderRequest, CreateOrderRequest, GetOrdersFilter, ManagerUpdateOrderRequest, Order } from "../../../shared";
 
 //#region Client
 
 export const getOrders = createAction(
     '[Order] Get Orders',
-    props<{ req: PaginatedRequest }>()
+    props<{ req: GetOrdersFilter }>()
 );
 export const getOrdersSuccess = createAction(
     '[Order] Get Orders Success',
@@ -18,7 +18,8 @@ export const getOrdersFailure = createAction(
 );
 
 export const getOrderTotalAmount = createAction(
-    '[Order] Get Total Order Amount'
+    '[Order] Get Total Order Amount',
+    props<{ req: GetOrdersFilter }>()
 );
 export const getOrderAmountSuccess = createAction(
     '[Order] Get Total Order Amount Success',
@@ -87,7 +88,7 @@ export const managerGetOrderByIdFailure = createAction(
 
 export const managerGetPaginatedOrders = createAction(
     '[Order] Manager Get Paginated Orders',
-    props<{ req: PaginatedRequest }>()
+    props<{ req: GetOrdersFilter }>()
 );
 export const managerGetPaginatedOrdersSuccess = createAction(
     '[Order] Manager Get Paginated Orders Success',
@@ -99,7 +100,8 @@ export const managerGetPaginatedOrdersFailure = createAction(
 );
 
 export const managerGetOrderTotalAmount = createAction(
-    '[Order] Manager Get Order Total Amount'
+    '[Order] Manager Get Order Total Amount',
+    props<{ req: GetOrdersFilter }>()
 );
 export const managerGetOrderAmountSuccess = createAction(
     '[Order] Manager Get Order Total Amount Success',

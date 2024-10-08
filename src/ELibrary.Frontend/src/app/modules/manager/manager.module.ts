@@ -46,7 +46,6 @@ const routes: Routes = [
     PublisherTableComponent,
     BookStockTableComponent,
     BookStockDetailsComponent,
-    OrderTableComponent,
     OrderDetailsComponent,
     StatisticsPageComponent,
   ],
@@ -59,6 +58,7 @@ const routes: Routes = [
     MatInputModule,
     FormsModule,
     ShopModule,
+    OrderTableComponent,
     MatFormFieldModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -71,6 +71,6 @@ const routes: Routes = [
     MatSelectModule,
     MatPaginatorModule,
     MatDatepickerModule,
-  ]
+  ],
 })
 export class ManagerModule { }

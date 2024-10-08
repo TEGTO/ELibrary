@@ -1,0 +1,122 @@
+<ng-container *ngIf="client$ | async as client; else client_undefined">
+    <div class="mx-8 font-bold text-3xl text-gray-600">Client</div>
+    <ng-container *ngTemplateOutlet="details;  context: { client: client}"></ng-container>
+    <ng-container *ngTemplateOutlet="edit;  context: { client: client}"></ng-container>
+    <ng-container *ngTemplateOutlet="orders;  context: { client: client}"></ng-container>
+</ng-container>
+
+<!--Client-->
+<ng-template #details let-client="client">
+    <div class="client mr-2 w-full px-10 pt-0">
+        <div id="clientDetails" class="h-full w-8/12 pt-5 flex">
+            <div class="grow flex flex-col gap-1">
+                <div class="client__detail-header text-gray-400">
+                    <span class="font-semibold">Id</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+            </div>
+            <div class="pl-2 flex flex-col gap-1">
+                <div class="client__detail-value text-gray-400 flex justify-between">
+                    <span>#{{ client.id }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!--Edit Client-->
+<ng-template #edit let-client="client">
+    <div class="mb-3 mt-6 flex px-6 gap-6">
+        <form id="client" class="space-y-1 flex flex-col pt-6 border-t border-gray-200 w-full"
+            [formGroup]="getFormGroup(client)" (submit)="updateClient(client)">
+            <div class="flex gap-2 flex-wrap w-full">
+                <mat-form-field class="w-full sm:w-4/12">
+                    <mat-label>Name</mat-label>
+                    <input matInput type="text" autocomplete="client-name" [formControl]="nameInput" placeholder="John"
+                        maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-3/12">
+                    <mat-label>Middle Name</mat-label>
+                    <input matInput type="text" autocomplete="client-middle-name" [formControl]="middleNameInput"
+                        placeholder="Michael" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(middleNameInput).hasError">{{validateInputField(middleNameInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-4/12">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput type="text" autocomplete="client-last-name" [formControl]="lastNameInput"
+                        placeholder="Doe" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(lastNameInput).hasError">{{validateInputField(lastNameInput).message}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="flex gap-2 flex-wrap w-full">
+                <mat-form-field class="w-full sm:w-5/12">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="text" autocomplete="client-email" [formControl]="emailInput"
+                        placeholder="example@gmail.com" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-4/12">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput [matDatepicker]="picker" [formControl]="dateOfBirthInput" [readonly]="true">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error
+                        *ngIf="validateInputField(dateOfBirthInput).hasError">{{validateInputField(dateOfBirthInput).message}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="flex gap-2 flex-wrap w-full">
+                <mat-form-field class="w-full sm:w-6/12">
+                    <mat-label>Address</mat-label>
+                    <input matInput type="text" autocomplete="client-address" [formControl]="addressInput"
+                        placeholder="123 Main St" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(addressInput).hasError">{{validateInputField(addressInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-5/12">
+                    <mat-label>Phone</mat-label>
+                    <input matInput type="tel" autocomplete="client-phone" [formControl]="phoneInput"
+                        placeholder="+3801234567" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(phoneInput).hasError">{{validateInputField(phoneInput).message}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="flex gap-3 items-center">
+                <div class="px-5 pl-10 w-full flex justify-end gap-4 h-12">
+                    <button id="send-button" form="client" type="submit"
+                        class="flex items-center pl-4 gap-1 p-2 rounded-lg border
+                                                    text-gray-700 font-bold 
+                                                    hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out">
+                        <span>Update</span>
+                        <span class="!text-2xl text-blue-600 material-icons">edit</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<!--Order Client Table-->
+<ng-template #orders let-client="client">
+    <div class="mb-3 px-6 gap-6">
+        <div class="mx-2 mb-2 font-bold text-xl text-gray-600">Client Orders</div>
+        <div class="py-6 border-t border-gray-200">
+            <div class="border border-gray-200">
+                <app-order-table [filter]="getClientOrderFilter(client)"></app-order-table>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!--Client undefined-->
+<ng-template #client_undefined>
+    <div class="flex flex-col items-center justify-center h-96">
+        <p class="text-lg text-gray-600">Provide the client for an user.</p>
+        <button mat-flat-button (click)="addClient()">Provide</button>
+    </div>
+</ng-template>
+<!--Loading-->
+<ng-template #loading>
+    <app-loading></app-loading>
+</ng-template>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AdminService, AdminUpdateUserCommand } from '../../..';
+import { take } from 'rxjs';
+import { AdminDialogManager, AdminService, AdminUpdateUserCommand, mapAdminUpdateUserCommandToAdminUserUpdateDataRequest } from '../../..';
 import { CommandHandler } from '../../../../shared';
 
 @Injectable({
@@ -9,12 +10,19 @@ export class AdminUpdateUserCommandHandlerService extends CommandHandler<AdminUp
 
   constructor(
     private readonly adminService: AdminService,
+    private readonly dialogManager: AdminDialogManager,
   ) {
     super();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   dispatch(command: AdminUpdateUserCommand): void {
-
+    this.dialogManager.openConfirmMenu().afterClosed().pipe(
+      take(1)
+    ).subscribe(result => {
+      if (result === true) {
+        const req = mapAdminUpdateUserCommandToAdminUserUpdateDataRequest(command);
+        this.adminService.updateUser(req);
+      }
+    });
   }
 }

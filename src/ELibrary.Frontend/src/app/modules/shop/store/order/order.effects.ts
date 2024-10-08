@@ -26,8 +26,8 @@ export class OrderEffects {
     getOrderAmount$ = createEffect(() =>
         this.actions$.pipe(
             ofType(getOrderTotalAmount),
-            mergeMap(() =>
-                this.apiService.getOrderAmount().pipe(
+            mergeMap((action) =>
+                this.apiService.getOrderAmount(action.req).pipe(
                     map(response => getOrderAmountSuccess({ amount: response })),
                     catchError(error => of(getOrderAmountFailure({ error: error.message })))
                 )
@@ -98,8 +98,8 @@ export class OrderEffects {
     managerGetOrderAmount$ = createEffect(() =>
         this.actions$.pipe(
             ofType(managerGetOrderTotalAmount),
-            mergeMap(() =>
-                this.apiService.managerGetOrderAmount().pipe(
+            mergeMap((action) =>
+                this.apiService.managerGetOrderAmount(action.req).pipe(
                     map(response => managerGetOrderAmountSuccess({ amount: response })),
                     catchError(error => of(managerGetOrderAmountFailure({ error: error.message })))
                 )

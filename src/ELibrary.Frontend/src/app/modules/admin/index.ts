@@ -11,10 +11,12 @@ export * from "./command/user/start-register-user/start-admin-register-user-comm
 export * from "./command/user/start-register-user/start-admin-register-user-command-handler.service"
 export * from "./command/user/update-user/admin-update-user-command"
 export * from "./command/user/update-user/admin-update-user-command-handler.service"
+export * from './components/admin-client-details/admin-client-details.component'
 export * from './components/admin-register-user-dialog/admin-register-user-dialog.component'
 export * from "./components/admin-table/admin-table.component"
 export * from "./components/admin-user-details/admin-user-details.component"
 export * from "./components/admin-user-filter/admin-user-filter.component"
+export * from "./components/admin-user-page/admin-user-page.component"
 export * from "./components/admin-user-table/admin-user-table.component"
 export * from "./services/admin-dialog-manager/admin-dialog-manager"
 export * from "./services/admin-dialog-manager/admin-dialog-manager.service"

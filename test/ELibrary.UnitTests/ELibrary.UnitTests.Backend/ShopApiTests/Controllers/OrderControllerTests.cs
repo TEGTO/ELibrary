@@ -3,7 +3,6 @@ using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Domain.Dtos;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Dtos;
 using ShopApi.Features.OrderFeature.Services;
@@ -44,17 +43,17 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var client = new Client { Id = "test-client-id" };
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             var orders = new List<OrderResponse>
             {
                 new OrderResponse { Id = 1, DeliveryAddress = "Address 1" }
             };
             mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(client);
-            mockOrderManager.Setup(och => och.GetPaginatedOrdersAsync(It.IsAny<string>(), paginationRequest, It.IsAny<CancellationToken>()))
+            mockOrderManager.Setup(och => och.GetPaginatedOrdersAsync(filter, client, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(orders);
             // Act
-            var result = await orderController.GetOrders(paginationRequest, CancellationToken.None);
+            var result = await orderController.GetOrders(filter, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -64,11 +63,11 @@ namespace ShopApi.Controllers.Tests
         public async Task GetOrders_ReturnsBadRequest_WhenClientNotFound()
         {
             // Arrange
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Client?)null);
             // Act
-            var result = await orderController.GetOrders(paginationRequest, CancellationToken.None);
+            var result = await orderController.GetOrders(filter, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
             var badRequestResult = result.Result as BadRequestObjectResult;
@@ -78,14 +77,15 @@ namespace ShopApi.Controllers.Tests
         public async Task GetOrderAmount_ReturnsAmount_WhenClientExists()
         {
             // Arrange
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             var client = new Client { Id = "test-client-id" };
             var expectedAmount = 5;
             mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(client);
-            mockOrderManager.Setup(om => om.GetOrderAmountAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            mockOrderManager.Setup(om => om.GetOrderAmountAsync(filter, client, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedAmount);
             // Act
-            var result = await orderController.GetOrderAmount(CancellationToken.None);
+            var result = await orderController.GetOrderAmount(filter, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -95,10 +95,11 @@ namespace ShopApi.Controllers.Tests
         public async Task GetOrderAmount_ReturnsBadRequest_WhenClientNotFound()
         {
             // Arrange
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             mockClientService.Setup(cs => cs.GetClientByUserIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Client?)null);
             // Act
-            var result = await orderController.GetOrderAmount(CancellationToken.None);
+            var result = await orderController.GetOrderAmount(filter, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
             var badRequestResult = result.Result as BadRequestObjectResult;
@@ -207,15 +208,17 @@ namespace ShopApi.Controllers.Tests
         public async Task ManagerGetPaginatedOrders_ReturnsOkWithPaginatedOrders()
         {
             // Arrange
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 10 };
+            var paginationRequest = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
             var orders = new List<OrderResponse>
-            {
-                new OrderResponse { Id = 1, DeliveryAddress = "Address 1" }
-            };
-            mockOrderManager.Setup(moch => moch.GetPaginatedOrdersAsync(It.IsAny<PaginationRequest>(), It.IsAny<CancellationToken>()))
+    {
+        new OrderResponse { Id = 1, DeliveryAddress = "Address 1" }
+    };
+            mockOrderManager.Setup(moch => moch.GetPaginatedOrdersAsync(It.IsAny<GetOrdersFilter>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(orders);
+
             // Act
             var result = await orderController.ManagerGetPaginatedOrders(paginationRequest, CancellationToken.None);
+
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -226,10 +229,11 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var expectedAmount = 10;
-            mockOrderManager.Setup(om => om.GetOrderAmountAsync(It.IsAny<CancellationToken>()))
+            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 10 };
+            mockOrderManager.Setup(om => om.GetOrderAmountAsync(It.IsAny<GetOrdersFilter>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedAmount);
             // Act
-            var result = await orderController.ManagerGetOrderAmount(CancellationToken.None);
+            var result = await orderController.ManagerGetOrderAmount(filter, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;

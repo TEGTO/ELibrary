@@ -1,5 +1,6 @@
 <div class="bg-zinc-50 body">
     <div class=" border border-gray-200 rounded-lg">
+        <div class="mx-8 mt-6 font-bold text-3xl text-gray-600">Book stock</div>
         <ng-container *ngIf="order$ | async as item">
             <div *ngTemplateOutlet="details;  context: { order: item}"></div>
             <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="content__books"

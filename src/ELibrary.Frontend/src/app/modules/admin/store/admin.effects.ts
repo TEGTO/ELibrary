@@ -105,7 +105,7 @@ export class AdminEffects {
         this.actions$.pipe(
             ofType(createClient),
             mergeMap((action) =>
-                this.clientApiService.create(action.req).pipe(
+                this.clientApiService.adminCreate(action.userId, action.req).pipe(
                     map((response) => createClientSuccess({ client: response })),
                     catchError(error => of(createClientFailure({ error: error.message })))
                 )
@@ -117,7 +117,7 @@ export class AdminEffects {
         this.actions$.pipe(
             ofType(updateClient),
             mergeMap((action) =>
-                this.clientApiService.update(action.req).pipe(
+                this.clientApiService.adminUpdate(action.userId, action.req).pipe(
                     map((response) => updateClientSuccess({ client: response })),
                     catchError(error => of(updateClientFailure({ error: error.message })))
                 )

@@ -237,6 +237,8 @@ namespace UserApi.Services.Tests
         public async Task AdminUpdateUserAsync_ValidRequest_UpdatesUserAndRoles()
         {
             // Arrange
+            var roles = new List<string> { "Admin" };
+            var adminResponse = new AdminUserResponse { Email = "admin@example.com" };
             var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
             var user = new User { UserName = "user1" };
             var identityErrors = new List<IdentityError>();
@@ -244,6 +246,8 @@ namespace UserApi.Services.Tests
             authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
             authServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
             authServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(identityErrors);
+            mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
+            authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
             await userManager.AdminUpdateUserAsync(updateRequest, CancellationToken.None);
             // Assert
@@ -284,7 +288,6 @@ namespace UserApi.Services.Tests
             var identityErrors = new List<IdentityError> { new IdentityError { Description = "Deletion failed" } };
             authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
             authServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
-
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userManager.AdminDeleteUserAsync("user1"));
             Assert.That(ex.Errors.First(), Is.EqualTo("Deletion failed"));

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CurrencyPipe } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CommandHandler, GenericTableComponent, getClientName, getManagerOrderDetailsPath, getOrderStatusString, LocaleService, LocalizedDatePipe, Order, PaginatedRequest } from '../../../../../shared';
+import { CommandHandler, GenericTableComponent, getClientName, getDefaultGetOrdersFilter, getManagerOrderDetailsPath, GetOrdersFilter, getOrderStatusString, LocaleService, LocalizedDatePipe, Order } from '../../../../../shared';
 import { MANAGER_ORDER_DETAILS_COMMAND_HANDLER, ManagerOrderDetailsCommand, OrderService } from '../../../../../shop';
 
 interface OrderItem {
@@ -17,9 +17,12 @@ interface OrderItem {
 @Component({
   selector: 'app-order-table',
   templateUrl: './order-table.component.html',
-  styleUrl: './order-table.component.scss'
+  styleUrl: './order-table.component.scss',
+  imports: [CommonModule, GenericTableComponent],
+  standalone: true
 })
 export class OrderTableComponent implements OnInit {
+  @Input() filter = getDefaultGetOrdersFilter();
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;
 
   items$!: Observable<OrderItem[]>;
@@ -47,15 +50,16 @@ export class OrderTableComponent implements OnInit {
   }
 
   private fetchTotalAmount(): void {
-    this.totalAmount$ = this.orderService.getOrderTotalAmount();
+    this.totalAmount$ = this.orderService.getOrderTotalAmount(this.filter);
   }
   private fetchPaginatedItems(pagination: { pageIndex: number, pageSize: number }): void {
-    const req: PaginatedRequest =
+    const req: GetOrdersFilter =
     {
+      ...this.filter,
       pageNumber: pagination.pageIndex,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     };
-    this.items$ = this.orderService.getPaginatedOrders(req).pipe(
+    this.items$ = this.orderService.managerGetPaginatedOrders(req).pipe(
       map(orders => orders.slice(0, pagination.pageSize).map(x => ({
         id: x.id,
         createdAt: x.createdAt,

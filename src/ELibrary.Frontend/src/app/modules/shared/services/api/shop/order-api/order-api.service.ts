@@ -1,20 +1,20 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
-import { BaseApiService, ClientUpdateOrderRequest, CreateOrderRequest, ManagerUpdateOrderRequest, mapOrderResponseToOrder, Order, OrderResponse, PaginatedRequest } from '../../../..';
+import { BaseApiService, ClientUpdateOrderRequest, CreateOrderRequest, GetOrdersFilter, ManagerUpdateOrderRequest, mapOrderResponseToOrder, Order, OrderResponse } from '../../../..';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderApiService extends BaseApiService {
-  getPaginatedOrders(request: PaginatedRequest): Observable<Order[]> {
+  getPaginatedOrders(request: GetOrdersFilter): Observable<Order[]> {
     return this.httpClient.post<OrderResponse[]>(this.combinePathWithOrderApiUrl(`/pagination`), request).pipe(
       map((response) => response.map(x => mapOrderResponseToOrder(x))),
       catchError((error) => this.handleError(error)),
     );
   }
-  getOrderAmount(): Observable<number> {
-    return this.httpClient.get<number>(this.combinePathWithOrderApiUrl(`/amount`)).pipe(
+  getOrderAmount(req: GetOrdersFilter): Observable<number> {
+    return this.httpClient.post<number>(this.combinePathWithOrderApiUrl(`/amount`), req).pipe(
       catchError((error) => this.handleError(error)),
     );
   }
@@ -41,14 +41,14 @@ export class OrderApiService extends BaseApiService {
       catchError((error) => this.handleError(error)),
     );
   }
-  managerGetPaginatedOrders(request: PaginatedRequest): Observable<Order[]> {
+  managerGetPaginatedOrders(request: GetOrdersFilter): Observable<Order[]> {
     return this.httpClient.post<OrderResponse[]>(this.combinePathWithOrderApiUrl(`/manager/pagination`), request).pipe(
       map((response) => response.map(x => mapOrderResponseToOrder(x))),
       catchError((error) => this.handleError(error)),
     );
   }
-  managerGetOrderAmount(): Observable<number> {
-    return this.httpClient.get<number>(this.combinePathWithOrderApiUrl(`/manager/amount`)).pipe(
+  managerGetOrderAmount(request: GetOrdersFilter): Observable<number> {
+    return this.httpClient.post<number>(this.combinePathWithOrderApiUrl(`/manager/amount`), request).pipe(
       catchError((error) => this.handleError(error)),
     );
   }
