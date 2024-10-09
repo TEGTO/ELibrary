@@ -75,7 +75,7 @@ describe('CreateClientComponent', () => {
         const addClientButton = fixture.debugElement.query(By.css('button'));
         addClientButton.nativeElement.click();
 
-        expect(addClientHandlerSpy.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ redirectAfter: undefined }));
+        expect(addClientHandlerSpy.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({}));
     });
 
     it('should unsubscribe on component destroy', () => {

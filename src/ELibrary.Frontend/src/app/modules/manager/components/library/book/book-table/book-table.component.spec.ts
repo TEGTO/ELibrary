@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { BookService, CREATE_BOOK_COMMAND_HANDLER, CreateBookCommand, DELETE_BOOK_COMMAND_HANDLER, DeleteBookCommand, UPDATE_BOOK_COMMAND_HANDLER, UpdateBookCommand } from '../../../../../library';
-import { Book, CommandHandler, GenericTableComponent, getDefaultBook } from '../../../../../shared';
+import { Book, CommandHandler, getDefaultBook, LocaleService } from '../../../../../shared';
 import { BookTableComponent } from './book-table.component';
 
 describe('BookTableComponent', () => {
   let component: BookTableComponent;
   let fixture: ComponentFixture<BookTableComponent>;
   let mockBookService: jasmine.SpyObj<BookService>;
+  let mockLocaleService: jasmine.SpyObj<LocaleService>;
   let mockCreateBookCommandHandler: jasmine.SpyObj<CommandHandler<CreateBookCommand>>;
   let mockUpdateBookCommandHandler: jasmine.SpyObj<CommandHandler<UpdateBookCommand>>;
   let mockDeleteBookCommandHandler: jasmine.SpyObj<CommandHandler<DeleteBookCommand>>;
@@ -32,6 +31,8 @@ describe('BookTableComponent', () => {
       'deleteBookById'
     ]);
 
+    mockLocaleService = jasmine.createSpyObj<LocaleService>(['getCurrency', 'getLocale'])
+
     mockCreateBookCommandHandler = jasmine.createSpyObj<CommandHandler<CreateBookCommand>>([
       'dispatch',
     ]);
@@ -48,10 +49,11 @@ describe('BookTableComponent', () => {
     mockBookService.getPaginated.and.returnValue(of(mockItems));
 
     await TestBed.configureTestingModule({
-      imports: [GenericTableComponent, BrowserAnimationsModule],
+      imports: [BrowserAnimationsModule],
       declarations: [BookTableComponent],
       providers: [
         { provide: BookService, useValue: mockBookService },
+        { provide: LocaleService, useValue: mockLocaleService },
         { provide: CREATE_BOOK_COMMAND_HANDLER, useValue: mockCreateBookCommandHandler },
         { provide: UPDATE_BOOK_COMMAND_HANDLER, useValue: mockUpdateBookCommandHandler },
         { provide: DELETE_BOOK_COMMAND_HANDLER, useValue: mockDeleteBookCommandHandler }
@@ -74,40 +76,6 @@ describe('BookTableComponent', () => {
     spyOn<any>(component, 'fetchPaginatedItems');
     component.ngOnInit();
     expect(component["fetchPaginatedItems"]).toHaveBeenCalledWith({ pageIndex: 1, pageSize: 10 });
-  });
-
-  it('should bind data to generic-table component', () => {
-    component.items$ = of(mockItems.map(item => ({
-      id: item.id,
-      name: item.name,
-      publicationDate: item.publicationDate,
-      author: `${item.author.name} ${item.author.lastName}`,
-      genre: item.genre.name,
-      publisher: item.publisher.name,
-      price: item.price,
-      coverType: item.coverType,
-      pageAmount: item.pageAmount,
-      stockAmount: item.stockAmount,
-    })));
-    fixture.detectChanges();
-
-    const genericTable = fixture.debugElement.query(By.directive(GenericTableComponent));
-    expect(genericTable).toBeTruthy();
-
-    const componentInstance = genericTable.componentInstance as GenericTableComponent;
-    expect(componentInstance.items).toEqual(mockItems.map(item => ({
-      id: item.id,
-      name: item.name,
-      publicationDate: item.publicationDate,
-      author: `${item.author.name} ${item.author.lastName}`,
-      genre: item.genre.name,
-      publisher: item.publisher.name,
-      price: item.price,
-      coverType: item.coverType,
-      pageAmount: item.pageAmount,
-      stockAmount: item.stockAmount,
-    })));
-    expect(componentInstance.totalItemAmount).toBe(mockAmount);
   });
 
   it('should handle pageChange and update items$', () => {

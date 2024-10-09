@@ -1,9 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
-import { AuthenticationDialogManager, AuthenticationService } from '../../../authentication';
-import { Roles, UserAuth } from '../../../shared';
+import { RouterModule, Routes } from '@angular/router';
+import { BehaviorSubject, of } from 'rxjs';
+import { AuthenticationService, START_LOGIN_COMMAND_HANDLER, StartLoginCommand } from '../../../authentication';
+import { CommandHandler, getAdminUerTable, getManagerBooksPath, Roles, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
 import { MainViewComponent } from './main-view.component';
 
@@ -12,7 +13,9 @@ describe('MainViewComponent', () => {
     let fixture: ComponentFixture<MainViewComponent>;
     let authServiceSpy: jasmine.SpyObj<AuthenticationService>;
     let clientServiceSpy: jasmine.SpyObj<ClientService>;
-    let authDialogManagerSpy: jasmine.SpyObj<AuthenticationDialogManager>;
+    let startLoginCommandHandlerSpy: jasmine.SpyObj<CommandHandler<StartLoginCommand>>;
+
+    const routes: Routes = [];
 
     const mockUserAuth: UserAuth = {
         isAuthenticated: true,
@@ -24,32 +27,37 @@ describe('MainViewComponent', () => {
         email: 'test@example.com',
         roles: [Roles.CLIENT, Roles.MANAGER, Roles.ADMINISTRATOR]
     };
+    let behaviourUserAuth: BehaviorSubject<UserAuth>;
 
     beforeEach(async () => {
         const authServiceSpyObj = jasmine.createSpyObj('AuthenticationService', ['getUserAuth']);
         const clientServiceSpyObj = jasmine.createSpyObj('ClientService', ['getClient']);
-        const authDialogManagerSpyObj = jasmine.createSpyObj('AuthenticationDialogManager', ['openLoginMenu']);
+        const startLoginCommandHandlerSpyObj = jasmine.createSpyObj<CommandHandler<StartLoginCommand>>(['dispatch']);
+        behaviourUserAuth = new BehaviorSubject<UserAuth>(mockUserAuth)
 
         await TestBed.configureTestingModule({
             declarations: [MainViewComponent],
             providers: [
                 { provide: AuthenticationService, useValue: authServiceSpyObj },
                 { provide: ClientService, useValue: clientServiceSpyObj },
-                { provide: AuthenticationDialogManager, useValue: authDialogManagerSpyObj },
+                { provide: START_LOGIN_COMMAND_HANDLER, useValue: startLoginCommandHandlerSpyObj },
+            ],
+            imports: [
+                RouterModule.forRoot(routes),
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         authServiceSpy = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
         clientServiceSpy = TestBed.inject(ClientService) as jasmine.SpyObj<ClientService>;
-        authDialogManagerSpy = TestBed.inject(AuthenticationDialogManager) as jasmine.SpyObj<AuthenticationDialogManager>;
+        startLoginCommandHandlerSpy = TestBed.inject(START_LOGIN_COMMAND_HANDLER) as jasmine.SpyObj<CommandHandler<StartLoginCommand>>;
 
         fixture = TestBed.createComponent(MainViewComponent);
         component = fixture.componentInstance;
     });
 
     beforeEach(() => {
-        authServiceSpy.getUserAuth.and.returnValue(of(mockUserAuth));
+        authServiceSpy.getUserAuth.and.returnValue(behaviourUserAuth.asObservable());
         clientServiceSpy.getClient.and.returnValue(of(null));
         fixture.detectChanges();
     });
@@ -65,13 +73,20 @@ describe('MainViewComponent', () => {
         });
     });
 
-    it('should call clientService.getClient() on ngOnInit', () => {
+    it('should call clientService.getClient() on ngOnInit if user is authenticated', () => {
         expect(clientServiceSpy.getClient).toHaveBeenCalled();
     });
 
-    it('should open the login menu when openLoginMenu is called', () => {
+    it('should not call clientService.getClient() if user is not authenticated', () => {
+        clientServiceSpy.getClient.calls.reset();
+        behaviourUserAuth.next({ ...mockUserAuth, roles: [Roles.CLIENT], isAuthenticated: false })
+        fixture.detectChanges();
+        expect(clientServiceSpy.getClient).not.toHaveBeenCalled();
+    });
+
+    it('should open login menu when openLoginMenu is called', () => {
         component.openLoginMenu();
-        expect(authDialogManagerSpy.openLoginMenu).toHaveBeenCalled();
+        expect(startLoginCommandHandlerSpy.dispatch).toHaveBeenCalled();
     });
 
     it('should return true for ManagerPolicy if the user has the MANAGER role', () => {
@@ -104,16 +119,34 @@ describe('MainViewComponent', () => {
     }));
 
     it('should not render admin button if user is not an admin', () => {
-        const compiled = fixture.nativeElement as HTMLElement;
-        const adminButton = compiled.querySelector('span[mat-icon-button="admin_panel_settings"]');
+        behaviourUserAuth.next({ ...mockUserAuth, roles: [Roles.CLIENT] })
+        fixture.detectChanges();
+        const adminButton = fixture.debugElement.query(By.css(`a[href="/${getAdminUerTable()}"]`));
         expect(adminButton).toBeFalsy();
     });
 
     it('should render admin button if user is an admin', () => {
         component.userAuth$ = of({ ...mockUserAuth, roles: [Roles.ADMINISTRATOR] });
         fixture.detectChanges();
-
-        const adminButton = fixture.debugElement.query(By.css('a[mat-icon-button]')).nativeElement;
+        const adminButton = fixture.debugElement.query(By.css(`a[href="/${getAdminUerTable()}"]`)).nativeElement;
         expect(adminButton).toBeTruthy();
     });
+
+    it('should display the shopping cart button if user has the CLIENT role', () => {
+        const compiled = fixture.nativeElement as HTMLElement;
+        const shoppingCartButton = compiled.querySelector('app-shopping-cart-button');
+        expect(shoppingCartButton).toBeTruthy();
+    });
+
+    it('should display the manager button if user has the MANAGER role', () => {
+        const managerButton = fixture.debugElement.query(By.css(`a[href="/${getManagerBooksPath()}"]`)).nativeElement;
+        expect(managerButton).toBeTruthy();
+    });
+
+    it('should not render manager button if user is not an manager', fakeAsync(() => {
+        behaviourUserAuth.next({ ...mockUserAuth, roles: [Roles.CLIENT] })
+        fixture.detectChanges();
+        const managerButton = fixture.debugElement.query(By.css(`a[href="/${getManagerBooksPath()}"]`));
+        expect(managerButton).toBeFalsy();
+    }));
 });

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,7 +8,8 @@ import { Client, CommandHandler, dateInPastValidator, getDefaultGetOrdersFilter,
 @Component({
   selector: 'app-admin-client-details',
   templateUrl: './admin-client-details.component.html',
-  styleUrl: './admin-client-details.component.scss'
+  styleUrl: './admin-client-details.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminClientDetailsComponent implements OnInit {
   private formGroup!: FormGroup;
@@ -75,7 +76,6 @@ export class AdminClientDetailsComponent implements OnInit {
     }
   }
   addClient() {
-    console.log(this.userId);
     const command: AdminCreateClientCommand =
     {
       userId: this.userId

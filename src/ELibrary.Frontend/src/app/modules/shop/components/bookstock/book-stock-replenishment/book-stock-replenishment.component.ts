@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { environment } from '../../../../../../environment/environment';
@@ -7,7 +7,8 @@ import { getDefaultStockBookChange, StockBookChange, ValidationMessageService } 
 @Component({
   selector: 'app-book-stock-replenishment',
   templateUrl: './book-stock-replenishment.component.html',
-  styleUrl: './book-stock-replenishment.component.scss'
+  styleUrl: './book-stock-replenishment.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookStockReplenishmentComponent implements OnInit {
   items: FormGroup[] = [];

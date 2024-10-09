@@ -2,20 +2,20 @@
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
-import { BehaviorSubject, of, throwError } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 import { BookService } from "../../../library";
-import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook, RedirectorService } from "../../../shared";
+import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook, RouteReader } from "../../../shared";
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from "../../../shop";
 import { ProductInfoComponent } from "./product-info.component";
 
 describe('ProductInfoComponent', () => {
     let component: ProductInfoComponent;
     let fixture: ComponentFixture<ProductInfoComponent>;
-    let mockBookService: jasmine.SpyObj<BookService>;
-    let mockRedirectorService: jasmine.SpyObj<RedirectorService>;
     let mockCurrencyPipeApplier: jasmine.SpyObj<CurrencyPipeApplier>;
     let mockAddBookToCartHandler: jasmine.SpyObj<CommandHandler<CartAddBookCommand>>;
+    let mockRouteReader: jasmine.SpyObj<RouteReader>;
     let activatedRouteStub: BehaviorSubject<any>;
+    let mockBookService: jasmine.SpyObj<BookService>;
 
     const mockBook: Book = {
         ...getDefaultBook(),
@@ -25,20 +25,20 @@ describe('ProductInfoComponent', () => {
     };
 
     beforeEach(async () => {
-        const bookServiceSpy = jasmine.createSpyObj<BookService>(['getById']);
-        const redirectorServiceSpy = jasmine.createSpyObj('RedirectorService', ['redirectToHome']);
+        mockBookService = jasmine.createSpyObj<BookService>(['getById']);
         const currencyPipeApplierSpy = jasmine.createSpyObj('CurrencyPipeApplier', ['applyCurrencyPipe']);
         const addBookToCartHandlerSpy = jasmine.createSpyObj('CommandHandler', ['dispatch']);
+        const routeReaderSpy = jasmine.createSpyObj<RouteReader>('RouteReader', ['readIdInt']);
 
         activatedRouteStub = new BehaviorSubject(convertToParamMap({ id: '1' }));
-        bookServiceSpy.getById.and.returnValue(of(mockBook));
+        routeReaderSpy.readIdInt.and.returnValue(of(mockBook));
 
         await TestBed.configureTestingModule({
             declarations: [ProductInfoComponent],
             providers: [
-                { provide: BookService, useValue: bookServiceSpy },
-                { provide: RedirectorService, useValue: redirectorServiceSpy },
+                { provide: BookService, useValue: mockBookService },
                 { provide: CurrencyPipeApplier, useValue: currencyPipeApplierSpy },
+                { provide: RouteReader, useValue: routeReaderSpy },
                 { provide: CART_ADD_BOOK_COMMAND_HANDLER, useValue: addBookToCartHandlerSpy },
                 provideRouter([]),
                 {
@@ -50,8 +50,7 @@ describe('ProductInfoComponent', () => {
 
         fixture = TestBed.createComponent(ProductInfoComponent);
         component = fixture.componentInstance;
-        mockBookService = TestBed.inject(BookService) as jasmine.SpyObj<BookService>;
-        mockRedirectorService = TestBed.inject(RedirectorService) as jasmine.SpyObj<RedirectorService>;
+        mockRouteReader = TestBed.inject(RouteReader) as jasmine.SpyObj<RouteReader>;
         mockCurrencyPipeApplier = TestBed.inject(CurrencyPipeApplier) as jasmine.SpyObj<CurrencyPipeApplier>;
         mockAddBookToCartHandler = TestBed.inject(CART_ADD_BOOK_COMMAND_HANDLER) as jasmine.SpyObj<CommandHandler<CartAddBookCommand>>;
     });
@@ -61,12 +60,11 @@ describe('ProductInfoComponent', () => {
     });
 
     it('should fetch a book by ID from the route parameters', () => {
-        mockBookService.getById.and.returnValue(of(mockBook));
         fixture.detectChanges();
 
         component.book$.subscribe(book => {
             expect(book).toEqual(mockBook);
-            expect(mockBookService.getById).toHaveBeenCalledWith(1);
+            expect(mockRouteReader.readIdInt).toHaveBeenCalled();
         });
     });
 
@@ -76,18 +74,8 @@ describe('ProductInfoComponent', () => {
         activatedRouteStub.next(convertToParamMap({ id: 'invalid' }));
         fixture.detectChanges();
 
-        expect(mockRedirectorService.redirectToHome).toHaveBeenCalled();
+        expect(mockRouteReader.readIdInt).toHaveBeenCalled();
     }));
-
-    it('should show default book if book service throws an error', () => {
-        mockBookService.getById.and.returnValue(throwError('Error!'));
-        fixture.detectChanges();
-
-        component.book$.subscribe(book => {
-            expect(book).toEqual(getDefaultBook());
-            expect(mockRedirectorService.redirectToHome).toHaveBeenCalled();
-        });
-    });
 
     it('should check if the book is in stock', () => {
         const mockBook: Book = { ...getDefaultBook(), stockAmount: 10 };
@@ -116,7 +104,6 @@ describe('ProductInfoComponent', () => {
     });
 
     it('should render the book details', () => {
-        mockBookService.getById.and.returnValue(of(mockBook));
         fixture.detectChanges();
 
         const title = fixture.debugElement.query(By.css('.book__detail-value span')).nativeElement;
@@ -128,7 +115,7 @@ describe('ProductInfoComponent', () => {
         fixture.detectChanges();
 
         const stockStatus = fixture.debugElement.query(By.css('.text-red-600')).nativeElement;
-        expect(stockStatus.textContent).toContain('Out stock');
+        expect(stockStatus.textContent).toContain('Out of stock');
     });
 
     it('should display "In stock" when the book is available', () => {

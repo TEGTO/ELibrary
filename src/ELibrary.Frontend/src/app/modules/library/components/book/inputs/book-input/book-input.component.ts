@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseSelectInputComponent, BookService } from '../../../..';
 import { Book, defaultBookFilterRequest, ValidationMessage } from '../../../../../shared';
@@ -6,7 +6,8 @@ import { Book, defaultBookFilterRequest, ValidationMessage } from '../../../../.
 @Component({
   selector: 'app-book-input',
   templateUrl: './book-input.component.html',
-  styleUrl: './book-input.component.scss'
+  styleUrl: './book-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookInputComponent extends BaseSelectInputComponent<Book> {
 

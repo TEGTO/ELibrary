@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AdminRegisterUserCommand } from '../..';
@@ -9,7 +9,8 @@ import { ADMIN_REGISTER_USER_COMMAND_HANDLER } from '../../command/tokens';
 @Component({
   selector: 'app-admin-register-user-dialog',
   templateUrl: './admin-register-user-dialog.component.html',
-  styleUrl: './admin-register-user-dialog.component.scss'
+  styleUrl: './admin-register-user-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminRegisterUserDialogComponent implements OnInit {
   formGroup!: FormGroup;

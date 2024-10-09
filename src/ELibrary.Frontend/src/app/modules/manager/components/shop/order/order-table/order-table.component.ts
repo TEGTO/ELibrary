@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CommandHandler, GenericTableComponent, getClientName, getDefaultGetOrdersFilter, getManagerOrderDetailsPath, GetOrdersFilter, getOrderStatusString, LocaleService, LocalizedDatePipe, Order } from '../../../../../shared';
 import { MANAGER_ORDER_DETAILS_COMMAND_HANDLER, ManagerOrderDetailsCommand, OrderService } from '../../../../../shop';
@@ -19,7 +19,8 @@ interface OrderItem {
   templateUrl: './order-table.component.html',
   styleUrl: './order-table.component.scss',
   imports: [CommonModule, GenericTableComponent],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderTableComponent implements OnInit {
   @Input() filter = getDefaultGetOrdersFilter();

@@ -38,7 +38,7 @@ describe('AuthenticationDialogManagerService', () => {
     });
 
     it('should open authenticated dialog', () => {
-        service.openLoginMenu();
+        service.openAuthenticatedMenu();
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(AuthenticatedComponent, {
             height: '440px',

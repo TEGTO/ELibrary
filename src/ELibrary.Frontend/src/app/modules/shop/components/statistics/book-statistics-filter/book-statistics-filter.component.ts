@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { Book, CurrencyPipeApplier, dateRangeValidatorFrom, dateRangeValidatorTo, GetBookStatistics, getDefaultGetBookStatistics, getProductInfoPath, inputSelectValidator, ValidationMessage } from '../../../../shared';
@@ -6,7 +6,8 @@ import { Book, CurrencyPipeApplier, dateRangeValidatorFrom, dateRangeValidatorTo
 @Component({
   selector: 'app-book-statistics-filter',
   templateUrl: './book-statistics-filter.component.html',
-  styleUrl: './book-statistics-filter.component.scss'
+  styleUrl: './book-statistics-filter.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
   @Output() filterChange = new EventEmitter<GetBookStatistics>();

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticationService, START_LOGIN_COMMAND_HANDLER, StartLoginCommand } from '../../../authentication';
-import { CommandHandler, getClientOrderHistoryPath, getManagerBooksPath, Policy, PolicyType, UserAuth } from '../../../shared';
+import { CommandHandler, getAdminUerTable, getClientOrderHistoryPath, getManagerBooksPath, Policy, PolicyType, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
 
 @Component({
@@ -13,6 +13,7 @@ import { ClientService } from '../../../shop';
 export class MainViewComponent implements OnInit {
   userAuth$!: Observable<UserAuth>;
 
+  get adminPath() { return getAdminUerTable(); }
   get managerPath() { return getManagerBooksPath(); }
   get orderHistoryPath() { return getClientOrderHistoryPath(); }
 

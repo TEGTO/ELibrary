@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Book, Client, CurrencyPipeApplier, getClientName, getProductInfoPath, RouteReader, StockBookChange, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from '../../../../../shared';
@@ -7,7 +7,8 @@ import { BookstockOrderService } from '../../../../../shop';
 @Component({
   selector: 'app-book-stock-details',
   templateUrl: './book-stock-details.component.html',
-  styleUrl: './book-stock-details.component.scss'
+  styleUrl: './book-stock-details.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookStockDetailsComponent implements OnInit {
   readonly itemHeight = 200;

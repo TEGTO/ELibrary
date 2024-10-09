@@ -7,23 +7,24 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthenticationDialogManager, SIGN_IN_COMMAND_HANDLER, SignInCommand } from '../..';
+import { SIGN_IN_COMMAND_HANDLER, SignInCommand, START_REGISTRATION_COMMAND_HANDLER, StartRegistrationCommand } from '../..';
 import { CommandHandler, ValidationMessage } from '../../../shared';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
     let component: LoginComponent;
     let fixture: ComponentFixture<LoginComponent>;
-    let authDialogManager: jasmine.SpyObj<AuthenticationDialogManager>;
     let signInCommandHandlerSpy: jasmine.SpyObj<CommandHandler<SignInCommand>>;
+    let startRegistrationHandlerSpy: jasmine.SpyObj<CommandHandler<StartRegistrationCommand>>;
+    let dialogRefSpy: jasmine.SpyObj<MatDialogRef<LoginComponent>>;
 
     beforeEach(waitForAsync(() => {
-        const authDialogManagerSpy = jasmine.createSpyObj('AuthenticationDialogManager', ['openRegisterMenu']);
-        const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-        const getValidationMessageSpy = jasmine.createSpyObj<ValidationMessage>(['getValidationMessage']);
-        signInCommandHandlerSpy = jasmine.createSpyObj<CommandHandler<SignInCommand>>(['dispatch']);
+        const signInCommandHandlerSpyObj = jasmine.createSpyObj('CommandHandler', ['dispatch']);
+        const startRegistrationHandlerSpyObj = jasmine.createSpyObj('CommandHandler', ['dispatch']);
+        const dialogRefSpyObj = jasmine.createSpyObj('MatDialogRef', ['close']);
+        const validationMessageSpyObj = jasmine.createSpyObj('ValidationMessage', ['getValidationMessage']);
 
-        getValidationMessageSpy.getValidationMessage.and.returnValue({ hasError: false, message: "" });
+        validationMessageSpyObj.getValidationMessage.and.returnValue({ hasError: false, message: "" });
 
         TestBed.configureTestingModule({
             declarations: [LoginComponent],
@@ -36,17 +37,19 @@ describe('LoginComponent', () => {
                 NoopAnimationsModule,
             ],
             providers: [
-                { provide: AuthenticationDialogManager, useValue: authDialogManagerSpy },
-                { provide: MatDialogRef, useValue: dialogRefSpy },
-                { provide: SIGN_IN_COMMAND_HANDLER, useValue: signInCommandHandlerSpy },
-                { provide: ValidationMessage, useValue: getValidationMessageSpy }
+                { provide: SIGN_IN_COMMAND_HANDLER, useValue: signInCommandHandlerSpyObj },
+                { provide: START_REGISTRATION_COMMAND_HANDLER, useValue: startRegistrationHandlerSpyObj },
+                { provide: MatDialogRef, useValue: dialogRefSpyObj },
+                { provide: ValidationMessage, useValue: validationMessageSpyObj }
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(LoginComponent);
         component = fixture.componentInstance;
-        authDialogManager = TestBed.inject(AuthenticationDialogManager) as jasmine.SpyObj<AuthenticationDialogManager>;
+        signInCommandHandlerSpy = TestBed.inject(SIGN_IN_COMMAND_HANDLER) as jasmine.SpyObj<CommandHandler<SignInCommand>>;
+        startRegistrationHandlerSpy = TestBed.inject(START_REGISTRATION_COMMAND_HANDLER) as jasmine.SpyObj<CommandHandler<StartRegistrationCommand>>;
+        dialogRefSpy = TestBed.inject(MatDialogRef) as jasmine.SpyObj<MatDialogRef<LoginComponent>>;
 
         fixture.detectChanges();
     }));
@@ -84,15 +87,14 @@ describe('LoginComponent', () => {
         fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
         fixture.detectChanges();
 
-        expect(signInCommandHandlerSpy.dispatch).toHaveBeenCalled();
+        expect(signInCommandHandlerSpy.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
+            login: 'john@example.com',
+            password: 'Password123;',
+            matDialogRef: dialogRefSpy
+        }));
     });
 
-    it('should open register menu on link click', () => {
-        fixture.debugElement.query(By.css('a#to-register-link')).nativeElement.click();
-        expect(authDialogManager.openRegisterMenu).toHaveBeenCalled();
-    });
-
-    it('should toggle password visibility', () => {
+    it('should toggle password visibility on button click', () => {
         const passwordInput = fixture.debugElement.query(By.css('input[formControlName="password"]')).nativeElement;
         const visibilityToggle = fixture.debugElement.query(By.css('span[matSuffix]')).nativeElement;
 
@@ -107,5 +109,39 @@ describe('LoginComponent', () => {
         fixture.detectChanges();
 
         expect(passwordInput.type).toBe('password');
+    });
+
+    it('should toggle password visibility on Enter key press', () => {
+        const event = new KeyboardEvent('keydown', { key: 'Enter' });
+        component.hidePassword = true;
+
+        component.hidePasswordOnKeydown(event);
+        fixture.detectChanges();
+
+        expect(component.hidePassword).toBeFalse();
+
+        component.hidePasswordOnKeydown(event);
+        fixture.detectChanges();
+
+        expect(component.hidePassword).toBeTrue();
+    });
+
+    it('should open register menu on Enter key press', () => {
+        const event = new KeyboardEvent('keydown', { key: 'Enter' });
+
+        component.openRegisterMenuOnKeydown(event);
+
+        expect(startRegistrationHandlerSpy.dispatch).toHaveBeenCalled();
+    });
+
+    it('should open register menu on button click', () => {
+        component.openRegisterMenu();
+
+        expect(startRegistrationHandlerSpy.dispatch).toHaveBeenCalled();
+    });
+
+    it('should dispatch StartRegistrationCommand on registration link click', () => {
+        fixture.debugElement.query(By.css('a#to-register-link')).nativeElement.click();
+        expect(startRegistrationHandlerSpy.dispatch).toHaveBeenCalled();
     });
 });

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,7 +9,8 @@ import { AdminUser, CommandHandler, getRoleArray, noSpaces, notEmptyString, Rout
 @Component({
   selector: 'app-admin-user-details',
   templateUrl: './admin-user-details.component.html',
-  styleUrl: './admin-user-details.component.scss'
+  styleUrl: './admin-user-details.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminUserDetailsComponent implements OnInit {
   hidePassword = true;

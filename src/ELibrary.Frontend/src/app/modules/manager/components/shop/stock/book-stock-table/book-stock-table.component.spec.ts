@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { BehaviorSubject, of } from 'rxjs';
 import { CommandHandler, GenericTableComponent, getDefaultStockBookOrder, LocaleService, StockBookOrder } from '../../../../../shared';
 import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, BookstockOrderService } from '../../../../../shop';
 import { BookStockTableComponent } from './book-stock-table.component';
@@ -17,6 +18,8 @@ describe('BookStockTableComponent', () => {
         const localeServiceSpy = jasmine.createSpyObj('LocaleService', ['getLocale']);
         const mockAddHandlerSpy = jasmine.createSpyObj('CommandHandler', ['dispatch']);
 
+        const activatedRouteStub = new BehaviorSubject(convertToParamMap({ id: '1' }));
+
         stockOrderServiceSpy.getPaginatedOrders.and.returnValue(
             of([getDefaultStockBookOrder()])
         );
@@ -28,6 +31,7 @@ describe('BookStockTableComponent', () => {
                 { provide: BookstockOrderService, useValue: stockOrderServiceSpy },
                 { provide: LocaleService, useValue: localeServiceSpy },
                 { provide: ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, useValue: mockAddHandlerSpy },
+                { provide: ActivatedRoute, useValue: activatedRouteStub },
             ],
         }).compileComponents();
 
@@ -45,7 +49,7 @@ describe('BookStockTableComponent', () => {
             stockOrderService.getOrderTotalAmount.and.returnValue(of(10));
             stockOrderService.getPaginatedOrders.and.returnValue(of(mockItems));
 
-            fixture.detectChanges(); // Triggers ngOnInit
+            fixture.detectChanges();
 
             expect(stockOrderService.getOrderTotalAmount).toHaveBeenCalled();
             expect(stockOrderService.getPaginatedOrders).toHaveBeenCalledWith({ pageNumber: 1, pageSize: 10 });
@@ -77,7 +81,7 @@ describe('BookStockTableComponent', () => {
             stockOrderService.getOrderTotalAmount.and.returnValue(of(10));
             stockOrderService.getPaginatedOrders.and.returnValue(of(mockItems));
 
-            fixture.detectChanges(); // Triggers ngOnInit
+            fixture.detectChanges();
 
             const table = fixture.nativeElement.querySelector('app-generic-table');
             expect(table).toBeTruthy();

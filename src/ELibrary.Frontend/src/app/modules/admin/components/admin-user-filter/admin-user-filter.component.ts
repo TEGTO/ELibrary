@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { AdminGetUserFilter, getDefaultAdminGetUserFilter, ValidationMessage } from '../../../shared';
@@ -6,7 +6,8 @@ import { AdminGetUserFilter, getDefaultAdminGetUserFilter, ValidationMessage } f
 @Component({
   selector: 'app-admin-user-filter',
   templateUrl: './admin-user-filter.component.html',
-  styleUrl: './admin-user-filter.component.scss'
+  styleUrl: './admin-user-filter.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminUserFilterComponent implements OnInit, OnDestroy {
   @Output() filterChange = new EventEmitter<AdminGetUserFilter>();

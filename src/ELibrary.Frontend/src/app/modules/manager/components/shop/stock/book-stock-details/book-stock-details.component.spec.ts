@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
-import { BehaviorSubject, of, throwError } from "rxjs";
-import { CurrencyPipeApplier, getDefaultStockBookOrder, RedirectorService, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from "../../../../../shared";
+import { BehaviorSubject, of } from "rxjs";
+import { CurrencyPipeApplier, getDefaultStockBookOrder, RouteReader, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from "../../../../../shared";
 import { BookstockOrderService } from "../../../../../shop";
 import { BookStockDetailsComponent } from "./book-stock-details.component";
 
@@ -12,25 +12,25 @@ describe('BookStockDetailsComponent', () => {
     let component: BookStockDetailsComponent;
     let fixture: ComponentFixture<BookStockDetailsComponent>;
     let stockOrderServiceSpy: jasmine.SpyObj<BookstockOrderService>;
-    let redirectorServiceSpy: jasmine.SpyObj<RedirectorService>;
     let currencyPipeApplierSpy: jasmine.SpyObj<CurrencyPipeApplier>;
-    let activatedRouteStub: BehaviorSubject<any>;
+    let routerReaderSpy: jasmine.SpyObj<RouteReader>;
 
     const mockStockBookOrder: StockBookOrder = getDefaultStockBookOrder();
 
     beforeEach(async () => {
         const stockOrderServiceSpyObj = jasmine.createSpyObj('BookstockOrderService', ['getById']);
-        const redirectorServiceSpyObj = jasmine.createSpyObj('RedirectorService', ['redirectToHome']);
         const currencyPipeApplierSpyObj = jasmine.createSpyObj('CurrencyPipeApplier', ['applyCurrencyPipe']);
+        const routerReaderSpyObj = jasmine.createSpyObj<RouteReader>('RouteReader', ['readIdInt']);
 
-        activatedRouteStub = new BehaviorSubject(convertToParamMap({ id: '1' }));
+        const activatedRouteStub = new BehaviorSubject(convertToParamMap({ id: '1' }));
+        routerReaderSpyObj.readIdInt.and.returnValue(of(mockStockBookOrder));
 
         await TestBed.configureTestingModule({
             declarations: [BookStockDetailsComponent],
             providers: [
                 { provide: BookstockOrderService, useValue: stockOrderServiceSpyObj },
-                { provide: RedirectorService, useValue: redirectorServiceSpyObj },
                 { provide: CurrencyPipeApplier, useValue: currencyPipeApplierSpyObj },
+                { provide: RouteReader, useValue: routerReaderSpyObj },
                 { provide: ActivatedRoute, useValue: activatedRouteStub },
                 provideRouter([]),
                 {
@@ -44,8 +44,8 @@ describe('BookStockDetailsComponent', () => {
         fixture = TestBed.createComponent(BookStockDetailsComponent);
         component = fixture.componentInstance;
         stockOrderServiceSpy = TestBed.inject(BookstockOrderService) as jasmine.SpyObj<BookstockOrderService>;
-        redirectorServiceSpy = TestBed.inject(RedirectorService) as jasmine.SpyObj<RedirectorService>;
         currencyPipeApplierSpy = TestBed.inject(CurrencyPipeApplier) as jasmine.SpyObj<CurrencyPipeApplier>;
+        routerReaderSpy = TestBed.inject(RouteReader) as jasmine.SpyObj<RouteReader>;
     });
 
     beforeEach(() => {
@@ -56,23 +56,14 @@ describe('BookStockDetailsComponent', () => {
     it('should create the component', () => {
         expect(component).toBeTruthy();
     });
-
-    it('should redirect to home if no id is provided in the route', () => {
-        activatedRouteStub.next(convertToParamMap({}));
+    it('should call routerReaderSpy in ngOnInit', () => {
         component.ngOnInit();
         fixture.detectChanges();
-        expect(redirectorServiceSpy.redirectToHome).toHaveBeenCalled();
+        expect(routerReaderSpy.readIdInt).toHaveBeenCalled();
     });
 
-    it('should redirect to home if ID is invalid', () => {
-        activatedRouteStub.next(convertToParamMap({ id: 'invalid' }));
-        component.ngOnInit();
-        fixture.detectChanges();
-        expect(redirectorServiceSpy.redirectToHome).toHaveBeenCalled();
-    });
-
-    it('should call stockOrderService.getById when valid ID is provided', () => {
-        expect(stockOrderServiceSpy.getById).toHaveBeenCalledWith(1);
+    it('should call readIdInt when valid ID is provided', () => {
+        expect(routerReaderSpy.readIdInt).toHaveBeenCalled();
     });
 
     it('should handle stockBookOrder correctly and display the data', () => {
@@ -81,13 +72,6 @@ describe('BookStockDetailsComponent', () => {
 
         const details = fixture.debugElement.query(By.css('.order__detail-value'));
         expect(details.nativeElement.textContent).toContain(`#${mockStockBookOrder.id}`);
-    });
-
-    it('should handle service error and redirect to home', () => {
-        stockOrderServiceSpy.getById.and.returnValue(throwError(() => new Error('Service error')));
-        component.ngOnInit();
-        fixture.detectChanges();
-        expect(redirectorServiceSpy.redirectToHome).toHaveBeenCalled();
     });
 
     it('should return the correct string for StockBookOrderType', () => {

@@ -140,7 +140,7 @@
                 <mat-form-field class="w-6/12">
                     <mat-label>Delivery Time</mat-label>
                     <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
-                        formControlName="deliveryTime" [readonly]="true">
+                        [formControl]="deliveryTimeInput" [readonly]="true">
                     <ngx-mat-datepicker-toggle [for]="picker" matSuffix></ngx-mat-datepicker-toggle>
                     <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
                     <mat-error *ngIf="validateInputField(deliveryTimeInput).hasError">
@@ -149,7 +149,7 @@
                 </mat-form-field>
                 <mat-form-field class="w-6/12">
                     <mat-label>Delivery Address</mat-label>
-                    <input matInput type="text" autocomplete="delivery-address" formControlName="address"
+                    <input matInput type="text" autocomplete="delivery-address" [formControl]="deliveryAddressInput"
                         placeholder="123 Main St" maxlength="256">
                     <mat-error
                         *ngIf="validateInputField(deliveryAddressInput).hasError">{{validateInputField(deliveryAddressInput).message}}</mat-error>
@@ -158,7 +158,7 @@
             <div class="flex gap-3 items-center">
                 <mat-form-field class="w-6/12">
                     <mat-label>Order Status</mat-label>
-                    <mat-select formControlName="orderStatus">
+                    <mat-select [formControl]="orderStatusInput">
                         @for (status of getOrderStatusesInString(); track status.value) {
                         <mat-option [value]="status.value">{{status.name}}</mat-option>
                         }

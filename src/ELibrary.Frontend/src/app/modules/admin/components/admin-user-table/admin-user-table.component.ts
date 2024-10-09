@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { ADMIN_DELETE_USER_COMMAND_HANDLER, AdminDeleteUserCommand, AdminService, START_ADMIN_REGISTER_USER_COMMAND_HANDLER, StartAdminRegisterUserCommand } from '../..';
 import { AdminGetUserFilter, AdminUser, CommandHandler, GenericTableComponent, getAdminUserPagePath, getDefaultAdminGetUserFilter, LocaleService, LocalizedDatePipe, RedirectorService } from '../../../shared';
@@ -6,7 +6,8 @@ import { AdminGetUserFilter, AdminUser, CommandHandler, GenericTableComponent, g
 @Component({
   selector: 'app-admin-user-table',
   templateUrl: './admin-user-table.component.html',
-  styleUrl: './admin-user-table.component.scss'
+  styleUrl: './admin-user-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminUserTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;

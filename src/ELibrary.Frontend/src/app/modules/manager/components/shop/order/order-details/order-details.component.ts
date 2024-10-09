@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,7 +8,8 @@ import { MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HAND
 @Component({
   selector: 'app-order-details',
   templateUrl: './order-details.component.html',
-  styleUrl: './order-details.component.scss'
+  styleUrl: './order-details.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderDetailsComponent implements OnInit {
   readonly itemHeight = 200;
@@ -18,8 +19,9 @@ export class OrderDetailsComponent implements OnInit {
 
   order$!: Observable<Order>;
 
-  get deliveryTimeInput() { return this.formGroup.get('deliveryTime')!; }
-  get deliveryAddressInput() { return this.formGroup.get('address')!; }
+  get deliveryTimeInput() { return this.formGroup.get('deliveryTime')! as FormControl; }
+  get deliveryAddressInput() { return this.formGroup.get('address')! as FormControl; }
+  get orderStatusInput() { return this.formGroup.get('orderStatus')! as FormControl; }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -47,7 +49,6 @@ export class OrderDetailsComponent implements OnInit {
           address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
         });
     }
-
     if (this.isOrderCanceled(order) || this.isOrderCompleted(order)) {
       this.formGroup.disable();
     }

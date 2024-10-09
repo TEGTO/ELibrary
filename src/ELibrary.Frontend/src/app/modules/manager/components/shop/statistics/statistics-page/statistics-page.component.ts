@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BookStatistics, CurrencyPipeApplier, GetBookStatistics, getDefaultGetBookStatistics } from '../../../../../shared';
 import { StatisticsService } from '../../../../../shop';
@@ -6,7 +6,8 @@ import { StatisticsService } from '../../../../../shop';
 @Component({
   selector: 'app-statistics-page',
   templateUrl: './statistics-page.component.html',
-  styleUrl: './statistics-page.component.scss'
+  styleUrl: './statistics-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsPageComponent implements OnInit {
 

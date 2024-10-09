@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CommandHandler, GenericTableComponent, getClientName, getManagerBookStockDetailsPath, LocaleService, LocalizedDatePipe, PaginatedRequest, stockBookOrderTypeToString } from '../../../../../shared';
 import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, AddBookStockOrderCommand, BookstockOrderService } from '../../../../../shop';
@@ -15,7 +15,8 @@ interface StockOrderItem {
 @Component({
   selector: 'app-book-stock',
   templateUrl: './book-stock-table.component.html',
-  styleUrl: './book-stock-table.component.scss'
+  styleUrl: './book-stock-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookStockTableComponent implements OnInit {
   @ViewChild(GenericTableComponent) table!: GenericTableComponent;

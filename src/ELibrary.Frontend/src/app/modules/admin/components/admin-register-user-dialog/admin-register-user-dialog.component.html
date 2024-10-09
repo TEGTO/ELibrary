@@ -14,7 +14,7 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Password</mat-label>
-            <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="admin-user-password"
+            <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="admin-user-password" id="password"
                 [formControl]="passwordInput" maxlength="256">
             <span class="material-icons me-2" matSuffix tabindex="0" role="button"
                 (click)="hidePassword = !hidePassword" (keydown)="hidePasswordOnKeydown($event)">

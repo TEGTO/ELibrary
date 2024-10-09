@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { of } from 'rxjs';
 import { BookService } from '../../../library';
 import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook } from '../../../shared';
@@ -16,8 +17,11 @@ describe('ProductPageComponent', () => {
     let bookServiceSpy: jasmine.SpyObj<BookService>;
     let addBookToCartHandlerSpy: jasmine.SpyObj<CommandHandler<any>>;
 
-    const mockBooks: Book[] = [
+    const routes: Routes = [
+        { path: 'book/:id', component: ProductPageComponent }
+    ];
 
+    const mockBooks: Book[] = [
         { ...getDefaultBook(), id: 1 },
         { ...getDefaultBook(), id: 2 },
     ];
@@ -32,12 +36,16 @@ describe('ProductPageComponent', () => {
             imports: [
                 MatPaginatorModule,
                 MatDialogModule,
-                BrowserAnimationsModule
+                BrowserAnimationsModule,
+                RouterModule.forChild(routes),
             ],
             providers: [
                 { provide: BookService, useValue: bookServiceSpyObj },
                 { provide: CurrencyPipeApplier, useValue: currencyPipeApplierSpy },
                 { provide: CART_ADD_BOOK_COMMAND_HANDLER, useValue: addBookToCartHandlerSpyObj },
+                provideRouter(
+                    routes
+                )
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
