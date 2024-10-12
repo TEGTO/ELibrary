@@ -40,6 +40,7 @@ jobs:
           mkdir merged-coverage
           cp ./coverage/backend/coverage.xml merged-coverage/coverage-backend.xml
           cp ./coverage/frontend/lcov.info merged-coverage/coverage-frontend.lcov
+          rm -r ./coverage
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -52,11 +53,10 @@ jobs:
           dotnet sonarscanner begin \
             /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
             /o:"${{ secrets.SONAR_ORGANIZATION }}" \
-            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.cs.vscoveragexml.reportsPaths="merged-coverage/coverage-backend.xml" \
             /d:sonar.javascript.lcov.reportPaths="merged-coverage/coverage-frontend.lcov" \
-            /d:sonar.branch.name="${{ github.ref_name }}" \
-            /d:sonar.sources="src/ELibrary.Backend,src/ELibrary.Frontend/src,test"
+            /d:sonar.branch.name="${{ github.ref_name }}" 
           dotnet build --configuration Release src/ELibrary.Backend/ELibrary.Backend.sln
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
