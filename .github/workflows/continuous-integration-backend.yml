@@ -48,15 +48,6 @@ jobs:
         run: |
           dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
 
-      - name: Install coverage tools & Add SonarCloud
-        run: |
-          dotnet tool install --global dotnet-coverage
-          dotnet tool install --global dotnet-sonarscanner
-          dotnet sonarscanner begin /k:"${{ secrets.SONAR_PROJECT_KEY }}" /o:"${{ secrets.SONAR_ORGANIZATION }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.branch.name="${{ github.ref_name }}"
-          dotnet build --configuration Release src/ELibrary.Backend/ELibrary.Backend.sln
-          dotnet-coverage collect dotnet test -f xml  -o coverage.xml src/ELibrary.Backend/ELibrary.Backend.sln --settings coverage.runsettings
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-
       - name: Run unit tests with coverage
         run: |
           dotnet-coverage collect dotnet test src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults -f xml -o coverage.xml --settings coverage.runsettings
