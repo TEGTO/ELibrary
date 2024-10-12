@@ -21,7 +21,7 @@ env:
   DOTNET_VERSION: "8.0.x"
 
 jobs:
-  run-all-tests:
+  run-ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

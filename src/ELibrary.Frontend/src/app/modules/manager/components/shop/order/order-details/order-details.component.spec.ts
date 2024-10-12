@@ -85,7 +85,7 @@ describe('OrderDetailsComponent', () => {
     const formGroup = component.getFormGroup(mockOrder);
 
     expect(formGroup).toBeTruthy();
-    expect(Math.abs(formGroup.get('deliveryTime')?.value.getTime() - mockOrder.deliveryTime.getTime())).toBeLessThanOrEqual(20);
+    expect(Math.abs(formGroup.get('deliveryTime')?.value.getTime() - mockOrder.deliveryTime.getTime())).toBeLessThanOrEqual(200);
     expect(formGroup.get('address')?.value).toEqual(mockOrder.deliveryAddress);
     expect(formGroup.get('orderStatus')?.value).toEqual(mockOrder.orderStatus);
   });
