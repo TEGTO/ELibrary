@@ -5,27 +5,32 @@ on:
   push:
     branches:
       - main
-      - develop-release-1
+      - develop-release
     paths:
       - "src/ELibrary.Backend/**"
       - "test/**"
   pull_request:
     branches:
       - main
-      - develop-release-1
+      - develop-release
     paths:
       - "src/ELibrary.Backend/**"
       - "test/**"
+
+env:
+  DOTNET_VERSION: "8.0.x"
 
 jobs:
   run-all-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-dotnet@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: "8.x"
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Cache .NET packages
         uses: actions/cache@v3
@@ -39,58 +44,61 @@ jobs:
         run: |
           dotnet restore src/ELibrary.Backend/ELibrary.Backend.sln
 
-      - name: Install coverage tools
-        run: |
-          dotnet tool install --global dotnet-coverage
-          dotnet tool install --global dotnet-reportgenerator-globaltool
-
       - name: Build projects
         run: |
           dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
 
+      - name: Install coverage tools & Add SonarCloud
+        run: |
+          dotnet tool install --global dotnet-coverage
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin /k:"${{ secrets.SONAR_PROJECT_KEY }}" /o:"${{ secrets.SONAR_ORGANIZATION }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.branch.name="${{ github.ref_name }}"
+          dotnet build --configuration Release src/ELibrary.Backend/ELibrary.Backend.sln
+          dotnet-coverage collect dotnet test -f xml  -o coverage.xml src/ELibrary.Backend/ELibrary.Backend.sln --settings coverage.runsettings
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
       - name: Run unit tests with coverage
         run: |
-          dotnet-coverage collect dotnet test src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults -f xml -o coverage.xml
+          dotnet-coverage collect dotnet test src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults -f xml -o coverage.xml --settings coverage.runsettings
 
       - name: Check results
         run: |
           echo "Tests have been executed."
 
-      - name: Publish test results
+      - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: test-results
           path: ./TestResults
 
-      - name: Publish code coverage results
+      - name: Upload code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage
           path: coverage.xml
 
+      - name: Install ReportGenerator
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+
       - name: Generate HTML report from coverage
         run: |
           reportgenerator -reports:coverage.xml -targetdir:./coverage-report -reporttypes:Html
-
-      - name: Zip HTML coverage report
-        run: |
-          zip -r coverage-report.zip ./coverage-report
 
       - name: Upload coverage report artifact
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: coverage-report.zip
+          path: ./coverage-report
 
-      - name: Publish build artifacts
-        run: dotnet publish src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --output ./output
-
-      - name: Archive build artifact
+      - name: Publish Individual Projects
         run: |
-          zip -r build-artifact.zip ./output
+          dotnet publish src/ELibrary.Backend/LibraryApi/LibraryApi.csproj --configuration Release --output ./output/libraryapi
+          dotnet publish src/ELibrary.Backend/ShopApi/ShopApi.csproj --configuration Release --output ./output/shopapi
+          dotnet publish src/ELibrary.Backend/UserApi/UserApi.csproj --configuration Release --output ./output/userapi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: build-artifact.zip
+          path: ./output
