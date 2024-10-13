@@ -14,8 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Cors
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
+string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+if (useCors)
+{
+    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+}
 
 #endregion
 
@@ -65,7 +70,11 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
     await app.ConfigureDatabaseAsync<UserIdentityDbContext>(CancellationToken.None);
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+if (useCors)
+{
+    app.UseCors(MyAllowSpecificOrigins);
+}
+
 app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();

@@ -46,8 +46,6 @@ namespace Shared
             var allowedOriginsString = configuration[Configuration.ALLOWED_CORS_ORIGINS] ?? string.Empty;
             var allowedOrigins = allowedOriginsString.Split(",", StringSplitOptions.RemoveEmptyEntries);
 
-            Console.WriteLine("allowedOriginsString: " + allowedOriginsString);
-
             services.AddCors(options =>
             {
                 options.AddPolicy(name: allowSpecificOrigins, policy =>

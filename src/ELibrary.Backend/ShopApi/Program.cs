@@ -17,11 +17,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Cors
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
+string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+if (useCors)
+{
+    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+}
 
 #endregion
-
 builder.Services.AddDbContextFactory<LibraryShopDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)));
 
@@ -58,7 +62,11 @@ builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 var app = builder.Build();
 
-app.UseCors(MyAllowSpecificOrigins);
+if (useCors)
+{
+    app.UseCors(MyAllowSpecificOrigins);
+}
+
 app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();
