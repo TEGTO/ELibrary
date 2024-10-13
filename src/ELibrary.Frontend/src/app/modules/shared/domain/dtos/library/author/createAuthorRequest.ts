@@ -1,11 +1,11 @@
-import { AuthorResponse } from "../../../..";
+import { Author } from "../../../..";
 
 export interface CreateAuthorRequest {
     name: string;
     lastName: string;
     dateOfBirth: Date;
 }
-export function authorToCreateRequest(author: AuthorResponse): CreateAuthorRequest {
+export function mapAuthorToCreateAuthorRequest(author: Author): CreateAuthorRequest {
     return {
         name: author.name,
         lastName: author.lastName,

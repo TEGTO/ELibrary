@@ -3,14 +3,15 @@
 		"_postman_id": "864dcc0c-6372-47b8-9084-062dc8a46f04",
 		"name": "ELibraryApis",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "32714822"
+		"_exporter_id": "32714822",
+		"_collection_link": "https://ttc222.postman.co/workspace/TTC-Workspace~5b36436c-40a5-4e97-ab23-31efb508b8ac/collection/32714822-864dcc0c-6372-47b8-9084-062dc8a46f04?action=share&source=collection_link&creator=32714822"
 	},
 	"item": [
 		{
-			"name": "auth",
+			"name": "user",
 			"item": [
 				{
-					"name": "auth-register",
+					"name": "user-register",
 					"event": [
 						{
 							"listen": "test",
@@ -51,7 +52,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"example\",\r\n  \"password\": \"123456QWERTY\",\r\n  \"confirmPassword\": \"123456QWERTY\",\r\n  \"userInfo\":{\r\n    \"name\":\"name\",\r\n    \"lastName\":\"lastName\",\r\n    \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"address\":\"address\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -59,14 +60,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/register",
+							"raw": "https://localhost:7130/user/register",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"auth",
+								"user",
 								"register"
 							]
 						}
@@ -74,7 +75,7 @@
 					"response": []
 				},
 				{
-					"name": "auth-login",
+					"name": "user-login",
 					"event": [
 						{
 							"listen": "test",
@@ -116,7 +117,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"login\": \"example\",\r\n  \"password\": \"123456QWERTY\"\r\n}",
+							"raw": "{\r\n  \"login\": \"example@gmail.com\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -124,14 +125,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/login",
+							"raw": "https://localhost:7130/user/login",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"auth",
+								"user",
 								"login"
 							]
 						}
@@ -139,7 +140,68 @@
 					"response": []
 				},
 				{
-					"name": "auth-refresh",
+					"name": "user-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"oldPassword\": \"123456;QWERTY\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-refresh",
 					"event": [
 						{
 							"listen": "test",
@@ -174,15 +236,274 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/refresh",
+							"raw": "https://localhost:7130/user/refresh",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"auth",
+								"user",
 								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"example1@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\",\r\n  \"roles\":[\"CLient\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"user_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/example1@gmail.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"example1@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"currentLogin\": \"example1@gmail.com\",\r\n  \"email\": \"example2@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\",\r\n  \"roles\":[\"Manager\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-admin-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/user/admin/delete/example1@gmail.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"user",
+								"admin",
+								"delete",
+								"example1@gmail.com"
 							]
 						}
 					},
@@ -191,41 +512,122 @@
 			]
 		},
 		{
-			"name": "user-info",
+			"name": "client",
 			"item": [
 				{
-					"name": "userinfo-user",
+					"name": "client-create",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name\",\r\n  \"middleName\": \"middleName\",\r\n  \"lastName\": \"lastName\",\r\n  \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address\",\r\n  \"phone\":\"phone\",\r\n  \"email\":\"example@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name1\",\r\n  \"middleName\": \"middleName1\",\r\n  \"lastName\": \"lastName1\",\r\n  \"dateOfBirth\":\"2021-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address1\",\r\n  \"phone\":\"phone1\",\r\n  \"email\":\"example1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
 									"if (pm.response.code === 200) {\r",
 									"    var jsonResponse = pm.response.json();\r",
-									"    \r",
-									"    pm.test(\"User name is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userName).to.equal(pm.environment.get(\"userName\"));\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info name is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.name).to.equal(\"name\");\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info last name is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.lastName).to.equal(\"lastName\");\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info date of birth is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.dateOfBirth).to.equal(\"2020-08-03T09:45:45.465625Z\");\r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"User info address is correct\", function () {\r",
-									"        pm.expect(jsonResponse.userInfo.address).to.equal(\"address\");\r",
-									"    });\r",
+									"    pm.environment.set(\"client_id\", jsonResponse.id);\r",
 									"}"
 								],
 								"type": "text/javascript",
@@ -259,15 +661,605 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/userinfo/user",
+							"raw": "https://localhost:7132/client",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7132",
 							"path": [
-								"userinfo",
-								"user"
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"client_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name\",\r\n  \"middleName\": \"middleName\",\r\n  \"lastName\": \"lastName\",\r\n  \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address\",\r\n  \"phone\":\"phone\",\r\n  \"email\":\"example@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "client-admin-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"name1\",\r\n  \"middleName\": \"middleName1\",\r\n  \"lastName\": \"lastName1\",\r\n  \"dateOfBirth\":\"2021-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address1\",\r\n  \"phone\":\"phone1\",\r\n  \"email\":\"example1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"client",
+								"admin",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "order-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"order_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"deliveryAddress\": \"address\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderBooks\": [\r\n        {\r\n            \"bookAmount\":\"1\",\r\n            \"bookId\":\"{{book_id}}\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-patch",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-cancel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/{{order_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-manager-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/manager/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"manager",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-manager-update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/manager",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order-manager-cancel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/order/manager/{{order_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"order",
+								"manager",
+								"{{order_id}}"
 							]
 						}
 					},
@@ -296,14 +1288,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -345,17 +1330,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7131/author/amount",
 							"protocol": "https",
@@ -383,7 +1370,8 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -393,20 +1381,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -429,7 +1410,7 @@
 					"response": []
 				},
 				{
-					"name": "author-create",
+					"name": "author-manager-create",
 					"event": [
 						{
 							"listen": "test",
@@ -486,7 +1467,7 @@
 					"response": []
 				},
 				{
-					"name": "author-update",
+					"name": "author-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -571,7 +1552,7 @@
 					"response": []
 				},
 				{
-					"name": "author-delete",
+					"name": "author-manager-delete",
 					"event": [
 						{
 							"listen": "test",
@@ -673,14 +1654,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -700,7 +1674,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-get-genre",
+					"name": "genre-get-amount",
 					"event": [
 						{
 							"listen": "test",
@@ -722,17 +1696,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7131/genre/amount",
 							"protocol": "https",
@@ -760,7 +1736,8 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -770,20 +1747,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -806,7 +1776,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-create",
+					"name": "genre-manager-create",
 					"event": [
 						{
 							"listen": "test",
@@ -863,7 +1833,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-update",
+					"name": "genre-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -946,7 +1916,7 @@
 					"response": []
 				},
 				{
-					"name": "genre-delete",
+					"name": "genre-manager-delete",
 					"event": [
 						{
 							"listen": "test",
@@ -1026,10 +1996,10 @@
 			]
 		},
 		{
-			"name": "book",
+			"name": "publisher",
 			"item": [
 				{
-					"name": "book-get-id",
+					"name": "publisher-get-id",
 					"event": [
 						{
 							"listen": "test",
@@ -1046,34 +2016,27 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/book/{{book_id}}",
+							"raw": "https://localhost:7131/publisher/{{publisher_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7131",
 							"path": [
-								"book",
-								"{{book_id}}"
+								"publisher",
+								"{{publisher_id}}"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "book-get-genre",
+					"name": "publisher-get-amount",
 					"event": [
 						{
 							"listen": "test",
@@ -1095,26 +2058,28 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "https://localhost:7131/book/amount",
+							"raw": "https://localhost:7131/publisher/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7131",
 							"path": [
-								"book",
+								"publisher",
 								"amount"
 							]
 						}
@@ -1122,7 +2087,7 @@
 					"response": []
 				},
 				{
-					"name": "book-pagination",
+					"name": "publisher-pagination",
 					"event": [
 						{
 							"listen": "test",
@@ -1133,7 +2098,8 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1143,20 +2109,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1164,14 +2123,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/book/pagination",
+							"raw": "https://localhost:7131/publisher/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7131",
 							"path": [
-								"book",
+								"publisher",
 								"pagination"
 							]
 						}
@@ -1179,7 +2138,7 @@
 					"response": []
 				},
 				{
-					"name": "book-create",
+					"name": "publisher-manager-create",
 					"event": [
 						{
 							"listen": "test",
@@ -1191,7 +2150,7 @@
 									"\r",
 									"if (pm.response.code === 201) {\r",
 									"    var jsonResponse = pm.response.json();\r",
-									"    pm.environment.set(\"book_id\", jsonResponse.id);\r",
+									"    pm.environment.set(\"publisher_id\", jsonResponse.id);\r",
 									"}"
 								],
 								"type": "text/javascript",
@@ -1214,7 +2173,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"title\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":{{author_id}},\r\n    \"genreId\":{{genre_id}}\r\n}",
+							"raw": "{\r\n    \"name\":\"name\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1222,21 +2181,21 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/book",
+							"raw": "https://localhost:7131/publisher",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7131",
 							"path": [
-								"book"
+								"publisher"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "book-update",
+					"name": "publisher-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -1249,12 +2208,10 @@
 									"if (pm.response.code === 200) {\r",
 									"    \r",
 									"    var token = pm.environment.get(\"accessToken\"); \r",
-									"    var id = pm.environment.get(\"book_id\"); \r",
-									"    var author_id = pm.environment.get(\"author_id\");\r",
-									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"    var id = pm.environment.get(\"publisher_id\"); \r",
 									"\r",
 									"    pm.sendRequest({\r",
-									"        url: 'https://localhost:7131/genre',\r",
+									"        url: 'https://localhost:7131/publisher',\r",
 									"        method: 'PUT',\r",
 									"        header: {\r",
 									"            'Content-Type': 'application/json',\r",
@@ -1264,10 +2221,7 @@
 									"            mode: 'raw',\r",
 									"            raw: JSON.stringify({\r",
 									"                    \"id\":id,\r",
-									"                    \"title\":\"title\",\r",
-									"                    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r",
-									"                    \"authorId\": author_id,\r",
-									"                    \"genreId\": genre_id\r",
+									"                    \"name\":\"name\"\r",
 									"            })\r",
 									"        }\r",
 									"    }, function (err, rollbackRes) {\r",
@@ -1302,7 +2256,288 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"title\":\"newTitle\",\r\n    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r\n    \"authorId\":{{author_id}},\r\n    \"genreId\":{{genre_id}}\r\n}",
+							"raw": "{\r\n    \"id\":{{publisher_id}},\r\n    \"name\":\"newName\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/publisher",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-manager-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/publisher',\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"name\":\"name\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(201);\r",
+									"        });\r",
+									"\r",
+									"        if (rollbackRes.status === 'Created') {\r",
+									"            var jsonResponse = rollbackRes.json();\r",
+									"            pm.environment.set(\"publisher_id\", jsonResponse.id);\r",
+									"        }\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/publisher/{{publisher_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"publisher",
+								"{{publisher_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "book",
+			"item": [
+				{
+					"name": "book-get-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7131/book/{{book_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book",
+								"{{book_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-get-amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    var responseData = parseInt(pm.response.text(), 10); \r",
+									"    pm.expect(responseData).to.be.above(0);  \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2,\r\n    \"publicationFromUTC\": \"2019-08-03T09:45:45.4656254Z\",\r\n    \"publicationToUTC\": \"2021-08-03T09:45:45.4656254Z\",\r\n    \"minPrice\": 0,\r\n    \"maxPrice\": 1000,\r\n    \"coverType\": 0 //Any\r\n    // \"onlyInStock\": true,\r\n    // \"minPageAmount\": 0,\r\n    // \"maxPageAmount\": 0,\r\n    // \"authorId\": 1,\r\n    // \"genreId\": 1,\r\n    // \"publisherId\": 1,\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/book/amount",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Fixed syntax for accessing JSON response\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2,\r\n    \"publicationFromUTC\": null\r\n    // \"publicationToUTC\": \"2021-08-03T09:45:45.4656254Z\",\r\n    // \"minPrice\": 0,\r\n    // \"maxPrice\": 1000,\r\n    // \"coverType\": 0\r\n    // \"onlyInStock\": true,\r\n    // \"minPageAmount\": 0,\r\n    // \"maxPageAmount\": 0,\r\n    // \"authorId\": 1,\r\n    // \"genreId\": 1,\r\n    // \"publisherId\": 1,\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/book/pagination",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book",
+								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-manager-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"book_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 1, //Hard\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1324,7 +2559,7 @@
 					"response": []
 				},
 				{
-					"name": "book-delete",
+					"name": "book-manager-update",
 					"event": [
 						{
 							"listen": "test",
@@ -1337,9 +2572,105 @@
 									"if (pm.response.code === 200) {\r",
 									"    \r",
 									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"book_id\"); \r",
 									"    var author_id = pm.environment.get(\"author_id\");\r",
 									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"    var publisher_id = pm.environment.get(\"publisher_id\");\r",
 									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7131/book',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                    \"id\":id,\r",
+									"                    \"name\": \"title\",\r",
+									"                    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"price\": 500,\r",
+									"                    \"coverType\": 1,\r",
+									"                    \"pageAmount\": 500,\r",
+									"                    \"stockAmount\": 20,\r",
+									"                    \"authorId\": author_id,\r",
+									"                    \"genreId\": genre_id,\r",
+									"                    \"publisherId\": publisher_id\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 2, //Soft\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7131/book",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7131",
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-manager-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    \r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"    var id = pm.environment.get(\"book_id\"); \r",
+									"    var author_id = pm.environment.get(\"author_id\");\r",
+									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
+									"    var publisher_id = pm.environment.get(\"publisher_id\");\r",
+									"    \r",
 									"    pm.sendRequest({\r",
 									"        url: 'https://localhost:7131/book',\r",
 									"        method: 'POST',\r",
@@ -1350,10 +2681,15 @@
 									"        body: {\r",
 									"            mode: 'raw',\r",
 									"            raw: JSON.stringify({\r",
-									"                    \"title\":\"title\",\r",
-									"                    \"publicationDate\":\"2020-08-03T09:45:45.4656254Z\",\r",
-									"                    \"authorId\": `${author_id}`,\r",
-									"                    \"genreId\": `${genre_id}`\r",
+									"                    \"name\": \"title\",\r",
+									"                    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r",
+									"                    \"price\": 500,\r",
+									"                    \"coverType\": 1,\r",
+									"                    \"pageAmount\": 500,\r",
+									"                    \"stockAmount\": 20,\r",
+									"                    \"authorId\": author_id,\r",
+									"                    \"genreId\": genre_id,\r",
+									"                    \"publisherId\": publisher_id\r",
 									"            })\r",
 									"        }\r",
 									"    }, function (err, rollbackRes) {\r",
@@ -1401,6 +2737,281 @@
 							"path": [
 								"book",
 								"{{book_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "cart-get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7132/cart",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-get-amount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7132/cart/amount",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-add-cartbook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"cart_book_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookAmount\": 1,\r\n    \"bookId\": {{book_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart/cartbook",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"cartbook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-update-cartbook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"{{cart_book_id}}\",\r\n    \"bookAmount\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart/cartbook",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"cartbook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-delete-cartbook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart/cartbook/{{cart_book_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"cartbook",
+								"{{cart_book_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-clear-cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart"
 							]
 						}
 					},

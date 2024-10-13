@@ -1,0 +1,15 @@
+<div class="flex flex-col">
+    <ng-container *ngIf="items$ | async as items">
+        <ng-container *ngIf="totalAmount$ | async as totalAmount; else loading">
+            <app-generic-table [items]="items" [columns]="columns" [totalItemAmount]="totalAmount"
+                (createItem)="createNew()" (pageChange)="onPageChange($event)" [disableDelete]="true"
+                [disableEdit]="true">
+            </app-generic-table>
+        </ng-container>
+        <ng-template #loading>
+            <app-generic-table [items]="items" [columns]="columns" [totalItemAmount]="0" (createItem)="createNew()"
+                (pageChange)="onPageChange($event)" [disableDelete]="true" [disableEdit]="true">
+            </app-generic-table>
+        </ng-template>
+    </ng-container>
+</div>

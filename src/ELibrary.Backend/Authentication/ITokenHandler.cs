@@ -6,7 +6,7 @@ namespace Authentication.Services
 {
     public interface ITokenHandler
     {
-        public AccessTokenData CreateToken(IdentityUser user);
+        public AccessTokenData CreateToken<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>;
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

@@ -7,7 +7,7 @@ namespace LibraryApi.Validators.Genre
     {
         public UpdateGenreRequestValidator()
         {
-            RuleFor(x => x.Id).GreaterThan(0);
+            RuleFor(x => x.Id).NotNull().GreaterThan(0);
             RuleFor(x => x.Name).NotNull().NotEmpty().MaximumLength(256);
         }
     }

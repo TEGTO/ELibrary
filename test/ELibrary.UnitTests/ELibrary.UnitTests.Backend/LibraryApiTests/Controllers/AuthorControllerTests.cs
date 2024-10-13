@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dto;
 using LibraryApi.Domain.Dto.Author;
-using LibraryApi.Domain.Entities;
+using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryApi.Controllers
+namespace LibraryApi.Controllers.Tests
 {
     [TestFixture]
     internal class AuthorControllerTests
@@ -63,9 +64,9 @@ namespace LibraryApi.Controllers
                 new Author { Id = 1, Name = "John", LastName = "Doe" },
                 new Author { Id = 2, Name = "Jane", LastName = "Doe" }
             };
-            var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
+            var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 2 };
             var responses = authors.Select(a => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName }).ToList();
-            mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authors);
             mockMapper.Setup(m => m.Map<AuthorResponse>(It.IsAny<Author>()))
                 .Returns((Author a) => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName });
@@ -81,10 +82,10 @@ namespace LibraryApi.Controllers
         public async Task GetItemTotalAmount_ReturnsAmount()
         {
             // Arrange
-            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<LibraryFilterRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(10);
             // Act
-            var result = await controller.GetItemTotalAmount(CancellationToken.None);
+            var result = await controller.GetItemTotalAmount(new LibraryFilterRequest() { ContainsName = "" }, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;

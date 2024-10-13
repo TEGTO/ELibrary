@@ -1,60 +1,47 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReducer, on } from "@ngrx/store";
-import { getAuthDataFailure, getAuthDataSuccess, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess } from "../..";
+import { deleteUserFailure, deleteUserSuccess, getAuthDataFailure, getAuthDataSuccess, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
+import { copyAuthTokenToAuthData as copyAuthTokenToUserAuth, copyUserUpdateRequestToAuthData, getDefaultUserAuth, UserAuth } from "../../../shared";
 
-//Registration
-export interface RegistrationState {
-    isSuccess: boolean,
-    error: any
-}
-const initialRegistrationState: RegistrationState = {
-    isSuccess: false,
-    error: null
-};
-export const registrationReducer = createReducer(
-    initialRegistrationState,
-    on(registerUser, (state) => ({
-        ...initialRegistrationState,
-    })),
-    on(registerSuccess, (state) => ({
-        ...state,
-        isSuccess: true,
-        error: null
-    })),
-    on(registerFailure, (state, { error: error }) => ({
-        ...state,
-        isSuccess: false,
-        error: error
-    })),
-);
-//Auth
 export interface AuthState {
-    isAuthenticated: boolean,
-    accessToken: string,
-    refreshToken: string,
-    refreshTokenExpiryDate: Date,
+    isRegistrationSuccess: boolean,
+    isUpdateSuccess: boolean,
     isRefreshSuccessful: boolean,
+    userAuth: UserAuth,
     error: any
 }
 const initialAuthState: AuthState = {
-    isAuthenticated: false,
-    accessToken: "",
-    refreshToken: "",
-    refreshTokenExpiryDate: new Date(),
+    isRegistrationSuccess: false,
+    isUpdateSuccess: false,
     isRefreshSuccessful: false,
+    userAuth: getDefaultUserAuth(),
     error: null
 };
 
 export const authReducer = createReducer(
     initialAuthState,
+
+    on(registerUser, (state) => ({
+        ...initialAuthState,
+    })),
+    on(registerSuccess, (state, { userAuth: userAuth }) => ({
+        ...state,
+        userAuth: userAuth,
+        isRegistrationSuccess: true,
+        error: null
+    })),
+    on(registerFailure, (state, { error: error }) => ({
+        ...initialAuthState,
+        error: error
+    })),
+
     on(signInUser, (state) => ({
         ...initialAuthState
     })),
-    on(signInUserSuccess, (state, { authData: authData }) => ({
+    on(signInUserSuccess, (state, { userAuth: userAuth }) => ({
         ...state,
-        isAuthenticated: true,
-        accessToken: authData.accessToken,
-        refreshToken: authData.refreshToken,
-        refreshTokenExpiryDate: authData.refreshTokenExpiryDate,
+        userAuth: userAuth,
         error: null
     })),
     on(signInUserFailure, (state, { error: error }) => ({
@@ -62,12 +49,9 @@ export const authReducer = createReducer(
         error: error
     })),
 
-    on(getAuthDataSuccess, (state, { authData: authData }) => ({
+    on(getAuthDataSuccess, (state, { userAuth: userAuth }) => ({
         ...state,
-        isAuthenticated: authData.isAuthenticated,
-        accessToken: authData.accessToken,
-        refreshToken: authData.refreshToken,
-        refreshTokenExpiryDate: authData.refreshTokenExpiryDate,
+        userAuth: userAuth,
         error: null
     })),
     on(getAuthDataFailure, (state) => ({
@@ -83,58 +67,39 @@ export const authReducer = createReducer(
         isRefreshSuccessful: false,
         error: null
     })),
-    on(refreshAccessTokenSuccess, (state, { authData: authToken }) => ({
+    on(refreshAccessTokenSuccess, (state, { authToken: authToken }) => ({
         ...state,
-        isAuthenticated: true,
-        accessToken: authToken.accessToken,
-        refreshToken: authToken.refreshToken,
-        refreshTokenExpiryDate: authToken.refreshTokenExpiryDate,
         isRefreshSuccessful: true,
+        userAuth: copyAuthTokenToUserAuth(state.userAuth, authToken),
         error: null
     })),
     on(refreshAccessTokenFailure, (state, { error: error }) => ({
         ...initialAuthState,
         error: error
     })),
-);
-//UserData
-export interface UserDataState {
-    userName: string,
-    error: any
-}
-const initialUserState: UserDataState = {
-    userName: "",
-    error: null
-};
 
-export const userDataReducer = createReducer(
-    initialUserState,
-    on(signInUser, (state) => ({
-        ...initialUserState
+    on(deleteUserSuccess, (state) => ({
+        ...initialAuthState,
     })),
-    on(signInUserSuccess, (state, { userData: userData }) => ({
+    on(deleteUserFailure, (state, { error: error }) => ({
         ...state,
-        userName: userData.userName,
+        error: error
+    })),
+
+    on(updateUserData, (state, { req: updateRequest }) => ({
+        ...state,
+        isUpdateSuccess: false,
         error: null
     })),
-    on(signInUserFailure, (state) => ({
-        ...initialUserState
-    })),
-
-    on(getAuthDataSuccess, (state, { userData: userData }) => ({
+    on(updateUserDataSuccess, (state, { req: updateRequest }) => ({
         ...state,
-        userName: userData.userName,
+        isUpdateSuccess: true,
+        userAuth: copyUserUpdateRequestToAuthData(state.userAuth, updateRequest),
         error: null
     })),
-    on(getAuthDataFailure, (state) => ({
-        ...initialUserState
-    })),
-
-    on(logOutUserSuccess, (state) => ({
-        ...initialUserState,
-    })),
-
-    on(refreshAccessTokenFailure, (state) => ({
-        ...initialUserState
+    on(updateUserDataFailure, (state, { error: error }) => ({
+        ...state,
+        isUpdateSuccess: false,
+        error: error
     })),
 );

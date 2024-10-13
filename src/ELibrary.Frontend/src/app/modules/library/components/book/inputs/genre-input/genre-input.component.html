@@ -1,0 +1,13 @@
+<mat-form-field>
+    <mat-label>Genre</mat-label>
+    <input type="text" placeholder="Select Genre" matInput [formControl]="input" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith">
+        <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" [style.height.px]="selectionSize">
+            <mat-option *cdkVirtualFor="let item of items; trackBy: trackByGenre" [value]="item">
+                {{ item.name }}
+            </mat-option>
+        </cdk-virtual-scroll-viewport>
+    </mat-autocomplete>
+    <mat-error *ngIf="validateInputField(input).hasError">{{ validateInputField(input).message
+        }}</mat-error>
+</mat-form-field>

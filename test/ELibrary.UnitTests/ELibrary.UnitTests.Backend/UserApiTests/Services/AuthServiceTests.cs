@@ -1,12 +1,14 @@
 ﻿using Authentication.Models;
 using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
 using Moq;
 using System.Security.Claims;
-using UserApi.Domain.Entities;
-using UserApi.Services;
+using UserApi.Domain.Dtos;
+using UserApi.Domain.Models;
+using UserEntities.Domain.Entities;
 
-namespace AuthenticationApiTests.Services
+namespace UserApi.Services.Tests
 {
     [TestFixture]
     internal class AuthServiceTests
@@ -14,6 +16,7 @@ namespace AuthenticationApiTests.Services
         private const int EXPIRY_IN_DAYS = 7;
 
         private Mock<UserManager<User>> userManagerMock;
+        private Mock<RoleManager<IdentityRole>> roleManagerMock;
         private Mock<ITokenHandler> tokenHandlerMock;
         private AuthService authService;
 
@@ -21,74 +24,242 @@ namespace AuthenticationApiTests.Services
         public void SetUp()
         {
             var userStoreMock = new Mock<IUserStore<User>>();
+            var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
+
             userManagerMock = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            roleManagerMock = new Mock<RoleManager<IdentityRole>>(roleStoreMock.Object, null, null, null, null);
             tokenHandlerMock = new Mock<ITokenHandler>();
-            authService = new AuthService(userManagerMock.Object, tokenHandlerMock.Object);
+
+            authService = new AuthService(userManagerMock.Object, roleManagerMock.Object, tokenHandlerMock.Object);
         }
 
         [Test]
+        public async Task GetUserAsync_ValidClaimsPrincipal_UserReturned()
+        {
+            // Arrange
+            var user = new User { Id = "test-user-id", UserName = "testuser" };
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            }));
+            userManagerMock.Setup(x => x.FindByIdAsync(user.Id)).ReturnsAsync(user);
+            // Act
+            var result = await authService.GetUserAsync(claimsPrincipal);
+            // Assert
+            Assert.That(result, Is.EqualTo(user));
+        }
+
+        [Test]
+        public async Task GetUserAsync_InvalidClaimsPrincipal_ReturnsNull()
+        {
+            // Arrange
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+            // Act
+            var result = await authService.GetUserAsync(claimsPrincipal);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+        [Test]
+        public async Task GetUserByUserInfoAsync_UserFoundByEmail_UserReturned()
+        {
+            // Arrange
+            var user = new User { Id = "test-user-id", UserName = "testuser", Email = "testuser@example.com" };
+            userManagerMock.Setup(x => x.FindByEmailAsync(user.Email)).ReturnsAsync(user);
+            // Act
+            var result = await authService.GetUserByUserInfoAsync(user.Email);
+            // Assert
+            Assert.That(result, Is.EqualTo(user));
+        }
+        [Test]
+        public async Task GetUserByUserInfoAsync_UserNotFound_ReturnsNull()
+        {
+            // Arrange
+            var info = "non-existent-user";
+            userManagerMock.Setup(x => x.FindByEmailAsync(info)).ReturnsAsync((User)null);
+            userManagerMock.Setup(x => x.FindByNameAsync(info)).ReturnsAsync((User)null);
+            userManagerMock.Setup(x => x.FindByIdAsync(info)).ReturnsAsync((User)null);
+            // Act
+            var result = await authService.GetUserByUserInfoAsync(info);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+        [Test]
+        public async Task GetPaginatedUsersAsync_ValidFilter_ReturnsPaginatedUsers()
+        {
+            // Arrange
+            var users = new List<User>
+            {
+                new User { Id = "test-user-id-1", UserName = "testuser1" },
+                new User { Id = "test-user-id-2", UserName = "testuser2" }
+            };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 2 };
+            userManagerMock.Setup(x => x.Users).Returns(users.AsQueryable().BuildMock());
+            // Act
+            var result = await authService.GetPaginatedUsersAsync(filter, CancellationToken.None);
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(2));
+            Assert.That(result, Is.EquivalentTo(users));
+        }
+        [Test]
+        public async Task GetUserTotalAmountAsync_ValidFilter_ReturnsTotalUserCount()
+        {
+            // Arrange
+            var users = new List<User>
+            {
+                new User { Id = "test-user-id-1", UserName = "testuser1" },
+                new User { Id = "test-user-id-2", UserName = "testuser2" }
+            };
+            var filter = new AdminGetUserFilter();
+            userManagerMock.Setup(x => x.Users).Returns(users.AsQueryable().BuildMock());
+            // Act
+            var result = await authService.GetUserTotalAmountAsync(filter, CancellationToken.None);
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
+        }
+        [Test]
         public async Task RegisterUserAsync_UserAndPasswordProvided_IdentityResultReturned()
         {
-            //Arrange
+            // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var password = "Password123";
+            var registerParams = new RegisterUserParams(user, password);
             var identityResult = IdentityResult.Success;
             userManagerMock.Setup(x => x.CreateAsync(user, password)).ReturnsAsync(identityResult);
-            //Act
-            var result = await authService.RegisterUserAsync(user, password);
-            //Assert
+            // Act
+            var result = await authService.RegisterUserAsync(registerParams);
+            // Assert
             Assert.That(result, Is.EqualTo(identityResult));
         }
         [Test]
         public async Task LoginUserAsync_ValidLoginAndPassword_TokenReturned()
         {
-            //Arrange
+            // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var password = "Password123";
-            var login = "testuser";
+            var loginParams = new LoginUserParams("testuser", "Password123", EXPIRY_IN_DAYS);
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
-            userManagerMock.Setup(x => x.FindByEmailAsync(login)).ReturnsAsync((User)null);
-            userManagerMock.Setup(x => x.FindByNameAsync(login)).ReturnsAsync(user);
-            userManagerMock.Setup(x => x.CheckPasswordAsync(user, password)).ReturnsAsync(true);
-            tokenHandlerMock.Setup(x => x.CreateToken(user)).Returns(tokenData);
+            userManagerMock.Setup(x => x.FindByEmailAsync(loginParams.Login)).ReturnsAsync((User)null);
+            userManagerMock.Setup(x => x.FindByNameAsync(loginParams.Login)).ReturnsAsync(user);
+            userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(true);
+            tokenHandlerMock.Setup(x => x.CreateToken(user, It.IsAny<IList<string>>())).Returns(tokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
-            //Act
-            var result = await authService.LoginUserAsync(login, password, EXPIRY_IN_DAYS);
-            //Assert
+            // Act
+            var result = await authService.LoginUserAsync(loginParams);
+            // Assert
             Assert.That(result, Is.EqualTo(tokenData));
             Assert.That(result.RefreshTokenExpiryDate, Is.GreaterThan(DateTime.UtcNow.AddDays(EXPIRY_IN_DAYS - 1)));
         }
         [Test]
-        public async Task GetUserByLoginAsync_LoginProvided_UserReturned()
+        public void LoginUserAsync_InvalidLoginOrPassword_ThrowsUnauthorizedAccessException()
         {
-            //Arrange
-            var login = "testuser";
-            var user = new User { UserName = login, Email = "testuser@example.com" };
-            userManagerMock.Setup(x => x.FindByEmailAsync(login)).ReturnsAsync((User)null);
-            userManagerMock.Setup(x => x.FindByNameAsync(login)).ReturnsAsync(user);
-            //Act
-            var result = await authService.GetUserByLoginAsync(login);
-            //Assert
-            Assert.That(result, Is.EqualTo(user));
+            // Arrange
+            var loginParams = new LoginUserParams("testuser", "wrongPassword", EXPIRY_IN_DAYS);
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
+            userManagerMock.Setup(x => x.FindByNameAsync(loginParams.Login)).ReturnsAsync(user);
+            userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(false);
+            // Act & Assert
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.LoginUserAsync(loginParams));
         }
         [Test]
-        public async Task RefreshTokenAsync_ValidTokenData_TokenReturned()
+        public async Task SetUserRolesAsync_ValidRoles_IdentityErrorsEmpty()
         {
-            //Arrange
-            var accessTokenData = new AccessTokenData { AccessToken = "accessToken", RefreshToken = "refreshToken" };
-            var user = new User { UserName = "testuser", RefreshToken = "refreshToken", RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1) };
-            var principal = new Mock<ClaimsPrincipal>();
-            var identity = new Mock<ClaimsIdentity>();
-            principal.Setup(x => x.Identity).Returns(identity.Object);
-            identity.Setup(x => x.Name).Returns(user.UserName);
-            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(accessTokenData.AccessToken)).Returns(principal.Object);
+            // Arrange
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
+            var roles = new List<string> { "Admin", "User" };
+            var currentRoles = new List<string> { "Admin" };
+            userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(currentRoles);
+            userManagerMock.Setup(x => x.RemoveFromRolesAsync(user, currentRoles)).ReturnsAsync(IdentityResult.Success);
+            userManagerMock.Setup(x => x.AddToRoleAsync(user, It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            roleManagerMock.Setup(x => x.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            // Act
+            var result = await authService.SetUserRolesAsync(user, roles);
+            // Assert
+            Assert.That(result.Count, Is.EqualTo(0));
+        }
+        [Test]
+        public async Task SetUserRolesAsync_InvalidRole_AddToRoleFails_IdentityErrorsReturned()
+        {
+            // Arrange
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
+            var roles = new List<string> { "InvalidRole" };
+            var identityErrors = new List<IdentityError> { new IdentityError { Description = "Error adding role" } };
+            userManagerMock.Setup(x => x.GetRolesAsync(user)).ReturnsAsync(new List<string>());
+            roleManagerMock.Setup(x => x.RoleExistsAsync("InvalidRole")).ReturnsAsync(false);
+            userManagerMock.Setup(x => x.RemoveFromRolesAsync(It.IsAny<User>(), It.IsAny<IEnumerable<string>>())).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
+            // Act
+            var result = await authService.SetUserRolesAsync(user, roles);
+            // Assert
+            Assert.That(result.Count, Is.EqualTo(identityErrors.Count));
+            Assert.That(result[0].Description, Is.EqualTo(identityErrors[0].Description));
+        }
+        [Test]
+        public async Task UpdateUserAsync_ValidUpdate_NoErrors()
+        {
+            // Arrange
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
+            var updateData = new UserUpdateData { UserName = "newuser", Email = "newemail@example.com", Password = "newpass", OldPassword = "oldpass" };
+            var identityResult = IdentityResult.Success;
+            userManagerMock.Setup(x => x.SetUserNameAsync(user, updateData.UserName)).ReturnsAsync(identityResult);
+            userManagerMock.Setup(x => x.GenerateChangeEmailTokenAsync(user, updateData.Email)).ReturnsAsync("emailToken");
+            userManagerMock.Setup(x => x.ChangeEmailAsync(user, updateData.Email, "emailToken")).ReturnsAsync(identityResult);
+            userManagerMock.Setup(x => x.ChangePasswordAsync(user, updateData.OldPassword, updateData.Password)).ReturnsAsync(identityResult);
+            // Act
+            var result = await authService.UpdateUserAsync(user, updateData, false);
+            // Assert
+            Assert.That(result.Count, Is.EqualTo(0));
+        }
+        [Test]
+        public async Task UpdateUserAsync_InvalidPasswordChange_ErrorsReturned()
+        {
+            // Arrange
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
+            var updateData = new UserUpdateData { UserName = "newuser", Email = "newemail@example.com", Password = "newpass", OldPassword = "oldpass" };
+            var identityErrors = new List<IdentityError> { new IdentityError { Description = "Password change failed" } };
+            userManagerMock.Setup(x => x.SetUserNameAsync(user, updateData.UserName)).ReturnsAsync(IdentityResult.Success);
+            userManagerMock.Setup(x => x.GenerateChangeEmailTokenAsync(user, updateData.Email)).ReturnsAsync("emailToken");
+            userManagerMock.Setup(x => x.ChangeEmailAsync(user, updateData.Email, "emailToken")).ReturnsAsync(IdentityResult.Success);
+            userManagerMock.Setup(x => x.ChangePasswordAsync(user, updateData.OldPassword, updateData.Password)).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
+            // Act
+            var result = await authService.UpdateUserAsync(user, updateData, false);
+            // Assert
+            Assert.That(result.Count, Is.EqualTo(identityErrors.Count));
+            Assert.That(result[0].Description, Is.EqualTo(identityErrors[0].Description));
+        }
+        [Test]
+        public async Task DeleteUserAsync_ValidUser_IdentityResultReturned()
+        {
+            // Arrange
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
+            var identityResult = IdentityResult.Success;
+            userManagerMock.Setup(x => x.DeleteAsync(user)).ReturnsAsync(identityResult);
+            // Act
+            var result = await authService.DeleteUserAsync(user);
+            // Assert
+            Assert.That(result, Is.EqualTo(identityResult));
+        }
+        [Test]
+        public async Task RefreshTokenAsync_ValidTokenData_ReturnsNewTokenData()
+        {
+            // Arrange
+            var user = new User { Id = "test-user-id", UserName = "testuser", RefreshToken = "valid-refresh-token", RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1) };
+            var tokenData = new AccessTokenData { AccessToken = "old-access-token", RefreshToken = "valid-refresh-token" };
+            var newTokenData = new AccessTokenData { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
+
             userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
-            tokenHandlerMock.Setup(x => x.CreateToken(user)).Returns(accessTokenData);
-            //Act
-            var result = await authService.RefreshTokenAsync(accessTokenData, EXPIRY_IN_DAYS);
-            //Assert
-            Assert.That(result, Is.EqualTo(accessTokenData));
-            Assert.That(result.RefreshTokenExpiryDate, Is.GreaterThan(DateTime.UtcNow.AddDays(EXPIRY_IN_DAYS - 1)));
+            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
+            tokenHandlerMock.Setup(x => x.CreateToken(user, It.IsAny<IList<string>>())).Returns(newTokenData);
+            userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+            // Act
+            var result = await authService.RefreshTokenAsync(tokenData, EXPIRY_IN_DAYS);
+            // Assert
+            Assert.That(result, Is.EqualTo(newTokenData));
+        }
+        [Test]
+        public void RefreshTokenAsync_InvalidToken_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var tokenData = new AccessTokenData { AccessToken = "invalid-token", RefreshToken = "invalid-refresh-token" };
+            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
+            // Act & Assert
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenData, EXPIRY_IN_DAYS));
         }
     }
 }

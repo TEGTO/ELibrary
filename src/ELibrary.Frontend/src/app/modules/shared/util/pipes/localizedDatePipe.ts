@@ -7,18 +7,20 @@ export class LocalizedDatePipe implements PipeTransform {
 
     constructor(@Inject(LOCALE_ID) private locale: string) { }
 
-    transform(value: Date | string | number | null | undefined): string | null {
+    transform(value: Date | string | number | null | undefined, includeTime = false): string | null {
         if (value === null || value === undefined) {
             return null;
         }
+
         const date = new Date(value);
         if (isNaN(date.getTime())) {
             return null;
         }
-        return date.toLocaleDateString(this.locale, {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+
+        const options: Intl.DateTimeFormatOptions = includeTime
+            ? { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }
+            : { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+        return date.toLocaleDateString(this.locale, options);
     }
 }

@@ -2,9 +2,10 @@
 using LibraryApi.Domain.Dto.Author;
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dto.Genre;
-using LibraryApi.Domain.Entities;
+using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Entities.Library;
 
-namespace LibraryApi
+namespace LibraryApi.Tests
 {
     [TestFixture]
     internal class AutoMapperProfileTests
@@ -89,7 +90,7 @@ namespace LibraryApi
             var book = new Book
             {
                 Id = 1,
-                Title = "Dune",
+                Name = "Dune",
                 PublicationDate = new DateTime(1965, 8, 1),
                 AuthorId = 1,
                 GenreId = 1,
@@ -100,7 +101,7 @@ namespace LibraryApi
             var result = mapper.Map<BookResponse>(book);
             // Assert
             Assert.That(result.Id, Is.EqualTo(book.Id));
-            Assert.That(result.Title, Is.EqualTo(book.Title));
+            Assert.That(result.Name, Is.EqualTo(book.Name));
             Assert.That(result.PublicationDate, Is.EqualTo(book.PublicationDate));
             Assert.That(result.Author.Id, Is.EqualTo(book.Author.Id));
             Assert.That(result.Genre.Id, Is.EqualTo(book.Genre.Id));
@@ -111,7 +112,7 @@ namespace LibraryApi
             // Arrange
             var createRequest = new CreateBookRequest
             {
-                Title = "Dune",
+                Name = "Dune",
                 PublicationDate = new DateTime(1965, 8, 1),
                 AuthorId = 1,
                 GenreId = 1
@@ -119,7 +120,7 @@ namespace LibraryApi
             // Act
             var result = mapper.Map<Book>(createRequest);
             // Assert
-            Assert.That(result.Title, Is.EqualTo(createRequest.Title));
+            Assert.That(result.Name, Is.EqualTo(createRequest.Name));
             Assert.That(result.PublicationDate, Is.EqualTo(createRequest.PublicationDate));
             Assert.That(result.AuthorId, Is.EqualTo(createRequest.AuthorId));
             Assert.That(result.GenreId, Is.EqualTo(createRequest.GenreId));

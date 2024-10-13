@@ -1,8 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using UserApi.Domain.Dtos;
-using UserApi.Validators;
+using UserApi.Domain.Dtos.Requests;
 
-namespace AuthenticationApiTests.Validators
+namespace UserApi.Validators.Tests
 {
     [TestFixture]
     internal class UserAuthenticationRequestValidatorTests

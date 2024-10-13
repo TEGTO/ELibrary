@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dto;
 using LibraryApi.Domain.Dto.Genre;
-using LibraryApi.Domain.Entities;
+using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace LibraryApi.Controllers
+namespace LibraryApi.Controllers.Tests
 {
     [TestFixture]
     internal class GenreControllerTests
@@ -63,9 +64,9 @@ namespace LibraryApi.Controllers
                 new Genre { Id = 1, Name = "Science Fiction" },
                 new Genre { Id = 2, Name = "Fantasy" }
             };
-            var request = new PaginatedRequest { PageNumber = 1, PageSize = 2 };
+            var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 2 };
             var responses = genres.Select(g => new GenreResponse { Id = g.Id, Name = g.Name }).ToList();
-            mockEntityService.Setup(s => s.GetPaginatedAsync(request.PageNumber, request.PageSize, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(genres);
             mockMapper.Setup(m => m.Map<GenreResponse>(It.IsAny<Genre>()))
                 .Returns((Genre g) => new GenreResponse { Id = g.Id, Name = g.Name });
@@ -81,10 +82,10 @@ namespace LibraryApi.Controllers
         public async Task GetItemTotalAmount_ReturnsAmount()
         {
             // Arrange
-            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.GetItemTotalAmountAsync(It.IsAny<LibraryFilterRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(10);
             // Act
-            var result = await controller.GetItemTotalAmount(CancellationToken.None);
+            var result = await controller.GetItemTotalAmount(new LibraryFilterRequest() { ContainsName = "" }, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;

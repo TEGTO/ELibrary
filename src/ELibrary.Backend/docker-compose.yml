@@ -23,5 +23,16 @@ services:
     networks:
     - backend-net
 
+  shopapi:
+    container_name: elibrary-shop-api
+    image: ${DOCKER_REGISTRY-}shopapi
+    build:
+      context: .
+      dockerfile: ShopApi/Dockerfile
+    ports: 
+      - 7132:8081
+    networks:
+      - backend-net
+
 networks:
   backend-net:

@@ -1,18 +1,28 @@
-import { BookResponse } from "../../../..";
+import { Book, CoverType } from "../../../..";
 
 export interface UpdateBookRequest {
     id: number;
-    title: string;
+    name: string;
     publicationDate: Date;
+    price: number;
+    coverType: CoverType;
+    pageAmount: number;
+    coverImgUrl: string,
     authorId: number;
     genreId: number;
+    publisherId: number;
 }
-export function bookToUpdateRequest(book: BookResponse): UpdateBookRequest {
+export function mapBookToUpdateBookRequest(book: Book): UpdateBookRequest {
     return {
         id: book.id,
-        title: book.title,
+        name: book.name,
         publicationDate: book.publicationDate,
+        price: book.price,
+        coverType: book.coverType,
+        pageAmount: book.pageAmount,
+        coverImgUrl: book.coverImgUrl,
         authorId: book.author.id,
         genreId: book.genre.id,
+        publisherId: book.publisher.id
     }
 }

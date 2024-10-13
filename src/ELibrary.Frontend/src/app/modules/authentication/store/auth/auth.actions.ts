@@ -1,26 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { AuthData, AuthToken, UserAuthenticationRequest, UserData, UserRegistrationRequest } from "../../../shared";
+import { AuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from "../../../shared";
 
-//Registration
 export const registerUser = createAction(
-    '[Registration] Register New User',
-    props<{ registrationRequest: UserRegistrationRequest }>()
+    '[Auth] Register New User',
+    props<{ req: UserRegistrationRequest }>()
 );
 export const registerSuccess = createAction(
-    '[Registration] Register New User Success'
+    '[Auth] Register New User Success',
+    props<{ userAuth: UserAuth }>()
 );
 export const registerFailure = createAction(
-    '[Registration] Register New User Failure',
+    '[Auth] Register New User Failure',
     props<{ error: any }>()
 );
-//Auth
+
 export const signInUser = createAction(
     '[Auth] Sing In By User Data',
-    props<{ authRequest: UserAuthenticationRequest }>()
+    props<{ req: UserAuthenticationRequest }>()
 );
 export const signInUserSuccess = createAction(
     '[Auth] Sing In By User Data Success',
-    props<{ authData: AuthData, userData: UserData }>()
+    props<{ userAuth: UserAuth }>()
 );
 export const signInUserFailure = createAction(
     '[Auth] Sing In By User Data Failure',
@@ -32,7 +33,7 @@ export const getAuthData = createAction(
 );
 export const getAuthDataSuccess = createAction(
     '[Auth] Get Authenticated Data Success',
-    props<{ authData: AuthData, userData: UserData }>()
+    props<{ userAuth: UserAuth }>()
 );
 export const getAuthDataFailure = createAction(
     '[Auth] Get Authenticated Data Failure'
@@ -51,9 +52,34 @@ export const refreshAccessToken = createAction(
 );
 export const refreshAccessTokenSuccess = createAction(
     '[Auth] Refresh Access Token Success',
-    props<{ authData: AuthToken }>()
+    props<{ authToken: AuthToken }>()
 );
 export const refreshAccessTokenFailure = createAction(
     '[Auth] Refresh Access Token Failure',
     props<{ error: any }>()
 );
+
+export const updateUserData = createAction(
+    '[Auth] Update User Data',
+    props<{ req: UserUpdateRequest }>()
+);
+export const updateUserDataSuccess = createAction(
+    '[Auth] Update User Data Success',
+    props<{ req: UserUpdateRequest }>()
+);
+export const updateUserDataFailure = createAction(
+    '[Auth] Update User Data Failure',
+    props<{ error: any }>()
+);
+
+export const deleteUser = createAction(
+    '[Auth] Delete User',
+);
+export const deleteUserSuccess = createAction(
+    '[Auth] Delete User Success'
+);
+export const deleteUserFailure = createAction(
+    '[Auth] Delete User Failure',
+    props<{ error: any }>()
+);
+

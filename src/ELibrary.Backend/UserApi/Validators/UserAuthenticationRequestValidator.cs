@@ -1,5 +1,5 @@
-﻿using UserApi.Domain.Dtos;
-using FluentValidation;
+﻿using FluentValidation;
+using UserApi.Domain.Dtos.Requests;
 
 namespace UserApi.Validators
 {

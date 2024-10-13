@@ -1,0 +1,65 @@
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="text-gray-700 font-bold"> Contact Information </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form id="client" class="space-y-1 flex flex-col" [formGroup]="formGroup">
+            <div class="flex gap-2 flex-wrap w-full">
+                <mat-form-field class="w-full sm:w-4/12">
+                    <mat-label>Name</mat-label>
+                    <input matInput type="text" autocomplete="client-name" formControlName="name" placeholder="John"
+                        maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-3/12">
+                    <mat-label>Middle Name</mat-label>
+                    <input matInput type="text" autocomplete="client-middle-name" formControlName="middleName"
+                        placeholder="Michael" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(middleNameInput).hasError">{{validateInputField(middleNameInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-4/12">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput type="text" autocomplete="client-last-name" formControlName="lastName"
+                        placeholder="Doe" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(lastNameInput).hasError">{{validateInputField(lastNameInput).message}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="flex gap-2 flex-wrap w-full">
+                <mat-form-field class="w-full sm:w-5/12">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="text" autocomplete="client-email" formControlName="email"
+                        placeholder="example@gmail.com" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-4/12">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [readonly]="true">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error
+                        *ngIf="validateInputField(dateOfBirthInput).hasError">{{validateInputField(dateOfBirthInput).message}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="flex gap-2 flex-wrap w-full">
+                <mat-form-field class="w-full sm:w-6/12">
+                    <mat-label>Address</mat-label>
+                    <input matInput type="text" autocomplete="client-address" formControlName="address"
+                        placeholder="123 Main St" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(addressInput).hasError">{{validateInputField(addressInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-full sm:w-5/12">
+                    <mat-label>Phone</mat-label>
+                    <input matInput type="phone" autocomplete="client-phone" formControlName="phone"
+                        placeholder="+3801234567" maxlength="256">
+                    <mat-error
+                        *ngIf="validateInputField(phoneInput).hasError">{{validateInputField(phoneInput).message}}</mat-error>
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-expansion-panel>
+</mat-accordion>

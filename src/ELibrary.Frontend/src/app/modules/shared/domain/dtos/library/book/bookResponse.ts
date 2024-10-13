@@ -1,25 +1,30 @@
-import { AuthorResponse, GenreResponse, mapAuthorData, UpdateBookRequest } from "../../../..";
+import { AuthorResponse, Book, CoverType, GenreResponse, mapAuthorResponseToAuthor, mapGenreResponseToGenre, mapPublisherResponseToPublisher, PublisherResponse } from "../../../..";
 
 export interface BookResponse {
     id: number;
-    title: string;
+    name: string;
     publicationDate: Date;
+    price: number;
+    coverType: CoverType;
+    pageAmount: number;
+    stockAmount: number;
+    coverImgUrl: string,
     author: AuthorResponse;
     genre: GenreResponse;
+    publisher: PublisherResponse;
 }
-export function mapBookData(resp: BookResponse): BookResponse {
+export function mapBookResponseToBook(response: BookResponse): Book {
     return {
-        ...resp,
-        publicationDate: new Date(resp.publicationDate),
-        author: mapAuthorData(resp.author)
-    }
-}
-export function getBookFromUpdateRequest(request: UpdateBookRequest, author: AuthorResponse, genre: GenreResponse): BookResponse {
-    return {
-        id: request.id,
-        title: request.title,
-        publicationDate: request.publicationDate,
-        author: author,
-        genre: genre
+        id: response?.id,
+        name: response?.name,
+        publicationDate: new Date(response?.publicationDate),
+        price: response?.price,
+        coverType: response?.coverType,
+        pageAmount: response?.pageAmount,
+        stockAmount: response?.stockAmount,
+        coverImgUrl: response?.coverImgUrl,
+        author: mapAuthorResponseToAuthor(response?.author),
+        genre: mapGenreResponseToGenre(response?.genre),
+        publisher: mapPublisherResponseToPublisher(response?.publisher),
     }
 }

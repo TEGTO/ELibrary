@@ -1,8 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using UserApi.Domain.Dtos;
-using UserApi.Validators;
+using UserApi.Domain.Dtos.Requests;
 
-namespace AuthenticationApiTests.Validators
+namespace UserApi.Validators.Tests
 {
     [TestFixture]
     internal class UserRegistrationRequestValidatorTests
@@ -19,21 +18,21 @@ namespace AuthenticationApiTests.Validators
         public void Validate_UserNameIsNull_HasValidationError()
         {
             // Arrange
-            var request = new UserRegistrationRequest { UserName = null };
+            var request = new UserRegistrationRequest { Email = null };
             // Act
             var result = validator.TestValidate(request);
             // Assert
-            result.ShouldHaveValidationErrorFor(x => x.UserName);
+            result.ShouldHaveValidationErrorFor(x => x.Email);
         }
         [Test]
         public void Validate_UserNameTooBig_HasValidationError()
         {
             // Arrange
-            var request = new UserRegistrationRequest { UserName = new string('A', 257) };
+            var request = new UserRegistrationRequest { Email = new string('A', 257) };
             // Act
             var result = validator.TestValidate(request);
             // Assert
-            result.ShouldHaveValidationErrorFor(x => x.UserName);
+            result.ShouldHaveValidationErrorFor(x => x.Email);
         }
         [Test]
         public void Validate_PasswordIsNull_HasValidationError()
@@ -69,7 +68,7 @@ namespace AuthenticationApiTests.Validators
         public void Validate_ConfirmPasswordIsNull_HasValidationError()
         {
             // Arrange
-            var request = new UserRegistrationRequest { UserName = "UserName", Password = "12345678", ConfirmPassword = null };
+            var request = new UserRegistrationRequest { Email = "UserName", Password = "12345678", ConfirmPassword = null };
             // Act
             var result = validator.TestValidate(request);
             // Assert

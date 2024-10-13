@@ -42,7 +42,8 @@ describe('BaseApiService', () => {
   it('should handle error using CustomErrorHandler', () => {
     const error = new Error('Test error');
     service['handleError'](error).subscribe({
-      error: (err) => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      error: () => {
       }
     });
     expect(mockErrorHandler.handleApiError).toHaveBeenCalledWith(error);

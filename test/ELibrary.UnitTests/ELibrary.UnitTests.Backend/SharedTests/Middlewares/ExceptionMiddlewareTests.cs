@@ -3,10 +3,9 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Shared.Middlewares;
 using System.Net;
 
-namespace SharedTests.Middlewares
+namespace Shared.Middlewares.Tests
 {
     [TestFixture]
     internal class ExceptionMiddlewareTests

@@ -1,52 +1,153 @@
 ﻿using Authentication.Models;
 using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using UserApi.Domain.Entities;
+using UserApi.Domain.Dtos;
+using UserApi.Domain.Models;
+using UserEntities.Domain.Entities;
 
 namespace UserApi.Services
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly ITokenHandler tokenHandler;
 
-        public AuthService(UserManager<User> userManager, ITokenHandler tokenHandler)
+        public AuthService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ITokenHandler tokenHandler)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.tokenHandler = tokenHandler;
         }
 
         #region IAuthService Members
 
-        public async Task<IdentityResult> RegisterUserAsync(User user, string password)
+        public async Task<IdentityResult> RegisterUserAsync(RegisterUserParams registerParams)
         {
-            return await userManager.CreateAsync(user, password);
+            return await userManager.CreateAsync(registerParams.User, registerParams.Password);
         }
-        public async Task<AccessTokenData> LoginUserAsync(string login, string password, double refreshTokenExpiryInDays)
+        public async Task<AccessTokenData> LoginUserAsync(LoginUserParams loginParams)
         {
-            var user = await GetUserByLoginAsync(login);
+            var user = await GetUserByUserInfoAsync(loginParams.Login);
 
-            if (user == null || !await userManager.CheckPasswordAsync(user, password))
+            if (user == null || !await userManager.CheckPasswordAsync(user, loginParams.Password))
             {
-                throw new UnauthorizedAccessException("Invalid authentication. Login is not correct.");
+                throw new UnauthorizedAccessException("Invalid authentication. Check Login or password.");
             }
 
-            var tokenData = CreateNewTokenData(user, refreshTokenExpiryInDays);
+            var tokenData = await CreateNewTokenDataAsync(user, loginParams.RefreshTokenExpiryInDays);
             await SetRefreshToken(user, tokenData);
 
             return tokenData;
         }
         public async Task<User?> GetUserAsync(ClaimsPrincipal principal)
         {
-            var name = principal.FindFirstValue(ClaimTypes.Name);
-            return name.IsNullOrEmpty() ? null : await GetUserByLoginAsync(name);
+            var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            return id.IsNullOrEmpty() ? null : await userManager.FindByIdAsync(id!);
         }
-        public async Task<User?> GetUserByLoginAsync(string login)
+        public async Task<User?> GetUserByUserInfoAsync(string info)
         {
-            var user = await userManager.FindByNameAsync(login);
+            var user = await userManager.FindByEmailAsync(info);
+            user = user == null ? await userManager.FindByNameAsync(info) : user;
+            user = user == null ? await userManager.FindByIdAsync(info) : user;
             return user;
+        }
+        public async Task<IEnumerable<User>> GetPaginatedUsersAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
+        {
+            var queryable = userManager.Users.AsNoTracking();
+            List<User> paginatedUsers = new List<User>();
+
+            queryable = ApplyFilter(queryable, filter);
+
+            paginatedUsers.AddRange(await queryable
+                  .Skip((filter.PageNumber - 1) * filter.PageSize)
+                  .Take(filter.PageSize)
+                  .ToListAsync(cancellationToken));
+
+            return paginatedUsers;
+        }
+        public async Task<int> GetUserTotalAmountAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
+        {
+            var queryable = userManager.Users.AsNoTracking();
+
+            queryable = ApplyFilter(queryable, filter);
+
+            return await queryable.CountAsync(cancellationToken);
+        }
+        public async Task<List<IdentityError>> SetUserRolesAsync(User user, List<string> roles)
+        {
+            List<IdentityError> identityErrors = new List<IdentityError>();
+
+            var currentRoles = await userManager.GetRolesAsync(user);
+
+            var removeResult = await userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded)
+            {
+                identityErrors.AddRange(removeResult.Errors);
+                return identityErrors;
+            }
+
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    var createRoleResult = await roleManager.CreateAsync(new IdentityRole(role));
+                    if (!createRoleResult.Succeeded)
+                    {
+                        identityErrors.AddRange(createRoleResult.Errors);
+                        continue;
+                    }
+                }
+
+                var addResult = await userManager.AddToRoleAsync(user, role);
+                if (!addResult.Succeeded)
+                {
+                    identityErrors.AddRange(addResult.Errors);
+                }
+            }
+
+            return identityErrors;
+        }
+        public async Task<List<string>> GetUserRolesAsync(User user)
+        {
+            return (await userManager.GetRolesAsync(user)).ToList();
+        }
+        public async Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateData updateData, bool resetPassword)
+        {
+            List<IdentityError> identityErrors = new List<IdentityError>();
+
+            if (!user.UserName.Equals(updateData.UserName))
+            {
+                var result = await userManager.SetUserNameAsync(user, updateData.UserName);
+                identityErrors.AddRange(result.Errors);
+            }
+
+            if (!user.Email.Equals(updateData.Email))
+            {
+                var token = await userManager.GenerateChangeEmailTokenAsync(user, updateData.Email);
+                var result = await userManager.ChangeEmailAsync(user, updateData.Email, token);
+                identityErrors.AddRange(result.Errors);
+            }
+
+            if (!string.IsNullOrEmpty(updateData.Password))
+            {
+                if (resetPassword)
+                {
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await userManager.ResetPasswordAsync(user, token, updateData.Password);
+                    identityErrors.AddRange(result.Errors);
+                }
+                else
+                {
+                    var result = await userManager.ChangePasswordAsync(user, updateData.OldPassword, updateData.Password);
+                    identityErrors.AddRange(result.Errors);
+                }
+            }
+
+            return RemoveDuplicates(identityErrors);
         }
         public async Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, double refreshTokenExpiryInDays)
         {
@@ -63,19 +164,25 @@ namespace UserApi.Services
                 throw new InvalidDataException("Refresh token is not valid!");
             }
 
-            var tokenData = CreateNewTokenData(user, refreshTokenExpiryInDays);
+            var tokenData = await CreateNewTokenDataAsync(user, refreshTokenExpiryInDays);
             await SetRefreshToken(user, tokenData);
 
             return tokenData;
+        }
+        public async Task<IdentityResult> DeleteUserAsync(User user)
+        {
+            var result = await userManager.DeleteAsync(user);
+            return result;
         }
 
         #endregion
 
         #region Private Helpers
 
-        private AccessTokenData CreateNewTokenData(User user, double refreshTokenExpiryInDays)
+        private async Task<AccessTokenData> CreateNewTokenDataAsync(User user, double refreshTokenExpiryInDays)
         {
-            var tokenData = tokenHandler.CreateToken(user);
+            var roles = await userManager.GetRolesAsync(user);
+            var tokenData = tokenHandler.CreateToken(user, roles);
             tokenData.RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
             return tokenData;
         }
@@ -84,6 +191,27 @@ namespace UserApi.Services
             user.RefreshToken = accessTokenData.RefreshToken;
             user.RefreshTokenExpiryTime = accessTokenData.RefreshTokenExpiryDate;
             await userManager.UpdateAsync(user);
+        }
+        private List<IdentityError> RemoveDuplicates(List<IdentityError> identityErrors)
+        {
+            identityErrors = identityErrors
+            .GroupBy(e => e.Description)
+            .Select(g => g.First())
+            .ToList();
+            return identityErrors;
+        }
+        private IQueryable<User> ApplyFilter(IQueryable<User> query, AdminGetUserFilter userFilter)
+        {
+            if (!string.IsNullOrEmpty(userFilter.ContainsInfo))
+            {
+                query = query.Where(b =>
+                   b.Email.Contains(userFilter.ContainsInfo)
+                || b.UserName.Contains(userFilter.ContainsInfo)
+                || b.Id.Contains(userFilter.ContainsInfo)
+                );
+            }
+            return query
+                 .OrderByDescending(b => b.RegistredAtUtc);
         }
 
         #endregion

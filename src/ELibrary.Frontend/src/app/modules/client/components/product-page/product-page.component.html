@@ -1,0 +1,75 @@
+<app-book-filter (filterChange)="filterChange($event)"></app-book-filter>
+<div class="bg-zinc-50 body__products">
+    <ng-container *ngIf="items$ | async as items; else loading">
+        <ng-container *ngIf="items.length > 0; else noItems">
+            <ng-container *ngIf="totalAmount$ | async as totalAmount">
+                <div class="products-grid">
+                    <ng-container *ngFor="let item of items">
+                        <div *ngTemplateOutlet="book; context: { book: item, bookAdded: bookAddedMap[item.id] }">
+                        </div>
+                    </ng-container>
+                </div>
+                <mat-paginator class="!bg-zinc-50" [length]="totalAmount" [pageSize]="pageSize"
+                    [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
+                </mat-paginator>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</div>
+
+<!-- Display this when no items are found -->
+<ng-template #noItems>
+    <div class="no-items-container flex items-center justify-center h-96">
+        <p class="text-lg text-gray-600">No items found. Please adjust your filters.</p>
+    </div>
+</ng-template>
+<ng-template #book let-book="book" let-bookAdded="bookAdded">
+    <div class="book h-72 w-48 flex flex-col items-center border border-gray-200 rounded-lg p-4">
+        <a [routerLink]="getBookPage(book)"
+            class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 relative">
+            <div class="book__cover relative">
+                <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
+                    onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                <!-- Gray Overlay with Centered "Out of Stock" Text -->
+                <div *ngIf="!checkIfInStock(book)"
+                    class="absolute inset-0 bg-gray-100/70 flex items-center justify-center text-red-600 font-bold text-xs">
+                    Out of Stock
+                </div>
+            </div>
+            <div class="duration-50">
+                <div class="book__name font-bold truncate-big"
+                    [ngClass]="checkIfInStock(book) ? 'text-gray-700' : 'text-gray-300'">
+                    {{ book.name }}
+                </div>
+                <div class="book__author truncate-small"
+                    [ngClass]="checkIfInStock(book) ? 'text-gray-400' : 'text-gray-300'">
+                    {{ book.author.name + ' ' + book.author.lastName }}
+                </div>
+            </div>
+        </a>
+        <div class="book__buy w-full flex items-center justify-between">
+            <div class="truncate-small font-bold" [ngClass]="book.stockAmount > 0 ? 'text-red-500' : 'text-gray-300'">
+                {{ applyCurrencyPipe(book.price) }}
+            </div>
+            <ng-container *ngIf="!bookAdded; else addedToCart">
+                <button class="py-1 px-1 rounded inline-flex items-center" (click)="addBookToCart(book)"
+                    [disabled]="!checkIfInStock(book)" [ngClass]="{
+                            'hover:bg-gray-200 text-green-600': checkIfInStock(book),
+                            'bg-gray-300 text-gray-400': !checkIfInStock(book)
+                        }">
+                    <span class="material-icons">shopping_cart</span>
+                </button>
+            </ng-container>
+
+            <ng-template #addedToCart>
+                <div class="py-1 px-1 rounded inline-flex items-center">
+                    <span class="material-icons text-green-600">check</span>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</ng-template>
+<!-- Loading -->
+<ng-template #loading>
+    <app-loading></app-loading>
+</ng-template>

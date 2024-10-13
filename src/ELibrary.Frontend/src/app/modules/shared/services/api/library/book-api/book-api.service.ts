@@ -1,41 +1,43 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
-import { BaseApiService, BookResponse, CreateBookRequest, LibraryEntityApi, mapBookData, PaginatedRequest, UpdateBookRequest } from '../../../..';
+import { BaseApiService, Book, BookFilterRequest, BookResponse, CreateBookRequest, LibraryEntityApi, mapBookResponseToBook, UpdateBookRequest } from '../../../..';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BookApiService extends BaseApiService implements LibraryEntityApi<BookResponse, CreateBookRequest, UpdateBookRequest> {
-  getById(id: number): Observable<BookResponse> {
+export class BookApiService extends BaseApiService implements LibraryEntityApi<Book, CreateBookRequest, UpdateBookRequest, BookFilterRequest> {
+  getById(id: number): Observable<Book> {
     return this.httpClient.get<BookResponse>(this.combinePathWithBookApiUrl(`/${id}`)).pipe(
-      map(resp => mapBookData(resp)),
-      catchError((resp) => this.handleError(resp))
+      map((response) => mapBookResponseToBook(response)),
+      catchError((error) => this.handleError(error))
     );
   }
-  getPaginated(request: PaginatedRequest): Observable<BookResponse[]> {
+  getPaginated(request: BookFilterRequest): Observable<Book[]> {
     return this.httpClient.post<BookResponse[]>(this.combinePathWithBookApiUrl(`/pagination`), request).pipe(
-      map(resp => resp.map(x => mapBookData(x))),
-      catchError((resp) => this.handleError(resp))
+      map(response => response.map(x => mapBookResponseToBook(x))),
+      catchError((error) => this.handleError(error))
     );
   }
-  getItemTotalAmount(): Observable<number> {
-    return this.httpClient.get<number>(this.combinePathWithBookApiUrl(`/amount`)).pipe(
-      catchError((resp) => this.handleError(resp))
+  getItemTotalAmount(request: BookFilterRequest): Observable<number> {
+    return this.httpClient.post<number>(this.combinePathWithBookApiUrl(`/amount`), request).pipe(
+      catchError((error) => this.handleError(error))
     );
   }
-  create(request: CreateBookRequest): Observable<BookResponse> {
+  create(request: CreateBookRequest): Observable<Book> {
     return this.httpClient.post<BookResponse>(this.combinePathWithBookApiUrl(``), request).pipe(
-      catchError((resp) => this.handleError(resp))
+      map((response) => mapBookResponseToBook(response)),
+      catchError((error) => this.handleError(error))
     );
   }
-  update(request: UpdateBookRequest) {
+  update(request: UpdateBookRequest): Observable<Book> {
     return this.httpClient.put<BookResponse>(this.combinePathWithBookApiUrl(``), request).pipe(
-      catchError((resp) => this.handleError(resp))
+      map((response) => mapBookResponseToBook(response)),
+      catchError((error) => this.handleError(error))
     );
   }
   deleteById(id: number) {
-    return this.httpClient.delete(this.combinePathWithBookApiUrl(`/${id}`)).pipe(
-      catchError((resp) => this.handleError(resp))
+    return this.httpClient.delete<void>(this.combinePathWithBookApiUrl(`/${id}`), { observe: 'response' }).pipe(
+      catchError((error) => this.handleError(error))
     );
   }
   private combinePathWithBookApiUrl(subpath: string) {
