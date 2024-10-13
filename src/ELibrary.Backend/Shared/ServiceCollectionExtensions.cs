@@ -43,7 +43,10 @@ namespace Shared
         }
         public static IServiceCollection AddApplicationCors(this IServiceCollection services, IConfiguration configuration, string allowSpecificOrigins, bool isDevelopment)
         {
-            var allowedOrigins = configuration.GetSection(Configuration.ALLOWED_CORS_ORIGINS).Get<string[]>() ?? new string[0];
+            var allowedOriginsString = configuration[Configuration.ALLOWED_CORS_ORIGINS] ?? string.Empty;
+            var allowedOrigins = allowedOriginsString.Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+            Console.WriteLine("allowedOriginsString: " + allowedOriginsString);
 
             services.AddCors(options =>
             {

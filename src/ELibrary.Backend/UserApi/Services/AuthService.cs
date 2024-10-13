@@ -35,7 +35,7 @@ namespace UserApi.Services
 
             if (user == null || !await userManager.CheckPasswordAsync(user, loginParams.Password))
             {
-                throw new UnauthorizedAccessException("Invalid authentication. Login is not correct.");
+                throw new UnauthorizedAccessException("Invalid authentication. Check Login or password.");
             }
 
             var tokenData = await CreateNewTokenDataAsync(user, loginParams.RefreshTokenExpiryInDays);
