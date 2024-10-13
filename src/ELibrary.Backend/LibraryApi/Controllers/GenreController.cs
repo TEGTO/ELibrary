@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using LibraryApi.Domain.Dto.Genre;
 using LibraryApi.Domain.Dtos;
-using LibraryApi.Domain.Dtos.Library.Genre;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
@@ -19,7 +19,7 @@ namespace LibraryApi.Controllers
         GenreResponse,
         UpdateGenreRequest,
         GenreResponse,
-        LibraryPaginationRequest>
+        LibraryFilterRequest>
     {
         public GenreController(ILibraryEntityService<Genre> entityService, IMapper mapper) : base(entityService, mapper)
         {

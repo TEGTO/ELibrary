@@ -1,32 +1,74 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { LibraryState } from "..";
+import { AuthorState, BookState, GenreState, PublisherState } from "..";
 
-export const selectLibraryState = createFeatureSelector<LibraryState>('library');
+//#region Author
+
+export const selectAuthorState = createFeatureSelector<AuthorState>('author');
 export const selectAuthors = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.authors
-);
-export const selectGenres = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.genres
-);
-export const selectBooks = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.books
+    selectAuthorState,
+    (state: AuthorState) => state.authors
 );
 export const selectAuthorAmount = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.totalAuthorAmount
+    selectAuthorState,
+    (state: AuthorState) => state.totalAuthorAmount
+);
+export const selectAuthorError = createSelector(
+    selectAuthorState,
+    (state: AuthorState) => state.error
+);
+
+//#endregion
+
+//#region Genre
+
+export const selectGenreState = createFeatureSelector<GenreState>('genre');
+export const selectGenres = createSelector(
+    selectGenreState,
+    (state: GenreState) => state.genres
 );
 export const selectGenreAmount = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.totalGenreAmount
+    selectGenreState,
+    (state: GenreState) => state.totalGenreAmount
+);
+export const selectGenreError = createSelector(
+    selectGenreState,
+    (state: GenreState) => state.error
+);
+
+//#endregion
+
+//#region Publisher
+
+export const selectPublisherState = createFeatureSelector<PublisherState>('publisher');
+export const selectPublishers = createSelector(
+    selectPublisherState,
+    (state: PublisherState) => state.publishers
+);
+export const selectPublisherAmount = createSelector(
+    selectPublisherState,
+    (state: PublisherState) => state.totalPublisherAmount
+);
+export const selectPublisherError = createSelector(
+    selectPublisherState,
+    (state: PublisherState) => state.error
+);
+
+//#endregion
+
+//#region Book
+
+export const selectBoookState = createFeatureSelector<BookState>('book');
+export const selectBooks = createSelector(
+    selectBoookState,
+    (state: BookState) => state.books
 );
 export const selectBookAmount = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.totalBookAmount
+    selectBoookState,
+    (state: BookState) => state.totalBookAmount
 );
-export const selectLibraryError = createSelector(
-    selectLibraryState,
-    (state: LibraryState) => state.error
+export const selectBookError = createSelector(
+    selectBoookState,
+    (state: BookState) => state.error
 );
+
+//#endregion

@@ -1,23 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { AuthorApiService, AuthorResponse, BookApiService, BookResponse, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, GenreApiService, GenreResponse, LibraryEntityApi, PaginatedRequest, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest } from "../../shared";
-import { authorActions, bookActions, genreActions } from "./library.actions";
+import { Author, AuthorApiService, Book, BookApiService, BookFilterRequest, CreateAuthorRequest, CreateBookRequest, CreateGenreRequest, CreatePublisherRequest, Genre, GenreApiService, LibraryEntityApi, LibraryFilterRequest, Publisher, PublisherApiService, UpdateAuthorRequest, UpdateBookRequest, UpdateGenreRequest, UpdatePublisherRequest } from "../../shared";
+import { authorActions, bookActions, genreActions, publisherActions } from "./library.actions";
 
 @Injectable()
-export abstract class GenericLibraryEntityEffects<Response, Create, Update> {
+export abstract class GenericLibraryEntityEffects<Response, Create, Update, Filter> {
     constructor(
         private readonly actions$: Actions,
-        private readonly apiService: LibraryEntityApi<Response, Create, Update>,
+        private readonly apiService: LibraryEntityApi<Response, Create, Update, Filter>,
         private readonly entityActions: any
     ) { }
 
     getPaginated$ = createEffect(() =>
         this.actions$.pipe(
             ofType(this.entityActions.getPaginated),
-            mergeMap((action: { request: PaginatedRequest }) =>
+            mergeMap((action: { request: Filter }) =>
                 this.apiService.getPaginated(action.request).pipe(
-                    map((entities: Response[]) => this.entityActions.getPaginatedSuccess({ entities })),
+                    map((entities: Response[]) => { return this.entityActions.getPaginatedSuccess({ entities }) }),
                     catchError((error: any) => of(this.entityActions.getPaginatedFailure({ error: error.message })))
                 )
             )
@@ -27,8 +28,8 @@ export abstract class GenericLibraryEntityEffects<Response, Create, Update> {
     getTotalAmount$ = createEffect(() =>
         this.actions$.pipe(
             ofType(this.entityActions.getTotalAmount),
-            mergeMap(() =>
-                this.apiService.getItemTotalAmount().pipe(
+            mergeMap((action: { request: Filter }) =>
+                this.apiService.getItemTotalAmount(action.request).pipe(
                     map((amount: number) => this.entityActions.getTotalAmountSuccess({ amount: amount })),
                     catchError((error: any) => of(this.entityActions.getTotalAmountFailure({ error: error.message })))
                 )
@@ -74,7 +75,7 @@ export abstract class GenericLibraryEntityEffects<Response, Create, Update> {
 }
 
 @Injectable()
-export class AuthorEffects extends GenericLibraryEntityEffects<AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest> {
+export class AuthorEffects extends GenericLibraryEntityEffects<Author, CreateAuthorRequest, UpdateAuthorRequest, LibraryFilterRequest> {
     constructor(
         actions$: Actions,
         apiService: AuthorApiService
@@ -84,21 +85,31 @@ export class AuthorEffects extends GenericLibraryEntityEffects<AuthorResponse, C
 }
 
 @Injectable()
-export class BookEffects extends GenericLibraryEntityEffects<BookResponse, CreateBookRequest, UpdateBookRequest> {
-    constructor(
-        actions$: Actions,
-        apiService: BookApiService
-    ) {
-        super(actions$, apiService, bookActions);
-    }
-}
-
-@Injectable()
-export class GenreEffects extends GenericLibraryEntityEffects<GenreResponse, CreateGenreRequest, UpdateGenreRequest> {
+export class GenreEffects extends GenericLibraryEntityEffects<Genre, CreateGenreRequest, UpdateGenreRequest, LibraryFilterRequest> {
     constructor(
         actions$: Actions,
         apiService: GenreApiService
     ) {
         super(actions$, apiService, genreActions);
+    }
+}
+
+@Injectable()
+export class PublisherEffects extends GenericLibraryEntityEffects<Publisher, CreatePublisherRequest, UpdatePublisherRequest, LibraryFilterRequest> {
+    constructor(
+        actions$: Actions,
+        apiService: PublisherApiService
+    ) {
+        super(actions$, apiService, publisherActions);
+    }
+}
+
+@Injectable()
+export class BookEffects extends GenericLibraryEntityEffects<Book, CreateBookRequest, UpdateBookRequest, BookFilterRequest> {
+    constructor(
+        actions$: Actions,
+        apiService: BookApiService
+    ) {
+        super(actions$, apiService, bookActions);
     }
 }

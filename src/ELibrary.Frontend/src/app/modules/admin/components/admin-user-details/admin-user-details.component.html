@@ -1,0 +1,110 @@
+<ng-container *ngIf="user$ | async as item; else loading">
+    <div class="mx-8 mt-6 font-bold text-3xl text-gray-600">User</div>
+    <ng-container *ngTemplateOutlet="details;  context: { user: item}"></ng-container>
+    <ng-container *ngTemplateOutlet="edit; context: { user: item }"></ng-container>
+</ng-container>
+
+<!-- User -->
+<ng-template #details let-user="user">
+    <div class="user mr-2 w-full px-10 pt-0">
+        <div id="userDetails" class="h-full w-8/12 pt-5 flex">
+            <div class="grow flex flex-col gap-1">
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">Id</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">User Name (Is Email)</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">Registred At</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="user__detail-header text-gray-400">
+                    <span class="font-semibold">Updated At</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+            </div>
+            <div class="pl-2 flex flex-col gap-1">
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>#{{ user.id }}</span>
+                </div>
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>{{ user.userName }}</span>
+                </div>
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>{{ user.registredAt | date:'dd/MM/YYYY, HH:mm'}}</span>
+                </div>
+                <div class="user__detail-value text-gray-400 flex justify-between">
+                    <span>{{ user.updatedAt | date:'dd/MM/YYYY, HH:mm'}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- Edit User -->
+<ng-template #edit let-user="user">
+    <div class="mb-3 flex px-6 gap-6 mt-6 w-full">
+        <form id="user" class="flex pt-6 flex-col space-y-1 w-11/12 border-t border-gray-200 w-full"
+            [formGroup]="getFormGroup(user)" (submit)="updateUser(user)">
+            <div class="grid md:grid-cols-2 gap-4">
+                <mat-form-field>
+                    <mat-label>Email</mat-label>
+                    <input matInput type="text" [formControl]="emailInput" placeholder="example@gmail.com"
+                        maxlength="256">
+                    <mat-error *ngIf="validate(emailInput).hasError">{{validate(emailInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Roles</mat-label>
+                    <mat-select [formControl]="rolesInput" multiple>
+                        @for (role of roles; track role) {
+                        <mat-option [value]="role">{{role}}</mat-option>
+                        }
+                    </mat-select>
+                    <mat-error
+                        *ngIf="validate(passwordConfirmInput).hasError">{{validate(passwordConfirmInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>New Password</mat-label>
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" [formControl]="passwordInput"
+                        maxlength="256">
+                    <span class="material-icons me-2" matSuffix tabindex="0" role="button"
+                        (click)="hidePassword = !hidePassword" (keydown)="hidePasswordOnKeydown($event)">
+                        {{ hidePassword ? 'visibility_off' : 'visibility' }}
+                    </span>
+                    <mat-error *ngIf="validate(passwordInput).hasError">{{validate(passwordInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Confirm New Password</mat-label>
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" [formControl]="passwordConfirmInput"
+                        maxlength="256">
+                    <mat-error
+                        *ngIf="validate(passwordConfirmInput).hasError">{{validate(passwordConfirmInput).message}}</mat-error>
+                </mat-form-field>
+                <mat-error
+                    *ngIf="validate(getFormGroup(user)).hasError && isFormSent">{{validate(getFormGroup(user)).message}}</mat-error>
+            </div>
+            <div class="flex gap-3 items-center">
+                <div class="px-5 pl-10 w-full flex justify-end gap-4 h-12">
+                    <button form="user" type="button" (click)="deleteUser(user)" class="flex items-center pl-4 gap-1 p-2 rounded-lg border
+                                        text-gray-700 font-bold 
+                                        hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out">
+                        <span>Delete</span>
+                        <span class="!text-2xl text-red-600 material-icons">delete</span>
+                    </button>
+                    <button id="send-button" form="user" type="submit" class="flex items-center pl-4 gap-1 p-2 rounded-lg border
+                                        text-gray-700 font-bold 
+                                        hover:bg-gray-200 hover:text-blue-700 transition-all duration-200 ease-in-out">
+                        <span>Update</span>
+                        <span class="!text-2xl text-blue-600 material-icons">edit</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #loading>
+    <app-loading></app-loading>
+</ng-template>

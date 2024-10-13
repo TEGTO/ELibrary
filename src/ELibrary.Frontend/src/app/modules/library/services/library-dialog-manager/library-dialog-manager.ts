@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
-import { AuthorResponse, BookResponse, GenreResponse } from "../../../shared";
+import { Author, Book, DialogManager, Genre, Publisher } from "../../../shared";
 
 @Injectable({
     providedIn: 'root'
 })
-export abstract class LibraryDialogManager {
+export abstract class LibraryDialogManager implements DialogManager {
+    abstract openBookDetailsMenu(book: Book | null): MatDialogRef<any>;
+    abstract openAuthorDetailsMenu(author: Author): MatDialogRef<any>;
+    abstract openGenreDetailsMenu(genre: Genre): MatDialogRef<any>;
+    abstract openPublisherDetailsMenu(publisher: Publisher): MatDialogRef<any>;
     abstract openConfirmMenu(): MatDialogRef<any>;
-    abstract openBookDetailsMenu(book: BookResponse): MatDialogRef<any>;
-    abstract openAuthorDetailsMenu(author: AuthorResponse): MatDialogRef<any>;
-    abstract openGenreDetailsMenu(genre: GenreResponse): MatDialogRef<any>;
 }

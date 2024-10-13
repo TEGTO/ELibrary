@@ -1,0 +1,62 @@
+name: Upload Coverage To SonarCloud
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Continuous Integration Backend
+      - Continuous Integration Frontend
+    types:
+      - completed
+
+env:
+  DOTNET_VERSION: "8.0.x"
+
+jobs:
+  download-and-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Backend Coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: code-coverage
+          path: ./coverage/backend
+          run-id: ${{secrets.CI_BACKEND}}
+          github-token: ${{ github.token }}
+
+      - name: Download Frontend Coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage/frontend
+          run-id: ${{secrets.CI_FRONTEND}}
+          github-token: ${{ github.token }}
+
+      - name: Merge Coverage Reports
+        run: |
+          mkdir merged-coverage
+          cp ./coverage/backend/coverage.xml merged-coverage/coverage-backend.xml
+          cp ./coverage/frontend/lcov.info merged-coverage/coverage-frontend.lcov
+          rm -r ./coverage
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Add SonarCloud
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin \
+            /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
+            /o:"${{ secrets.SONAR_ORGANIZATION }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.vscoveragexml.reportsPaths="merged-coverage/coverage-backend.xml" \
+            /d:sonar.javascript.lcov.reportPaths="merged-coverage/coverage-frontend.lcov" \
+            /d:sonar.branch.name="${{ github.ref_name }}" 
+          dotnet build --configuration Release src/ELibrary.Backend/ELibrary.Backend.sln
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

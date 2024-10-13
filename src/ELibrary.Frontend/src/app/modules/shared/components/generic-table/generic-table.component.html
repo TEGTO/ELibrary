@@ -1,0 +1,63 @@
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th *ngFor="let column of columns" scope="col" class="px-6 py-3">
+                    {{ column.header }}
+                </th>
+                @if(!disableCreate)
+                {
+                <th scope="col" class="px-6 py-3">
+                    <button class="font-medium text-blue-600 hover:text-blue-400" (click)="onCreate()">
+                        <span class="material-icons">add</span>
+                    </button>
+                </th>
+                }
+                @else if (!disableEdit) {
+                <th scope="col" class="px-6 py-3">
+                    <span class="sr-only">Edit</span>
+                </th>
+                }
+                <th scope="col" class="px-6 py-3" *ngIf="!disableDelete">
+                    <span class="sr-only">Delete</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-white border-b hover:bg-gray-50" *ngFor="let item of items">
+                <td *ngFor="let column of columns" class="px-6 py-4 truncate">
+                    <ng-container *ngIf="column.linkPath; else normalCell">
+                        <a tabindex="1" (keypress)="navigateTo(column.linkPath(item))"
+                            [routerLink]="['/' + column.linkPath(item)]"
+                            class="text-blue-600 hover:underline hover:cursor-pointer">
+                            {{ item[column.field] }}
+                        </a>
+                    </ng-container>
+                    <ng-template #normalCell>
+                        {{ applyPipe(item[column.field], column.pipe, column.pipeArgs) }}
+                    </ng-template>
+                </td>
+                @if(!disableEdit)
+                {
+                <td class="px-6 py-4">
+                    <button class="font-small text-blue-600 hover:text-blue-400" (click)="onEdit(item)">
+                        <span class="material-icons">edit</span>
+                    </button>
+                </td>
+                }
+                @else if (!disableCreate) {
+                <td class="px-6 py-4">
+                </td>
+                }
+                <td class="px-6 py-4 text-left" *ngIf="!disableDelete">
+                    <button class="font-small text-red-600 hover:text-red-400" (click)="onDelete(item)">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <mat-paginator [length]="totalItemAmount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)">
+    </mat-paginator>
+</div>

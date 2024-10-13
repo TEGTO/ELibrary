@@ -9,24 +9,23 @@
             <mat-label>Name</mat-label>
             <input matInput type="text" autocomplete="author-name" formControlName="name" placeholder="Jonh"
                 maxlength="256">
-            <mat-error *ngIf="nameInput.hasError('required')">Name is <strong>required.</strong></mat-error>
+            <mat-error
+                *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Last Name</mat-label>
             <input matInput type="text" autocomplete="author-last-name" formControlName="lastName" placeholder="Doe"
                 maxlength="256">
-            <mat-error *ngIf="lastNameInput.hasError('required')">Last name is <strong>required.</strong></mat-error>
+            <mat-error
+                *ngIf="validateInputField(lastNameInput).hasError">{{validateInputField(lastNameInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Date of Birth</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [readonly]="true">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
-            <mat-error *ngIf="dateOfBirthInput.hasError('required')">Date of birth is
-                <strong>required</strong></mat-error>
-            <mat-error *ngIf="dateOfBirthInput.hasError('invalidDateOfBirth')">
-                Date of birth must be <strong>in the past</strong>
-            </mat-error>
+            <mat-error
+                *ngIf="validateInputField(dateOfBirthInput).hasError">{{validateInputField(dateOfBirthInput).message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>

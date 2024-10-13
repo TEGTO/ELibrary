@@ -1,7 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { BookResponse, CreateBookRequest, UpdateBookRequest, URLDefiner } from '../../../..';
+import { TestBed } from '@angular/core/testing';
+import { Book, BookFilterRequest, CreateBookRequest, getDefaultAuthor, getDefaultBook, getDefaultGenre, getDefaultPublisher, UpdateBookRequest, URLDefiner } from '../../../..';
 import { BookApiService } from './book-api.service';
 
 describe('BookApiService', () => {
@@ -35,12 +34,18 @@ describe('BookApiService', () => {
 
   it('should get book by id', () => {
     const expectedReq = `/api/book/1`;
-    const response: BookResponse = {
+    const response: Book = {
       id: 1,
-      title: 'The Great Gatsby',
-      publicationDate: new Date('1925-04-10'),
-      author: { id: 1, name: 'F. Scott Fitzgerald', lastName: 'Fitzgerald', dateOfBirth: new Date('1896-09-24') },
-      genre: { id: 1, name: 'Classic' }
+      name: '1984',
+      price: 100,
+      coverType: 0,
+      pageAmount: 100,
+      coverImgUrl: "",
+      stockAmount: 100,
+      publicationDate: new Date('1949-06-08'),
+      author: getDefaultAuthor(),
+      genre: getDefaultGenre(),
+      publisher: getDefaultPublisher(),
     };
 
     service.getById(1).subscribe(res => {
@@ -55,10 +60,25 @@ describe('BookApiService', () => {
 
   it('should get paginated books', () => {
     const expectedReq = `/api/book/pagination`;
-    const request = { pageNumber: 1, pageSize: 10 };
-    const response: BookResponse[] = [
-      { id: 1, title: 'The Great Gatsby', publicationDate: new Date('1925-04-10'), author: { id: 1, name: 'F. Scott Fitzgerald', lastName: 'Fitzgerald', dateOfBirth: new Date('1896-09-24') }, genre: { id: 1, name: 'Classic' } },
-      { id: 2, title: 'Moby Dick', publicationDate: new Date('1851-11-14'), author: { id: 2, name: 'Herman Melville', lastName: 'Melville', dateOfBirth: new Date('1819-08-01') }, genre: { id: 2, name: 'Adventure' } }
+    const request: BookFilterRequest = {
+      pageNumber: 1,
+      pageSize: 10,
+      containsName: "",
+      publicationFrom: null,
+      publicationTo: null,
+      minPrice: null,
+      maxPrice: null,
+      coverType: null,
+      onlyInStock: null,
+      minPageAmount: null,
+      maxPageAmount: null,
+      authorId: null,
+      genreId: null,
+      publisherId: null,
+    }
+    const response: Book[] = [
+      getDefaultBook(),
+      getDefaultBook(),
     ];
 
     service.getPaginated(request).subscribe(res => {
@@ -74,13 +94,29 @@ describe('BookApiService', () => {
   it('should get the total number of books', () => {
     const expectedReq = `/api/book/amount`;
     const response = 100;
+    const getItemReq: BookFilterRequest = {
+      pageNumber: 1,
+      pageSize: 10,
+      containsName: "",
+      publicationFrom: null,
+      publicationTo: null,
+      minPrice: null,
+      maxPrice: null,
+      coverType: null,
+      onlyInStock: null,
+      minPageAmount: null,
+      maxPageAmount: null,
+      authorId: null,
+      genreId: null,
+      publisherId: null,
+    }
 
-    service.getItemTotalAmount().subscribe(res => {
+    service.getItemTotalAmount(getItemReq).subscribe(res => {
       expect(res).toEqual(response);
     });
 
     const req = httpTestingController.expectOne(expectedReq);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe('POST');
     expect(mockUrlDefiner.combineWithLibraryApiUrl).toHaveBeenCalledWith('/book/amount');
     req.flush(response);
   });
@@ -88,17 +124,28 @@ describe('BookApiService', () => {
   it('should create a new book', () => {
     const expectedReq = `/api/book`;
     const request: CreateBookRequest = {
-      title: '1984',
+      name: '1984',
       publicationDate: new Date('1949-06-08'),
+      price: 100,
+      coverType: 0,
+      pageAmount: 100,
+      coverImgUrl: "",
+      publisherId: 1,
       authorId: 1,
-      genreId: 1
+      genreId: 1,
     };
-    const response: BookResponse = {
+    const response: Book = {
       id: 1,
-      title: '1984',
+      name: '1984',
+      price: 100,
+      coverType: 0,
+      pageAmount: 100,
+      coverImgUrl: "",
+      stockAmount: 100,
       publicationDate: new Date('1949-06-08'),
-      author: { id: 1, name: 'George Orwell', lastName: 'Orwell', dateOfBirth: new Date('1903-06-25') },
-      genre: { id: 1, name: 'Dystopian' }
+      author: getDefaultAuthor(),
+      genre: getDefaultGenre(),
+      publisher: getDefaultPublisher(),
     };
 
     service.create(request).subscribe(res => {
@@ -115,17 +162,28 @@ describe('BookApiService', () => {
     const expectedReq = `/api/book`;
     const request: UpdateBookRequest = {
       id: 1,
-      title: '1984',
+      name: '1984',
       publicationDate: new Date('1949-06-08'),
+      price: 100,
+      coverType: 0,
+      pageAmount: 100,
+      coverImgUrl: "",
+      publisherId: 1,
       authorId: 1,
-      genreId: 1
+      genreId: 1,
     };
-    const response: BookResponse = {
+    const response: Book = {
       id: 1,
-      title: '1984',
+      name: '1984',
+      price: 100,
+      coverType: 0,
+      pageAmount: 100,
+      coverImgUrl: "",
+      stockAmount: 100,
       publicationDate: new Date('1949-06-08'),
-      author: { id: 1, name: 'George Orwell', lastName: 'Orwell', dateOfBirth: new Date('1903-06-25') },
-      genre: { id: 1, name: 'Dystopian' }
+      author: getDefaultAuthor(),
+      genre: getDefaultGenre(),
+      publisher: getDefaultPublisher(),
     };
 
     service.update(request).subscribe(res => {
@@ -142,7 +200,7 @@ describe('BookApiService', () => {
     const expectedReq = `/api/book/1`;
 
     service.deleteById(1).subscribe(res => {
-      expect(res).toBeNull();
+      expect(res.body).toBeNull();
     });
 
     const req = httpTestingController.expectOne(expectedReq);

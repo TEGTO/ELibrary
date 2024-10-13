@@ -1,67 +1,74 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { SnackbarManager, UserAuthenticationRequest } from '../../../shared';
-import { AuthenticationDialogManager, AuthenticationService } from '../../index';
+import { Subject } from 'rxjs';
+import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
+import { passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand, START_REGISTRATION_COMMAND_HANDLER, StartRegistrationCommand } from '../../index';
 
 @Component({
-  selector: 'auth-login',
+  selector: 'app-auth-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnDestroy {
-  formGroup: FormGroup = new FormGroup(
-    {
-      login: new FormControl('', [Validators.required, Validators.maxLength(256)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.maxLength(256)]),
-    });
-  hidePassword: boolean = true;
+export class LoginComponent implements OnInit, OnDestroy {
+  formGroup!: FormGroup;
+  hidePassword = true;
   private destroy$ = new Subject<void>();
 
   get loginInput() { return this.formGroup.get('login')!; }
   get passwordInput() { return this.formGroup.get('password')!; }
 
   constructor(
-    private readonly authDialogManager: AuthenticationDialogManager,
-    private readonly authService: AuthenticationService,
+    @Inject(SIGN_IN_COMMAND_HANDLER) private readonly signInHandler: CommandHandler<SignInCommand>,
+    @Inject(START_REGISTRATION_COMMAND_HANDLER) private readonly startRegistrationHandler: CommandHandler<StartRegistrationCommand>,
     private readonly dialogRef: MatDialogRef<LoginComponent>,
-    private readonly snackbarManager: SnackbarManager
+    private readonly validateInput: ValidationMessage
   ) { }
 
+  ngOnInit(): void {
+    this.formGroup = new FormGroup(
+      {
+        login: new FormControl('', [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
+        password: new FormControl('', [Validators.required, notEmptyString, noSpaces, passwordValidator, Validators.maxLength(256)]),
+      });
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validateInputField(input: AbstractControl<any, any>) {
+    return this.validateInput.getValidationMessage(input);
+  }
+  hidePasswordOnKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.hidePassword = !this.hidePassword;
+    }
+  }
+  openRegisterMenuOnKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      const command: StartRegistrationCommand = {};
+      this.startRegistrationHandler.dispatch(command);
+    }
+  }
   openRegisterMenu() {
-    const dialogRef = this.authDialogManager.openRegisterMenu();
+    const command: StartRegistrationCommand = {};
+    this.startRegistrationHandler.dispatch(command);
   }
   signInUser() {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
-      const userData: UserAuthenticationRequest = {
+      const command: SignInCommand =
+      {
         login: formValues.login,
         password: formValues.password,
-      };
-      this.authService.singInUser(userData);
-      this.authService.getAuthData().pipe(
-        takeUntil(this.destroy$),
-        tap(authData => {
-          if (authData.isAuthenticated) {
-            this.dialogRef.close();
-          }
-        }),
-        filter(authData => !authData.isAuthenticated),
-        switchMap(() => this.authService.getAuthErrors()),
-        takeUntil(this.destroy$),
-        tap(errors => {
-          if (errors) {
-            this.snackbarManager.openErrorSnackbar(errors.split("\n"));
-          }
-        })
-      ).subscribe();
+        matDialogRef: this.dialogRef
+      }
+      this.signInHandler.dispatch(command);
     }
   }
 }

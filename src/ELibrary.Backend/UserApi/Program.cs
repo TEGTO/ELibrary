@@ -14,8 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Cors
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
+string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+if (useCors)
+{
+    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+}
 
 #endregion
 
@@ -44,11 +49,15 @@ builder.Services.AddScoped<ITokenHandler, JwtHandler>();
 #region Project Services 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
+builder.Services.AddPaginationConfiguration(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddMemoryCache();
 
 builder.Services.AddSharedFluentValidation(typeof(Program));
 
@@ -61,7 +70,11 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
     await app.ConfigureDatabaseAsync<UserIdentityDbContext>(CancellationToken.None);
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+if (useCors)
+{
+    app.UseCors(MyAllowSpecificOrigins);
+}
+
 app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();

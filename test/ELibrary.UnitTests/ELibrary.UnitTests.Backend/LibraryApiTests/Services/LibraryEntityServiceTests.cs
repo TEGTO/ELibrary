@@ -65,7 +65,7 @@ namespace LibraryApi.Services.Tests
             var dbSetMock = GetDbSetMock(entities);
             repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
                .ReturnsAsync(dbSetMock.Object);
-            var paginationRequest = new BookPaginationRequest() { PageNumber = 1, PageSize = 10 };
+            var paginationRequest = new BookFilterRequest() { PageNumber = 1, PageSize = 10 };
             // Act
             var result = await service.GetPaginatedAsync(paginationRequest, CancellationToken.None);
             // Assert
@@ -87,7 +87,7 @@ namespace LibraryApi.Services.Tests
             repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
                .ReturnsAsync(dbSetMock.Object);
             // Act
-            var result = await service.GetItemTotalAmountAsync(CancellationToken.None);
+            var result = await service.GetItemTotalAmountAsync(new LibraryFilterRequest() { ContainsName = "" }, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(entities.Count));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);

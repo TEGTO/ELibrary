@@ -12,8 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Cors
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
+string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+if (useCors)
+{
+    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+}
 
 #endregion
 
@@ -30,17 +35,19 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 #region Project Services
 
 builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
-builder.Services.AddSingleton<ILibraryEntityService<Author>, LibraryEntityService<Author>>();
+builder.Services.AddSingleton<ILibraryEntityService<Author>, AuthorService>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
-builder.Services.AddSingleton<ILibraryEntityService<CoverType>, LibraryEntityService<CoverType>>();
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 
+builder.Services.AddPaginationConfiguration(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddSharedFluentValidation(typeof(Program));
+
+builder.Services.AddMemoryCache();
 
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
@@ -51,7 +58,11 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
     await app.ConfigureDatabaseAsync<LibraryShopDbContext>(CancellationToken.None);
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+if (useCors)
+{
+    app.UseCors(MyAllowSpecificOrigins);
+}
+
 app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();

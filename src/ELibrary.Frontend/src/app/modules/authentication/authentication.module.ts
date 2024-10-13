@@ -8,12 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { AuthInterceptor, AuthenticatedComponent, AuthenticationControllerService, AuthenticationDialogManager, AuthenticationDialogManagerService, AuthenticationService, LoginComponent, RegisterComponent, RegistrationEffects, SignInEffects, authReducer, registrationReducer, userDataReducer } from '.';
-import { UserInfoModule } from "../user-info/user-info.module";
-import { UnauthenticatedComponent } from './components/unauthenticated/unauthenticated.component';
+import { AuthEffects, AuthInterceptor, AuthenticatedComponent, AuthenticationControllerService, AuthenticationDialogManager, AuthenticationDialogManagerService, AuthenticationService, LOG_OUT_COMMAND_HANDLER, LogOutCommandHandlerService, LoginComponent, RegisterComponent, SIGN_IN_COMMAND_HANDLER, SIGN_UP_COMMAND_HANDLER, START_LOGIN_COMMAND_HANDLER, START_REGISTRATION_COMMAND_HANDLER, SignInCommandHandlerService, SignUpCommandHandlerService, StartLoginCommandHandlerService, StartRegistrationCommandHandlerService, UPDATE_USER_COMMAND_HANDLER, UpdateUserCommandHandlerService, authReducer } from '.';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, AuthenticatedComponent, UnauthenticatedComponent],
+  declarations: [LoginComponent, RegisterComponent, AuthenticatedComponent],
   imports: [
     CommonModule,
     MatDialogModule,
@@ -22,18 +20,22 @@ import { UnauthenticatedComponent } from './components/unauthenticated/unauthent
     MatFormFieldModule,
     ReactiveFormsModule,
     MatButtonModule,
-    UserInfoModule,
     HttpClientModule,
     StoreModule.forFeature('authentication', authReducer),
-    StoreModule.forFeature('registration', registrationReducer),
-    StoreModule.forFeature('userdata', userDataReducer),
-    EffectsModule.forFeature([RegistrationEffects, SignInEffects]),
+    EffectsModule.forFeature([AuthEffects]),
   ],
   providers: [
     { provide: AuthenticationDialogManager, useClass: AuthenticationDialogManagerService },
     { provide: AuthenticationService, useClass: AuthenticationControllerService },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+    { provide: START_REGISTRATION_COMMAND_HANDLER, useClass: StartRegistrationCommandHandlerService },
+    { provide: START_LOGIN_COMMAND_HANDLER, useClass: StartLoginCommandHandlerService },
+    { provide: SIGN_UP_COMMAND_HANDLER, useClass: SignUpCommandHandlerService },
+    { provide: SIGN_IN_COMMAND_HANDLER, useClass: SignInCommandHandlerService },
+    { provide: LOG_OUT_COMMAND_HANDLER, useClass: LogOutCommandHandlerService },
+    { provide: UPDATE_USER_COMMAND_HANDLER, useClass: UpdateUserCommandHandlerService },
   ],
-  exports: [LoginComponent, UnauthenticatedComponent],
+  exports: [LoginComponent],
 })
 export class AuthenticationModule { }

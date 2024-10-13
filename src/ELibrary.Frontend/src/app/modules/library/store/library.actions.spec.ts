@@ -1,18 +1,18 @@
-import { AuthorResponse, CreateAuthorRequest, PaginatedRequest, UpdateAuthorRequest } from "../../shared";
+import { Author, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from "../../shared";
 import { authorActions } from "./library.actions";
 
 const error = { message: 'An error occurred' };
 describe('Author Actions', () => {
     // Get Paginated
     it('should create getPaginated action for authors', () => {
-        const request: PaginatedRequest = { pageNumber: 1, pageSize: 10 };
-        const action = authorActions.getPaginated({ request });
+        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+        const action = authorActions.getPaginated({ request: request });
         expect(action.type).toBe('[Library] Get Paginated Authors');
         expect(action.request).toBe(request);
     });
 
     it('should create getPaginatedSuccess action for authors', () => {
-        const entities: AuthorResponse[] = [{ id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() }];
+        const entities: Author[] = [{ id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() }];
         const action = authorActions.getPaginatedSuccess({ entities });
         expect(action.type).toBe('[Library] Get Paginated Authors Success');
         expect(action.entities).toBe(entities);
@@ -26,7 +26,8 @@ describe('Author Actions', () => {
 
     // Get Total Amount
     it('should create getTotalAmount action for authors', () => {
-        const action = authorActions.getTotalAmount();
+        const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+        const action = authorActions.getTotalAmount({ request: request });
         expect(action.type).toBe('[Library] Get Total Authors Amount');
     });
 
@@ -52,7 +53,7 @@ describe('Author Actions', () => {
     });
 
     it('should create createSuccess action for authors', () => {
-        const entity: AuthorResponse = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() };
+        const entity: Author = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() };
         const action = authorActions.createSuccess({ entity });
         expect(action.type).toBe('[Library] Create New Author Success');
         expect(action.entity).toBe(entity);
@@ -73,7 +74,7 @@ describe('Author Actions', () => {
     });
 
     it('should create updateSuccess action for authors', () => {
-        const request: AuthorResponse = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() };
+        const request: Author = { id: 1, name: 'John', lastName: 'Doe', dateOfBirth: new Date() };
         const action = authorActions.updateSuccess({ entity: request });
         expect(action.type).toBe('[Library] Update Author Success');
         expect(action.entity).toBe(request);

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { HttpResponse } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
-import { AuthorApiService, AuthorResponse, CreateAuthorRequest, UpdateAuthorRequest } from "../../shared";
+import { Author, AuthorApiService, CreateAuthorRequest, LibraryFilterRequest, UpdateAuthorRequest } from "../../shared";
 import { authorActions } from "./library.actions";
 import { AuthorEffects } from "./library.effects";
 
@@ -28,8 +30,8 @@ describe('AuthorEffects', () => {
 
     describe('getPaginated$', () => {
         it('should dispatch getPaginatedSuccess on successful getPaginated', (done) => {
-            const paginatedRequest = { pageNumber: 1, pageSize: 10 };
-            const entities: AuthorResponse[] = [{ id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() }];
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+            const entities: Author[] = [{ id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() }];
             const action = authorActions.getPaginated({ request: paginatedRequest });
             const outcome = authorActions.getPaginatedSuccess({ entities });
 
@@ -44,7 +46,7 @@ describe('AuthorEffects', () => {
         });
 
         it('should dispatch getPaginatedFailure on failed getPaginated', (done) => {
-            const paginatedRequest = { pageNumber: 1, pageSize: 10 };
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
             const action = authorActions.getPaginated({ request: paginatedRequest });
             const error = new Error('Error!');
             const outcome = authorActions.getPaginatedFailure({ error: error.message });
@@ -63,7 +65,8 @@ describe('AuthorEffects', () => {
     describe('getTotalAmount$', () => {
         it('should dispatch getTotalAmountSuccess on successful getItemTotalAmount', (done) => {
             const amount = 100;
-            const action = authorActions.getTotalAmount();
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+            const action = authorActions.getTotalAmount({ request: paginatedRequest });
             const outcome = authorActions.getTotalAmountSuccess({ amount });
 
             actions$ = of(action);
@@ -77,7 +80,8 @@ describe('AuthorEffects', () => {
         });
 
         it('should dispatch getTotalAmountFailure on failed getItemTotalAmount', (done) => {
-            const action = authorActions.getTotalAmount();
+            const paginatedRequest: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+            const action = authorActions.getTotalAmount({ request: paginatedRequest });
             const error = new Error('Error!');
             const outcome = authorActions.getTotalAmountFailure({ error: error.message });
 
@@ -95,7 +99,7 @@ describe('AuthorEffects', () => {
     describe('create$', () => {
         it('should dispatch createSuccess on successful create', (done) => {
             const createRequest: CreateAuthorRequest = { name: 'Author1', lastName: "Lastname1", dateOfBirth: new Date() };
-            const entity: AuthorResponse = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
+            const entity: Author = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
             const action = authorActions.create({ request: createRequest });
             const outcome = authorActions.createSuccess({ entity });
 
@@ -129,7 +133,7 @@ describe('AuthorEffects', () => {
     describe('update$', () => {
         it('should dispatch updateSuccess on successful update', (done) => {
             const updateRequest: UpdateAuthorRequest = { id: 1, name: 'UpdatedAuthor', lastName: 'UpdatedLastname', dateOfBirth: new Date() };
-            const entity: AuthorResponse = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
+            const entity: Author = { id: 1, name: 'Author1', lastName: 'Lastname1', dateOfBirth: new Date() };
             const action = authorActions.update({ request: updateRequest });
             const outcome = authorActions.updateSuccess({ entity: entity });
 
@@ -167,7 +171,7 @@ describe('AuthorEffects', () => {
             const outcome = authorActions.deleteByIdSuccess({ id });
 
             actions$ = of(action);
-            mockApiService.deleteById.and.returnValue(of({}));
+            mockApiService.deleteById.and.returnValue(of(new HttpResponse<void>));
 
             effects.deleteById$.subscribe(result => {
                 expect(result).toEqual(outcome);

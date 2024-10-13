@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using LibraryApi.Domain.Dtos.Library.Author;
-using LibraryApi.Domain.Dtos.Library.Book;
-using LibraryApi.Domain.Dtos.Library.Genre;
+using LibraryApi.Domain.Dto.Author;
+using LibraryApi.Domain.Dto.Book;
+using LibraryApi.Domain.Dto.Genre;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
 

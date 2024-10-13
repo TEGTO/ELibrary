@@ -6,46 +6,57 @@
 <mat-dialog-content>
     <form id="bookDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
         <mat-form-field>
-            <mat-label>Title</mat-label>
-            <input matInput type="text" autocomplete="book-title" formControlName="title" maxlength="256">
-            <mat-error *ngIf="titleInput.hasError('required')">Title is <strong>required.</strong></mat-error>
-        </mat-form-field>
-
-        <mat-form-field>
-            <mat-label>Author</mat-label>
-            <mat-select formControlName="author" placeholder="Select Author">
-                <cdk-virtual-scroll-viewport #authorScroller [itemSize]="itemHeight"
-                    [style.height.px]="authorSelectionSize">
-                    <mat-option *cdkVirtualFor="let author of authors" [value]="author.id">
-                        {{ author.name }} {{ author.lastName }}
-                    </mat-option>
-                </cdk-virtual-scroll-viewport>
-            </mat-select>
-            <mat-error *ngIf="authorInput.hasError('required') || authorInput.hasError('min') ">
-                Author must be <strong>selected.</strong></mat-error>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Genre</mat-label>
-            <mat-select formControlName="genre" placeholder="Select Genre">
-                <cdk-virtual-scroll-viewport #genreScroller [itemSize]="itemHeight"
-                    [style.height.px]="genreSelectionSize">
-                    <mat-option *cdkVirtualFor="let genre of genres" [value]="genre.id">
-                        {{ genre.name }}
-                    </mat-option>
-                </cdk-virtual-scroll-viewport>
-            </mat-select>
-            <mat-error *ngIf="genreInput.hasError('required') || genreInput.hasError('min') ">
-                Genre must be <strong>selected.</strong></mat-error>
+            <mat-label>Name</mat-label>
+            <input matInput type="text" autocomplete="book-name" formControlName="name" maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Publication Date</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="publicationDate" [readonly]="true">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
-            <mat-error *ngIf="publicationDateInput.hasError('required')">
-                Publication Date is <strong>required.</strong>
-            </mat-error>
+            <mat-error
+                *ngIf="validateInputField(publicationDateInput).hasError">{{validateInputField(publicationDateInput).message}}</mat-error>
         </mat-form-field>
+        <mat-form-field>
+            <mat-label>Price</mat-label>
+            <input matInput type="number" autocomplete="book-price" formControlName="price" min="0">
+            <mat-error
+                *ngIf="validateInputField(priceInput).hasError">{{validateInputField(priceInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Page Amount</mat-label>
+            <input matInput type="number" autocomplete="book-pageAmount" formControlName="pageAmount" min="1">
+            <mat-error
+                *ngIf="validateInputField(pageAmountInput).hasError">{{validateInputField(pageAmountInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Stock Amount</mat-label>
+            <input matInput type="number" autocomplete="book-stockAmount" formControlName="stockAmount" min="0">
+            <mat-error
+                *ngIf="validateInputField(stockAmountInput).hasError">{{validateInputField(stockAmountInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Cover Img Url</mat-label>
+            <input matInput type="text" autocomplete="book-cover-img" formControlName="coverImgUrl" maxlength="1024">
+            <mat-error
+                *ngIf="validateInputField(coverImgUrlInput).hasError">{{validateInputField(coverImgUrlInput).message}}</mat-error>
+        </mat-form-field>
+        <div class="form__cover-type">
+            <label for="cover">Cover Type</label>
+            <div>
+                <mat-radio-group id="cover" formControlName="coverType">
+                    <mat-radio-button [value]="1">Hard</mat-radio-button>
+                    <mat-radio-button [value]="2">Soft</mat-radio-button>
+                    <mat-error
+                        *ngIf="(coverTypeInput).hasError">{{validateInputField(coverTypeInput).message}}</mat-error>
+                </mat-radio-group>
+            </div>
+        </div>
+        <app-author-input [formGroup]="formGroup"></app-author-input>
+        <app-genre-input [formGroup]="formGroup"></app-genre-input>
+        <app-publisher-input [formGroup]="formGroup"></app-publisher-input>
     </form>
 </mat-dialog-content>
 

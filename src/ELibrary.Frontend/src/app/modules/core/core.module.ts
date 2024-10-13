@@ -1,5 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import localeUa from '@angular/common/locales/uk';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -13,15 +14,30 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent, MainViewComponent } from '.';
 import { AuthInterceptor } from '../authentication';
 import { AuthenticationModule } from '../authentication/authentication.module';
-import { CustomErrorHandler, ErrorHandler } from '../shared';
+import { CurrencyPipeApplier, CurrencyPipeApplierService, CustomErrorHandler, ErrorHandler, pathes, RouteReader, RouteReaderService, ValidationMessage, ValidationMessageService } from '../shared';
+import { ShopModule } from '../shop/shop.module';
+
+registerLocaleData(localeUa, 'uk-UA');
 
 const routes: Routes = [
   {
     path: "", component: MainViewComponent,
     children: [
-      { path: "", loadChildren: () => import('../library/library.module').then(m => m.LibraryModule) }
+      {
+        path: pathes.admin,
+        loadChildren: () => import('../admin/admin.module').then(m => m.AdminModule),
+      },
+      {
+        path: pathes.manager,
+        loadChildren: () => import('../manager/manager.module').then(m => m.ManagerModule),
+      },
+      {
+        path: pathes.client,
+        loadChildren: () => import('../client/client.module').then(m => m.ClientModule),
+      },
     ],
   },
+  { path: '**', redirectTo: '' }
 ];
 @NgModule({
   declarations: [
@@ -37,6 +53,7 @@ const routes: Routes = [
     MatButtonModule,
     MatDialogModule,
     AuthenticationModule,
+    ShopModule,
     MatDialogModule,
     HttpClientModule,
     StoreModule.forRoot({}, {}),
@@ -45,8 +62,11 @@ const routes: Routes = [
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: ErrorHandler, useClass: CustomErrorHandler },
-    { provide: LOCALE_ID, useValue: "en-GB" },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    { provide: ValidationMessage, useClass: ValidationMessageService },
+    { provide: CurrencyPipeApplier, useClass: CurrencyPipeApplierService },
+    { provide: RouteReader, useClass: RouteReaderService },
+    { provide: LOCALE_ID, useValue: "uk-UA" },
+    { provide: MAT_DATE_LOCALE, useValue: 'uk-UA' },
   ],
   bootstrap: [AppComponent]
 })

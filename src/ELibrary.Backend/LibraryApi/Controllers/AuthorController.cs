@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using LibraryApi.Domain.Dto.Author;
 using LibraryApi.Domain.Dtos;
-using LibraryApi.Domain.Dtos.Library.Author;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
@@ -19,7 +19,7 @@ namespace LibraryApi.Controllers
         AuthorResponse,
         UpdateAuthorRequest,
         AuthorResponse,
-        LibraryPaginationRequest>
+        LibraryFilterRequest>
     {
         public AuthorController(ILibraryEntityService<Author> entityService, IMapper mapper) : base(entityService, mapper)
         {

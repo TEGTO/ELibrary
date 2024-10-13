@@ -1,11 +1,20 @@
 import { TestBed } from "@angular/core/testing";
+import { SnackbarManager } from "../snackbar-manager/snackbar-manager.service";
 import { CustomErrorHandler, getStatusCodeDescription } from "./custom-error-handler.service";
 
 describe('CustomErrorHandler', () => {
     let service: CustomErrorHandler;
+    let mockSnackbarManager: jasmine.SpyObj<SnackbarManager>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        mockSnackbarManager = jasmine.createSpyObj<SnackbarManager>(['openErrorSnackbar']);
+
+        TestBed.configureTestingModule({
+            imports: [],
+            providers: [
+                { provide: SnackbarManager, useValue: mockSnackbarManager },
+            ]
+        });
         service = TestBed.inject(CustomErrorHandler);
     });
 
@@ -17,6 +26,7 @@ describe('CustomErrorHandler', () => {
         };
         const result = service.handleApiError(error);
         expect(result).toBe('Error 1\nError 2');
+        expect(mockSnackbarManager.openErrorSnackbar).toHaveBeenCalledWith([result]);
     });
 
     it('should return error.message if error.message exists', () => {
@@ -25,6 +35,7 @@ describe('CustomErrorHandler', () => {
         };
         const result = service.handleApiError(error);
         expect(result).toBe('An error occurred');
+        expect(mockSnackbarManager.openErrorSnackbar).toHaveBeenCalledWith([result]);
     });
 
     it('should return status code description if no error messages are available', () => {
@@ -33,6 +44,7 @@ describe('CustomErrorHandler', () => {
         };
         const result = service.handleApiError(error);
         expect(result).toBe('An unknown error occurred! (Not Found)');
+        expect(mockSnackbarManager.openErrorSnackbar).toHaveBeenCalledWith([result]);
     });
 
     it('should return "Unknown Status Code" for unknown status code', () => {
@@ -41,26 +53,14 @@ describe('CustomErrorHandler', () => {
         };
         const result = service.handleApiError(error);
         expect(result).toBe('An unknown error occurred! (Unknown Status Code)');
+        expect(mockSnackbarManager.openErrorSnackbar).toHaveBeenCalledWith([result]);
     });
 
     it('should return default message for empty error', () => {
         const error = {};
         const result = service.handleApiError(error);
         expect(result).toBe('An unknown error occurred! (Unknown Status Code)');
-    });
-
-    it('should return error.message if error.message exists in handleHubError', () => {
-        const error = {
-            message: 'Hub error occurred'
-        };
-        const result = service.handleHubError(error);
-        expect(result).toBe('Hub error occurred');
-    });
-
-    it('should return default "An unknown error occurred!" if no error message exists in handleHubError', () => {
-        const error = {};
-        const result = service.handleHubError(error);
-        expect(result).toBe('An unknown error occurred!');
+        expect(mockSnackbarManager.openErrorSnackbar).toHaveBeenCalledWith([result]);
     });
 
     it('should log the error message in handleApiError', () => {
@@ -70,15 +70,7 @@ describe('CustomErrorHandler', () => {
         };
         service.handleApiError(error);
         expect(console.error).toHaveBeenCalledWith('An error occurred');
-    });
-
-    it('should log the error message in handleHubError', () => {
-        spyOn(console, 'error');
-        const error = {
-            message: 'Hub error occurred'
-        };
-        service.handleHubError(error);
-        expect(console.error).toHaveBeenCalledWith('Hub error occurred');
+        expect(mockSnackbarManager.openErrorSnackbar).toHaveBeenCalledWith([error.message]);
     });
 });
 

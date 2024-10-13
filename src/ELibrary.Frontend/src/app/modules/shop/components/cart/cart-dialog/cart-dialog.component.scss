@@ -1,0 +1,77 @@
+.close-button {
+    position: absolute;
+    right: 10px;
+    z-index: 1;
+}
+
+.content {
+    width: 100%;
+
+    .products {
+        width: 100%;
+        overflow-y: auto;
+
+        .book-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+    }
+}
+
+.book {
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    align-content: center;
+    position: relative;
+
+    .book__cover {
+        box-shadow: 2px 1px 6px 2px rgb(0 0 0 / 58%);
+        margin-bottom: 1rem;
+    }
+
+    .book__amount {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0 1rem 0 1rem;
+        display: flex;
+        align-items: center;
+
+        input {
+            max-width: 60px;
+        }
+    }
+}
+
+.loading-spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.mat-spinner {
+    width: 80px;
+    height: 80px;
+}
+
+.material-icons {
+    transform: scale(1);
+}
+
+.truncate {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+::-webkit-scrollbar {
+    width: 8px !important;
+}

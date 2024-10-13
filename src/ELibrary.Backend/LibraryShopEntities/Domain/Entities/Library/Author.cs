@@ -7,6 +7,7 @@ namespace LibraryShopEntities.Domain.Entities.Library
         [Required]
         [MaxLength(256)]
         public string LastName { get; set; } = default!;
+        [Required]
         public DateTime DateOfBirth { get; set; }
 
         public override void Copy(BaseLibraryEntity other)

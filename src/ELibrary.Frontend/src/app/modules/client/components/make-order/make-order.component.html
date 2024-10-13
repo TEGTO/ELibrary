@@ -1,0 +1,132 @@
+<div class="body__order bg-zinc-50">
+    <ng-container *ngIf="client$ | async as client; else loading">
+        <ng-container *ngIf="items$ | async as items; else loading">
+            <ng-container *ngIf="items.length > 0; else emptyCart">
+                <div class="order__content w-full">
+                    <app-client-info [client]="client"></app-client-info>
+                    <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="content__books"
+                        [style.height.px]="calculateSelectionSize(items.length)">
+                        <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
+                            <div class="books__wrapper">
+                                <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
+                            </div>
+                        </ng-container>
+                    </cdk-virtual-scroll-viewport>
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState.set(true)" [expanded]="true"
+                            (closed)="panelOpenState.set(false)">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="text-gray-700 font-bold"> Delivery Information
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form id="order" class="flex flex-col space-y-1" [formGroup]="formGroup"
+                                (ngSubmit)="makeOrder(items)">
+                                <div class="flex gap-3">
+                                    <mat-form-field class="w-6/12">
+                                        <mat-label>Delivery Time</mat-label>
+                                        <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
+                                            formControlName="deliveryTime" [readonly]="true">
+                                        <ngx-mat-datepicker-toggle [for]="picker" matSuffix></ngx-mat-datepicker-toggle>
+                                        <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
+                                        <mat-error *ngIf="validateInputField(deliveryTimeInput).hasError">
+                                            {{validateInputField(deliveryTimeInput).message}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-6/12">
+                                        <mat-label>Delivery Address</mat-label>
+                                        <input matInput type="text" autocomplete="delivery-address"
+                                            formControlName="address" placeholder="123 Main St" maxlength="256">
+                                        <mat-error
+                                            *ngIf="validateInputField(deliveryAddressInput).hasError">{{validateInputField(deliveryAddressInput).message}}</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div>
+                                    <label for="payment">Payment</label>
+                                    <div>
+                                        <mat-radio-group id="payment" formControlName="payment">
+                                            <mat-radio-button *ngFor="let item of paymentMethods"
+                                                [value]="item.value">{{item.name}}</mat-radio-button>
+                                            <mat-error
+                                                *ngIf="validateInputField(paymentMethodInput).hasError">{{validateInputField(paymentMethodInput).message}}</mat-error>
+                                        </mat-radio-group>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="delivery">Delivery</label>
+                                    <div>
+                                        <mat-radio-group id="delivery" formControlName="delivery">
+                                            <mat-radio-button *ngFor="let item of deliveryMethods"
+                                                [value]="item.value">{{item.name}}</mat-radio-button>
+                                            <mat-error
+                                                *ngIf="validateInputField(deliveryMethodInput).hasError">{{validateInputField(deliveryMethodInput).message}}</mat-error>
+                                        </mat-radio-group>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <div class="content__bottom-container flex-col">
+                    <div class="w-full flex justify-end">
+                        <div
+                            class="flex items-center mt-6 gap-5 p-6 bg-green-600/20 rounded-md border border-green-500">
+                            <span class="truncate text-2xl font-medium text-gray-800">
+                                {{ applyCurrencyPipe(getTotalPrice(items)) }}
+                            </span>
+                            <button mat-flat-button id="send-button" form="order" type="submit"
+                                class="!bg-green-600 !text-base">
+                                Confirm order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</div>
+
+<!-- Empty Cart Template -->
+<ng-template #emptyCart>
+    <div class="empty-cart flex items-center justify-center h-96">
+        <p class="text-lg text-gray-600">Your cart is empty. Add some items to continue.</p>
+    </div>
+    <div class="flex-col">
+        <div class="w-full flex justify-end">
+            <a mat-flat-button class="!bg-green-600 !text-base" [routerLink]="redirectToProductsPagePath">
+                Browse Products
+            </a>
+        </div>
+    </div>
+</ng-template>
+<!-- Book -->
+<ng-template #book let-cartBook="cartBook">
+    <div class="book mr-2 h-72 w-11/12 border border-gray-200 rounded-lg p-6">
+        <div class="w-full flex justify-between items-center">
+            <div class=" flex flex gap-5">
+                <a class="book__cover hover:cursor-pointer" [routerLink]="getBookPage(cartBook)">
+                    <img class="h-42 w-24" crossorigin='anonymous' [src]="cartBook.book.coverImgUrl" alt="Book cover"
+                        onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                </a>
+                <a class="h-full flex flex-col items-start pt-5">
+                    <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
+                        [routerLink]="getBookPage(cartBook)">
+                        {{ cartBook.book.name }}
+                    </a>
+                    <div class="book__author text-gray-400 truncate">
+                        {{ cartBook.book.author.name + ' '+ cartBook.book.author.lastName }}
+                    </div>
+                </a>
+            </div>
+            <div class="text-gray-700 truncate text-lg">
+                {{ applyCurrencyPipe(cartBook.book.price) }} x {{cartBook.bookAmount}}
+            </div>
+            <div class="text-red-500 truncate font-bold text-lg">
+                {{ applyCurrencyPipe(getCartBookPrice(cartBook)) }}
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- Loading -->
+<ng-template #loading>
+    <app-loading></app-loading>
+</ng-template>

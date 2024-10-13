@@ -1,83 +1,53 @@
-import { AuthState, RegistrationState, UserDataState } from "./auth.reducer";
-import { selectAuthData, selectAuthErrors, selectAuthState, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectRegistrationErrors, selectRegistrationState, selectUserDataState, selectUserErrors } from "./auth.selector";
-
-describe('Registration Selectors', () => {
-    const initialState: RegistrationState = {
-        isSuccess: false,
-        error: null
-    };
-    const errorState: RegistrationState = {
-        isSuccess: false,
-        error: 'An error occurred'
-    };
-
-    it('should select a registration state', () => {
-        const result = selectRegistrationState.projector(initialState);
-        expect(result).toEqual(initialState);
-    });
-    it('should select a registration is success', () => {
-        const result = selectIsRegistrationSuccess.projector(initialState);
-        expect(result).toEqual(initialState.isSuccess);
-    });
-    it('should select registration errors', () => {
-        const result = selectRegistrationErrors.projector(errorState);
-        expect(result).toEqual(errorState.error);
-    });
-});
+import { getDefaultAuthToken } from "../../../shared";
+import { AuthState } from "./auth.reducer";
+import { selectAuthErrors, selectAuthState, selectIsRefreshSuccessful, selectIsRegistrationSuccess, selectIsUpdateSuccess, selectUserAuth } from "./auth.selector";
 
 describe('Authentication Selectors', () => {
     const initialState: AuthState = {
-        isAuthenticated: false,
-        accessToken: "",
-        refreshToken: "",
-        refreshTokenExpiryDate: new Date(),
+        userAuth: {
+            isAuthenticated: false,
+            authToken: getDefaultAuthToken(),
+            email: '',
+            roles: [],
+        },
+        isRegistrationSuccess: false,
         isRefreshSuccessful: false,
-        error: null
-    };
-    const errorState: AuthState = {
-        ...initialState,
-        error: 'An error occurred'
+        isUpdateSuccess: false,
+        error: null,
     };
 
-    it('should select an authentication state', () => {
+    const errorState: AuthState = {
+        ...initialState,
+        error: 'An error occurred',
+    };
+
+    it('should select the authentication state', () => {
         const result = selectAuthState.projector(initialState);
         expect(result).toEqual(initialState);
     });
-    it('should select a authentication data', () => {
-        const result = selectAuthData.projector(initialState);
-        expect(result).toEqual({
-            isAuthenticated: initialState.isAuthenticated,
-            accessToken: initialState.accessToken,
-            refreshToken: initialState.refreshToken,
-            refreshTokenExpiryDate: initialState.refreshTokenExpiryDate
-        });
+
+    it('should select userAuth', () => {
+        const result = selectUserAuth.projector(initialState);
+        expect(result).toEqual(initialState.userAuth);
     });
-    it('should select selectIsRefreshSuccessful', () => {
+
+    it('should select isRegistrationSuccess', () => {
+        const result = selectIsRegistrationSuccess.projector(initialState);
+        expect(result).toEqual(initialState.isRegistrationSuccess);
+    });
+
+    it('should select isRefreshSuccessful', () => {
         const result = selectIsRefreshSuccessful.projector(initialState);
         expect(result).toEqual(initialState.isRefreshSuccessful);
     });
-    it('should select authentication errors', () => {
+
+    it('should select isUpdateSuccess', () => {
+        const result = selectIsUpdateSuccess.projector(initialState);
+        expect(result).toEqual(initialState.isUpdateSuccess);
+    });
+
+    it('should select auth errors', () => {
         const result = selectAuthErrors.projector(errorState);
-        expect(result).toEqual(errorState.error);
-    });
-});
-
-describe('User Data Selectors', () => {
-    const initialState: UserDataState = {
-        userName: "",
-        error: null
-    };
-    const errorState: UserDataState = {
-        ...initialState,
-        error: 'An error occurred'
-    };
-
-    it('should select a user data state', () => {
-        const result = selectUserDataState.projector(initialState);
-        expect(result).toEqual(initialState);
-    });
-    it('should select user data errors', () => {
-        const result = selectUserErrors.projector(errorState);
         expect(result).toEqual(errorState.error);
     });
 });

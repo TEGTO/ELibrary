@@ -6,32 +6,29 @@
 <mat-dialog-content>
     <form id="registrationForm" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="registerUser()">
         <mat-form-field>
-            <mat-label>User Name</mat-label>
-            <input matInput type="text" autocomplete="user-name" formControlName="userName" placeholder="Coolguy2010"
-                maxlength="256">
-            <mat-error *ngIf="nameInput.hasError('required')">Name is <strong>required.</strong></mat-error>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" autocomplete="user-email" formControlName="email"
+                placeholder="example@gmail.com" maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
         </mat-form-field>
-        <user-info-registration [parentFormGroup]="formGroup"></user-info-registration>
         <mat-form-field>
             <mat-label>Password</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="user-password"
                 formControlName="password" maxlength="256">
-            <span matSuffix class="material-icons me-2" (click)="hidePassword = !hidePassword">
-                {{hidePassword
-                ? 'visibility_off'
-                : 'visibility'
-                }}
+            <span class="material-icons me-2" matSuffix tabindex="0" role="button"
+                (click)="hidePassword = !hidePassword" (keydown)="hidePasswordOnKeydown($event)">
+                {{ hidePassword ? 'visibility_off' : 'visibility' }}
             </span>
-            <mat-error *ngIf="passwordInput.hasError('required')">Password is <strong>required.</strong></mat-error>
-            <mat-error *ngIf="passwordInput.hasError('minlength')">Password must be <strong>at least 8</strong>
-                characters.</mat-error>
+            <mat-error
+                *ngIf="validateInputField(passwordInput).hasError">{{validateInputField(passwordInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Confirm Password</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="user-confirm-password"
                 formControlName="passwordConfirm" maxlength="256">
-            <mat-error *ngIf="passwordConfirmInput.hasError('required')"><strong>Confirm password.</strong></mat-error>
-            <mat-error *ngIf="passwordConfirmInput.hasError('passwordNoMatch')">Passwords don't match.</mat-error>
+            <mat-error
+                *ngIf="validateInputField(passwordConfirmInput).hasError">{{validateInputField(passwordConfirmInput).message}}</mat-error>
         </mat-form-field>
     </form>
 </mat-dialog-content>

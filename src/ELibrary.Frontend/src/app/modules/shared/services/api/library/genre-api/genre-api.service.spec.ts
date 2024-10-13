@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CreateGenreRequest, GenreResponse, UpdateGenreRequest, URLDefiner } from '../../../..';
+import { CreateGenreRequest, Genre, LibraryFilterRequest, UpdateGenreRequest, URLDefiner } from '../../../..';
 import { GenreApiService } from './genre-api.service';
 
 describe('GenreApiService', () => {
@@ -35,7 +35,7 @@ describe('GenreApiService', () => {
 
   it('should get genre by id', () => {
     const expectedReq = `/api/genre/1`;
-    const response: GenreResponse = {
+    const response: Genre = {
       id: 1,
       name: 'Fantasy'
     };
@@ -52,8 +52,8 @@ describe('GenreApiService', () => {
 
   it('should get paginated genres', () => {
     const expectedReq = `/api/genre/pagination`;
-    const request = { pageNumber: 1, pageSize: 10 };
-    const response: GenreResponse[] = [
+    const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
+    const response: Genre[] = [
       { id: 1, name: 'Fantasy' },
       { id: 2, name: 'Science Fiction' }
     ];
@@ -70,14 +70,15 @@ describe('GenreApiService', () => {
 
   it('should get the total number of genres', () => {
     const expectedReq = `/api/genre/amount`;
+    const request: LibraryFilterRequest = { containsName: "", pageNumber: 1, pageSize: 10 };
     const response = 50;
 
-    service.getItemTotalAmount().subscribe(res => {
+    service.getItemTotalAmount(request).subscribe(res => {
       expect(res).toEqual(response);
     });
 
     const req = httpTestingController.expectOne(expectedReq);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe('POST');
     expect(mockUrlDefiner.combineWithLibraryApiUrl).toHaveBeenCalledWith('/genre/amount');
     req.flush(response);
   });
@@ -87,7 +88,7 @@ describe('GenreApiService', () => {
     const request: CreateGenreRequest = {
       name: 'Mystery'
     };
-    const response: GenreResponse = {
+    const response: Genre = {
       id: 1,
       name: 'Mystery'
     };
@@ -108,7 +109,7 @@ describe('GenreApiService', () => {
       id: 1,
       name: 'Historical Fiction'
     };
-    const response: GenreResponse = {
+    const response: Genre = {
       id: 1,
       name: 'Mystery'
     };
@@ -127,7 +128,7 @@ describe('GenreApiService', () => {
     const expectedReq = `/api/genre/1`;
 
     service.deleteById(1).subscribe(res => {
-      expect(res).toBeNull();
+      expect(res.body).toBeNull();
     });
 
     const req = httpTestingController.expectOne(expectedReq);

@@ -3,7 +3,8 @@
 		"_postman_id": "864dcc0c-6372-47b8-9084-062dc8a46f04",
 		"name": "ELibraryApis",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "32714822"
+		"_exporter_id": "32714822",
+		"_collection_link": "https://ttc222.postman.co/workspace/TTC-Workspace~5b36436c-40a5-4e97-ab23-31efb508b8ac/collection/32714822-864dcc0c-6372-47b8-9084-062dc8a46f04?action=share&source=collection_link&creator=32714822"
 	},
 	"item": [
 		{
@@ -244,67 +245,6 @@
 							"path": [
 								"user",
 								"refresh"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "user-delete",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7130/user/delete",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7130",
-							"path": [
-								"user",
-								"delete"
 							]
 						}
 					},
@@ -1096,7 +1036,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"deliveryAddress\": \"address\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 0,\r\n    \"books\": [\r\n        {\r\n            \"id\": {{book_id}}\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"deliveryAddress\": \"address\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderBooks\": [\r\n        {\r\n            \"bookAmount\":\"1\",\r\n            \"bookId\":\"{{book_id}}\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1118,7 +1058,7 @@
 					"response": []
 				},
 				{
-					"name": "order-update",
+					"name": "order-patch",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1130,11 +1070,11 @@
 								}
 							]
 						},
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 1,\r\n    \"books\": [\r\n        {\r\n            \"id\": {{book_id}}\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1156,7 +1096,7 @@
 					"response": []
 				},
 				{
-					"name": "order-delete",
+					"name": "order-cancel",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1263,7 +1203,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 1,\r\n    \"books\": [\r\n        {\r\n            \"id\": {{book_id}}\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"id\":{{order_id}},\r\n    \"deliveryAddress\": \"newaddress\",\r\n    \"deliveryTime\": \"2030-08-03T09:45:45.4656254Z\",\r\n    \"orderStatus\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1286,7 +1226,7 @@
 					"response": []
 				},
 				{
-					"name": "order-manager-delete",
+					"name": "order-manager-cancel",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1348,14 +1288,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -1397,17 +1330,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7131/author/amount",
 							"protocol": "https",
@@ -1435,7 +1370,8 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1445,14 +1381,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
@@ -1725,14 +1654,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -1774,17 +1696,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7131/genre/amount",
 							"protocol": "https",
@@ -1812,7 +1736,8 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1822,14 +1747,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
@@ -2098,14 +2016,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -2147,17 +2058,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 0,\r\n    \"pageSize\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7131/publisher/amount",
 							"protocol": "https",
@@ -2185,7 +2098,8 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -2195,14 +2109,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
@@ -2451,379 +2358,6 @@
 			]
 		},
 		{
-			"name": "cover-type",
-			"item": [
-				{
-					"name": "covertype-get-id",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7131/covertype/{{covertype_id}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7131",
-							"path": [
-								"covertype",
-								"{{covertype_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "covertype-get-amount",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Amount is above 0\", function () {\r",
-									"    var responseData = parseInt(pm.response.text(), 10); \r",
-									"    pm.expect(responseData).to.be.above(0);  \r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7131/covertype/amount",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7131",
-							"path": [
-								"covertype",
-								"amount"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "covertype-pagination",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"containsName\":\"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7131/covertype/pagination",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7131",
-							"path": [
-								"covertype",
-								"pagination"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "covertype-manager-create",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});\r",
-									"\r",
-									"if (pm.response.code === 201) {\r",
-									"    var jsonResponse = pm.response.json();\r",
-									"    pm.environment.set(\"covertype_id\", jsonResponse.id);\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"name\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7131/covertype",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7131",
-							"path": [
-								"covertype"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "covertype-manager-update",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"if (pm.response.code === 200) {\r",
-									"    \r",
-									"    var token = pm.environment.get(\"accessToken\"); \r",
-									"    var id = pm.environment.get(\"covertype_id\"); \r",
-									"\r",
-									"    pm.sendRequest({\r",
-									"        url: 'https://localhost:7131/covertype',\r",
-									"        method: 'PUT',\r",
-									"        header: {\r",
-									"            'Content-Type': 'application/json',\r",
-									"            'Authorization': 'Bearer ' + token \r",
-									"        },\r",
-									"        body: {\r",
-									"            mode: 'raw',\r",
-									"            raw: JSON.stringify({\r",
-									"                    \"id\":id,\r",
-									"                    \"name\":\"name\"\r",
-									"            })\r",
-									"        }\r",
-									"    }, function (err, rollbackRes) {\r",
-									"        if (err) {\r",
-									"            console.error('Rollback failed:', err);\r",
-									"            return;\r",
-									"        }\r",
-									"\r",
-									"        pm.test(\"Update rollback status code is 200\", function () {\r",
-									"            pm.expect(rollbackRes).to.have.status(200);\r",
-									"        });\r",
-									"    });\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{cover_id}},\r\n    \"name\":\"newName\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7131/covertype",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7131",
-							"path": [
-								"covertype"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "covertype-manager-delete",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"if (pm.response.code === 200) {\r",
-									"    \r",
-									"    var token = pm.environment.get(\"accessToken\"); \r",
-									"\r",
-									"    pm.sendRequest({\r",
-									"        url: 'https://localhost:7131/covertype',\r",
-									"        method: 'POST',\r",
-									"        header: {\r",
-									"            'Content-Type': 'application/json',\r",
-									"            'Authorization': 'Bearer ' + token \r",
-									"        },\r",
-									"        body: {\r",
-									"            mode: 'raw',\r",
-									"            raw: JSON.stringify({\r",
-									"                    \"name\":\"name\"\r",
-									"            })\r",
-									"        }\r",
-									"    }, function (err, rollbackRes) {\r",
-									"        if (err) {\r",
-									"            console.error('Rollback failed:', err);\r",
-									"            return;\r",
-									"        }\r",
-									"\r",
-									"        pm.test(\"Delete rollback status code is 201\", function () {\r",
-									"            pm.expect(rollbackRes).to.have.status(201);\r",
-									"        });\r",
-									"\r",
-									"        if (rollbackRes.status === 'Created') {\r",
-									"            var jsonResponse = rollbackRes.json();\r",
-									"            pm.environment.set(\"covertype_id\", jsonResponse.id);\r",
-									"        }\r",
-									"    });\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7131/covertype/{{covertype_id}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7131",
-							"path": [
-								"covertype",
-								"{{covertype_id}}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "book",
 			"item": [
 				{
@@ -2844,14 +2378,7 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -2893,17 +2420,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2,\r\n    \"publicationFromUTC\": \"2019-08-03T09:45:45.4656254Z\",\r\n    \"publicationToUTC\": \"2021-08-03T09:45:45.4656254Z\",\r\n    \"minPrice\": 0,\r\n    \"maxPrice\": 1000,\r\n    \"coverType\": 0 //Any\r\n    // \"onlyInStock\": true,\r\n    // \"minPageAmount\": 0,\r\n    // \"maxPageAmount\": 0,\r\n    // \"authorId\": 1,\r\n    // \"genreId\": 1,\r\n    // \"publisherId\": 1,\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7131/book/amount",
 							"protocol": "https",
@@ -2926,13 +2455,16 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"// Fixed syntax for accessing JSON response\r",
 									"pm.test(\"Response status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Amount is abone 0\", function () {\r",
-									"     pm.expect(jsonResponse.length).to.be.above(0);\r",
-									"});"
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2941,20 +2473,13 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2,\r\n    \"publicationFromUTC\": \"2019-08-03T09:45:45.4656254Z\",\r\n    \"publicationToUTC\": \"2021-08-03T09:45:45.4656254Z\",\r\n    \"minPrice\": 0,\r\n    \"maxPrice\": 1000\r\n    // \"onlyInStock\": true,\r\n    // \"minPageAmount\": 0,\r\n    // \"maxPageAmount\": 0,\r\n    // \"authorId\": 1,\r\n    // \"genreId\": 1,\r\n    // \"publisherId\": 1,\r\n    // \"coverTypeId\": 1\r\n}",
+							"raw": "{\r\n    \"containsName\": \"\",\r\n    \"pageNumber\": 1,\r\n    \"pageSize\": 2,\r\n    \"publicationFromUTC\": null\r\n    // \"publicationToUTC\": \"2021-08-03T09:45:45.4656254Z\",\r\n    // \"minPrice\": 0,\r\n    // \"maxPrice\": 1000,\r\n    // \"coverType\": 0\r\n    // \"onlyInStock\": true,\r\n    // \"minPageAmount\": 0,\r\n    // \"maxPageAmount\": 0,\r\n    // \"authorId\": 1,\r\n    // \"genreId\": 1,\r\n    // \"publisherId\": 1,\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3012,7 +2537,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}},\r\n    \"coverTypeId\": {{covertype_id}}\r\n}",
+							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 1, //Hard\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3051,7 +2576,6 @@
 									"    var author_id = pm.environment.get(\"author_id\");\r",
 									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
 									"    var publisher_id = pm.environment.get(\"publisher_id\");\r",
-									"    var covertype_id = pm.environment.get(\"covertype_id\"); \r",
 									"\r",
 									"    pm.sendRequest({\r",
 									"        url: 'https://localhost:7131/book',\r",
@@ -3067,12 +2591,12 @@
 									"                    \"name\": \"title\",\r",
 									"                    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r",
 									"                    \"price\": 500,\r",
+									"                    \"coverType\": 1,\r",
 									"                    \"pageAmount\": 500,\r",
 									"                    \"stockAmount\": 20,\r",
 									"                    \"authorId\": author_id,\r",
 									"                    \"genreId\": genre_id,\r",
-									"                    \"publisherId\": publisher_id,\r",
-									"                    \"coverTypeId\": covertype_id\r",
+									"                    \"publisherId\": publisher_id\r",
 									"            })\r",
 									"        }\r",
 									"    }, function (err, rollbackRes) {\r",
@@ -3107,7 +2631,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}},\r\n    \"coverTypeId\": {{covertype_id}}\r\n}",
+							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 2, //Soft\r\n    \"pageAmount\": 500,\r\n    \"stockAmount\": 20,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3146,8 +2670,7 @@
 									"    var author_id = pm.environment.get(\"author_id\");\r",
 									"    var genre_id = pm.environment.get(\"genre_id\"); \r",
 									"    var publisher_id = pm.environment.get(\"publisher_id\");\r",
-									"    var covertype_id = pm.environment.get(\"covertype_id\"); \r",
-									"\r",
+									"    \r",
 									"    pm.sendRequest({\r",
 									"        url: 'https://localhost:7131/book',\r",
 									"        method: 'POST',\r",
@@ -3161,12 +2684,12 @@
 									"                    \"name\": \"title\",\r",
 									"                    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r",
 									"                    \"price\": 500,\r",
+									"                    \"coverType\": 1,\r",
 									"                    \"pageAmount\": 500,\r",
 									"                    \"stockAmount\": 20,\r",
 									"                    \"authorId\": author_id,\r",
 									"                    \"genreId\": genre_id,\r",
-									"                    \"publisherId\": publisher_id,\r",
-									"                    \"coverTypeId\": covertype_id\r",
+									"                    \"publisherId\": publisher_id\r",
 									"            })\r",
 									"        }\r",
 									"    }, function (err, rollbackRes) {\r",
@@ -3214,6 +2737,281 @@
 							"path": [
 								"book",
 								"{{book_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "cart-get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7132/cart",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-get-amount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7132/cart/amount",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"amount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-add-cartbook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"cart_book_id\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookAmount\": 1,\r\n    \"bookId\": {{book_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart/cartbook",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"cartbook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-update-cartbook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"{{cart_book_id}}\",\r\n    \"bookAmount\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart/cartbook",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"cartbook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-delete-cartbook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart/cartbook/{{cart_book_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart",
+								"cartbook",
+								"{{cart_book_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart-clear-cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7132/cart",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7132",
+							"path": [
+								"cart"
 							]
 						}
 					},

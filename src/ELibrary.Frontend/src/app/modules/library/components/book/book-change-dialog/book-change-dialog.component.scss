@@ -1,3 +1,5 @@
+@use 'colors' as colors;
+
 .close-button {
     position: absolute;
     right: 10px;
@@ -10,4 +12,16 @@
     mat-form-field {
         width: 100%;
     }
+
+    padding-right: 0.5rem;
+    max-height: 500px;
+    overflow-y: scroll;
+
+    .form__cover-type {
+        margin-bottom: 10px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
 }

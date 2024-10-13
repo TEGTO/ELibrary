@@ -1,22 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Shared.Dtos;
-using System.Net;
 
 namespace UserApi
 {
     public static class Utilities
     {
-        public static bool HasErrors(List<IdentityError> identityErrors, out ActionResult errorResponse)
+        public static bool HasErrors(List<IdentityError> identityErrors, out string[] errorResponse)
         {
             if (identityErrors.Count > 0)
             {
                 var errors = identityErrors.Select(e => e.Description).ToArray();
-                errorResponse = new BadRequestObjectResult(new ResponseError
-                {
-                    StatusCode = $"{(int)HttpStatusCode.BadRequest}",
-                    Messages = errors
-                });
+                errorResponse = errors;
                 return true;
             }
 

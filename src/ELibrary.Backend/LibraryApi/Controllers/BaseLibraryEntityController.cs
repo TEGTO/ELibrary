@@ -17,8 +17,8 @@ namespace LibraryApi.Controllers
         TCreateResponse,
         TUpdateRequest,
         TUpdateResponse,
-        TPaginationRequest> : ControllerBase
-     where TEntity : BaseLibraryEntity where TPaginationRequest : LibraryPaginationRequest
+        TFilterRequest> : ControllerBase
+     where TEntity : BaseLibraryEntity where TFilterRequest : LibraryFilterRequest
     {
         protected readonly ILibraryEntityService<TEntity> entityService;
         protected readonly IMapper mapper;
@@ -32,6 +32,7 @@ namespace LibraryApi.Controllers
         #region Endpoints
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
             var entity = await entityService.GetByIdAsync(id, cancellationToken);
@@ -43,16 +44,20 @@ namespace LibraryApi.Controllers
 
             return Ok(mapper.Map<TGetResponse>(entity));
         }
+        [ResponseCache(Duration = 10)]
+        [AllowAnonymous]
         [HttpPost("pagination")]
-        public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TPaginationRequest request, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
         {
             var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
             return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
-        [HttpGet("amount")]
-        public virtual async Task<ActionResult<int>> GetItemTotalAmount(CancellationToken cancellationToken)
+        [ResponseCache(Duration = 10)]
+        [AllowAnonymous]
+        [HttpPost("amount")]
+        public virtual async Task<ActionResult<int>> GetItemTotalAmount(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var amount = await entityService.GetItemTotalAmountAsync(cancellationToken);
+            var amount = await entityService.GetItemTotalAmountAsync(request, cancellationToken);
             return Ok(amount);
         }
 

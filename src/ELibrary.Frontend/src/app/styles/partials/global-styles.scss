@@ -26,6 +26,10 @@ html {
     transform: scale(1.3);
 }
 
+.mat-mdc-paginator-range-label {
+    display: none !important;
+}
+
 .mat-mdc-dialog-container .mdc-dialog__surface {
     padding: 5px !important;
 }
@@ -36,6 +40,29 @@ html {
 
 .mat-mdc-dialog-container .mat-mdc-dialog-title+.mat-mdc-dialog-content {
     overflow-y: hidden !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #ffffff !important;
+    box-shadow: 2px 2px 7px 1px rgba(0, 0, 0, 0.1);
+}
+
+.cdk-overlay-pane:not(.mat-mdc-autocomplete-panel-above) div.mat-mdc-autocomplete-panel {
+    background-color: #ffffff !important;
+}
+
+// .mat-expansion-panel-header:not([aria-disabled=true]) {
+//     background-color: #ffffff !important;
+// }
+
+// .mat-expansion-panel-body {
+//     background-color: #ffffff !important;
+// }
+
+.wrapper {
+    border: rgba(255, 255, 255, 0.1) 10px solid !important;
+    border-radius: 10px !important;
+    box-shadow: 4px 4px 16px 8px rgba(0, 0, 0, 0.2);
 }
 
 ::-webkit-scrollbar-track {
@@ -54,4 +81,19 @@ html {
 
 ::-webkit-scrollbar {
     width: 15px;
+}
+
+.mat-datepicker-content {
+    box-shadow: 0 2px 4px -1px #0003, 0 4px 5px #00000024, 0 1px 10px #0000001f;
+    background-color: #fff;
+    color: #000000de
+}
+
+.mat-calendar-body-selected {
+    background-color: #007f51;
+    color: #fff;
+}
+
+.mat-calendar-body-cell-content {
+    border: none !important;
 }

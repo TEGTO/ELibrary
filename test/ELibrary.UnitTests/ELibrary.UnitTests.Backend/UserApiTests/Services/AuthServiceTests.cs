@@ -1,7 +1,10 @@
 ﻿using Authentication.Models;
 using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
 using Moq;
+using System.Security.Claims;
+using UserApi.Domain.Dtos;
 using UserApi.Domain.Models;
 using UserEntities.Domain.Entities;
 
@@ -30,6 +33,88 @@ namespace UserApi.Services.Tests
             authService = new AuthService(userManagerMock.Object, roleManagerMock.Object, tokenHandlerMock.Object);
         }
 
+        [Test]
+        public async Task GetUserAsync_ValidClaimsPrincipal_UserReturned()
+        {
+            // Arrange
+            var user = new User { Id = "test-user-id", UserName = "testuser" };
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] {
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            }));
+            userManagerMock.Setup(x => x.FindByIdAsync(user.Id)).ReturnsAsync(user);
+            // Act
+            var result = await authService.GetUserAsync(claimsPrincipal);
+            // Assert
+            Assert.That(result, Is.EqualTo(user));
+        }
+
+        [Test]
+        public async Task GetUserAsync_InvalidClaimsPrincipal_ReturnsNull()
+        {
+            // Arrange
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+            // Act
+            var result = await authService.GetUserAsync(claimsPrincipal);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+        [Test]
+        public async Task GetUserByUserInfoAsync_UserFoundByEmail_UserReturned()
+        {
+            // Arrange
+            var user = new User { Id = "test-user-id", UserName = "testuser", Email = "testuser@example.com" };
+            userManagerMock.Setup(x => x.FindByEmailAsync(user.Email)).ReturnsAsync(user);
+            // Act
+            var result = await authService.GetUserByUserInfoAsync(user.Email);
+            // Assert
+            Assert.That(result, Is.EqualTo(user));
+        }
+        [Test]
+        public async Task GetUserByUserInfoAsync_UserNotFound_ReturnsNull()
+        {
+            // Arrange
+            var info = "non-existent-user";
+            userManagerMock.Setup(x => x.FindByEmailAsync(info)).ReturnsAsync((User)null);
+            userManagerMock.Setup(x => x.FindByNameAsync(info)).ReturnsAsync((User)null);
+            userManagerMock.Setup(x => x.FindByIdAsync(info)).ReturnsAsync((User)null);
+            // Act
+            var result = await authService.GetUserByUserInfoAsync(info);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+        [Test]
+        public async Task GetPaginatedUsersAsync_ValidFilter_ReturnsPaginatedUsers()
+        {
+            // Arrange
+            var users = new List<User>
+            {
+                new User { Id = "test-user-id-1", UserName = "testuser1" },
+                new User { Id = "test-user-id-2", UserName = "testuser2" }
+            };
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 2 };
+            userManagerMock.Setup(x => x.Users).Returns(users.AsQueryable().BuildMock());
+            // Act
+            var result = await authService.GetPaginatedUsersAsync(filter, CancellationToken.None);
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(2));
+            Assert.That(result, Is.EquivalentTo(users));
+        }
+        [Test]
+        public async Task GetUserTotalAmountAsync_ValidFilter_ReturnsTotalUserCount()
+        {
+            // Arrange
+            var users = new List<User>
+            {
+                new User { Id = "test-user-id-1", UserName = "testuser1" },
+                new User { Id = "test-user-id-2", UserName = "testuser2" }
+            };
+            var filter = new AdminGetUserFilter();
+            userManagerMock.Setup(x => x.Users).Returns(users.AsQueryable().BuildMock());
+            // Act
+            var result = await authService.GetUserTotalAmountAsync(filter, CancellationToken.None);
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
+        }
         [Test]
         public async Task RegisterUserAsync_UserAndPasswordProvided_IdentityResultReturned()
         {
@@ -149,6 +234,32 @@ namespace UserApi.Services.Tests
             var result = await authService.DeleteUserAsync(user);
             // Assert
             Assert.That(result, Is.EqualTo(identityResult));
+        }
+        [Test]
+        public async Task RefreshTokenAsync_ValidTokenData_ReturnsNewTokenData()
+        {
+            // Arrange
+            var user = new User { Id = "test-user-id", UserName = "testuser", RefreshToken = "valid-refresh-token", RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1) };
+            var tokenData = new AccessTokenData { AccessToken = "old-access-token", RefreshToken = "valid-refresh-token" };
+            var newTokenData = new AccessTokenData { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
+
+            userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
+            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
+            tokenHandlerMock.Setup(x => x.CreateToken(user, It.IsAny<IList<string>>())).Returns(newTokenData);
+            userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+            // Act
+            var result = await authService.RefreshTokenAsync(tokenData, EXPIRY_IN_DAYS);
+            // Assert
+            Assert.That(result, Is.EqualTo(newTokenData));
+        }
+        [Test]
+        public void RefreshTokenAsync_InvalidToken_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var tokenData = new AccessTokenData { AccessToken = "invalid-token", RefreshToken = "invalid-refresh-token" };
+            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
+            // Act & Assert
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenData, EXPIRY_IN_DAYS));
         }
     }
 }

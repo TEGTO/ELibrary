@@ -1,0 +1,47 @@
+<button mat-icon-button mat-dialog-close class="close-button">
+    <span class="material-icons">close</span>
+</button>
+<h2 mat-dialog-title>Create User</h2>
+
+<mat-dialog-content>
+    <form id="registrationForm" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="registerUser()">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" autocomplete="admin-user-email" [formControl]="emailInput"
+                placeholder="example@gmail.com" maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="admin-user-password" id="password"
+                [formControl]="passwordInput" maxlength="256">
+            <span class="material-icons me-2" matSuffix tabindex="0" role="button"
+                (click)="hidePassword = !hidePassword" (keydown)="hidePasswordOnKeydown($event)">
+                {{ hidePassword ? 'visibility_off' : 'visibility' }}
+            </span>
+            <mat-error
+                *ngIf="validateInputField(passwordInput).hasError">{{validateInputField(passwordInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Confirm Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" autocomplete="admin-user-confirm-password"
+                [formControl]="passwordConfirmInput" maxlength="256">
+            <mat-error
+                *ngIf="validateInputField(passwordConfirmInput).hasError">{{validateInputField(passwordConfirmInput).message}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Roles</mat-label>
+            <mat-select [formControl]="rolesInput" multiple>
+                @for (role of roles; track role) {
+                <mat-option [value]="role">{{role}}</mat-option>
+                }
+            </mat-select>
+            <mat-error
+                *ngIf="validateInputField(passwordConfirmInput).hasError">{{validateInputField(passwordConfirmInput).message}}</mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions class="actions__bottom-container flex-col">
+    <button mat-flat-button id="send-button" form="registrationForm" type="submit" color="primary">Create</button>
+</mat-dialog-actions>

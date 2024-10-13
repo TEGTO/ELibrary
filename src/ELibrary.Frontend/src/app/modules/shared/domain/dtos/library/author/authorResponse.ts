@@ -1,4 +1,4 @@
-import { UpdateAuthorRequest } from "../../../..";
+import { Author } from "../../../..";
 
 export interface AuthorResponse {
     id: number;
@@ -6,17 +6,11 @@ export interface AuthorResponse {
     lastName: string;
     dateOfBirth: Date;
 }
-export function mapAuthorData(resp: AuthorResponse): AuthorResponse {
+export function mapAuthorResponseToAuthor(response: AuthorResponse): Author {
     return {
-        ...resp,
-        dateOfBirth: new Date(resp.dateOfBirth)
-    }
-}
-export function getAuthorFromUpdateRequest(request: UpdateAuthorRequest): AuthorResponse {
-    return {
-        id: request.id,
-        name: request.name,
-        lastName: request.lastName,
-        dateOfBirth: request.dateOfBirth
+        id: response?.id,
+        name: response?.name,
+        lastName: response?.lastName,
+        dateOfBirth: new Date(response?.dateOfBirth)
     }
 }

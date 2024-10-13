@@ -1,0 +1,101 @@
+<div class="bg-zinc-50 body__products">
+    <ng-container *ngIf="book$ | async as item">
+        <div *ngTemplateOutlet="book;  context: { book: item, bookAdded: bookAdded }">
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #book let-book="book" let-bookAdded="bookAdded">
+    <div class="book mr-2 h-full w-full border border-gray-200 rounded-lg p-10">
+        <div class="w-full flex gap-10">
+            <div class="book__cover">
+                <img class="h-56 w-36" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
+                    onerror="this.src='../../../../../assets/book_cover_placeholder.png'" />
+            </div>
+            <!-- Book Details -->
+            <div class="h-full w-5/12 pt-5 flex">
+                <div class="grow">
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Title</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Author</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Genre</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Publisher</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Publication Date</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Page Amount</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="book__detail-header text-gray-400">
+                        <span class="font-semibold">Cover Type</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="product__price mt-3">
+                        @if (checkIfInStock(book)) {
+                        <span class="text-green-600 truncate text-md font-semibold">
+                            In stock
+                        </span>
+                        }
+                        @else {
+                        <span class="text-red-600 truncate text-md font-semibold">
+                            Out of stock
+                        </span>
+                        }
+                    </div>
+                </div>
+                <div class="pl-2">
+                    <div class="book__detail-value text-gray-400 flex justify-between">
+                        <span>{{ book.name }}</span>
+                    </div>
+                    <div class="book__detail-value text-gray-400 flex justify-between">
+                        <span>{{ book.author.name + ' ' + book.author.lastName }}</span>
+                    </div>
+                    <div class="book__detail-value text-gray-400">
+                        <span>{{ book.genre.name }}</span>
+                    </div>
+                    <div class="book__detail-value text-gray-400">
+                        <span>{{ book.publisher.name }}</span>
+                    </div>
+                    <div class="book__detail-value text-gray-400">
+                        <span>{{ book.publicationDate | date:'dd/MM/YYYY' }}</span>
+                    </div>
+                    <div class="book__detail-value text-gray-400">
+                        <span>{{ book.pageAmount }}</span>
+                    </div>
+                    <div class="book__detail-value text-gray-400">
+                        <span>{{ getStringCoverType(book.coverType) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="book__buy w-full flex items-center gap-4 justify-end">
+            <div class="text-red-500 truncate font-bold text-xl">
+                {{ applyCurrencyPipe(book.price) }}
+            </div>
+            <ng-container *ngIf="!bookAdded; else addedToCart">
+                <button mat-flat-button mat-dialog-close class="!bg-green-600 !text-base"
+                    [disabled]="!checkIfInStock(book)" (click)="addBookToCart(book)">
+                    <span class="material-icons">shopping_cart</span>
+                </button>
+            </ng-container>
+            <ng-template #addedToCart>
+                <div class="py-1 px-1 rounded inline-flex items-center">
+                    <span class="material-icons text-green-600">check</span>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</ng-template>

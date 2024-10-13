@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryApi.Domain.Dtos.Library.Book;
-using LibraryApi.Validators.Book;
+using LibraryApi.Domain.Dto.Book;
+using LibraryShopEntities.Domain.Entities.Library;
 
 namespace LibraryApi.Validators.Book.Tests
 {
@@ -17,12 +17,12 @@ namespace LibraryApi.Validators.Book.Tests
                 Name = "Valid Book",
                 PublicationDate = new DateTime(1980, 1, 1),
                 Price = 500,
+                CoverType = CoverType.Hard,
                 PageAmount = 500,
-                StockAmount = 100,
+                CoverImgUrl = "valid-url",
                 AuthorId = 1,
                 GenreId = 1,
                 PublisherId = 1,
-                CoverTypeId = 1,
             };
             // Act & Assert
             var result = validator.TestValidate(request);
@@ -38,24 +38,24 @@ namespace LibraryApi.Validators.Book.Tests
                 Name = "",
                 PublicationDate = new DateTime(3000, 1, 1),
                 Price = -1,
+                CoverType = CoverType.Any,
                 PageAmount = -1,
-                StockAmount = -1,
+                CoverImgUrl = "",
                 AuthorId = 0,
                 GenreId = 0,
                 PublisherId = 0,
-                CoverTypeId = 0,
             };
             // Act & Assert
             var result = validator.TestValidate(request);
             result.ShouldHaveValidationErrorFor(x => x.Name);
             result.ShouldHaveValidationErrorFor(x => x.PublicationDate);
             result.ShouldHaveValidationErrorFor(x => x.Price);
+            result.ShouldHaveValidationErrorFor(x => x.CoverType);
+            result.ShouldHaveValidationErrorFor(x => x.CoverImgUrl);
             result.ShouldHaveValidationErrorFor(x => x.PageAmount);
-            result.ShouldHaveValidationErrorFor(x => x.StockAmount);
             result.ShouldHaveValidationErrorFor(x => x.AuthorId);
             result.ShouldHaveValidationErrorFor(x => x.GenreId);
             result.ShouldHaveValidationErrorFor(x => x.PublisherId);
-            result.ShouldHaveValidationErrorFor(x => x.CoverTypeId);
         }
     }
 }

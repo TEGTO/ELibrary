@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { BehaviorSubject, filter, Observable, switchMap, take, throwError } from 'rxjs';
-import { AuthenticationService } from '../..';
-import { AuthData, AuthToken } from '../../../shared';
+import { AuthenticationService, LOG_OUT_COMMAND_HANDLER, LogOutCommand } from '../..';
+import { AuthToken, CommandHandler, ErrorHandler, UserAuth } from '../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,14 @@ export class AuthInterceptor implements HttpInterceptor {
   private decodedToken: JwtPayload | null = null;
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private isAuthenticated = false;
 
   constructor(
-    private readonly authService: AuthenticationService
+    private readonly authService: AuthenticationService,
+    @Inject(LOG_OUT_COMMAND_HANDLER) private readonly logOutHandler: CommandHandler<LogOutCommand>,
+    private readonly errorHandler: ErrorHandler
   ) {
-    this.authService.getAuthData().subscribe(
+    this.authService.getUserAuth().subscribe(
       data => {
         this.processAuthData(data);
       }
@@ -31,9 +35,9 @@ export class AuthInterceptor implements HttpInterceptor {
     });
   }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<object>> {
     let authReq = req;
-    if (authReq.url.includes('/refresh')) {
+    if (authReq.url.includes('/refresh') || !this.isAuthenticated) {
       return next.handle(authReq);
     }
     if (this.authToken != null) {
@@ -75,7 +79,8 @@ export class AuthInterceptor implements HttpInterceptor {
     return clonedRequest;
   }
   private logOutUserWithError(errorMessage: string): Observable<never> {
-    this.authService.logOutUser();
+    const command: LogOutCommand = {};
+    this.logOutHandler.dispatch(command);
     return throwError(() => new Error(errorMessage));
   }
   private isTokenExpired(): boolean {
@@ -93,15 +98,15 @@ export class AuthInterceptor implements HttpInterceptor {
     try {
       return jwtDecode<JwtPayload>(token);
     } catch (error) {
+      this.errorHandler.handleError(error);
       return null;
     }
   }
-  private processAuthData(data: AuthData): void {
-    this.authToken = {
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-      refreshTokenExpiryDate: new Date(data.refreshTokenExpiryDate)
-    };
-    this.decodedToken = this.tryDecodeToken(this.authToken.accessToken);
+  private processAuthData(data: UserAuth): void {
+    this.authToken = data.authToken;
+    this.isAuthenticated = data.isAuthenticated;
+    if (this.isAuthenticated) {
+      this.decodedToken = this.tryDecodeToken(this.authToken.accessToken);
+    }
   }
 }

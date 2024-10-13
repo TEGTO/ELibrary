@@ -17,10 +17,12 @@ services:
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
       - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - AllowedCORSOrigins=${AllowedCORSOrigins}
-
+      - MaxPaginationPageSize=${MaxPaginationPageSize}
+      - UseCORS=${UseCORS}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
   libraryapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
@@ -37,6 +39,8 @@ services:
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
       - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - AllowedCORSOrigins=${AllowedCORSOrigins}
+      - MaxPaginationPageSize=${MaxPaginationPageSize}
+      - UseCORS=${UseCORS}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -56,6 +60,9 @@ services:
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
       - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - AllowedCORSOrigins=${AllowedCORSOrigins}
+      - Shop__MaxOrderAmount=${Shop__MaxOrderAmount}
+      - MaxPaginationPageSize=${MaxPaginationPageSize}
+      - UseCORS=${UseCORS}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

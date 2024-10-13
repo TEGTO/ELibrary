@@ -1,6 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryApi.Domain.Dtos.Library.Author;
-using LibraryApi.Validators.Author;
+using LibraryApi.Domain.Dto.Author;
 
 namespace LibraryApi.Validators.Author.Tests
 {
