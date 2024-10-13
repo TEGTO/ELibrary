@@ -1,4 +1,4 @@
-name: Deploy Frontend Azure Static Web App
+name: Continuous Deployment Frontend
 
 on:
   workflow_dispatch:
