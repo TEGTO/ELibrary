@@ -6,10 +6,10 @@ on:
     branches:
       - main
     paths:
-      - 'src/ELibrary.Backend/**'
+      - "src/ELibrary.Backend/**"
 
 env:
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: "8.0.x"
 
 jobs:
   build-and-deploy:
@@ -20,49 +20,53 @@ jobs:
         api:
           - name: "User API"
             path: "UserApi"
-            azure_app_name: "elibrary-user-api-germanywestcentral-001"
+            azure_app_name: "elibrary-user-api-germanywestcentral-002"
             publish_secret: USER_API_PUBLISH_SECRET
+          - name: "Shop API"
+            path: "ShopApi"
+            azure_app_name: "elibrary-shop-api-germanywestcentral-002"
+            publish_secret: SHOP_API_PUBLISH_SECRET
           - name: "Library API"
             path: "LibraryApi"
-            azure_app_name: "elibrary-library-api-germanywestcentral-001"
+            azure_app_name: "elibrary-library-api-germanywestcentral-002"
             publish_secret: LIBRARY_API_PUBLISH_SECRET
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Cache .NET packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+      - name: Cache .NET packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: Restore dependencies   
-      run: |
-        dotnet restore src/ELibrary.Backend/ELibrary.Backend.sln
+      - name: Restore dependencies
+        run: |
+          dotnet restore src/ELibrary.Backend/ELibrary.Backend.sln
 
-    - name: Build projects
-      run: |
-        dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
+      - name: Build projects
+        run: |
+          dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
 
-    - name: Run unit tests
-      run: |
-        dotnet test src/ELibrary.Backend/ELibrary.Backend.sln
+      - name: Run unit tests
+        run: |
+          dotnet test src/ELibrary.Backend/ELibrary.Backend.sln
 
-    - name: Publish
-      run: dotnet publish src/ELibrary.Backend/${{ matrix.api.path }} --configuration Release --output ./src/ELibrary.Backend/${{ matrix.api.path }}/publish
+      - name: Publish
+        run: dotnet publish src/ELibrary.Backend/${{ matrix.api.path }} --configuration Release --output ./src/ELibrary.Backend/${{ matrix.api.path }}/publish
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ matrix.api.azure_app_name }}
-        slot-name: 'production'
-        publish-profile: ${{ secrets[matrix.api.publish_secret] }}
-        package: ./src/ELibrary.Backend/${{ matrix.api.path }}/publish
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ matrix.api.azure_app_name }}
+          slot-name: "production"
+          publish-profile: ${{ secrets[matrix.api.publish_secret] }}
+          package: ./src/ELibrary.Backend/${{ matrix.api.path }}/publish
