@@ -41,7 +41,7 @@ describe('AuthenticationDialogManagerService', () => {
         service.openAuthenticatedMenu();
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(AuthenticatedComponent, {
-            height: '440px',
+            maxHeight: '440px',
             width: '450px',
         });
     });
@@ -58,7 +58,7 @@ describe('AuthenticationDialogManagerService', () => {
         service.openLoginMenu();
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(LoginComponent, {
-            height: '345px',
+            maxHeight: '345px',
             width: '450px',
         });
     });
@@ -67,7 +67,7 @@ describe('AuthenticationDialogManagerService', () => {
         service.openRegisterMenu();
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(RegisterComponent, {
-            height: '390px',
+            maxHeight: '390px',
             width: '450px',
         });
     });

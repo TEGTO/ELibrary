@@ -34,7 +34,7 @@ describe('LibraryDialogManagerService', () => {
         const result = service.openBookDetailsMenu(book);
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(BookChangeDialogComponent, {
-            height: '660px',
+            maxHeight: '660px',
             width: '650px',
             data: book
         });
@@ -49,7 +49,7 @@ describe('LibraryDialogManagerService', () => {
         const result = service.openAuthorDetailsMenu(author);
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(AuthorChangeDialogComponent, {
-            height: '400px',
+            maxHeight: '400px',
             width: '450px',
             data: author
         });
@@ -64,7 +64,7 @@ describe('LibraryDialogManagerService', () => {
         const result = service.openGenreDetailsMenu(genre);
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(GenreChangeDialogComponent, {
-            height: '230px',
+            maxHeight: '230px',
             width: '450px',
             data: genre
         });
@@ -79,7 +79,7 @@ describe('LibraryDialogManagerService', () => {
         const result = service.openPublisherDetailsMenu(publisher);
 
         expect(mockMatDialog.open).toHaveBeenCalledWith(PublisherChangeDialogComponent, {
-            height: '230px',
+            maxHeight: '230px',
             width: '450px',
             data: publisher
         });

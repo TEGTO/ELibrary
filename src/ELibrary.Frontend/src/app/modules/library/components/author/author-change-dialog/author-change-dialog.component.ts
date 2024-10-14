@@ -18,7 +18,7 @@ export class AuthorChangeDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public author: Author,
-    private dialogRef: MatDialogRef<AuthorChangeDialogComponent>,
+    private readonly dialogRef: MatDialogRef<AuthorChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
 
