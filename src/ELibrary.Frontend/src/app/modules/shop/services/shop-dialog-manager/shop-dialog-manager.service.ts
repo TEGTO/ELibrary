@@ -20,7 +20,6 @@ export class ShopDialogManagerService implements ShopDialogManager {
   }
   openCartMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(CartDialogComponent, {
-      height: '640px',
       width: '630px',
       maxHeight: '640px',
       maxWidth: '630px'
@@ -29,9 +28,8 @@ export class ShopDialogManagerService implements ShopDialogManager {
   }
   openClientChangeMenu(client: Client): MatDialogRef<any> {
     const dialogRef = this.dialog.open(ClientChangeDialogComponent, {
-      height: '700px',
       width: '530px',
-      maxHeight: '700px',
+      maxHeight: '710px',
       maxWidth: '530px',
       data: client
     });
@@ -39,7 +37,6 @@ export class ShopDialogManagerService implements ShopDialogManager {
   }
   openReplenishmentMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(BookStockReplenishmentComponent, {
-      height: '430px',
       width: '550px',
       maxHeight: '430px',
       maxWidth: '550px',

@@ -7,13 +7,13 @@
     <form id="bookDetails" class="content__form space-y-1" [formGroup]="formGroup" (ngSubmit)="sendDetails()">
         <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput type="text" autocomplete="book-name" formControlName="name" maxlength="256">
+            <input matInput type="text" autocomplete="book-name" [formControl]="nameInput" maxlength="256">
             <mat-error
                 *ngIf="validateInputField(nameInput).hasError">{{validateInputField(nameInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Publication Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="publicationDate" [readonly]="true">
+            <input matInput [matDatepicker]="picker" [formControl]="publicationDateInput" [readonly]="true">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error
@@ -21,32 +21,32 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Price</mat-label>
-            <input matInput type="number" autocomplete="book-price" formControlName="price" min="0">
+            <input matInput type="number" autocomplete="book-price" [formControl]="priceInput" min="0">
             <mat-error
                 *ngIf="validateInputField(priceInput).hasError">{{validateInputField(priceInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Page Amount</mat-label>
-            <input matInput type="number" autocomplete="book-pageAmount" formControlName="pageAmount" min="1">
+            <input matInput type="number" autocomplete="book-pageAmount" [formControl]="pageAmountInput" min="1">
             <mat-error
                 *ngIf="validateInputField(pageAmountInput).hasError">{{validateInputField(pageAmountInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Stock Amount</mat-label>
-            <input matInput type="number" autocomplete="book-stockAmount" formControlName="stockAmount" min="0">
+            <input matInput type="number" autocomplete="book-stockAmount" [formControl]="stockAmountInput" min="0">
             <mat-error
                 *ngIf="validateInputField(stockAmountInput).hasError">{{validateInputField(stockAmountInput).message}}</mat-error>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Cover Img Url</mat-label>
-            <input matInput type="text" autocomplete="book-cover-img" formControlName="coverImgUrl" maxlength="1024">
+            <input matInput type="text" autocomplete="book-cover-img" [formControl]="coverImgUrlInput" maxlength="1024">
             <mat-error
                 *ngIf="validateInputField(coverImgUrlInput).hasError">{{validateInputField(coverImgUrlInput).message}}</mat-error>
         </mat-form-field>
         <div class="form__cover-type">
             <label for="cover">Cover Type</label>
             <div>
-                <mat-radio-group id="cover" formControlName="coverType">
+                <mat-radio-group id="cover" [formControl]="coverTypeInput">
                     <mat-radio-button [value]="1">Hard</mat-radio-button>
                     <mat-radio-button [value]="2">Soft</mat-radio-button>
                     <mat-error

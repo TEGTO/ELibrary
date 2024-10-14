@@ -50,7 +50,7 @@ describe('OrderTableComponent', () => {
 
 
   beforeEach(async () => {
-    const orderServiceSpyObj = jasmine.createSpyObj('OrderService', ['managerGetPaginatedOrders', 'getOrderTotalAmount']);
+    const orderServiceSpyObj = jasmine.createSpyObj('OrderService', ['managerGetPaginatedOrders', 'managerGetOrderAmount']);
     const localeServiceSpyObj = jasmine.createSpyObj<LocaleService>(['getLocale', 'getCurrency']);
     const managerOrderDetailsHandlerSpyObj = jasmine.createSpyObj('CommandHandler', ['dispatch']);
 
@@ -85,7 +85,7 @@ describe('OrderTableComponent', () => {
     totalAmount$ = new BehaviorSubject(1);
 
     orderServiceSpy.managerGetPaginatedOrders.and.returnValue(of(mockOrders));
-    orderServiceSpy.getOrderTotalAmount.and.returnValue(totalAmount$.asObservable());
+    orderServiceSpy.managerGetOrderAmount.and.returnValue(totalAmount$.asObservable());
 
     fixture.detectChanges(); // Initialize component
   });
@@ -99,7 +99,7 @@ describe('OrderTableComponent', () => {
   });
 
   it('should fetch total amount on initialization', () => {
-    expect(orderServiceSpy.getOrderTotalAmount).toHaveBeenCalled();
+    expect(orderServiceSpy.managerGetOrderAmount).toHaveBeenCalled();
   });
 
   it('should render items in the table', () => {

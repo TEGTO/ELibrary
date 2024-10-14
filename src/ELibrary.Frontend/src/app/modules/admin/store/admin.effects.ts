@@ -94,7 +94,12 @@ export class AdminEffects {
             ofType(getClient),
             mergeMap((action) =>
                 this.clientApiService.adminGet(action.userId).pipe(
-                    map((response) => getClientSuccess({ client: response })),
+                    map((response) => {
+                        if (response.client != null) {
+                            return getClientSuccess({ client: response.client })
+                        }
+                        return getClientFailure({ error: new Error("Client was not found!") });
+                    }),
                     catchError(error => of(getClientFailure({ error: error.message })))
                 )
             )

@@ -15,7 +15,7 @@ export abstract class DialogManagerService implements DialogManager {
 
   openConfirmMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(ConfirmMenuComponent, {
-      height: '200px',
+      maxHeight: '200px',
       width: '450px',
     });
     return dialogRef;

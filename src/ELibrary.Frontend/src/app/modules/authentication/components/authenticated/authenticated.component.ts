@@ -14,7 +14,7 @@ import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../
 export class AuthenticatedComponent implements OnInit, OnDestroy {
   hideNewPassword = true;
   formGroup: FormGroup = null!;
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   get emailInput() { return this.formGroup.get('email')!; }
   get oldPasswordInput() { return this.formGroup.get('oldPassword')!; }

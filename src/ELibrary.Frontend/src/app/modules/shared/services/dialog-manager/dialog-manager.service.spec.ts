@@ -29,7 +29,7 @@ describe('DialogManagerService', () => {
     const result = service.openConfirmMenu();
 
     expect(mockMatDialog.open).toHaveBeenCalledWith(ConfirmMenuComponent, {
-      height: '200px',
+      maxHeight: '200px',
       width: '450px'
     });
     expect(result).toBe(dialogRef);

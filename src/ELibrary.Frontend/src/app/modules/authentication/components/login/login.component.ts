@@ -14,7 +14,7 @@ import { passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand, START_REGIST
 export class LoginComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   hidePassword = true;
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   get loginInput() { return this.formGroup.get('login')!; }
   get passwordInput() { return this.formGroup.get('password')!; }

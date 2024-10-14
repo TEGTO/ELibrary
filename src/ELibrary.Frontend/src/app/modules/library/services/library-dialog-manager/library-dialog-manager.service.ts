@@ -21,7 +21,7 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
   }
   openAuthorDetailsMenu(author: Author): MatDialogRef<any> {
     const dialogRef = this.dialog.open(AuthorChangeDialogComponent, {
-      height: '400px',
+      maxHeight: '400px',
       width: '450px',
       data: author
     });
@@ -29,7 +29,7 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
   }
   openGenreDetailsMenu(genre: Genre): MatDialogRef<any> {
     const dialogRef = this.dialog.open(GenreChangeDialogComponent, {
-      height: '230px',
+      maxHeight: '230px',
       width: '450px',
       data: genre
     });
@@ -37,7 +37,7 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
   }
   openPublisherDetailsMenu(publisher: Publisher): MatDialogRef<any> {
     const dialogRef = this.dialog.open(PublisherChangeDialogComponent, {
-      height: '230px',
+      maxHeight: '230px',
       width: '450px',
       data: publisher
     });
@@ -45,7 +45,7 @@ export class LibraryDialogManagerService implements LibraryDialogManager {
   }
   openBookDetailsMenu(book: Book | null): MatDialogRef<any> {
     const dialogRef = this.dialog.open(BookChangeDialogComponent, {
-      height: '660px',
+      maxHeight: '660px',
       width: '650px',
       data: book
     });

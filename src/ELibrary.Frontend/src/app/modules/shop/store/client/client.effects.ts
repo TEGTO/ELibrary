@@ -16,7 +16,12 @@ export class ClientEffects {
             ofType(getClient),
             mergeMap(() =>
                 this.apiService.get().pipe(
-                    map(response => getClientSuccess({ client: response })),
+                    map(response => {
+                        if (response.client != null) {
+                            return getClientSuccess({ client: response.client })
+                        }
+                        return getClientFailure({ error: new Error("Client was not found!") });
+                    }),
                     catchError(error => of(getClientFailure({ error: error.message })))
                 )
             )

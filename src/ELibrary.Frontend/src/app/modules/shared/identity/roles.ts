@@ -1,7 +1,7 @@
 export abstract class Roles {
-    static CLIENT = "Client";
-    static MANAGER = "Manager";
-    static ADMINISTRATOR = "Administrator";
+    static readonly CLIENT = "Client";
+    static readonly MANAGER = "Manager";
+    static readonly ADMINISTRATOR = "Administrator";
 }
 
 export function getRoleArray(): string[] {
