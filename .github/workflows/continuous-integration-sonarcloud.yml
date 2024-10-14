@@ -13,12 +13,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get Latest Workflow Run ID for Backend on Current Branch
+        id: backend_run_id
+        run: |
+          run_id=$(curl -s \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.ref_name }}&status=success&per_page=1" | \
+            jq '.workflow_runs[0].id')
+          echo "Backend Run ID: $run_id"
+          echo "backend_run_id=$run_id" >> $GITHUB_ENV
+
+      - name: Get Latest Workflow Run ID for Frontend on Current Branch
+        id: frontend_run_id
+        run: |
+          run_id=$(curl -s \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.ref_name }}&status=success&per_page=1" | \
+            jq '.workflow_runs[0].id')
+          echo "Frontend Run ID: $run_id"
+          echo "frontend_run_id=$run_id" >> $GITHUB_ENV
+
       - name: Download Backend Coverage
         uses: actions/download-artifact@v4
         with:
           name: code-coverage
           path: ./coverage/backend
-          run-id: ${{secrets.CI_BACKEND}}
+          run-id: ${{ env.backend_run_id }}
           github-token: ${{ github.token }}
 
       - name: Download Frontend Coverage
@@ -26,8 +48,39 @@ jobs:
         with:
           name: coverage-report
           path: ./coverage/frontend
-          run-id: ${{secrets.CI_FRONTEND}}
+          run-id: ${{ env.frontend_run_id }}
           github-token: ${{ github.token }}
+
+      - name: Check for Empty Coverage and Fallback to Main Branch
+        run: |
+          # Check if the backend and frontend coverage files exist and are not empty
+          if [ ! -s ./coverage/backend/coverage.xml ]; then
+            echo "Backend coverage is empty, falling back to main branch"
+            backend_run_id=$(curl -s \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=main&status=success&per_page=1" | \
+              jq '.workflow_runs[0].id')
+            echo "Fallback Backend Run ID: $backend_run_id"
+            # Download coverage from the main branch
+            curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -o ./coverage/backend/coverage.xml \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/$backend_run_id/artifacts"
+          fi
+
+          if [ ! -s ./coverage/frontend/lcov.info ]; then
+            echo "Frontend coverage is empty, falling back to main branch"
+            frontend_run_id=$(curl -s \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=main&status=success&per_page=1" | \
+              jq '.workflow_runs[0].id')
+            echo "Fallback Frontend Run ID: $frontend_run_id"
+            # Download coverage from the main branch
+            curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -o ./coverage/frontend/lcov.info \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/$frontend_run_id/artifacts"
+          fi
 
       - name: Merge Coverage Reports
         run: |
