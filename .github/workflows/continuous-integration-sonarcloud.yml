@@ -2,12 +2,6 @@ name: Upload Coverage To SonarCloud
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - Continuous Integration Backend
-      - Continuous Integration Frontend
-    types:
-      - completed
 
 env:
   DOTNET_VERSION: "8.0.x"
