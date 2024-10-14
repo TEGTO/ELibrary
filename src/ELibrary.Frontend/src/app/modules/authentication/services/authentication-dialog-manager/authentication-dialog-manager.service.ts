@@ -26,21 +26,21 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
   }
   openLoginMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(LoginComponent, {
-      height: '345px',
+      maxHeight: '345px',
       width: '450px',
     });
     return dialogRef;
   }
   openAuthenticatedMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(AuthenticatedComponent, {
-      height: '440px',
+      maxHeight: '440px',
       width: '450px',
     });
     return dialogRef;
   }
   openRegisterMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(RegisterComponent, {
-      height: '390px',
+      maxHeight: '390px',
       width: '450px',
     });
     return dialogRef;

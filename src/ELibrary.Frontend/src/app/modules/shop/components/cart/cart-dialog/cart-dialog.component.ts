@@ -17,8 +17,8 @@ export class CartDialogComponent implements OnInit, OnDestroy {
   readonly scollSize = 420;
 
   items$!: Observable<CartBook[]>;
-  private inputChangeSubjectMap = new Map<number, Subject<number>>();
-  private destroy$ = new Subject<void>();
+  private readonly inputChangeSubjectMap = new Map<number, Subject<number>>();
+  private readonly destroy$ = new Subject<void>();
 
   get booksUrlPath() { return getProductsPath(); }
 
@@ -115,5 +115,9 @@ export class CartDialogComponent implements OnInit, OnDestroy {
   }
   checkIfInStock(book: Book): boolean {
     return book.stockAmount > 0;
+  }
+  onImageError(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }

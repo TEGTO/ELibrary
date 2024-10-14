@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
-import { Client, ClientResponse, CreateClientRequest, mapClientResponseToClient, UpdateClientRequest } from '../../../..';
+import { catchError, map, Observable } from 'rxjs';
+import { Client, ClientResponse, CreateClientRequest, GetClient, GetClientResponse, mapClientResponseToClient, mapGetClientResponseToGetClient, UpdateClientRequest } from '../../../..';
 import { BaseApiService } from '../../base-api/base-api.service';
 
 @Injectable({
@@ -10,10 +10,10 @@ export class ClientApiService extends BaseApiService {
 
   //#region User
 
-  get(): Observable<Client> {
-    return this.httpClient.get<ClientResponse>(this.combinePathWithClientApiUrl(``)).pipe(
-      map((response) => mapClientResponseToClient(response)),
-      catchError((error) => this.handleNotFoundError(error)),
+  get(): Observable<GetClient> {
+    return this.httpClient.get<GetClientResponse>(this.combinePathWithClientApiUrl(``)).pipe(
+      map((response) => mapGetClientResponseToGetClient(response)),
+      catchError((error) => this.handleError(error)),
     );
   }
   create(request: CreateClientRequest): Observable<Client> {
@@ -33,10 +33,10 @@ export class ClientApiService extends BaseApiService {
 
   //#region Admin
 
-  adminGet(id: string): Observable<Client> {
-    return this.httpClient.get<ClientResponse>(this.combinePathWithClientApiUrl(`/admin/${id}`)).pipe(
-      map((response) => mapClientResponseToClient(response)),
-      catchError((error) => this.handleNotFoundError(error)),
+  adminGet(id: string): Observable<GetClient> {
+    return this.httpClient.get<GetClientResponse>(this.combinePathWithClientApiUrl(`/admin/${id}`)).pipe(
+      map((response) => mapGetClientResponseToGetClient(response)),
+      catchError((error) => this.handleError(error)),
     );
   }
   adminCreate(id: string, request: CreateClientRequest): Observable<Client> {
@@ -54,13 +54,6 @@ export class ClientApiService extends BaseApiService {
 
   //#endregion
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private handleNotFoundError(error: any): Observable<never> {
-    if ('status' in error && error.status === 404) {
-      return of();
-    }
-    return this.handleError(error);
-  }
   private combinePathWithClientApiUrl(subpath: string): string {
     return this.urlDefiner.combineWithShopApiUrl("/client" + subpath);
   }

@@ -35,7 +35,7 @@ namespace ShopApiTests.Features.ClientFeature.Services
             // Act
             var result = await clientManager.GetClientForUserAsync(userId, CancellationToken.None);
             // Assert
-            Assert.That(result, Is.EqualTo(clientResponse));
+            Assert.That(result.Client, Is.EqualTo(clientResponse));
             mockClientService.Verify(cs => cs.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
             mockMapper.Verify(m => m.Map<ClientResponse>(client), Times.Once);
         }

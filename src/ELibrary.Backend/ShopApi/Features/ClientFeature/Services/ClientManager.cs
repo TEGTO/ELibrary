@@ -16,10 +16,14 @@ namespace ShopApi.Features.ClientFeature.Services
             this.mapper = mapper;
         }
 
-        public async Task<ClientResponse?> GetClientForUserAsync(string userId, CancellationToken cancellationToken)
+        public async Task<GetClientResponse> GetClientForUserAsync(string userId, CancellationToken cancellationToken)
         {
             var client = await clientService.GetClientByUserIdAsync(userId, cancellationToken);
-            return mapper.Map<ClientResponse>(client);
+
+            return new GetClientResponse
+            {
+                Client = mapper.Map<ClientResponse>(client)
+            };
         }
         public async Task<ClientResponse> CreateClientForUserAsync(string userId, CreateClientRequest request, CancellationToken cancellationToken)
         {

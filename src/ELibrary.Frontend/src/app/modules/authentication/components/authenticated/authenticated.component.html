@@ -7,8 +7,8 @@
     <form id="updateForm" [formGroup]="formGroup" class="content__form space-y-1">
         <mat-form-field>
             <mat-label>Email</mat-label>
-            <input type="email" autocomplete="user-email" matInput formControlName="email"
-                placeholder="example@example.com" maxlength="256">
+            <input type="email" autocomplete="email" matInput formControlName="email" placeholder="example@example.com"
+                maxlength="256">
             <mat-error
                 *ngIf="validateInputField(emailInput).hasError">{{validateInputField(emailInput).message}}</mat-error>
         </mat-form-field>
@@ -22,10 +22,10 @@
             <mat-label>New Password</mat-label>
             <input [type]="hideNewPassword ? 'password' : 'text'" autocomplete="off" matInput formControlName="password"
                 maxlength="256">
-            <span class="material-icons me-2" matSuffix tabindex="0" role="button"
-                (click)="hideNewPassword = !hideNewPassword" (keydown)="hidePasswordOnKeydown($event)">
+            <button class="material-icons me-2" matSuffix tabindex="0" (click)="hideNewPassword = !hideNewPassword"
+                (keydown)="hidePasswordOnKeydown($event)">
                 {{ hideNewPassword ? 'visibility_off' : 'visibility' }}
-            </span>
+            </button>
             <mat-error
                 *ngIf="validateInputField(passwordInput).hasError">{{validateInputField(passwordInput).message}}</mat-error>
         </mat-form-field>

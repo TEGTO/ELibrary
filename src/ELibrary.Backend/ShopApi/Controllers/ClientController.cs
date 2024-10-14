@@ -25,15 +25,10 @@ namespace ShopApi.Controllers
 
         [ResponseCache(Duration = 10)]
         [HttpGet]
-        public async Task<ActionResult<ClientResponse>> GetClient(CancellationToken cancellationToken)
+        public async Task<ActionResult<GetClientResponse>> GetClient(CancellationToken cancellationToken)
         {
             var userId = GetUserId();
             var clientResponse = await clientManager.GetClientForUserAsync(userId, cancellationToken);
-
-            if (clientResponse == null)
-            {
-                return NotFound("Client not found!");
-            }
 
             return Ok(clientResponse);
         }
@@ -57,7 +52,7 @@ namespace ShopApi.Controllers
 
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpGet("admin/{id}")]
-        public async Task<ActionResult<ClientResponse>> AdminGetClient(string id, CancellationToken cancellationToken)
+        public async Task<ActionResult<GetClientResponse>> AdminGetClient(string id, CancellationToken cancellationToken)
         {
             var response = await clientManager.GetClientForUserAsync(id, cancellationToken);
             return Ok(response);

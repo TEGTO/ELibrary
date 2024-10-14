@@ -12,17 +12,17 @@ import { Client, dateInPastValidator, noSpaces, notEmptyString, ValidationMessag
 export class ClientChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
 
-  get nameInput() { return this.formGroup.get('name')!; }
-  get middleNameInput() { return this.formGroup.get('middleName')!; }
-  get lastNameInput() { return this.formGroup.get('lastName')!; }
-  get dateOfBirthInput() { return this.formGroup.get('dateOfBirth')!; }
-  get addressInput() { return this.formGroup.get('address')!; }
-  get phoneInput() { return this.formGroup.get('phone')!; }
-  get emailInput() { return this.formGroup.get('email')!; }
+  get nameInput() { return this.formGroup.get('name')! as FormControl; }
+  get middleNameInput() { return this.formGroup.get('middleName')! as FormControl; }
+  get lastNameInput() { return this.formGroup.get('lastName')! as FormControl; }
+  get dateOfBirthInput() { return this.formGroup.get('dateOfBirth')! as FormControl; }
+  get addressInput() { return this.formGroup.get('address')! as FormControl; }
+  get phoneInput() { return this.formGroup.get('phone')! as FormControl; }
+  get emailInput() { return this.formGroup.get('email')! as FormControl; }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public client: Client,
-    private dialogRef: MatDialogRef<ClientChangeDialogComponent>,
+    private readonly dialogRef: MatDialogRef<ClientChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
 

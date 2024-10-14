@@ -16,7 +16,7 @@ export class PublisherChangeDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public publisher: Publisher,
-    private dialogRef: MatDialogRef<PublisherChangeDialogComponent>,
+    private readonly dialogRef: MatDialogRef<PublisherChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
 

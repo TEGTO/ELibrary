@@ -37,25 +37,15 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var clientResponse = new ClientResponse { Id = "test-client-id" };
+            var getClientResponse = new GetClientResponse { Client = clientResponse };
             mockClientManager.Setup(cf => cf.GetClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(clientResponse);
+                .ReturnsAsync(getClientResponse);
             // Act
             var result = await clientController.GetClient(CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult.Value, Is.EqualTo(clientResponse));
-        }
-        [Test]
-        public async Task GetClient_ReturnsNotFoundResponse()
-        {
-            // Arrange
-            mockClientManager.Setup(cf => cf.GetClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((ClientResponse)null);
-            // Act
-            var result = await clientController.GetClient(CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
+            Assert.That(okResult.Value, Is.EqualTo(getClientResponse));
         }
         [Test]
         public async Task CreateClient_ReturnsCreatedWithClientResponse()
@@ -92,14 +82,15 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var clientResponse = new ClientResponse { Id = "admin-client-id" };
+            var getClientResponse = new GetClientResponse { Client = clientResponse };
             mockClientManager.Setup(acf => acf.GetClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(clientResponse);
+                .ReturnsAsync(getClientResponse);
             // Act
             var result = await clientController.AdminGetClient("admin-user-id", CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult.Value, Is.EqualTo(clientResponse));
+            Assert.That(okResult.Value, Is.EqualTo(getClientResponse));
         }
         [Test]
         public async Task AdminCreateClient_ReturnsCreatedWithClientResponse()

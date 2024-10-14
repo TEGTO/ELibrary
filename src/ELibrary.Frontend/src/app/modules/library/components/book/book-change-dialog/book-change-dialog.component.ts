@@ -12,13 +12,13 @@ import { Book, CoverType, getDefaultBook, noSpaces, notEmptyString, ValidationMe
 export class BookChangeDialogComponent implements OnInit {
   formGroup!: FormGroup;
 
-  get nameInput() { return this.formGroup.get('name')!; }
-  get publicationDateInput() { return this.formGroup.get('publicationDate')!; }
-  get priceInput() { return this.formGroup.get('price')!; }
-  get coverTypeInput() { return this.formGroup.get('coverType')!; }
-  get pageAmountInput() { return this.formGroup.get('pageAmount')!; }
-  get stockAmountInput() { return this.formGroup.get('stockAmount')!; }
-  get coverImgUrlInput() { return this.formGroup.get('coverImgUrl')!; }
+  get nameInput() { return this.formGroup.get('name')! as FormControl; }
+  get publicationDateInput() { return this.formGroup.get('publicationDate')! as FormControl; }
+  get priceInput() { return this.formGroup.get('price')! as FormControl; }
+  get coverTypeInput() { return this.formGroup.get('coverType')! as FormControl; }
+  get pageAmountInput() { return this.formGroup.get('pageAmount')! as FormControl; }
+  get stockAmountInput() { return this.formGroup.get('stockAmount')! as FormControl; }
+  get coverImgUrlInput() { return this.formGroup.get('coverImgUrl')! as FormControl; }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private readonly book: Book | null,

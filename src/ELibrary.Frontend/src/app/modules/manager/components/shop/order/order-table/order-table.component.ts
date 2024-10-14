@@ -29,7 +29,7 @@ export class OrderTableComponent implements OnInit {
   items$!: Observable<OrderItem[]>;
   totalAmount$!: Observable<number>;
 
-  private defaultPagination = { pageIndex: 1, pageSize: 10 };
+  private readonly defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Id', field: 'id', linkPath: (item: any) => getManagerOrderDetailsPath(item.id) },
     { header: 'Created At', field: 'createdAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()) },
@@ -51,7 +51,7 @@ export class OrderTableComponent implements OnInit {
   }
 
   private fetchTotalAmount(): void {
-    this.totalAmount$ = this.orderService.getOrderTotalAmount(this.filter);
+    this.totalAmount$ = this.orderService.managerGetOrderAmount(this.filter);
   }
   private fetchPaginatedItems(pagination: { pageIndex: number, pageSize: number }): void {
     const req: GetOrdersFilter =
