@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ChartType } from 'ng-apexcharts';
-import { ChartOptions } from '../../../../../shared';
+import { ChartOptions, LocaleService } from '../../../../../shared';
 
 @Component({
   selector: 'app-statistics-chart',
@@ -12,6 +12,8 @@ export class StatisticsChartComponent {
 
   chartOptions!: Partial<ChartOptions>;
   multiMonth = false;
+
+  constructor(private readonly localeService: LocaleService) { }
 
   initChartOptions(data: Map<Date, number>): boolean {
     const dateRange = this.getDateRange(data);
@@ -108,13 +110,13 @@ export class StatisticsChartComponent {
   labelFormatter(value: string, timestamp?: number) {
     const date = new Date(timestamp ?? parseInt(value));
     return this.multiMonth
-      ? date.toLocaleString('default', { year: 'numeric', month: 'short' })
-      : `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}`;
+      ? date.toLocaleString(this.localeService.getLocale(), { year: 'numeric', month: 'short' })
+      : `${date.getDate()} ${date.toLocaleString(this.localeService.getLocale(), { month: 'short' })}`;
   }
   tooltipformatter(val: number): string {
     const date = new Date(val);
     return this.multiMonth
-      ? date.toLocaleString('default', { year: 'numeric', month: 'short' })
-      : `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}`;
+      ? date.toLocaleString(this.localeService.getLocale(), { year: 'numeric', month: 'short' })
+      : `${date.getDate()} ${date.toLocaleString(this.localeService.getLocale(), { month: 'short' })}`;
   }
 }
