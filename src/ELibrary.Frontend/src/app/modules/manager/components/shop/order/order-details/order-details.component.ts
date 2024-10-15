@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/cor
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getClientName, getCreatedOrderMinDate, getDeliveryMethodsString, getOrderPaymentMethodString, getOrderStatusString, getOrderUpdateStatuses, getProductInfoPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, RouteReader, ValidationMessage } from '../../../../../shared';
+import { environment } from '../../../../../../../environment/environment';
+import { Client, combineDateTime, CommandHandler, CurrencyPipeApplier, getClientName, getCreatedOrderMinDate, getDeliveryMethodsString, getOrderPaymentMethodString, getOrderStatusString, getOrderUpdateStatuses, getProductInfoPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, RouteReader, ValidationMessage } from '../../../../../shared';
 import { MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HANDLER, ManagerCancelOrderCommand, ManagerUpdateOrderCommand, OrderService } from '../../../../../shop';
 
 @Component({
@@ -19,9 +20,12 @@ export class OrderDetailsComponent implements OnInit {
 
   order$!: Observable<Order>;
 
+  get deliveryDateInput() { return this.formGroup.get('deliveryDate')! as FormControl; }
   get deliveryTimeInput() { return this.formGroup.get('deliveryTime')! as FormControl; }
   get deliveryAddressInput() { return this.formGroup.get('address')! as FormControl; }
   get orderStatusInput() { return this.formGroup.get('orderStatus')! as FormControl; }
+  get minOrderTime() { return environment.minOrderTime; }
+  get maxOrderTime() { return environment.maxOrderTime; }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -45,7 +49,8 @@ export class OrderDetailsComponent implements OnInit {
       this.formGroup = new FormGroup(
         {
           orderStatus: new FormControl(order.orderStatus, [Validators.required]),
-          deliveryTime: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
+          deliveryDate: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
+          deliveryTime: new FormControl(order.deliveryTime, [Validators.required]),
           address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
         });
     }
@@ -54,6 +59,20 @@ export class OrderDetailsComponent implements OnInit {
     }
 
     return this.formGroup;
+  }
+
+  updateOrder(order: Order) {
+    const formValues = { ...this.formGroup.value };
+    const updatedOrder: Order = {
+      ...order,
+      deliveryAddress: formValues.address,
+      deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
+      orderStatus: formValues.orderStatus,
+    };
+    const command: ManagerUpdateOrderCommand = {
+      order: updatedOrder
+    };
+    this.managerUpdateOrderHandler.dispatch(command);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,19 +126,8 @@ export class OrderDetailsComponent implements OnInit {
   getOrderStatusesInString() {
     return getOrderUpdateStatuses();
   }
-  updateOrder(order: Order) {
-    const formValues = { ... this.formGroup.value };
-    const updatedOrder: Order =
-    {
-      ...order,
-      deliveryAddress: formValues.address,
-      deliveryTime: formValues.deliveryTime,
-      orderStatus: formValues.orderStatus,
-    };
-    const command: ManagerUpdateOrderCommand =
-    {
-      order: updatedOrder
-    }
-    this.managerUpdateOrderHandler.dispatch(command);
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }

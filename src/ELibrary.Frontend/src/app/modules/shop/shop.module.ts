@@ -1,4 +1,3 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -14,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
+import { MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ADD_BOOKSTOCK_ORDER_COMMAND_HANDLER, ADD_CLIENT_COMMAND_HANDLER, AddBookStockCommandHandlerService, AddClientCommandHandlerService, boockstockOrderReducer, BookStatisticsFilterComponent, BookstockEffects, BookstockOrderControllerService, BookstockOrderService, BookStockReplenishmentComponent, CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommandHandlerService, CartControllerService, CartDialogComponent, CartEffects, cartReducer, CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_START_ADDING_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientAddOrderCommandHandlerService, ClientCancelOrderCommandHandlerService, ClientChangeDialogComponent, ClientControllerService, ClientEffects, ClientInfoComponent, clientReducer, ClientService, ClientStartAddingOrderCommandHandlerService, ClientUpdateOrderCommandHandlerService, DELETE_CART_BOOK_COMMAND_HANDLER, DeleteCartBookCommandHandlerService, InputMaxStockDirective, MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_ORDER_DETAILS_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HANDLER, ManagerCancelOrderCommandHandlerService, ManagerOrderDetailsCommandHandlerService, managerOrderReducer, ManagerUpdateOrderCommandHandlerService, OrderControllerService, OrderEffects, orderReducer, OrderService, ShopDialogManager, ShopDialogManagerService, ShoppingCartButtonComponent, START_ADDING_CLIENT_COMMAND_HANDLER, StartAddingClientCommandHandlerService, StatisticsControllerService, StatisticsService, UPDATE_CART_BOOK_COMMAND_HANDLER, UPDATE_CLIENT_COMMAND_HANDLER, UpdateCartBookCommandHandlerService, UpdateClientCommandHandlerService } from '.';
@@ -42,15 +42,13 @@ import { InputRangeDirective, LoadingComponent } from '../shared';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
-    NgxMatDatetimePickerModule,
     InputRangeDirective,
     ScrollingModule,
     MatExpansionModule,
     LoadingComponent,
     MatDialogModule,
     LibraryModule,
+    MatTimepickerModule,
     MatExpansionModule,
     MatMenuModule,
     MatSelectModule,

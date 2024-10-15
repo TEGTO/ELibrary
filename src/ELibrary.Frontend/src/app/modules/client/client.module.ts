@@ -1,4 +1,3 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -12,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule, Routes } from '@angular/router';
+import { MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { ClientViewComponent, CreateClientComponent, MakeOrderComponent, OrderHistoryComponent, ProductInfoComponent, ProductPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
 import { ClientGuard, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
@@ -64,15 +64,13 @@ const routes: Routes = [
     LibraryModule,
     ShopModule,
     MatFormFieldModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
     LoadingComponent,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
     MatRadioModule,
     MatButtonModule,
-    NgxMatDatetimePickerModule,
+    MatTimepickerModule,
     ScrollingModule,
     MatPaginator,
     MatExpansionModule,

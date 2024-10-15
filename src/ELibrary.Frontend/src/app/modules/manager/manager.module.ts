@@ -1,4 +1,3 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -12,7 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorTableComponent, BookStockDetailsComponent, BookStockTableComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, OrderDetailsComponent, OrderTableComponent, PublisherTableComponent, StatisticsPageComponent } from '.';
+import { MatNativeDateTimeModule, MatTimepickerModule } from "@dhutaryan/ngx-mat-timepicker";
+import { AuthorTableComponent, BookStockDetailsComponent, BookStockTableComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, OrderDetailsComponent, OrderTableComponent, PublisherTableComponent, StatisticsChartComponent, StatisticsPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
 import { GenericTableComponent, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
 import { ShopModule } from '../shop/shop.module';
@@ -48,6 +48,7 @@ const routes: Routes = [
     BookStockDetailsComponent,
     OrderDetailsComponent,
     StatisticsPageComponent,
+    StatisticsChartComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -63,9 +64,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatButtonModule,
     LoadingComponent,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
-    NgxMatDatetimePickerModule,
+    MatTimepickerModule,
+    MatNativeDateTimeModule,
     MatNativeDateModule,
     ScrollingModule,
     MatSelectModule,

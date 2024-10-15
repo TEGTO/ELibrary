@@ -1,4 +1,5 @@
 import { Client, getDefaultClient, OrderBook } from "../../../..";
+import { environment } from "../../../../../../../environment/environment";
 
 export enum OrderStatus {
     Canceled = -1, InProcessing, Completed
@@ -81,7 +82,7 @@ export function getDeliveryMethodsString(delivery: DeliveryMethod): string {
 export function getOrderCreateMinDate(): Date {
     const nextDay = new Date();
     nextDay.setDate(nextDay.getDate() + 1);
-    nextDay.setHours(6, 0, 0, 0);
+    nextDay.setHours(environment.minOrderTime.getHours(), environment.minOrderTime.getMinutes());
     return nextDay;
 }
 export function getCreatedOrderMinDate(order: Order): Date {

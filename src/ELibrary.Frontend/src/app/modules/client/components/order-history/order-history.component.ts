@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getDefaultGetOrdersFilter, getOrderDeliveryMethods, GetOrdersFilter, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, ValidationMessage } from '../../../shared';
+import { environment } from '../../../../../environment/environment';
+import { Client, combineDateTime, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getDefaultGetOrdersFilter, getOrderDeliveryMethods, GetOrdersFilter, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
 @Component({
@@ -18,9 +19,9 @@ export class OrderHistoryComponent implements OnInit {
   readonly scollSize = 420;
   pageSize = 10;
   pageSizeOptions: number[] = [10, 20, 30];
-  private defaultPagination = { pageIndex: 1, pageSize: 10 };
-  private orderPanelStates = new Map<number, ReturnType<typeof signal>>();
-  private orderFormGroups = new Map<number, FormGroup>();
+  private readonly defaultPagination = { pageIndex: 1, pageSize: 10 };
+  private readonly orderPanelStates = new Map<number, ReturnType<typeof signal>>();
+  private readonly orderFormGroups = new Map<number, FormGroup>();
 
   items$!: Observable<Order[]>;
   client$!: Observable<Client>;
@@ -29,6 +30,8 @@ export class OrderHistoryComponent implements OnInit {
   get redirectToProductsPagePath() { return getProductsPath(); }
   get paymentMethods() { return getPaymentMethods(); }
   get deliveryMethods() { return getOrderDeliveryMethods(); }
+  get minOrderTime() { return environment.minOrderTime; }
+  get maxOrderTime() { return environment.maxOrderTime; }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -86,7 +89,8 @@ export class OrderHistoryComponent implements OnInit {
     this.orderFormGroups.set(order.id, new FormGroup(
       {
         payment: new FormControl(order.paymentMethod, [Validators.required]),
-        deliveryTime: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
+        deliveryDate: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
+        deliveryTime: new FormControl(order.deliveryTime, [Validators.required]),
         address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
         delivery: new FormControl(order.deliveryMethod, [Validators.required]),
       })
@@ -97,16 +101,19 @@ export class OrderHistoryComponent implements OnInit {
     }
   }
   paymentInput(order: Order) {
-    return this.orderFormGroups.get(order.id)!.get('payment')!;
+    return this.orderFormGroups.get(order.id)!.get('payment')! as FormControl;
   }
   deliveryAddressInput(order: Order) {
-    return this.orderFormGroups.get(order.id)!.get('address')!;
+    return this.orderFormGroups.get(order.id)!.get('address')! as FormControl;
+  }
+  deliveryDateInput(order: Order) {
+    return this.orderFormGroups.get(order.id)!.get('deliveryDate')! as FormControl;
   }
   deliveryTimeInput(order: Order) {
-    return this.orderFormGroups.get(order.id)!.get('deliveryTime')!;
+    return this.orderFormGroups.get(order.id)!.get('deliveryTime')! as FormControl;
   }
-  deliveryInput(order: Order) {
-    return this.orderFormGroups.get(order.id)!.get('delivery')!;
+  deliveryMethodInput(order: Order) {
+    return this.orderFormGroups.get(order.id)!.get('delivery')! as FormControl;
   }
 
   updateOrder(order: Order) {
@@ -116,7 +123,7 @@ export class OrderHistoryComponent implements OnInit {
       ...order,
       paymentMethod: formValues.payment,
       deliveryAddress: formValues.address,
-      deliveryTime: formValues.deliveryTime,
+      deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
       deliveryMethod: formValues.delivery,
     };
     const command: ClientUpdateOrderCommand =
@@ -160,5 +167,9 @@ export class OrderHistoryComponent implements OnInit {
   }
   isOrderCompleted(order: Order): boolean {
     return order.orderStatus === OrderStatus.Completed;
+  }
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }

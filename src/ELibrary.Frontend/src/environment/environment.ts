@@ -6,5 +6,7 @@ export const environment =
   libraryApi: 'https://localhost:7131',
   shopApi: 'https://localhost:7132',
   maxOrderAmount: 99,
-  bookCoverPlaceholder: '../../../../../assets/book_cover_placeholder.png'
+  bookCoverPlaceholder: '../../../../../assets/book_cover_placeholder.png',
+  minOrderTime: new Date(2023, 11, 1, 6, 30),
+  maxOrderTime: new Date(2023, 11, 1, 21, 0),
 };

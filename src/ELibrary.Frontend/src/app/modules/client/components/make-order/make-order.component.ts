@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, map, Observable, tap } from 'rxjs';
-import { CartBook, Client, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultOrder, getOrderCreateMinDate, getOrderDeliveryMethods, getPaymentMethods, getProductInfoPath, getProductsPath, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, ValidationMessage } from '../../../shared';
+import { environment } from '../../../../../environment/environment';
+import { CartBook, Client, combineDateTime, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultOrder, getOrderCreateMinDate, getOrderDeliveryMethods, getPaymentMethods, getProductInfoPath, getProductsPath, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 
 @Component({
@@ -21,13 +22,16 @@ export class MakeOrderComponent implements OnInit {
   items$!: Observable<CartBook[]>;
   client$!: Observable<Client>;
 
-  get deliveryAddressInput() { return this.formGroup.get('address')!; }
-  get deliveryTimeInput() { return this.formGroup.get('deliveryTime')!; }
-  get paymentMethodInput() { return this.formGroup.get('payment')!; }
-  get deliveryMethodInput() { return this.formGroup.get('delivery')!; }
+  get deliveryAddressInput() { return this.formGroup.get('address')! as FormControl; }
+  get paymentMethodInput() { return this.formGroup.get('payment')! as FormControl; }
+  get deliveryMethodInput() { return this.formGroup.get('delivery')! as FormControl; }
+  get deliveryDateInput() { return this.formGroup.get('deliveryDate')! as FormControl; }
+  get deliveryTimeInput() { return this.formGroup.get('deliveryTime')! as FormControl; }
   get redirectToProductsPagePath() { return getProductsPath(); }
   get paymentMethods() { return getPaymentMethods(); }
   get deliveryMethods() { return getOrderDeliveryMethods(); }
+  get minOrderTime() { return environment.minOrderTime; }
+  get maxOrderTime() { return environment.maxOrderTime; }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -55,7 +59,8 @@ export class MakeOrderComponent implements OnInit {
     this.formGroup = new FormGroup(
       {
         payment: new FormControl(PaymentMethod.Cash, [Validators.required]),
-        deliveryTime: new FormControl(getOrderCreateMinDate(), [Validators.required, minDateValidator(getOrderCreateMinDate())]),
+        deliveryDate: new FormControl(getOrderCreateMinDate(), [Validators.required, minDateValidator(getOrderCreateMinDate())]),
+        deliveryTime: new FormControl(getOrderCreateMinDate(), [Validators.required]),
         address: new FormControl(client.address, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
         delivery: new FormControl(DeliveryMethod.SelfPickup, [Validators.required]),
       });
@@ -86,7 +91,7 @@ export class MakeOrderComponent implements OnInit {
     const order: Order = {
       ...getDefaultOrder(),
       deliveryAddress: formValues.address,
-      deliveryTime: formValues.deliveryTime,
+      deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
       paymentMethod: formValues.payment,
       deliveryMethod: formValues.delivery,
       orderBooks: books.map(x => mapCartBookToOrderBook(x))
@@ -104,5 +109,9 @@ export class MakeOrderComponent implements OnInit {
   }
   getCartBookPrice(cartBook: CartBook): number {
     return cartBook.book.price * cartBook.bookAmount;
+  }
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }
