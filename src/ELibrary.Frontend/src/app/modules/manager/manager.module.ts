@@ -12,6 +12,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
 import { MatNativeDateTimeModule, MatTimepickerModule } from "@dhutaryan/ngx-mat-timepicker";
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { AuthorTableComponent, BookStockDetailsComponent, BookStockTableComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, OrderDetailsComponent, OrderTableComponent, PublisherTableComponent, StatisticsChartComponent, StatisticsPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
 import { GenericTableComponent, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
@@ -70,6 +71,7 @@ const routes: Routes = [
     ScrollingModule,
     MatSelectModule,
     MatPaginatorModule,
+    NgApexchartsModule,
     MatDatepickerModule,
   ],
 })

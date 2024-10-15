@@ -9,6 +9,7 @@ export interface BookStatistics {
     averagePrice: number;
     stockAmount: number;
     earnedMoney: number;
+    orderAmountInDays: Map<Date, number>;
 }
 
 export function getDefaultBookStatistics(): BookStatistics {
@@ -22,5 +23,6 @@ export function getDefaultBookStatistics(): BookStatistics {
         averagePrice: 0,
         stockAmount: 0,
         earnedMoney: 0,
+        orderAmountInDays: new Map<Date, number>()
     }
 }

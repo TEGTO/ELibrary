@@ -5,6 +5,8 @@
             <ng-container *ngIf="statistics$ | async as item; else loading">
                 <div class="statistics-wrapper">
                     <ng-container *ngTemplateOutlet="details;  context: { statistics: item}"></ng-container>
+                    <app-statistics-chart [data]="item.orderAmountInDays"
+                        class="md:absolute right-6 sm:w-full md:w-6/12"></app-statistics-chart>
                 </div>
             </ng-container>
             <div class="w-full p-6">

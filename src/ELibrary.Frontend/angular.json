@@ -39,7 +39,9 @@
                 "src/app/styles/partials"
               ]
             },
-            "scripts": []
+            "scripts": [
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -102,7 +104,9 @@
                 "src/app/styles/partials"
               ]
             },
-            "scripts": [],
+            "scripts": [
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+            ],
             "karmaConfig": "karma.conf.js"
           }
         },

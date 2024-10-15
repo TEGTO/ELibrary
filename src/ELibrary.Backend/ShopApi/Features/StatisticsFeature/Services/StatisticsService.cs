@@ -29,6 +29,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
             var averagePrice = GetAveragePriceAsync(getBookStatistics, cancellationToken);
             var stockAmount = GetStockAmountAsync(getBookStatistics, cancellationToken);
             var earnedMoney = GetEarnedMoneyAsync(getBookStatistics, cancellationToken);
+            var orderAmountInDays = GetOrderAmountInDaysAsync(getBookStatistics, cancellationToken);
 
             var tasks = new List<Task>
             {
@@ -41,6 +42,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
                 averagePrice,
                 stockAmount,
                 earnedMoney,
+                orderAmountInDays
             };
 
             await Task.WhenAll(tasks);
@@ -55,7 +57,8 @@ namespace ShopApi.Features.StatisticsFeature.Services
                 CanceledOrderAmount = await canceledOrderAmount,
                 AveragePrice = await averagePrice,
                 StockAmount = await stockAmount,
-                EarnedMoney = await earnedMoney
+                EarnedMoney = await earnedMoney,
+                OrderAmountInDays = await orderAmountInDays
             };
         }
 
@@ -150,6 +153,21 @@ namespace ShopApi.Features.StatisticsFeature.Services
                     .Where(x => x.OrderStatus == OrderStatus.Completed)
                     .SelectMany(order => order.OrderBooks)
                     .SumAsync(orderBook => orderBook.Book.Price * orderBook.BookAmount, cancellationToken);
+        }
+        private async Task<Dictionary<DateTime, long>> GetOrderAmountInDaysAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        {
+            var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
+
+            queryable = QueryableWithIncludedBooks(queryable, getBookStatistics);
+
+            var result = await queryable
+              .AsSplitQuery()
+              .GroupBy(order => order.CreatedAt.Date)
+              .Select(g => new { Date = g.Key, Count = g.Count() })
+              .OrderBy(x => x.Date)
+              .ToDictionaryAsync(x => x.Date, x => (long)x.Count, cancellationToken);
+
+            return result;
         }
 
         private async Task<IQueryable<Order>> QuearyableWithAppliedDateAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)

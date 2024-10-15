@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { BookStatistics, CurrencyPipeApplier, GetBookStatistics, getDefaultGetBookStatistics } from '../../../../../shared';
 import { StatisticsService } from '../../../../../shop';
 
@@ -10,7 +10,6 @@ import { StatisticsService } from '../../../../../shop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsPageComponent implements OnInit {
-
   statistics$!: Observable<BookStatistics>;
 
   constructor(
@@ -24,6 +23,11 @@ export class StatisticsPageComponent implements OnInit {
 
   getBookStatistics(getStats: GetBookStatistics) {
     this.statistics$ = this.statisticsService.getBookStatistics(getStats);
+    this.statistics$.pipe(
+      tap(x => {
+        console.log(x.orderAmountInDays);
+      })
+    )
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

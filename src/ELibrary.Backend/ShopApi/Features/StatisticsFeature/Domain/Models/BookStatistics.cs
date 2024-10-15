@@ -11,5 +11,6 @@
         public decimal AveragePrice { get; set; }
         public long StockAmount { get; set; }
         public decimal EarnedMoney { get; set; }
+        public Dictionary<DateTime, long> OrderAmountInDays { get; set; } = new Dictionary<DateTime, long>();
     }
 }

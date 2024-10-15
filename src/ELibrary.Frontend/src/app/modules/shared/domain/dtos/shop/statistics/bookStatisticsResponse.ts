@@ -10,6 +10,7 @@ export interface BookStatisticsResponse {
     averagePrice: number;
     stockAmount: number;
     earnedMoney: number;
+    orderAmountInDays: { date: Date, count: number }[];
 }
 
 export function mapBookStatisticsResponseToBookStatistics(response: BookStatisticsResponse): BookStatistics {
@@ -23,5 +24,10 @@ export function mapBookStatisticsResponseToBookStatistics(response: BookStatisti
         averagePrice: response.averagePrice,
         stockAmount: response.stockAmount,
         earnedMoney: response.earnedMoney,
+        orderAmountInDays: new Map(
+            Object.entries(response.orderAmountInDays).map(
+                ([date, count]) => [new Date(date), count as unknown as number]
+            )
+        )
     }
 }

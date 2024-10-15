@@ -66,7 +66,7 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
             Assert.That(result.AveragePrice, Is.EqualTo(50));
             Assert.That(result.StockAmount, Is.EqualTo(10));
             Assert.That(result.EarnedMoney, Is.EqualTo(100));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Exactly(6));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Exactly(7));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Exactly(2));
         }
         [Test]
@@ -214,6 +214,34 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
             var result = await (Task<decimal>)metohdInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
             // Assert
             Assert.That(result, Is.EqualTo(100));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task GetOrderAmountInDaysAsync_ReturnsCorrectOrderCountPerDay()
+        {
+            // Arrange
+            var getBookStatistics = new GetBookStatistics();
+
+            var orders = new List<Order>
+            {
+                new Order { Id = 1, CreatedAt = new DateTime(2024, 4, 13), OrderAmount = 5 },
+                new Order { Id = 2, CreatedAt = new DateTime(2024, 4, 13), OrderAmount = 3},
+                new Order { Id = 3, CreatedAt = new DateTime(2024, 5, 14), OrderAmount = 2}
+            };
+
+            var orderDbSetMock = GetDbSetMock(orders);
+            repositoryMock
+                .Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken))
+                .ReturnsAsync(orderDbSetMock.Object);
+            // Act
+            var methodInfo = service.GetType()
+                .GetMethod("GetOrderAmountInDaysAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = await (Task<Dictionary<DateTime, long>>)methodInfo
+                .Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            // Assert
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result[new DateTime(2024, 4, 13)], Is.EqualTo(2));
+            Assert.That(result[new DateTime(2024, 5, 14)], Is.EqualTo(1));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
         }
     }
