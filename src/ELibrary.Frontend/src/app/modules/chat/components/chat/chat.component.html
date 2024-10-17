@@ -1,0 +1,43 @@
+<div class="chat-wrapper fixed bottom-0 right-0">
+    <ng-container [ngTemplateOutlet]="chatIsHidden"></ng-container>
+    <mat-card class="mx-12 my-4 w-96" [@slideInOut]="(isChatVisible$ | async) ? 'in' : 'out'">
+        <mat-card-header class="bg-green-600 rounded-t-lg text-white">
+            <h6 class="font-bold">Book advisor</h6>
+            <button mat-icon-button class="close-button" (click)=" hideChat()">
+                <span class="material-icons !text-white">close</span>
+            </button>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="py-4">
+                <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="chat-wrapper__content"
+                    [style.height.px]="scollSize">
+                    <ng-container *cdkVirtualFor="let message of messages;">
+                        <div class="flex px-2" [ngClass]="{'justify-end': message.isSent}">
+                            <p [ngClass]="{'sent-message': message.isSent, 'received-message': !message.isSent}">
+                                {{message.text}}
+                            </p>
+                        </div>
+                    </ng-container>
+                </cdk-virtual-scroll-viewport>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <div class="px-3 py-3 flex items-center w-full">
+                <input type="text" [(ngModel)]="newMessage"
+                    class="block w-full rounded-md border-0 py-3 pl-3 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-mb sm:leading-6"
+                    placeholder="Write a message..." (keydown.enter)="sendMessage()">
+                <button class="ml-2 text-green-600 hover:text-green-800 flex items-center" (click)="sendMessage()">
+                    <span class="material-icons">send</span>
+                </button>
+            </div>
+        </mat-card-actions>
+    </mat-card>
+</div>
+
+<ng-template #chatIsHidden>
+    <div class="open-wrapper">
+        <button class="open-wrapper__open-chat" (click)="showChat()">
+            <span class="material-icons">info</span>
+        </button>
+    </div>
+</ng-template>

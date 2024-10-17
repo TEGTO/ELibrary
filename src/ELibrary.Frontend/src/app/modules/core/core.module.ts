@@ -1,5 +1,5 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import localeUa from '@angular/common/locales/uk';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppComponent, MainViewComponent } from '.';
 import { AuthInterceptor } from '../authentication';
 import { AuthenticationModule } from '../authentication/authentication.module';
+import { ChatModule } from '../chat/chat.module';
 import { CurrencyPipeApplier, CurrencyPipeApplierService, CustomErrorHandler, ErrorHandler, pathes, RouteReader, RouteReaderService, ValidationMessage, ValidationMessageService } from '../shared';
 import { ShopModule } from '../shop/shop.module';
 
@@ -56,7 +57,7 @@ const routes: Routes = [
     AuthenticationModule,
     ShopModule,
     MatDialogModule,
-    HttpClientModule,
+    ChatModule,
     StoreModule.forRoot({}, {}),
     EffectsModule.forRoot([]),
   ],
@@ -68,7 +69,8 @@ const routes: Routes = [
     { provide: RouteReader, useClass: RouteReaderService },
     { provide: LOCALE_ID, useValue: "uk-UA" },
     { provide: MAT_DATE_LOCALE, useValue: 'uk-UA' },
-    provideNativeDateTimeAdapter()
+    provideNativeDateTimeAdapter(),
+    provideHttpClient()
   ],
   bootstrap: [AppComponent]
 })
