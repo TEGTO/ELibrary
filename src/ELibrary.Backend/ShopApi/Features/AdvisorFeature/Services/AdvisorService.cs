@@ -8,34 +8,22 @@ namespace ShopApi.Features.AdvisorFeature.Services
 {
     public class AdvisorService : IAdvisorService
     {
-        private readonly string searchServiceEndpoint;
-        private readonly string searchIndexName;
-        private readonly string searchApiKey;
-        private readonly string openAiEndpoint;
-        private readonly string openAiApiKey;
-        private readonly string chatModel;
-        private string groundedPrompt;
+        private readonly ChatConfiguration chatConfig;
 
         public AdvisorService(IConfiguration configuration)
         {
-            searchServiceEndpoint = configuration[Configuration.CHAT_SERACH_SERVICE_ENDPOINT]!;
-            searchIndexName = configuration[Configuration.CHAT_SEARCH_INDEX_NAME]!;
-            searchApiKey = configuration[Configuration.CHAT_SEARCH_API_KEY]!;
-            openAiEndpoint = configuration[Configuration.CHAT_OPEN_AI_ENDPOINT]!;
-            chatModel = configuration[Configuration.CHAT_OPENAI_CHAT_MODEL]!;
-            groundedPrompt = configuration[Configuration.CHAT_OPENAI_GROUNDED_PROMPT]!;
-            openAiApiKey = configuration[Configuration.CHAT_OPENAI_API_KEY]!;
+            chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
+                                          .Get<ChatConfiguration>()!;
         }
-
-        public async Task<string> AskQueryAsync(string query, CancellationToken cancellationToken)
+        public async Task<string> SendQueryAsync(string query, CancellationToken cancellationToken)
         {
             var sourcesFormatted = await GetSourcesAsync(query, cancellationToken);
             return await GetChatResponseAsync(query, sourcesFormatted, cancellationToken);
         }
         private async Task<StringBuilder> GetSourcesAsync(string query, CancellationToken cancellationToken)
         {
-            AzureKeyCredential searchCredential = new AzureKeyCredential(searchApiKey);
-            var searchClient = new SearchClient(new Uri(searchServiceEndpoint), searchIndexName, searchCredential);
+            AzureKeyCredential searchCredential = new AzureKeyCredential(chatConfig.SearchApiKey);
+            var searchClient = new SearchClient(new Uri(chatConfig.SearchServiceEndpoint), chatConfig.SearchIndexName, searchCredential);
 
             var searchOptions = new SearchOptions
             {
@@ -60,12 +48,12 @@ namespace ShopApi.Features.AdvisorFeature.Services
         {
             try
             {
-                var chatClient = new ChatClient(chatModel, apiKey: openAiApiKey);
+                var chatClient = new ChatClient(chatConfig.ChatModel, apiKey: chatConfig.OpenAiApiKey);
 
-                groundedPrompt = groundedPrompt.Replace("{sourcesFormatted}", sourcesFormatted.ToString());
+                var promt = chatConfig.GroundedPrompt.Replace("{sourcesFormatted}", sourcesFormatted.ToString());
 
                 var chatCompletion = await chatClient.CompleteChatAsync(
-                    new SystemChatMessage(groundedPrompt),
+                    new SystemChatMessage(promt),
                     new UserChatMessage(query)
                 );
 

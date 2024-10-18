@@ -2,6 +2,6 @@
 {
     public interface IAdvisorService
     {
-        public Task<string> AskQueryAsync(string query, CancellationToken cancellationToken);
+        public Task<string> SendQueryAsync(string query, CancellationToken cancellationToken);
     }
 }

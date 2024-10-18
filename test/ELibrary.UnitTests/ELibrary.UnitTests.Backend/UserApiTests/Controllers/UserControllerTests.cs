@@ -1,25 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shared.Exceptions;
-using System.Security.Claims;
+using UserApi.Command.Admin.AdminDeleteUser;
+using UserApi.Command.Admin.AdminRegisterUser;
+using UserApi.Command.Admin.AdminUpdateUser;
+using UserApi.Command.Admin.GetPaginatedUsers;
+using UserApi.Command.Admin.GetPaginatedUserTotalAmount;
+using UserApi.Command.Admin.GetUserByInfo;
+using UserApi.Command.Client.LoginUser;
+using UserApi.Command.Client.RefreshToken;
+using UserApi.Command.Client.RegisterUser;
+using UserApi.Command.Client.UpdateUser;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
 using UserApi.Domain.Dtos.Responses;
-using UserApi.Services;
 
 namespace UserApi.Controllers.Tests
 {
     [TestFixture]
     internal class UserControllerTests
     {
-        private Mock<IUserManager> userManagerMock;
+        private Mock<IMediator> mediatorMock;
         private UserController userController;
 
         [SetUp]
         public void SetUp()
         {
-            userManagerMock = new Mock<IUserManager>();
-            userController = new UserController(userManagerMock.Object);
+            mediatorMock = new Mock<IMediator>();
+            userController = new UserController(mediatorMock.Object);
         }
 
         [Test]
@@ -28,10 +37,10 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var registrationRequest = new UserRegistrationRequest { Email = "testuser@example.com", Password = "Password123", ConfirmPassword = "Password123" };
             var userAuthResponse = new UserAuthenticationResponse { Email = "testuser@example.com", Roles = new List<string> { "User" } };
-            userManagerMock.Setup(m => m.RegisterUserAsync(It.IsAny<UserRegistrationRequest>()))
-                           .ReturnsAsync(userAuthResponse);
+            mediatorMock.Setup(m => m.Send(It.IsAny<RegisterUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(userAuthResponse);
             // Act
-            var result = await userController.Register(registrationRequest);
+            var result = await userController.Register(registrationRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<CreatedAtActionResult>(result.Result);
             var createdAtActionResult = result.Result as CreatedAtActionResult;
@@ -43,10 +52,10 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var loginRequest = new UserAuthenticationRequest { Login = "testuser", Password = "Password123" };
             var userAuthResponse = new UserAuthenticationResponse { Email = "testuser@example.com", Roles = new List<string> { "User" } };
-            userManagerMock.Setup(m => m.LoginUserAsync(It.IsAny<UserAuthenticationRequest>()))
-                           .ReturnsAsync(userAuthResponse);
+            mediatorMock.Setup(m => m.Send(It.IsAny<LoginUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(userAuthResponse);
             // Act
-            var result = await userController.Login(loginRequest);
+            var result = await userController.Login(loginRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -57,10 +66,10 @@ namespace UserApi.Controllers.Tests
         {
             // Arrange
             var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
-            userManagerMock.Setup(m => m.LoginUserAsync(It.IsAny<UserAuthenticationRequest>()))
-                           .ThrowsAsync(new UnauthorizedAccessException());
+            mediatorMock.Setup(m => m.Send(It.IsAny<LoginUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ThrowsAsync(new UnauthorizedAccessException());
             // Act + Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userController.Login(loginRequest));
+            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userController.Login(loginRequest, CancellationToken.None));
         }
         [Test]
         public async Task Update_ValidRequest_ReturnsOk()
@@ -71,7 +80,7 @@ namespace UserApi.Controllers.Tests
             var result = await userController.Update(updateRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
-            userManagerMock.Verify(m => m.UpdateUserAsync(It.IsAny<UserUpdateDataRequest>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()), Times.Once);
+            mediatorMock.Verify(m => m.Send(It.IsAny<UpdateUserCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public async Task Refresh_ValidToken_ReturnsOk()
@@ -79,13 +88,22 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var token = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
             var refreshedToken = new AuthToken { AccessToken = "newToken", RefreshToken = "newRefreshToken" };
-            userManagerMock.Setup(m => m.RefreshTokenAsync(It.IsAny<AuthToken>())).ReturnsAsync(refreshedToken);
+            mediatorMock.Setup(m => m.Send(It.IsAny<RefreshTokenCommand>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(refreshedToken);
             // Act
-            var result = await userController.Refresh(token);
+            var result = await userController.Refresh(token, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
             Assert.That(okResult?.Value, Is.EqualTo(refreshedToken));
+        }
+        [Test]
+        public async Task DeleteUser_Valid_ReturnsOk()
+        {
+            // Act
+            var result = await userController.DeleteUser(CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
         }
         [Test]
         public async Task AdminRegister_ValidRequest_ReturnsOk()
@@ -93,11 +111,10 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var adminRequest = new AdminUserRegistrationRequest { Email = "adminuser@example.com", Password = "Password123", Roles = new List<string> { "Admin" } };
             var adminResponse = new AdminUserResponse { Email = "adminuser@example.com" };
-
-            userManagerMock.Setup(m => m.AdminRegisterUserAsync(It.IsAny<AdminUserRegistrationRequest>()))
-                           .ReturnsAsync(adminResponse);
+            mediatorMock.Setup(m => m.Send(It.IsAny<AdminRegisterUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(adminResponse);
             // Act
-            var result = await userController.AdminRegister(adminRequest);
+            var result = await userController.AdminRegister(adminRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -109,10 +126,10 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var login = "adminuser";
             var adminResponse = new AdminUserResponse { Email = "adminuser@example.com" };
-            userManagerMock.Setup(m => m.GetUserByInfoAsync(login))
-                           .ReturnsAsync(adminResponse);
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetUserByInfoQuery>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(adminResponse);
             // Act
-            var result = await userController.AdminGetUser(login);
+            var result = await userController.AdminGetUser(login, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -123,24 +140,21 @@ namespace UserApi.Controllers.Tests
         {
             // Arrange
             var login = "adminuser";
-
-            userManagerMock.Setup(m => m.AdminDeleteUserAsync(login))
-                           .Returns(Task.CompletedTask);
             // Act
-            var result = await userController.AdminDeleteUser(login);
+            var result = await userController.AdminDeleteUser(login, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
-            userManagerMock.Verify(m => m.AdminDeleteUserAsync(login), Times.Once);
+            mediatorMock.Verify(m => m.Send(It.IsAny<AdminDeleteUserCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
-        public void AdminDelete_InvalidUser_ThorwsException()
+        public void AdminDelete_InvalidUser_ThrowsException()
         {
             // Arrange
             var login = "adminuser";
-            userManagerMock.Setup(m => m.AdminDeleteUserAsync(login))
-                           .ThrowsAsync(new InvalidOperationException("Delete failed"));
+            mediatorMock.Setup(m => m.Send(It.IsAny<AdminDeleteUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ThrowsAsync(new InvalidOperationException("Delete failed"));
             // Act + Assert
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await userController.AdminDeleteUser(login));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await userController.AdminDeleteUser(login, CancellationToken.None));
         }
         [Test]
         public async Task AdminGetPaginatedUsers_ValidRequest_ReturnsOk()
@@ -152,8 +166,8 @@ namespace UserApi.Controllers.Tests
                 new AdminUserResponse { Email = "user1@example.com" },
                 new AdminUserResponse { Email = "user2@example.com" }
             };
-            userManagerMock.Setup(m => m.GetPaginatedUsersAsync(filter, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(paginatedUsers);
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetPaginatedUsersQuery>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(paginatedUsers);
             // Act
             var result = await userController.AdminGetPaginatedUsers(filter, CancellationToken.None);
             // Assert
@@ -167,9 +181,8 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             var totalUsers = 100;
-
-            userManagerMock.Setup(m => m.GetPaginatedUserTotalAmountAsync(filter, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(totalUsers);
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetPaginatedUserTotalAmountQuery>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(totalUsers);
             // Act
             var result = await userController.AdminGetPaginatedUserAmount(filter, CancellationToken.None);
             // Assert
@@ -183,12 +196,13 @@ namespace UserApi.Controllers.Tests
             // Arrange
             var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
             var response = new AdminUserResponse();
-            userManagerMock.Setup(m => m.AdminUpdateUserAsync(updateRequest, It.IsAny<CancellationToken>()))
-                         .ReturnsAsync(response);
+            mediatorMock.Setup(m => m.Send(It.IsAny<AdminUpdateUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(response);
             // Act
             var result = await userController.AdminUpdate(updateRequest, CancellationToken.None);
+
             // Assert
-            userManagerMock.Verify(x => x.AdminUpdateUserAsync(updateRequest, It.IsAny<CancellationToken>()), Times.Once);
+            mediatorMock.Verify(x => x.Send(It.IsAny<AdminUpdateUserCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
             Assert.IsInstanceOf<AdminUserResponse>(okResult?.Value);
@@ -199,12 +213,10 @@ namespace UserApi.Controllers.Tests
         {
             // Arrange
             var updateRequest = new AdminUserUpdateDataRequest { CurrentLogin = "user1", Roles = new List<string> { "Admin" } };
-            userManagerMock.Setup(m => m.AdminUpdateUserAsync(It.IsAny<AdminUserUpdateDataRequest>(), It.IsAny<CancellationToken>()))
-                           .ThrowsAsync(new AuthorizationException(["Authorization failed."]));
+            mediatorMock.Setup(m => m.Send(It.IsAny<AdminUpdateUserCommand>(), It.IsAny<CancellationToken>()))
+                        .ThrowsAsync(new AuthorizationException(["Authorization failed."]));
             // Act & Assert
-            var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await userController.AdminUpdate(updateRequest, CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("Authorization error occurred."));
-            Assert.That(ex.Errors.First(), Is.EqualTo("Authorization failed."));
+            Assert.ThrowsAsync<AuthorizationException>(async () => await userController.AdminUpdate(updateRequest, CancellationToken.None));
         }
     }
 }

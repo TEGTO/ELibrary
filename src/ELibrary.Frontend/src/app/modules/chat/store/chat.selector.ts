@@ -6,3 +6,7 @@ export const selectChatVisibleState = createSelector(
     selectChatState,
     (state: ChatState) => state.isVisible
 );
+export const selectChatMessages = createSelector(
+    selectChatState,
+    (state: ChatState) => state.messages
+);

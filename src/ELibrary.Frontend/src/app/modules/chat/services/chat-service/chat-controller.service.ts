@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { changeChatVisibilityState, selectChatVisibleState } from '../..';
+import { changeChatVisibilityState, ChatMessage, selectChatMessages, selectChatVisibleState } from '../..';
 import { ChatService } from './chat-service';
 
 @Injectable({
@@ -16,5 +16,8 @@ export class ChatControllerService implements ChatService {
   }
   changeChatVisibilityState(state: boolean): void {
     this.store.dispatch(changeChatVisibilityState({ state: state }));
+  }
+  getChatMessages(): Observable<ChatMessage[]> {
+    return this.store.select(selectChatMessages);
   }
 }

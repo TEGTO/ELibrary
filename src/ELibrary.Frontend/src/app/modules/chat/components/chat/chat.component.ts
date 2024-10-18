@@ -1,14 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommand, ChatService } from '../..';
+import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommand, ChatMessage, ChatService } from '../..';
 import { environment } from '../../../../../environment/environment';
 import { CommandHandler } from '../../../shared';
-
-interface ChatMessage {
-  text: string;
-  isSent: boolean;
-}
 
 @Component({
   selector: 'app-chat',
@@ -32,10 +27,8 @@ export class ChatComponent implements OnInit {
   readonly itemHeight = 25;
   readonly scollSize = 350;
   newMessage = '';
-  messages: ChatMessage[] = [
-    { text: "Hello! Ask me about any book 😊.", isSent: false },
-  ];
 
+  messages$ !: Observable<ChatMessage[]>;
   isChatVisible$ !: Observable<boolean>;
 
   get advisorProfilePicuture() { return environment.botProfilePicture; }
@@ -47,6 +40,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.isChatVisible$ = this.chatService.getChatVisibilityState();
+    this.messages$ = this.chatService.getChatMessages();
   }
 
   hideChat() {
@@ -67,7 +61,6 @@ export class ChatComponent implements OnInit {
 
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.messages = [...this.messages, { text: this.newMessage, isSent: true }]
       this.newMessage = '';
     }
   }

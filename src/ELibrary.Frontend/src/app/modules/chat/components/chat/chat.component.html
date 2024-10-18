@@ -16,12 +16,14 @@
             <div class="py-4">
                 <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="chat-wrapper__content"
                     [style.height.px]="scollSize">
-                    <ng-container *cdkVirtualFor="let message of messages;">
-                        <div class="flex px-2" [ngClass]="{'justify-end': message.isSent}">
-                            <p [ngClass]="{'sent-message': message.isSent, 'received-message': !message.isSent}">
-                                {{message.text}}
-                            </p>
-                        </div>
+                    <ng-container *ngIf="messages$ | async as messages">
+                        <ng-container *cdkVirtualFor="let message of messages;">
+                            <div class="flex px-2" [ngClass]="{'justify-end': message.isSent}">
+                                <p [ngClass]="{'sent-message': message.isSent, 'received-message': !message.isSent}">
+                                    {{message.text}}
+                                </p>
+                            </div>
+                        </ng-container>
                     </ng-container>
                 </cdk-virtual-scroll-viewport>
             </div>

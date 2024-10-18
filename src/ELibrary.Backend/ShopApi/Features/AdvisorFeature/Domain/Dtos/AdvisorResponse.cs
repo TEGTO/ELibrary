@@ -1,6 +1,6 @@
 ﻿namespace ShopApi.Features.AdvisorFeature.Domain.Dtos
 {
-    public class AskAdvisorRequest
+    public class AdvisorResponse
     {
         public string Message { get; set; }
     }

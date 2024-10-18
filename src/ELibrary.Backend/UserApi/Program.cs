@@ -49,13 +49,17 @@ builder.Services.AddScoped<ITokenHandler, JwtHandler>();
 #region Project Services 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserManager, UserManager>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddMediatR(conf =>
+{
+    conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
 
 builder.Services.AddMemoryCache();
 
