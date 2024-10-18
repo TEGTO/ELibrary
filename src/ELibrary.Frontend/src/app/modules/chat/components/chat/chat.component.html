@@ -2,7 +2,12 @@
     <ng-container [ngTemplateOutlet]="chatIsHidden"></ng-container>
     <mat-card class="mx-12 my-4 w-96" [@slideInOut]="(isChatVisible$ | async) ? 'in' : 'out'">
         <mat-card-header class="bg-green-600 rounded-t-lg text-white">
-            <h6 class="font-bold">Book advisor</h6>
+            <div class="chat-wrapper__advisor">
+                <div class="advisor__avatar">
+                    <span class="material-icons">sms</span>
+                </div>
+                <span class="font-bold text-xl">AI-powered adviser</span>
+            </div>
             <button mat-icon-button class="close-button" (click)=" hideChat()">
                 <span class="material-icons !text-white">close</span>
             </button>

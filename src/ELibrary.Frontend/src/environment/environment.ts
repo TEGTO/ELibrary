@@ -7,6 +7,7 @@ export const environment =
   shopApi: 'https://localhost:7132',
   maxOrderAmount: 99,
   bookCoverPlaceholder: '../../../../../assets/book_cover_placeholder.png',
+  botProfilePicture: '../../../../../assets/bot_avatar.png',
   minOrderTime: new Date(2023, 11, 1, 6, 30),
   maxOrderTime: new Date(2023, 11, 1, 21, 0),
 };

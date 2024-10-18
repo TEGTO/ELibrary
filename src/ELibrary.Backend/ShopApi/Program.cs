@@ -6,6 +6,7 @@ using Shared;
 using Shared.Middlewares;
 using Shared.Repositories;
 using ShopApi;
+using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Services;
@@ -46,6 +47,7 @@ builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
+builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 
 builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 

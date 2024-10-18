@@ -22,15 +22,15 @@ namespace UserApi.Controllers
         #region Endpoints
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserAuthenticationResponse>> Register(UserRegistrationRequest request)
+        public async Task<ActionResult<UserAuthenticationResponse>> Register(UserRegistrationRequest request, CancellationToken cancellationToken)
         {
-            var response = await userManager.RegisterUserAsync(request);
+            var response = await userManager.RegisterUserAsync(request, cancellationToken);
             return CreatedAtAction(nameof(Register), new { id = response.Email }, response);
         }
         [HttpPost("login")]
-        public async Task<ActionResult<UserAuthenticationResponse>> Login([FromBody] UserAuthenticationRequest request)
+        public async Task<ActionResult<UserAuthenticationResponse>> Login([FromBody] UserAuthenticationRequest request, CancellationToken cancellationToken)
         {
-            var response = await userManager.LoginUserAsync(request);
+            var response = await userManager.LoginUserAsync(request, cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_CLIENT_ROLE)]
@@ -41,9 +41,9 @@ namespace UserApi.Controllers
             return Ok();
         }
         [HttpPost("refresh")]
-        public async Task<ActionResult<AuthToken>> Refresh(AuthToken request)
+        public async Task<ActionResult<AuthToken>> Refresh(AuthToken request, CancellationToken cancellationToken)
         {
-            var token = await userManager.RefreshTokenAsync(request);
+            var token = await userManager.RefreshTokenAsync(request, cancellationToken);
             return Ok(token);
         }
         [HttpDelete]
@@ -59,16 +59,16 @@ namespace UserApi.Controllers
 
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpPost("admin/register")]
-        public async Task<ActionResult<AdminUserResponse>> AdminRegister(AdminUserRegistrationRequest request)
+        public async Task<ActionResult<AdminUserResponse>> AdminRegister(AdminUserRegistrationRequest request, CancellationToken cancellationToken)
         {
-            var response = await userManager.AdminRegisterUserAsync(request);
+            var response = await userManager.AdminRegisterUserAsync(request, cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpGet("admin/users/{info}")]
-        public async Task<ActionResult<AdminUserResponse>> AdminGetUser(string info)
+        public async Task<ActionResult<AdminUserResponse>> AdminGetUser(string info, CancellationToken cancellationToken)
         {
-            var response = await userManager.GetUserByInfoAsync(info);
+            var response = await userManager.GetUserByInfoAsync(info, cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
@@ -94,9 +94,9 @@ namespace UserApi.Controllers
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
         [HttpDelete("admin/delete/{info}")]
-        public async Task<IActionResult> AdminDeleteUser(string info)
+        public async Task<IActionResult> AdminDeleteUser(string info, CancellationToken cancellationToken)
         {
-            await userManager.AdminDeleteUserAsync(info);
+            await userManager.AdminDeleteUserAsync(info, cancellationToken);
             return Ok();
         }
 

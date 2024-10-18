@@ -1,7 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ChatService } from '../..';
+import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommand, ChatService } from '../..';
+import { environment } from '../../../../../environment/environment';
+import { CommandHandler } from '../../../shared';
 
 interface ChatMessage {
   text: string;
@@ -36,18 +38,31 @@ export class ChatComponent implements OnInit {
 
   isChatVisible$ !: Observable<boolean>;
 
-  constructor(private readonly chatService: ChatService) { }
+  get advisorProfilePicuture() { return environment.botProfilePicture; }
+
+  constructor(
+    private readonly chatService: ChatService,
+    @Inject(CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER) private readonly changeChatVisibilityHandler: CommandHandler<ChangeChatVisibilityCommand>
+  ) { }
 
   ngOnInit() {
     this.isChatVisible$ = this.chatService.getChatVisibilityState();
   }
 
   hideChat() {
-    this.chatService.changeChatVisibilityState(false);
+    const command: ChangeChatVisibilityCommand =
+    {
+      state: false
+    }
+    this.changeChatVisibilityHandler.dispatch(command);
   }
 
   showChat() {
-    this.chatService.changeChatVisibilityState(true);
+    const command: ChangeChatVisibilityCommand =
+    {
+      state: true
+    }
+    this.changeChatVisibilityHandler.dispatch(command);
   }
 
   sendMessage() {

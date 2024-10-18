@@ -63,6 +63,12 @@ services:
       - Shop__MaxOrderAmount=${Shop__MaxOrderAmount}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - UseCORS=${UseCORS}
+      - Chat__SearchServiceEndpoint=${Chat__SearchServiceEndpoint}
+      - Chat__SearchIndexName=${Chat__SearchIndexName}
+      - Chat__SearchApiKey=${Chat__SearchApiKey}
+      - Chat__OpenAiApiKey=${Chat__OpenAiApiKey}
+      - Chat__ChatModel=${Chat__ChatModel}
+      - Chat__GroundedPrompt=${Chat__GroundedPrompt}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

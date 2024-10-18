@@ -25,7 +25,7 @@ namespace UserApi.Services
             expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
         }
 
-        public async Task<UserAuthenticationResponse> RegisterUserAsync(UserRegistrationRequest request)
+        public async Task<UserAuthenticationResponse> RegisterUserAsync(UserRegistrationRequest request, CancellationToken cancellationToken)
         {
             var user = mapper.Map<User>(request);
             var errors = new List<IdentityError>();
@@ -50,7 +50,7 @@ namespace UserApi.Services
                 Roles = roles
             };
         }
-        public async Task<UserAuthenticationResponse> LoginUserAsync(UserAuthenticationRequest request)
+        public async Task<UserAuthenticationResponse> LoginUserAsync(UserAuthenticationRequest request, CancellationToken cancellationToken)
         {
             var user = await authService.GetUserByUserInfoAsync(request.Login);
             if (user == null) throw new UnauthorizedAccessException("Invalid authentication! Wrong password or login!");
@@ -76,7 +76,7 @@ namespace UserApi.Services
             var identityErrors = await authService.UpdateUserAsync(user, updateData, false);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
         }
-        public async Task<AuthToken> RefreshTokenAsync(AuthToken request)
+        public async Task<AuthToken> RefreshTokenAsync(AuthToken request, CancellationToken cancellationToken)
         {
             var tokenData = mapper.Map<AccessTokenData>(request);
             var newToken = await authService.RefreshTokenAsync(tokenData, expiryInDays);
@@ -90,7 +90,7 @@ namespace UserApi.Services
 
         #region Admin Operations
 
-        public async Task<AdminUserResponse> AdminRegisterUserAsync(AdminUserRegistrationRequest request)
+        public async Task<AdminUserResponse> AdminRegisterUserAsync(AdminUserRegistrationRequest request, CancellationToken cancellationToken)
         {
             var user = mapper.Map<User>(request);
             var errors = new List<IdentityError>();
@@ -102,9 +102,9 @@ namespace UserApi.Services
             errors.AddRange(await authService.SetUserRolesAsync(user, request.Roles));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            return await GetUserByInfoAsync(request.Email);
+            return await GetUserByInfoAsync(request.Email, cancellationToken);
         }
-        public async Task<AdminUserResponse> GetUserByInfoAsync(string info)
+        public async Task<AdminUserResponse> GetUserByInfoAsync(string info, CancellationToken cancellationToken)
         {
             var user = await authService.GetUserByUserInfoAsync(info);
 
@@ -152,7 +152,7 @@ namespace UserApi.Services
 
             return response;
         }
-        public async Task AdminDeleteUserAsync(string info)
+        public async Task AdminDeleteUserAsync(string info, CancellationToken cancellationToken)
         {
             var user = await authService.GetUserByUserInfoAsync(info);
             var result = await authService.DeleteUserAsync(user);

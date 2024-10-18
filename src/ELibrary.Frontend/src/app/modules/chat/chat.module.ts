@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { StoreModule } from '@ngrx/store';
-import { ChatComponent, ChatControllerService, chatReducer, ChatService } from '.';
+import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommandHandlerService, ChatComponent, ChatControllerService, chatReducer, ChatService } from '.';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,8 @@ import { ChatComponent, ChatControllerService, chatReducer, ChatService } from '
     StoreModule.forFeature('chat', chatReducer),
   ],
   providers: [
-    { provide: ChatService, useClass: ChatControllerService }
+    { provide: ChatService, useClass: ChatControllerService },
+    { provide: CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, useClass: ChangeChatVisibilityCommandHandlerService },
   ],
   exports: [ChatComponent]
 })

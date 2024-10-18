@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../environment/environment';
 import { BookService } from '../../../library';
 import { Book, CommandHandler, CoverType, CurrencyPipeApplier, getStringCoverType, RouteReader } from '../../../shared';
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from '../../../shop';
@@ -51,5 +52,9 @@ export class ProductInfoComponent implements OnInit {
     }
     this.addBookToCartHandler.dispatch(command);
     this.bookAdded = true;
+  }
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }
