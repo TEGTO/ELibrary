@@ -6,14 +6,14 @@
                 <div class="advisor__avatar">
                     <span class="material-icons">sms</span>
                 </div>
-                <span class="font-bold text-xl">AI-powered adviser</span>
+                <span class="font-bold text-xl">AI-powered advisor</span>
             </div>
             <button mat-icon-button class="close-button" (click)=" hideChat()">
                 <span class="material-icons !text-white">close</span>
             </button>
         </mat-card-header>
         <mat-card-content>
-            <div class="py-4">
+            <div class="pt-4">
                 <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="chat-wrapper__content"
                     [style.height.px]="scollSize">
                     <ng-container *ngIf="messages$ | async as messages">
@@ -22,6 +22,15 @@
                                 <p [ngClass]="{'sent-message': message.isSent, 'received-message': !message.isSent}">
                                     {{message.text}}
                                 </p>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="isResponseLoading$ | async as loading">
+                            <div class="flex px-2">
+                                <div class="received-message loading-dots">
+                                    <span class="dot">.</span>
+                                    <span class="dot">.</span>
+                                    <span class="dot">.</span>
+                                </div>
                             </div>
                         </ng-container>
                     </ng-container>

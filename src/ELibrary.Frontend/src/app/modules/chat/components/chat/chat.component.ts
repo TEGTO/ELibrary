@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommand, ChatMessage, ChatService } from '../..';
+import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommand, ChatMessage, ChatService, SEND_ADVISOR_MESSAGE_COMMAND_HANDLER, SendAdvisorMessageCommand } from '../..';
 import { environment } from '../../../../../environment/environment';
 import { CommandHandler } from '../../../shared';
 
@@ -25,22 +25,25 @@ import { CommandHandler } from '../../../shared';
 })
 export class ChatComponent implements OnInit {
   readonly itemHeight = 25;
-  readonly scollSize = 350;
+  readonly scollSize = 370;
   newMessage = '';
 
   messages$ !: Observable<ChatMessage[]>;
   isChatVisible$ !: Observable<boolean>;
+  isResponseLoading$ !: Observable<boolean>;
 
   get advisorProfilePicuture() { return environment.botProfilePicture; }
 
   constructor(
     private readonly chatService: ChatService,
-    @Inject(CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER) private readonly changeChatVisibilityHandler: CommandHandler<ChangeChatVisibilityCommand>
+    @Inject(CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER) private readonly changeChatVisibilityHandler: CommandHandler<ChangeChatVisibilityCommand>,
+    @Inject(SEND_ADVISOR_MESSAGE_COMMAND_HANDLER) private readonly sendAdvisorRequestHandler: CommandHandler<SendAdvisorMessageCommand>
   ) { }
 
   ngOnInit() {
     this.isChatVisible$ = this.chatService.getChatVisibilityState();
     this.messages$ = this.chatService.getChatMessages();
+    this.isResponseLoading$ = this.chatService.getIsReponseLoading();
   }
 
   hideChat() {
@@ -61,6 +64,11 @@ export class ChatComponent implements OnInit {
 
   sendMessage() {
     if (this.newMessage.trim()) {
+      const command: SendAdvisorMessageCommand =
+      {
+        message: this.newMessage
+      }
+      this.sendAdvisorRequestHandler.dispatch(command)
       this.newMessage = '';
     }
   }

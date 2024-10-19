@@ -35,7 +35,8 @@ namespace ShopApi.Controllers.Tests
             // Assert
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
-            Assert.That(okResult.Value, Is.EqualTo(mockResponse));
+            var response = okResult.Value as AdvisorResponse;
+            Assert.That(response.Message, Is.EqualTo(mockResponse));
         }
     }
 }

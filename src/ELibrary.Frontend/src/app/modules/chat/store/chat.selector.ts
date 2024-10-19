@@ -10,3 +10,7 @@ export const selectChatMessages = createSelector(
     selectChatState,
     (state: ChatState) => state.messages
 );
+export const selectIsResposeLoading = createSelector(
+    selectChatState,
+    (state: ChatState) => state.isResponseLoading
+);

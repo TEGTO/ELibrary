@@ -10,6 +10,7 @@ export interface ChatMessage {
 export interface ChatState {
     messages: ChatMessage[],
     isVisible: boolean,
+    isResponseLoading: boolean,
     error: any
 }
 const initialChatState: ChatState = {
@@ -17,6 +18,7 @@ const initialChatState: ChatState = {
         { text: "Hello! Ask me about any book 😊.", isSent: false }
     ],
     isVisible: false,
+    isResponseLoading: false,
     error: null
 };
 
@@ -31,16 +33,19 @@ export const chatReducer = createReducer(
 
     on(sendAdvisorQuery, (state, { req }) => ({
         ...state,
-        messages: [...state.messages, { isSent: true, text: req.message }],
+        isResponseLoading: true,
+        messages: [...state.messages, { isSent: true, text: req.query }],
         error: null
     })),
     on(sendAdvisorQuerySuccess, (state, { response }) => ({
         ...state,
+        isResponseLoading: false,
         messages: [...state.messages, { isSent: false, text: response.message }],
         error: null
     })),
     on(sendAdvisorQueryFailure, (state, { error }) => ({
         ...state,
+        isResponseLoading: false,
         error: error
     })),
 );

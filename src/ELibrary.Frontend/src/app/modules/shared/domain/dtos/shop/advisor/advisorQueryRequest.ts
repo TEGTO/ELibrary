@@ -1,4 +1,4 @@
 
 export interface AdvisorQueryRequest {
-    message: string;
+    query: string;
 }

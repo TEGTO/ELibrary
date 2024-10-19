@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { changeChatVisibilityState } from '../..';
+import { changeChatVisibilityState, ChatMessage, sendAdvisorQuery } from '../..';
+import { AdvisorQueryRequest } from '../../../shared';
 import { ChatControllerService } from './chat-controller.service';
 
 describe('ChatControllerService', () => {
@@ -44,5 +45,34 @@ describe('ChatControllerService', () => {
     service.changeChatVisibilityState(newState);
 
     expect(store.dispatch).toHaveBeenCalledWith(changeChatVisibilityState({ state: newState }));
+  });
+
+  it('should return chat messages from store', () => {
+    const mockMessages: ChatMessage[] = [
+      { text: 'Hello!', isSent: true },
+      { text: 'How can I help you?', isSent: false }
+    ];
+    spyOn(store, 'select').and.returnValue(of(mockMessages));
+
+    service.getChatMessages().subscribe((messages) => {
+      expect(messages).toEqual(mockMessages);
+    });
+  });
+
+  it('should dispatch action to send advisor query', () => {
+    const mockRequest: AdvisorQueryRequest = { query: 'What is the weather today?' };
+
+    service.sendAdvisorRequest(mockRequest);
+
+    expect(store.dispatch).toHaveBeenCalledWith(sendAdvisorQuery({ req: mockRequest }));
+  });
+
+  it('should return response loading state from store', () => {
+    const mockLoadingState = true;
+    spyOn(store, 'select').and.returnValue(of(mockLoadingState));
+
+    service.getIsReponseLoading().subscribe((loadingState) => {
+      expect(loadingState).toBe(mockLoadingState);
+    });
   });
 });

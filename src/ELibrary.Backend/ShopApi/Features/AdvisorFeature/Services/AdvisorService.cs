@@ -1,7 +1,5 @@
-﻿using Azure;
-using Azure.Search.Documents;
+﻿using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
-using OpenAI.Chat;
 using System.Text;
 
 namespace ShopApi.Features.AdvisorFeature.Services
@@ -9,11 +7,15 @@ namespace ShopApi.Features.AdvisorFeature.Services
     public class AdvisorService : IAdvisorService
     {
         private readonly ChatConfiguration chatConfig;
+        private readonly ISearchClientFactory searchClientFactory;
+        private readonly IChatService chatService;
 
-        public AdvisorService(IConfiguration configuration)
+        public AdvisorService(IConfiguration configuration, ISearchClientFactory searchClientFactory, IChatService chatService)
         {
             chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
                                           .Get<ChatConfiguration>()!;
+            this.searchClientFactory = searchClientFactory;
+            this.chatService = chatService;
         }
         public async Task<string> SendQueryAsync(string query, CancellationToken cancellationToken)
         {
@@ -22,8 +24,7 @@ namespace ShopApi.Features.AdvisorFeature.Services
         }
         private async Task<StringBuilder> GetSourcesAsync(string query, CancellationToken cancellationToken)
         {
-            AzureKeyCredential searchCredential = new AzureKeyCredential(chatConfig.SearchApiKey);
-            var searchClient = new SearchClient(new Uri(chatConfig.SearchServiceEndpoint), chatConfig.SearchIndexName, searchCredential);
+            var searchClient = searchClientFactory.CreateSearchClient();
 
             var searchOptions = new SearchOptions
             {
@@ -46,24 +47,8 @@ namespace ShopApi.Features.AdvisorFeature.Services
         }
         private async Task<string> GetChatResponseAsync(string query, StringBuilder sourcesFormatted, CancellationToken cancellationToken)
         {
-            try
-            {
-                var chatClient = new ChatClient(chatConfig.ChatModel, apiKey: chatConfig.OpenAiApiKey);
-
-                var promt = chatConfig.GroundedPrompt.Replace("{sourcesFormatted}", sourcesFormatted.ToString());
-
-                var chatCompletion = await chatClient.CompleteChatAsync(
-                    new SystemChatMessage(promt),
-                    new UserChatMessage(query)
-                );
-
-                return chatCompletion.Value.Content[0].Text;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                throw;
-            }
+            var prompt = chatConfig.GroundedPrompt.Replace("{sourcesFormatted}", sourcesFormatted.ToString());
+            return await chatService.GetChatCompletionAsync(prompt, query, cancellationToken);
         }
     }
 }
