@@ -40,7 +40,7 @@ namespace Shared
         }
         public static IServiceCollection AddPaginationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var paginationConf = new PaginationConfiguration(int.Parse(configuration[Configuration.MAX_PAGINATION_PAGE_SIZE]!));
+            var paginationConf = new PaginationConfiguration(int.Parse(configuration[Configuration.MAX_PAGINATION_PAGE_SIZE] ?? "0"));
             services.AddSingleton(paginationConf);
             return services;
         }
@@ -80,6 +80,9 @@ namespace Shared
                         b.MigrationsAssembly(migrationAssembly);
                     }
                 });
+
+                options.UseSnakeCaseNamingConvention();
+
                 npgsqlOptions.UseExceptionProcessor();
                 additionalConfig?.Invoke(options);
             });
