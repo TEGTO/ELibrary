@@ -24,9 +24,7 @@ if (useCors)
 
 #endregion
 
-builder.Services.AddDbContextFactory<UserIdentityDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING), b =>
-        b.MigrationsAssembly("UserApi")));
+builder.Services.AddDbContextFactory<UserIdentityDbContext>(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING), "UserApi");
 
 #region Identity 
 
@@ -52,6 +50,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<UserIdentityDbContext>(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

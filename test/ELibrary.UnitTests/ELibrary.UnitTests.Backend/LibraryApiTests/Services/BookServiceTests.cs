@@ -1,6 +1,7 @@
 ﻿using LibraryApi.Domain.Dtos;
 using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -22,6 +23,7 @@ namespace LibraryApi.Services.Tests
             service = new BookService(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }
+
         private static Mock<DbSet<T>> GetDbSetMock<T>(List<T> data) where T : class
         {
             return data.AsQueryable().BuildMockDbSet();
@@ -54,6 +56,19 @@ namespace LibraryApi.Services.Tests
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
         [Test]
+        public async Task GetByIdAsync_InvalidId_ReturnsNull()
+        {
+            // Arrange
+            var books = new List<Book>();
+            var dbSetMock = GetDbSetMock(books);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+               .ReturnsAsync(dbSetMock.Object);
+            // Act
+            var result = await service.GetByIdAsync(99, cancellationToken);
+            // Assert
+            Assert.IsNull(result);
+        }
+        [Test]
         public async Task GetPaginatedAsync_ValidPage_ReturnsBooksWithEntities()
         {
             // Arrange
@@ -77,24 +92,60 @@ namespace LibraryApi.Services.Tests
                     Name = "Book2",
                     Author = new Author { Id = 2, Name = "Author2" },
                     Genre = new Genre { Id = 2, Name = "Genre2" },
-                     Publisher = new Publisher { Id = 1, Name = "Publisher2" },
+                    Publisher = new Publisher { Id = 1, Name = "Publisher2" },
                     PublicationDate = DateTime.UtcNow,
                     Price = 10,
                     PageAmount = 10,
                     StockAmount = 10,
                 }
             };
-            var dbSetMock = GetDbSetMock(books);
+            var orders = new List<Order>
+            {
+                new Order
+                {
+                    OrderBooks= new List<OrderBook>
+                    {
+                        new OrderBook
+                        {
+                            Id = "1",
+                            BookId = 1
+                        },
+                    }
+                }
+            };
+            var dbBookSetMock = GetDbSetMock(books);
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
+               .ReturnsAsync(dbBookSetMock.Object);
+            var dbOrderSetMock = GetDbSetMock(orders);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken))
+                .ReturnsAsync(dbOrderSetMock.Object);
             var paginationRequest = new BookFilterRequest() { PageNumber = 1, PageSize = 10 };
             // Act
             var result = await service.GetPaginatedAsync(paginationRequest, cancellationToken);
             // Assert
             Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Author!.Name, Is.EqualTo("Author2"));
-            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre2"));
-            Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher2"));
+            Assert.That(result.First().Author!.Name, Is.EqualTo("Author1"));
+            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre1"));
+            Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher1"));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task GetItemTotalAmountAsync_ReturnsCorrectCount()
+        {
+            // Arrange
+            var books = new List<Book>
+            {
+                new Book { Id = 1, Name = "Book1" },
+                new Book { Id = 2, Name = "Book2" }
+            };
+            var dbSetMock = GetDbSetMock(books);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+               .ReturnsAsync(dbSetMock.Object);
+            var filterRequest = new BookFilterRequest();
+            // Act
+            var result = await service.GetItemTotalAmountAsync(filterRequest, cancellationToken);
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
         [Test]
@@ -186,4 +237,5 @@ namespace LibraryApi.Services.Tests
             repositoryMock.Verify(repo => repo.DeleteAsync(book, cancellationToken), Times.Once);
         }
     }
+
 }

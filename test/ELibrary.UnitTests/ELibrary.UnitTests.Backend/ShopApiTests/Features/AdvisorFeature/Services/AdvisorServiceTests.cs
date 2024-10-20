@@ -3,6 +3,8 @@ using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Polly;
+using Polly.Registry;
 using System.Reflection;
 using System.Text;
 
@@ -36,9 +38,12 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
             mockSearchClient = new Mock<SearchClient>();
             mockChatService = new Mock<IChatService>();
 
+            var mockPipelineProvider = new Mock<ResiliencePipelineProvider<string>>();
+            mockPipelineProvider.Setup(x => x.GetPipeline(It.IsAny<string>())).Returns(ResiliencePipeline.Empty);
+
             mockSearchClientFactory.Setup(x => x.CreateSearchClient()).Returns(mockSearchClient.Object);
 
-            advisorService = new AdvisorService(configuration, mockSearchClientFactory.Object, mockChatService.Object);
+            advisorService = new AdvisorService(configuration, mockSearchClientFactory.Object, mockChatService.Object, mockPipelineProvider.Object);
         }
 
         [Test]

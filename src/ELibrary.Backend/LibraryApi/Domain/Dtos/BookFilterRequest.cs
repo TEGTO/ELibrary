@@ -2,6 +2,11 @@
 
 namespace LibraryApi.Domain.Dtos
 {
+    public enum BookSorting
+    {
+        MostPopular, LeastPopular
+    }
+
     public class BookFilterRequest : LibraryFilterRequest
     {
         public DateTime? PublicationFrom { get; set; }
@@ -15,5 +20,6 @@ namespace LibraryApi.Domain.Dtos
         public int? AuthorId { get; set; }
         public int? GenreId { get; set; }
         public int? PublisherId { get; set; }
+        public BookSorting? Sorting { get; set; }
     }
 }

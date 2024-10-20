@@ -1,4 +1,5 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Book, BookFilterRequest, CreateBookRequest, getDefaultAuthor, getDefaultBook, getDefaultGenre, getDefaultPublisher, UpdateBookRequest, URLDefiner } from '../../../..';
 import { BookApiService } from './book-api.service';
@@ -13,10 +14,11 @@ describe('BookApiService', () => {
     mockUrlDefiner.combineWithLibraryApiUrl.and.callFake((subpath: string) => `/api${subpath}`);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
         BookApiService,
-        { provide: URLDefiner, useValue: mockUrlDefiner }
+        { provide: URLDefiner, useValue: mockUrlDefiner },
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
     });
 
@@ -75,6 +77,7 @@ describe('BookApiService', () => {
       authorId: null,
       genreId: null,
       publisherId: null,
+      sorting: null,
     }
     const response: Book[] = [
       getDefaultBook(),
@@ -109,6 +112,7 @@ describe('BookApiService', () => {
       authorId: null,
       genreId: null,
       publisherId: null,
+      sorting: null,
     }
 
     service.getItemTotalAmount(getItemReq).subscribe(res => {
@@ -212,12 +216,12 @@ describe('BookApiService', () => {
   it('should handle error on getById', () => {
     const expectedReq = `/api/book/1`;
 
-    service.getById(1).subscribe(
-      () => fail('Expected an error, not a success'),
-      (error) => {
+    service.getById(1).subscribe({
+      next: () => fail('Expected an error, not a success'),
+      error: (error) => {
         expect(error).toBeTruthy();
       }
-    );
+    });
 
     const req = httpTestingController.expectOne(expectedReq);
     req.flush('Error', { status: 404, statusText: 'Not Found' });
