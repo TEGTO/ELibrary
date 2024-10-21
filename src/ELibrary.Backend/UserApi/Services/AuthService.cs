@@ -119,13 +119,13 @@ namespace UserApi.Services
         {
             List<IdentityError> identityErrors = new List<IdentityError>();
 
-            if (!user.UserName.Equals(updateData.UserName))
+            if (user.UserName != null && !user.UserName.Equals(updateData.UserName))
             {
                 var result = await userManager.SetUserNameAsync(user, updateData.UserName);
                 identityErrors.AddRange(result.Errors);
             }
 
-            if (!user.Email.Equals(updateData.Email))
+            if (user.Email != null && !user.Email.Equals(updateData.Email))
             {
                 var token = await userManager.GenerateChangeEmailTokenAsync(user, updateData.Email);
                 var result = await userManager.ChangeEmailAsync(user, updateData.Email, token);
@@ -205,9 +205,9 @@ namespace UserApi.Services
             if (!string.IsNullOrEmpty(userFilter.ContainsInfo))
             {
                 query = query.Where(b =>
-                   b.Email.Contains(userFilter.ContainsInfo)
-                || b.UserName.Contains(userFilter.ContainsInfo)
-                || b.Id.Contains(userFilter.ContainsInfo)
+                    (b.Email != null && b.Email.Contains(userFilter.ContainsInfo))
+                    || (b.UserName != null && b.UserName.Contains(userFilter.ContainsInfo))
+                    || b.Id.Contains(userFilter.ContainsInfo)
                 );
             }
             return query

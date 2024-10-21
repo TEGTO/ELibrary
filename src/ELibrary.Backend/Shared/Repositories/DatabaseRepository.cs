@@ -21,50 +21,50 @@ namespace Shared.Repositories
         {
             await resiliencePipeline.ExecuteAsync(async ct =>
             {
-                var dbContext = await CreateDbContextAsync(ct);
-                await dbContext.Database.MigrateAsync(ct);
-            }, cancellationToken);
+                var dbContext = await CreateDbContextAsync(ct).ConfigureAwait(false);
+                await dbContext.Database.MigrateAsync(ct).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<T> AddAsync<T>(T obj, CancellationToken cancellationToken) where T : class
         {
             return await resiliencePipeline.ExecuteAsync(async ct =>
             {
-                var dbContext = await CreateDbContextAsync(ct);
-                await dbContext.AddAsync(obj, ct);
-                await dbContext.SaveChangesAsync(ct);
+                var dbContext = await CreateDbContextAsync(ct).ConfigureAwait(false);
+                await dbContext.AddAsync(obj, ct).ConfigureAwait(false);
+                await dbContext.SaveChangesAsync(ct).ConfigureAwait(false);
                 return obj;
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<IQueryable<T>> GetQueryableAsync<T>(CancellationToken cancellationToken) where T : class
         {
             return await resiliencePipeline.ExecuteAsync(async ct =>
             {
-                var dbContext = await CreateDbContextAsync(ct);
+                var dbContext = await CreateDbContextAsync(ct).ConfigureAwait(false);
                 return dbContext.Set<T>().AsQueryable();
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<T> UpdateAsync<T>(T obj, CancellationToken cancellationToken) where T : class
         {
             return await resiliencePipeline.ExecuteAsync(async ct =>
             {
-                var dbContext = await CreateDbContextAsync(ct);
+                var dbContext = await CreateDbContextAsync(ct).ConfigureAwait(false);
                 dbContext.Update(obj);
-                await dbContext.SaveChangesAsync(ct);
+                await dbContext.SaveChangesAsync(ct).ConfigureAwait(false);
                 return obj;
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync<T>(T obj, CancellationToken cancellationToken) where T : class
         {
             await resiliencePipeline.ExecuteAsync(async ct =>
             {
-                var dbContext = await CreateDbContextAsync(ct);
+                var dbContext = await CreateDbContextAsync(ct).ConfigureAwait(false);
                 dbContext.Remove(obj);
-                await dbContext.SaveChangesAsync(ct);
-            }, cancellationToken);
+                await dbContext.SaveChangesAsync(ct).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
@@ -73,7 +73,7 @@ namespace Shared.Repositories
 
         protected async Task<TContext> CreateDbContextAsync(CancellationToken cancellationToken)
         {
-            return await dbContextFactory.CreateDbContextAsync(cancellationToken);
+            return await dbContextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
