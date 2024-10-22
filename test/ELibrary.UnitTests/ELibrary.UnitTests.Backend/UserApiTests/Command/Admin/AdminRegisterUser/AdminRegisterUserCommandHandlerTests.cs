@@ -14,6 +14,7 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
     {
         private Mock<IMapper> mapperMock;
         private Mock<IAuthService> authServiceMock;
+        private Mock<IUserService> userService;
         private AdminRegisterUserCommandHandler adminRegisterUserCommandHandler;
 
         [SetUp]
@@ -21,8 +22,9 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
         {
             mapperMock = new Mock<IMapper>();
             authServiceMock = new Mock<IAuthService>();
+            userService = new Mock<IUserService>();
 
-            adminRegisterUserCommandHandler = new AdminRegisterUserCommandHandler(authServiceMock.Object, mapperMock.Object);
+            adminRegisterUserCommandHandler = new AdminRegisterUserCommandHandler(authServiceMock.Object, userService.Object, mapperMock.Object);
         }
 
         [Test]
@@ -35,10 +37,10 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
             var adminResponse = new AdminUserResponse { Email = "admin@example.com" };
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>())).ReturnsAsync(IdentityResult.Success);
-            authServiceMock.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles)).ReturnsAsync(new List<IdentityError>());
-            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            userService.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles)).ReturnsAsync(new List<IdentityError>());
+            userService.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
-            authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
+            userService.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
             var result = await adminRegisterUserCommandHandler.Handle(new AdminRegisterUserCommand(adminRequest), CancellationToken.None);
             // Assert

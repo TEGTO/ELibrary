@@ -7,18 +7,18 @@ namespace UserApi.Command.Admin.GetUserByInfo
 {
     public class GetUserByInfoQueryHandler : IRequestHandler<GetUserByInfoQuery, AdminUserResponse>
     {
-        private readonly IAuthService authService;
+        private readonly IUserService userService;
         private readonly IMapper mapper;
 
-        public GetUserByInfoQueryHandler(IAuthService authService, IMapper mapper)
+        public GetUserByInfoQueryHandler(IUserService userService, IMapper mapper)
         {
-            this.authService = authService;
+            this.userService = userService;
             this.mapper = mapper;
         }
 
         public async Task<AdminUserResponse> Handle(GetUserByInfoQuery command, CancellationToken cancellationToken)
         {
-            var user = await authService.GetUserByUserInfoAsync(command.Info);
+            var user = await userService.GetUserByUserInfoAsync(command.Info);
 
             if (user == null)
             {
@@ -26,7 +26,7 @@ namespace UserApi.Command.Admin.GetUserByInfo
             }
 
             var response = mapper.Map<AdminUserResponse>(user);
-            response.Roles = await authService.GetUserRolesAsync(user);
+            response.Roles = await userService.GetUserRolesAsync(user);
             return response;
         }
     }

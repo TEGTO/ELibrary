@@ -15,6 +15,7 @@ namespace UserApi.Command.Client.RegisterUser.Tests
     internal class RegisterUserCommandHandlerTests
     {
         private Mock<IAuthService> authServiceMock;
+        private Mock<IUserService> userServiceMock;
         private Mock<IConfiguration> configurationMock;
         private Mock<IMapper> mapperMock;
         private RegisterUserCommandHandler registerUserCommandHandler;
@@ -24,12 +25,13 @@ namespace UserApi.Command.Client.RegisterUser.Tests
         {
             mapperMock = new Mock<IMapper>();
             authServiceMock = new Mock<IAuthService>();
+            userServiceMock = new Mock<IUserService>();
             configurationMock = new Mock<IConfiguration>();
 
             configurationMock.Setup(c => c[It.Is<string>(s => s == Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS)])
                              .Returns("7");
 
-            registerUserCommandHandler = new RegisterUserCommandHandler(authServiceMock.Object, mapperMock.Object, configurationMock.Object);
+            registerUserCommandHandler = new RegisterUserCommandHandler(authServiceMock.Object, userServiceMock.Object, mapperMock.Object, configurationMock.Object);
         }
 
         [Test]
@@ -43,10 +45,10 @@ namespace UserApi.Command.Client.RegisterUser.Tests
             var roles = new List<string> { "User" };
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>())).ReturnsAsync(IdentityResult.Success);
-            authServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(new List<IdentityError>());
+            userServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(new List<IdentityError>());
             authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>())).ReturnsAsync(tokenData);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
-            authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
+            userServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
             var result = await registerUserCommandHandler.Handle(new RegisterUserCommand(registrationRequest), CancellationToken.None);
             // Assert

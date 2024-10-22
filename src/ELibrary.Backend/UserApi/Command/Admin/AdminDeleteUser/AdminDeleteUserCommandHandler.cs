@@ -6,17 +6,17 @@ namespace UserApi.Command.Admin.AdminDeleteUser
 {
     public class AdminDeleteUserCommandHandler : IRequestHandler<AdminDeleteUserCommand, Unit>
     {
-        private readonly IAuthService authService;
+        private readonly IUserService userService;
 
-        public AdminDeleteUserCommandHandler(IAuthService authService)
+        public AdminDeleteUserCommandHandler(IUserService userServicee)
         {
-            this.authService = authService;
+            this.userService = userServicee;
         }
 
         public async Task<Unit> Handle(AdminDeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await authService.GetUserByUserInfoAsync(command.Info);
-            var result = await authService.DeleteUserAsync(user);
+            var user = await userService.GetUserByUserInfoAsync(command.Info);
+            var result = await userService.DeleteUserAsync(user);
             if (Utilities.HasErrors(result.Errors.ToList(), out var errorResponse)) throw new AuthorizationException(errorResponse);
             return Unit.Value;
         }

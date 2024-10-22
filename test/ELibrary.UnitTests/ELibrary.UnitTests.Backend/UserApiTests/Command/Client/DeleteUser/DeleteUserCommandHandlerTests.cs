@@ -8,15 +8,15 @@ namespace UserApi.Command.Client.DeleteUser.Tests
     [TestFixture]
     internal class DeleteUserCommandHandlerTests
     {
-        private Mock<IAuthService> authServiceMock;
+        private Mock<IUserService> userServiceMock;
         private DeleteUserCommandHandler deleteUserCommandHandler;
 
         [SetUp]
         public void SetUp()
         {
-            authServiceMock = new Mock<IAuthService>();
+            userServiceMock = new Mock<IUserService>();
 
-            deleteUserCommandHandler = new DeleteUserCommandHandler(authServiceMock.Object);
+            deleteUserCommandHandler = new DeleteUserCommandHandler(userServiceMock.Object);
         }
 
         [Test]
@@ -28,13 +28,13 @@ namespace UserApi.Command.Client.DeleteUser.Tests
                 new Claim(ClaimTypes.NameIdentifier, "12345")
             }));
             var user = new User { Id = "12345", Email = "testuser@example.com" };
-            authServiceMock.Setup(s => s.GetUserAsync(claimsPrincipal))
+            userServiceMock.Setup(s => s.GetUserAsync(claimsPrincipal))
                            .ReturnsAsync(user);
             // Act
             await deleteUserCommandHandler.Handle(new DeleteUserCommand(claimsPrincipal), CancellationToken.None);
             // Assert
-            authServiceMock.Verify(s => s.GetUserAsync(claimsPrincipal), Times.Once);
-            authServiceMock.Verify(s => s.DeleteUserAsync(user), Times.Once);
+            userServiceMock.Verify(s => s.GetUserAsync(claimsPrincipal), Times.Once);
+            userServiceMock.Verify(s => s.DeleteUserAsync(user), Times.Once);
         }
     }
 }

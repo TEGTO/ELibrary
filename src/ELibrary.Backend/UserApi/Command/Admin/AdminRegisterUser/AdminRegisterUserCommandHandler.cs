@@ -11,11 +11,13 @@ namespace UserApi.Command.Admin.AdminRegisterUser
     public class AdminRegisterUserCommandHandler : IRequestHandler<AdminRegisterUserCommand, AdminUserResponse>
     {
         private readonly IAuthService authService;
+        private readonly IUserService userService;
         private readonly IMapper mapper;
 
-        public AdminRegisterUserCommandHandler(IAuthService authService, IMapper mapper)
+        public AdminRegisterUserCommandHandler(IAuthService authService, IUserService userService, IMapper mapper)
         {
             this.authService = authService;
+            this.userService = userService;
             this.mapper = mapper;
         }
 
@@ -29,13 +31,13 @@ namespace UserApi.Command.Admin.AdminRegisterUser
             errors.AddRange((await authService.RegisterUserAsync(registerParams)).Errors);
             if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
-            errors.AddRange(await authService.SetUserRolesAsync(user, request.Roles));
+            errors.AddRange(await userService.SetUserRolesAsync(user, request.Roles));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            user = await authService.GetUserByUserInfoAsync(request.Email);
+            user = await userService.GetUserByUserInfoAsync(request.Email);
 
             var response = mapper.Map<AdminUserResponse>(user);
-            response.Roles = await authService.GetUserRolesAsync(user);
+            response.Roles = await userService.GetUserRolesAsync(user);
             return response;
         }
     }

@@ -5,17 +5,17 @@ namespace UserApi.Command.Client.DeleteUser
 {
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Unit>
     {
-        private readonly IAuthService authService;
+        private readonly IUserService userService;
 
-        public DeleteUserCommandHandler(IAuthService authService)
+        public DeleteUserCommandHandler(IUserService userService)
         {
-            this.authService = authService;
+            this.userService = userService;
         }
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await authService.GetUserAsync(request.ClaimsPrincipal);
-            await authService.DeleteUserAsync(user);
+            var user = await userService.GetUserAsync(request.ClaimsPrincipal);
+            await userService.DeleteUserAsync(user);
             return Unit.Value;
         }
     }

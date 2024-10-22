@@ -9,15 +9,15 @@ namespace UserApi.Command.Admin.AdminDeleteUser.Tests
     [TestFixture]
     internal class AdminDeleteUserCommandHandlerTests
     {
-        private Mock<IAuthService> authServiceMock;
+        private Mock<IUserService> userServiceMock;
         private AdminDeleteUserCommandHandler adminDeleteUserCommandHandler;
 
         [SetUp]
         public void SetUp()
         {
-            authServiceMock = new Mock<IAuthService>();
+            userServiceMock = new Mock<IUserService>();
 
-            adminDeleteUserCommandHandler = new AdminDeleteUserCommandHandler(authServiceMock.Object);
+            adminDeleteUserCommandHandler = new AdminDeleteUserCommandHandler(userServiceMock.Object);
         }
 
         [Test]
@@ -25,12 +25,12 @@ namespace UserApi.Command.Admin.AdminDeleteUser.Tests
         {
             // Arrange
             var user = new User { UserName = "user1" };
-            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Success);
+            userServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Success);
             // Act
             await adminDeleteUserCommandHandler.Handle(new AdminDeleteUserCommand("user1"), CancellationToken.None);
             // Assert
-            authServiceMock.Verify(a => a.DeleteUserAsync(user), Times.Once);
+            userServiceMock.Verify(a => a.DeleteUserAsync(user), Times.Once);
         }
         [Test]
         public void Handle_FailedDelete_ThrowsAuthorizationException()
@@ -38,8 +38,8 @@ namespace UserApi.Command.Admin.AdminDeleteUser.Tests
             // Arrange
             var user = new User { UserName = "user1" };
             var identityErrors = new List<IdentityError> { new IdentityError { Description = "Deletion failed" } };
-            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
+            userServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.DeleteUserAsync(It.IsAny<User>())).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await adminDeleteUserCommandHandler.Handle(new AdminDeleteUserCommand("user1"), CancellationToken.None));
             Assert.That(ex.Errors.First(), Is.EqualTo("Deletion failed"));

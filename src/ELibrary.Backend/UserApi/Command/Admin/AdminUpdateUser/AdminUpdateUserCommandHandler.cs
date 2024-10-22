@@ -9,12 +9,12 @@ namespace UserApi.Command.Admin.AdminUpdateUser
 {
     public class AdminUpdateUserCommandHandler : IRequestHandler<AdminUpdateUserCommand, AdminUserResponse>
     {
-        private readonly IAuthService authService;
+        private readonly IUserService userService;
         private readonly IMapper mapper;
 
-        public AdminUpdateUserCommandHandler(IAuthService authService, IMapper mapper)
+        public AdminUpdateUserCommandHandler(IUserService userService, IMapper mapper)
         {
-            this.authService = authService;
+            this.userService = userService;
             this.mapper = mapper;
         }
 
@@ -22,16 +22,16 @@ namespace UserApi.Command.Admin.AdminUpdateUser
         {
             var request = command.Request;
             var updateData = mapper.Map<UserUpdateData>(request);
-            var user = await authService.GetUserByUserInfoAsync(request.CurrentLogin);
+            var user = await userService.GetUserByUserInfoAsync(request.CurrentLogin);
 
-            var identityErrors = await authService.UpdateUserAsync(user, updateData, true);
+            var identityErrors = await userService.UpdateUserAsync(user, updateData, true);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
-            identityErrors = await authService.SetUserRolesAsync(user, request.Roles);
+            identityErrors = await userService.SetUserRolesAsync(user, request.Roles);
             if (Utilities.HasErrors(identityErrors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
             var response = mapper.Map<AdminUserResponse>(user);
-            response.Roles = await authService.GetUserRolesAsync(user);
+            response.Roles = await userService.GetUserRolesAsync(user);
 
             return response;
         }

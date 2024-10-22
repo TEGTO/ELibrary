@@ -5,16 +5,16 @@ namespace UserApi.Command.Admin.GetPaginatedUserTotalAmount
 {
     public class GetPaginatedUserTotalAmountQueryHandler : IRequestHandler<GetPaginatedUserTotalAmountQuery, int>
     {
-        private readonly IAuthService authService;
+        private readonly IUserService userService;
 
-        public GetPaginatedUserTotalAmountQueryHandler(IAuthService authService)
+        public GetPaginatedUserTotalAmountQueryHandler(IUserService userService)
         {
-            this.authService = authService;
+            this.userService = userService;
         }
 
         public async Task<int> Handle(GetPaginatedUserTotalAmountQuery request, CancellationToken cancellationToken)
         {
-            return await authService.GetUserTotalAmountAsync(request.Filter, cancellationToken);
+            return await userService.GetUserTotalAmountAsync(request.Filter, cancellationToken);
         }
     }
 }

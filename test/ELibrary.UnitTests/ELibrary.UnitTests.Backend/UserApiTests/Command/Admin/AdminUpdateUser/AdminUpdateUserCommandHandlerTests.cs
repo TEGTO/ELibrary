@@ -14,16 +14,16 @@ namespace UserApi.Command.Admin.AdminUpdateUser.Tests
     internal class AdminUpdateUserCommandHandlerTests
     {
         private Mock<IMapper> mapperMock;
-        private Mock<IAuthService> authServiceMock;
+        private Mock<IUserService> userServiceMock;
         private AdminUpdateUserCommandHandler adminUpdateUserCommandHandler;
 
         [SetUp]
         public void SetUp()
         {
             mapperMock = new Mock<IMapper>();
-            authServiceMock = new Mock<IAuthService>();
+            userServiceMock = new Mock<IUserService>();
 
-            adminUpdateUserCommandHandler = new AdminUpdateUserCommandHandler(authServiceMock.Object, mapperMock.Object);
+            adminUpdateUserCommandHandler = new AdminUpdateUserCommandHandler(userServiceMock.Object, mapperMock.Object);
         }
 
         [Test]
@@ -36,16 +36,16 @@ namespace UserApi.Command.Admin.AdminUpdateUser.Tests
             var user = new User { UserName = "user1" };
             var identityErrors = new List<IdentityError>();
             mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(new UserUpdateData());
-            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
-            authServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(identityErrors);
+            userServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
+            userServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(identityErrors);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
-            authServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
+            userServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act
             await adminUpdateUserCommandHandler.Handle(new AdminUpdateUserCommand(updateRequest), CancellationToken.None);
             // Assert
-            authServiceMock.Verify(a => a.UpdateUserAsync(user, It.IsAny<UserUpdateData>(), true), Times.Once);
-            authServiceMock.Verify(a => a.SetUserRolesAsync(user, updateRequest.Roles), Times.Once);
+            userServiceMock.Verify(a => a.UpdateUserAsync(user, It.IsAny<UserUpdateData>(), true), Times.Once);
+            userServiceMock.Verify(a => a.SetUserRolesAsync(user, updateRequest.Roles), Times.Once);
         }
         [Test]
         public void Handle_FailedUpdate_ThrowsAuthorizationException()
@@ -55,8 +55,8 @@ namespace UserApi.Command.Admin.AdminUpdateUser.Tests
             var user = new User { UserName = "user1" };
             var identityErrors = new List<IdentityError> { new IdentityError { Description = "Update failed" } };
             mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(new UserUpdateData());
-            authServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
+            userServiceMock.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.UpdateUserAsync(It.IsAny<User>(), It.IsAny<UserUpdateData>(), true)).ReturnsAsync(identityErrors);
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await adminUpdateUserCommandHandler.Handle(new AdminUpdateUserCommand(updateRequest), CancellationToken.None));
             Assert.That(ex.Errors.First(), Is.EqualTo("Update failed"));

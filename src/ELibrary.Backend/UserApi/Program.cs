@@ -47,6 +47,7 @@ builder.Services.AddScoped<ITokenHandler, JwtHandler>();
 #region Project Services 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
