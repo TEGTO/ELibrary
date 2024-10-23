@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.DependencyInjection;
 using Shared.Configurations;
+using Shared.Helpers;
 using Shared.Repositories;
 
 namespace Shared
@@ -25,7 +26,12 @@ namespace Shared
 
             return services;
         }
-
+        public static IServiceCollection AddCustomHttpClientServiceWithResilience(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient(Configuration.HTTP_CLIENT_RESILIENCE_PIPELINE).AddStandardResilienceHandler();
+            services.AddSingleton<IHttpHelper, HttpHelper>();
+            return services;
+        }
         public static IServiceCollection AddDefaultResiliencePipeline(this IServiceCollection services, IConfiguration configuration, string defaultName = "Default")
         {
             var pipelineConfiguration = configuration.GetSection(Configuration.DEFAULT_RESILIENCE_PIPELINE_SECTION)

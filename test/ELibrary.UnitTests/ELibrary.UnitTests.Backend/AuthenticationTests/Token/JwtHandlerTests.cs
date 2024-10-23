@@ -1,11 +1,10 @@
-﻿using Authentication.Configuration;
-using Authentication.Identity;
-using Authentication.Services;
+﻿using Authentication.Identity;
+using Authentication.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 
-namespace Authentication.Tests
+namespace AuthenticationTests.Token
 {
     [TestFixture]
     internal class JwtHandlerTests
@@ -34,7 +33,7 @@ namespace Authentication.Tests
         private JwtHandler CreateJwtHandler()
         {
             return new JwtHandler(
-                this.mockJwtSettings.Object);
+                mockJwtSettings.Object);
         }
 
         [Test]
@@ -46,7 +45,7 @@ namespace Authentication.Tests
                 Email = "test@example.com",
                 UserName = "testuser"
             };
-            var jwtHandler = this.CreateJwtHandler();
+            var jwtHandler = CreateJwtHandler();
             // Act
             var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
             // Assert
@@ -65,7 +64,7 @@ namespace Authentication.Tests
                 Email = "test@example.com",
                 UserName = "testuser"
             };
-            var jwtHandler = this.CreateJwtHandler();
+            var jwtHandler = CreateJwtHandler();
             var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
             // Act
             var principal = jwtHandler.GetPrincipalFromExpiredToken(accessTokenData.AccessToken);
@@ -77,7 +76,7 @@ namespace Authentication.Tests
         public void GetPrincipalFromExpiredToken_InvalidData_ThrowsException()
         {
             // Arrange
-            var jwtHandler = this.CreateJwtHandler();
+            var jwtHandler = CreateJwtHandler();
             var invalidToken = "invalid_jwt_token";
             // Act & Assert
             Assert.Throws<SecurityTokenMalformedException>(() => jwtHandler.GetPrincipalFromExpiredToken(invalidToken));

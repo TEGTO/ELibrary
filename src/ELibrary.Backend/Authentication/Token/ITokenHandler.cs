@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace Authentication.Services
+namespace Authentication.Token
 {
     public interface ITokenHandler
     {

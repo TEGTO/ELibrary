@@ -1,4 +1,6 @@
-﻿namespace UserApi.Domain.Dtos.Responses
+﻿using UserEntities.Domain.Entities;
+
+namespace UserApi.Domain.Dtos.Responses
 {
     public class AdminUserResponse
     {
@@ -8,5 +10,7 @@
         public DateTime RegistredAtUtc { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
         public List<string> Roles { get; set; }
+        public LoginProvider LoginProvider { get; set; }
+
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Authentication.Models;
-using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Claims;
+using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
 
 namespace UserApi.Services.Tests
@@ -13,7 +14,8 @@ namespace UserApi.Services.Tests
         private const int EXPIRY_IN_DAYS = 7;
 
         private Mock<UserManager<User>> userManagerMock;
-        private Mock<ITokenHandler> tokenHandlerMock;
+        private Mock<ITokenService> tokenServiceMock;
+        private Mock<IConfiguration> configurationMock;
         private AuthService authService;
 
         [SetUp]
@@ -22,9 +24,14 @@ namespace UserApi.Services.Tests
             var userStoreMock = new Mock<IUserStore<User>>();
 
             userManagerMock = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-            tokenHandlerMock = new Mock<ITokenHandler>();
+            tokenServiceMock = new Mock<ITokenService>();
 
-            authService = new AuthService(userManagerMock.Object, tokenHandlerMock.Object);
+            configurationMock = new Mock<IConfiguration>();
+
+            configurationMock.Setup(c => c[It.Is<string>(s => s == Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS)])
+                             .Returns("7");
+
+            authService = new AuthService(userManagerMock.Object, tokenServiceMock.Object, configurationMock.Object);
         }
 
         [Test]
@@ -37,7 +44,7 @@ namespace UserApi.Services.Tests
             var identityResult = IdentityResult.Success;
             userManagerMock.Setup(x => x.CreateAsync(user, password)).ReturnsAsync(identityResult);
             // Act
-            var result = await authService.RegisterUserAsync(registerParams);
+            var result = await authService.RegisterUserAsync(registerParams, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(identityResult));
         }
@@ -46,29 +53,28 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var loginParams = new LoginUserParams("testuser", "Password123", EXPIRY_IN_DAYS);
+            var loginParams = new LoginUserParams("testuser", "Password123");
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
             userManagerMock.Setup(x => x.FindByEmailAsync(loginParams.Login)).ReturnsAsync((User)null);
             userManagerMock.Setup(x => x.FindByNameAsync(loginParams.Login)).ReturnsAsync(user);
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(true);
-            tokenHandlerMock.Setup(x => x.CreateToken(user, It.IsAny<IList<string>>())).Returns(tokenData);
+            tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
             // Act
-            var result = await authService.LoginUserAsync(loginParams);
+            var result = await authService.LoginUserAsync(loginParams, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(tokenData));
-            Assert.That(result.RefreshTokenExpiryDate, Is.GreaterThan(DateTime.UtcNow.AddDays(EXPIRY_IN_DAYS - 1)));
         }
         [Test]
         public void LoginUserAsync_InvalidLoginOrPassword_ThrowsUnauthorizedAccessException()
         {
             // Arrange
-            var loginParams = new LoginUserParams("testuser", "wrongPassword", EXPIRY_IN_DAYS);
+            var loginParams = new LoginUserParams("testuser", "wrongPassword");
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             userManagerMock.Setup(x => x.FindByNameAsync(loginParams.Login)).ReturnsAsync(user);
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(false);
             // Act & Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.LoginUserAsync(loginParams));
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.LoginUserAsync(loginParams, CancellationToken.None));
         }
         [Test]
         public async Task RefreshTokenAsync_ValidTokenData_ReturnsNewTokenData()
@@ -79,11 +85,11 @@ namespace UserApi.Services.Tests
             var newTokenData = new AccessTokenData { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
 
             userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
-            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
-            tokenHandlerMock.Setup(x => x.CreateToken(user, It.IsAny<IList<string>>())).Returns(newTokenData);
+            tokenServiceMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
+            tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(newTokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
             // Act
-            var result = await authService.RefreshTokenAsync(tokenData, EXPIRY_IN_DAYS);
+            var result = await authService.RefreshTokenAsync(tokenData, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(newTokenData));
         }
@@ -92,9 +98,9 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var tokenData = new AccessTokenData { AccessToken = "invalid-token", RefreshToken = "invalid-refresh-token" };
-            tokenHandlerMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
+            tokenServiceMock.Setup(x => x.GetPrincipalFromExpiredToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
             // Act & Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenData, EXPIRY_IN_DAYS));
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenData, CancellationToken.None));
         }
     }
 }

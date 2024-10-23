@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Shared.Exceptions;
 using UserApi.Domain.Dtos.Responses;
 using UserApi.Services;
+using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
 
 namespace UserApi.Command.Admin.AdminRegisterUser
@@ -24,11 +25,13 @@ namespace UserApi.Command.Admin.AdminRegisterUser
         public async Task<AdminUserResponse> Handle(AdminRegisterUserCommand command, CancellationToken cancellationToken)
         {
             var request = command.Request;
+
             var user = mapper.Map<User>(request);
+
             var errors = new List<IdentityError>();
 
             var registerParams = new RegisterUserParams(user, request.Password);
-            errors.AddRange((await authService.RegisterUserAsync(registerParams)).Errors);
+            errors.AddRange((await authService.RegisterUserAsync(registerParams, cancellationToken)).Errors);
             if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
             errors.AddRange(await userService.SetUserRolesAsync(user, request.Roles));

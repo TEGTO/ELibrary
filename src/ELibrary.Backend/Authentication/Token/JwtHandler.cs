@@ -1,5 +1,4 @@
-﻿using Authentication.Configuration;
-using Authentication.Models;
+﻿using Authentication.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,7 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Authentication.Services
+namespace Authentication.Token
 {
     public class JwtHandler : ITokenHandler
     {

@@ -1,9 +1,8 @@
 ﻿using Authentication.Models;
 using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using UserApi.Domain.Dtos;
-using UserApi.Services;
+using UserApi.Services.Auth;
 
 namespace UserApi.Command.Client.RefreshToken.Tests
 {
@@ -11,7 +10,6 @@ namespace UserApi.Command.Client.RefreshToken.Tests
     internal class RefreshTokenCommandHandlerTests
     {
         private Mock<IAuthService> authServiceMock;
-        private Mock<IConfiguration> configurationMock;
         private Mock<IMapper> mapperMock;
         private RefreshTokenCommandHandler refreshTokenCommandHandler;
 
@@ -20,12 +18,8 @@ namespace UserApi.Command.Client.RefreshToken.Tests
         {
             mapperMock = new Mock<IMapper>();
             authServiceMock = new Mock<IAuthService>();
-            configurationMock = new Mock<IConfiguration>();
 
-            configurationMock.Setup(c => c[It.Is<string>(s => s == Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS)])
-                             .Returns("7");
-
-            refreshTokenCommandHandler = new RefreshTokenCommandHandler(authServiceMock.Object, mapperMock.Object, configurationMock.Object);
+            refreshTokenCommandHandler = new RefreshTokenCommandHandler(authServiceMock.Object, mapperMock.Object);
         }
         [Test]
         public async Task Handle_ValidRequest_ReturnsNewAuthToken()
@@ -35,7 +29,7 @@ namespace UserApi.Command.Client.RefreshToken.Tests
             var tokenData = new AccessTokenData { AccessToken = "newToken", RefreshToken = "newRefreshToken" };
             var newAuthToken = new AuthToken { AccessToken = "newToken", RefreshToken = "newRefreshToken" };
             mapperMock.Setup(m => m.Map<AccessTokenData>(token)).Returns(tokenData);
-            authServiceMock.Setup(a => a.RefreshTokenAsync(tokenData, It.IsAny<double>())).ReturnsAsync(tokenData);
+            authServiceMock.Setup(a => a.RefreshTokenAsync(tokenData, It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(newAuthToken);
             // Act
             var result = await refreshTokenCommandHandler.Handle(new RefreshTokenCommand(token), CancellationToken.None);

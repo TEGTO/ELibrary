@@ -3,6 +3,7 @@ using MediatR;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Responses;
 using UserApi.Services;
+using UserApi.Services.Auth;
 
 namespace UserApi.Command.Client.LoginUser
 {
@@ -11,14 +12,12 @@ namespace UserApi.Command.Client.LoginUser
         private readonly IAuthService authService;
         private readonly IUserService userService;
         private readonly IMapper mapper;
-        private readonly double expiryInDays;
 
-        public LoginUserCommandHandler(IAuthService authService, IUserService userService, IMapper mapper, IConfiguration configuration)
+        public LoginUserCommandHandler(IAuthService authService, IUserService userService, IMapper mapper)
         {
             this.authService = authService;
             this.userService = userService;
             this.mapper = mapper;
-            expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
         }
 
         public async Task<UserAuthenticationResponse> Handle(LoginUserCommand command, CancellationToken cancellationToken)
@@ -27,8 +26,8 @@ namespace UserApi.Command.Client.LoginUser
             var user = await userService.GetUserByUserInfoAsync(request.Login);
             if (user == null) throw new UnauthorizedAccessException("Invalid authentication! Wrong password or login!");
 
-            var loginParams = new LoginUserParams(request.Login, request.Password, expiryInDays);
-            var token = await authService.LoginUserAsync(loginParams);
+            var loginParams = new LoginUserParams(request.Login, request.Password);
+            var token = await authService.LoginUserAsync(loginParams, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
             var roles = await userService.GetUserRolesAsync(user);
@@ -37,7 +36,8 @@ namespace UserApi.Command.Client.LoginUser
             {
                 AuthToken = tokenDto,
                 Email = user.Email,
-                Roles = roles
+                Roles = roles,
+                LoginProvider = user.LoginProvider
             };
         }
     }

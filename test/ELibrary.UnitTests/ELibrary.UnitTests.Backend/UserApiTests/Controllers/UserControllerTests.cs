@@ -3,14 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shared.Exceptions;
 using UserApi.Command.Admin.AdminDeleteUser;
-using UserApi.Command.Admin.AdminRegisterUser;
 using UserApi.Command.Admin.AdminUpdateUser;
 using UserApi.Command.Admin.GetPaginatedUsers;
 using UserApi.Command.Admin.GetPaginatedUserTotalAmount;
 using UserApi.Command.Admin.GetUserByInfo;
-using UserApi.Command.Client.LoginUser;
-using UserApi.Command.Client.RefreshToken;
-using UserApi.Command.Client.RegisterUser;
 using UserApi.Command.Client.UpdateUser;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
@@ -30,47 +26,6 @@ namespace UserApi.Controllers.Tests
             mediatorMock = new Mock<IMediator>();
             userController = new UserController(mediatorMock.Object);
         }
-
-        [Test]
-        public async Task Register_ValidRequest_ReturnsCreated()
-        {
-            // Arrange
-            var registrationRequest = new UserRegistrationRequest { Email = "testuser@example.com", Password = "Password123", ConfirmPassword = "Password123" };
-            var userAuthResponse = new UserAuthenticationResponse { Email = "testuser@example.com", Roles = new List<string> { "User" } };
-            mediatorMock.Setup(m => m.Send(It.IsAny<RegisterUserCommand>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(userAuthResponse);
-            // Act
-            var result = await userController.Register(registrationRequest, CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<CreatedAtActionResult>(result.Result);
-            var createdAtActionResult = result.Result as CreatedAtActionResult;
-            Assert.That(createdAtActionResult?.RouteValues["id"], Is.EqualTo(userAuthResponse.Email));
-        }
-        [Test]
-        public async Task Login_ValidRequest_ReturnsOk()
-        {
-            // Arrange
-            var loginRequest = new UserAuthenticationRequest { Login = "testuser", Password = "Password123" };
-            var userAuthResponse = new UserAuthenticationResponse { Email = "testuser@example.com", Roles = new List<string> { "User" } };
-            mediatorMock.Setup(m => m.Send(It.IsAny<LoginUserCommand>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(userAuthResponse);
-            // Act
-            var result = await userController.Login(loginRequest, CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(userAuthResponse));
-        }
-        [Test]
-        public void Login_InvalidCredentials_ThrowsException()
-        {
-            // Arrange
-            var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
-            mediatorMock.Setup(m => m.Send(It.IsAny<LoginUserCommand>(), It.IsAny<CancellationToken>()))
-                        .ThrowsAsync(new UnauthorizedAccessException());
-            // Act + Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userController.Login(loginRequest, CancellationToken.None));
-        }
         [Test]
         public async Task Update_ValidRequest_ReturnsOk()
         {
@@ -83,42 +38,12 @@ namespace UserApi.Controllers.Tests
             mediatorMock.Verify(m => m.Send(It.IsAny<UpdateUserCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
-        public async Task Refresh_ValidToken_ReturnsOk()
-        {
-            // Arrange
-            var token = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
-            var refreshedToken = new AuthToken { AccessToken = "newToken", RefreshToken = "newRefreshToken" };
-            mediatorMock.Setup(m => m.Send(It.IsAny<RefreshTokenCommand>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(refreshedToken);
-            // Act
-            var result = await userController.Refresh(token, CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(refreshedToken));
-        }
-        [Test]
         public async Task DeleteUser_Valid_ReturnsOk()
         {
             // Act
             var result = await userController.DeleteUser(CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
-        }
-        [Test]
-        public async Task AdminRegister_ValidRequest_ReturnsOk()
-        {
-            // Arrange
-            var adminRequest = new AdminUserRegistrationRequest { Email = "adminuser@example.com", Password = "Password123", Roles = new List<string> { "Admin" } };
-            var adminResponse = new AdminUserResponse { Email = "adminuser@example.com" };
-            mediatorMock.Setup(m => m.Send(It.IsAny<AdminRegisterUserCommand>(), It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(adminResponse);
-            // Act
-            var result = await userController.AdminRegister(adminRequest, CancellationToken.None);
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(adminResponse));
         }
         [Test]
         public async Task AdminGetUserByLogin_ValidUser_ReturnsOk()

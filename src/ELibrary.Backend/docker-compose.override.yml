@@ -19,6 +19,9 @@ services:
       - AllowedCORSOrigins=${AllowedCORSOrigins}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - UseCORS=${UseCORS}
+      - Auth__GoogleOAuth__ClientId=${Auth__GoogleOAuth__ClientId}
+      - Auth__GoogleOAuth__ClientSecret=${Auth__GoogleOAuth__ClientSecret}
+      - Auth__GoogleOAuth__Scope=${Auth__GoogleOAuth__Scope}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

@@ -1,10 +1,10 @@
 ﻿using Authentication.Models;
 using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
 using UserApi.Services;
+using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
 
 namespace UserApi.Command.Client.LoginUser.Tests
@@ -15,7 +15,6 @@ namespace UserApi.Command.Client.LoginUser.Tests
         private Mock<IMapper> mapperMock;
         private Mock<IAuthService> authServiceMock;
         private Mock<IUserService> userServiceMock;
-        private Mock<IConfiguration> configurationMock;
         private LoginUserCommandHandler loginUserCommandHandler;
 
         [SetUp]
@@ -24,12 +23,8 @@ namespace UserApi.Command.Client.LoginUser.Tests
             mapperMock = new Mock<IMapper>();
             authServiceMock = new Mock<IAuthService>();
             userServiceMock = new Mock<IUserService>();
-            configurationMock = new Mock<IConfiguration>();
 
-            configurationMock.Setup(c => c[It.Is<string>(s => s == Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS)])
-                             .Returns("7");
-
-            loginUserCommandHandler = new LoginUserCommandHandler(authServiceMock.Object, userServiceMock.Object, mapperMock.Object, configurationMock.Object);
+            loginUserCommandHandler = new LoginUserCommandHandler(authServiceMock.Object, userServiceMock.Object, mapperMock.Object);
         }
 
         [Test]
@@ -42,7 +37,7 @@ namespace UserApi.Command.Client.LoginUser.Tests
             var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
             var roles = new List<string> { "User" };
             userServiceMock.Setup(a => a.GetUserByUserInfoAsync(loginRequest.Login)).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>())).ReturnsAsync(tokenData);
+            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
             userServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
             // Act

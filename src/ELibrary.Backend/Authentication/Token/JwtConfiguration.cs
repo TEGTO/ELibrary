@@ -2,9 +2,9 @@
 
 [assembly: InternalsVisibleTo("AuthenticationTests")]
 
-namespace Authentication.Configuration
+namespace Authentication.Token
 {
-    internal class JwtConfiguration
+    internal static class JwtConfiguration
     {
         public static string JWT_SETTINGS_KEY { get; } = "AuthSettings:Key";
         public static string JWT_SETTINGS_AUDIENCE { get; } = "AuthSettings:Audience";

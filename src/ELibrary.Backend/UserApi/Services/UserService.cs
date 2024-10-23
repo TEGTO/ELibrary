@@ -141,8 +141,8 @@ namespace UserApi.Services
             if (!string.IsNullOrEmpty(userFilter.ContainsInfo))
             {
                 query = query.Where(b =>
-                    (b.Email != null && b.Email.Contains(userFilter.ContainsInfo))
-                    || (b.UserName != null && b.UserName.Contains(userFilter.ContainsInfo))
+                    b.Email != null && b.Email.Contains(userFilter.ContainsInfo)
+                    || b.UserName != null && b.UserName.Contains(userFilter.ContainsInfo)
                     || b.Id.Contains(userFilter.ContainsInfo)
                 );
             }

@@ -2,7 +2,7 @@
 using AutoMapper;
 using MediatR;
 using UserApi.Domain.Dtos;
-using UserApi.Services;
+using UserApi.Services.Auth;
 
 namespace UserApi.Command.Client.RefreshToken
 {
@@ -10,19 +10,17 @@ namespace UserApi.Command.Client.RefreshToken
     {
         private readonly IAuthService authService;
         private readonly IMapper mapper;
-        private readonly double expiryInDays;
 
-        public RefreshTokenCommandHandler(IAuthService authService, IMapper mapper, IConfiguration configuration)
+        public RefreshTokenCommandHandler(IAuthService authService, IMapper mapper)
         {
             this.authService = authService;
             this.mapper = mapper;
-            expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
         }
 
         public async Task<AuthToken> Handle(RefreshTokenCommand command, CancellationToken cancellationToken)
         {
             var tokenData = mapper.Map<AccessTokenData>(command.Request);
-            var newToken = await authService.RefreshTokenAsync(tokenData, expiryInDays);
+            var newToken = await authService.RefreshTokenAsync(tokenData, cancellationToken);
             return mapper.Map<AuthToken>(newToken);
         }
     }

@@ -1,28 +1,30 @@
 ﻿using Authentication.Models;
-using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
 using UserEntities.Domain.Entities;
 
-namespace UserApi.Services
+namespace UserApi.Services.Auth
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> userManager;
-        private readonly ITokenHandler tokenHandler;
+        private readonly ITokenService tokenService;
+        private readonly double expiryInDays;
 
-        public AuthService(UserManager<User> userManager, ITokenHandler tokenHandler)
+        public AuthService(UserManager<User> userManager, ITokenService tokenService, IConfiguration configuration)
         {
             this.userManager = userManager;
-            this.tokenHandler = tokenHandler;
+            this.tokenService = tokenService;
+            expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
         }
 
         #region IAuthService Members
 
-        public async Task<IdentityResult> RegisterUserAsync(RegisterUserParams registerParams)
+        public async Task<IdentityResult> RegisterUserAsync(RegisterUserParams registerParams, CancellationToken cancellationToken)
         {
+            registerParams.User.LoginProvider = LoginProvider.BaseAuthentication;
             return await userManager.CreateAsync(registerParams.User, registerParams.Password);
         }
-        public async Task<AccessTokenData> LoginUserAsync(LoginUserParams loginParams)
+        public async Task<AccessTokenData> LoginUserAsync(LoginUserParams loginParams, CancellationToken cancellationToken)
         {
             var user = await GetUserByLoginAsync(loginParams.Login);
 
@@ -31,14 +33,16 @@ namespace UserApi.Services
                 throw new UnauthorizedAccessException("Invalid authentication. Check Login or password.");
             }
 
-            var tokenData = await CreateNewTokenDataAsync(user, loginParams.RefreshTokenExpiryInDays);
-            await SetRefreshToken(user, tokenData);
+            var refreshTokenExpiryDate = DateTime.UtcNow.AddDays(expiryInDays);
+
+            var tokenData = await tokenService.CreateNewTokenDataAsync(user, refreshTokenExpiryDate, cancellationToken);
+            await tokenService.SetRefreshTokenAsync(user, tokenData, cancellationToken);
 
             return tokenData;
         }
-        public async Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, double refreshTokenExpiryInDays)
+        public async Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, CancellationToken cancellationToken)
         {
-            var principal = tokenHandler.GetPrincipalFromExpiredToken(accessTokenData.AccessToken);
+            var principal = tokenService.GetPrincipalFromExpiredToken(accessTokenData.AccessToken);
             var user = await userManager.FindByNameAsync(principal.Identity.Name);
 
             if (user == null)
@@ -51,8 +55,10 @@ namespace UserApi.Services
                 throw new InvalidDataException("Refresh token is not valid!");
             }
 
-            var tokenData = await CreateNewTokenDataAsync(user, refreshTokenExpiryInDays);
-            await SetRefreshToken(user, tokenData);
+            var refreshTokenExpiryDate = DateTime.UtcNow.AddDays(expiryInDays);
+
+            var tokenData = await tokenService.CreateNewTokenDataAsync(user, refreshTokenExpiryDate, cancellationToken);
+            await tokenService.SetRefreshTokenAsync(user, tokenData, cancellationToken);
 
             return tokenData;
         }
@@ -66,19 +72,6 @@ namespace UserApi.Services
             var user = await userManager.FindByEmailAsync(login);
             user = user == null ? await userManager.FindByNameAsync(login) : user;
             return user;
-        }
-        private async Task<AccessTokenData> CreateNewTokenDataAsync(User user, double refreshTokenExpiryInDays)
-        {
-            var roles = await userManager.GetRolesAsync(user);
-            var tokenData = tokenHandler.CreateToken(user, roles);
-            tokenData.RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
-            return tokenData;
-        }
-        private async Task SetRefreshToken(User user, AccessTokenData accessTokenData)
-        {
-            user.RefreshToken = accessTokenData.RefreshToken;
-            user.RefreshTokenExpiryTime = accessTokenData.RefreshTokenExpiryDate;
-            await userManager.UpdateAsync(user);
         }
 
         #endregion
