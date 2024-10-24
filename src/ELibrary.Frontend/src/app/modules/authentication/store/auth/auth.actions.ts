@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { AuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from "../../../shared";
+import { AuthToken, LoginOAuthRequest, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from "../../../shared";
 
 export const registerUser = createAction(
     '[Auth] Register New User',
@@ -26,6 +26,11 @@ export const signInUserSuccess = createAction(
 export const signInUserFailure = createAction(
     '[Auth] Sing In By User Data Failure',
     props<{ error: any }>()
+);
+
+export const oauthSignInUser = createAction(
+    '[Auth] OAuth Sing In By User Data',
+    props<{ req: LoginOAuthRequest }>()
 );
 
 export const getAuthData = createAction(

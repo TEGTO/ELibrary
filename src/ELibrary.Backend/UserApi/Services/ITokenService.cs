@@ -8,6 +8,6 @@ namespace UserApi.Services
     {
         public Task<AccessTokenData> CreateNewTokenDataAsync(User user, DateTime refreshTokenExpiryDate, CancellationToken cancellationToken);
         public Task SetRefreshTokenAsync(User user, AccessTokenData accessTokenData, CancellationToken cancellationToken);
-        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+        public ClaimsPrincipal GetPrincipalFromToken(string token);
     }
 }

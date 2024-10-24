@@ -30,7 +30,7 @@ namespace UserApi.Services
             user.RefreshTokenExpiryTime = accessTokenData.RefreshTokenExpiryDate;
             await userManager.UpdateAsync(user);
         }
-        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        public ClaimsPrincipal GetPrincipalFromToken(string token)
         {
             return tokenHandler.GetPrincipalFromExpiredToken(token);
         }

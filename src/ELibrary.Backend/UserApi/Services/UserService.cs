@@ -20,12 +20,12 @@ namespace UserApi.Services
 
         #region IUserService Members
 
-        public async Task<User?> GetUserAsync(ClaimsPrincipal principal)
+        public async Task<User?> GetUserAsync(ClaimsPrincipal principal, CancellationToken cancellationToken)
         {
             var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
             return string.IsNullOrEmpty(id) ? null : await userManager.FindByIdAsync(id!);
         }
-        public async Task<User?> GetUserByUserInfoAsync(string info)
+        public async Task<User?> GetUserByUserInfoAsync(string info, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByEmailAsync(info);
             user = user == null ? await userManager.FindByNameAsync(info) : user;
@@ -54,7 +54,7 @@ namespace UserApi.Services
 
             return await queryable.CountAsync(cancellationToken);
         }
-        public async Task<List<IdentityError>> SetUserRolesAsync(User user, List<string> roles)
+        public async Task<List<IdentityError>> SetUserRolesAsync(User user, List<string> roles, CancellationToken cancellationToken)
         {
             List<IdentityError> identityErrors = new List<IdentityError>();
 
@@ -88,11 +88,11 @@ namespace UserApi.Services
 
             return identityErrors;
         }
-        public async Task<List<string>> GetUserRolesAsync(User user)
+        public async Task<List<string>> GetUserRolesAsync(User user, CancellationToken cancellationToken)
         {
             return (await userManager.GetRolesAsync(user)).ToList();
         }
-        public async Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateData updateData, bool resetPassword)
+        public async Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateData updateData, bool resetPassword, CancellationToken cancellationToken)
         {
             List<IdentityError> identityErrors = new List<IdentityError>();
 
@@ -126,7 +126,7 @@ namespace UserApi.Services
 
             return RemoveDuplicates(identityErrors);
         }
-        public async Task<IdentityResult> DeleteUserAsync(User user)
+        public async Task<IdentityResult> DeleteUserAsync(User user, CancellationToken cancellationToken)
         {
             var result = await userManager.DeleteAsync(user);
             return result;

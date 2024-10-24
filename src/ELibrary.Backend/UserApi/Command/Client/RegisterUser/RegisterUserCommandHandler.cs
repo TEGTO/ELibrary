@@ -36,21 +36,20 @@ namespace UserApi.Command.Client.RegisterUser
             errors.AddRange((await authService.RegisterUserAsync(registerParams, cancellationToken)).Errors);
             if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
-            errors.AddRange(await userService.SetUserRolesAsync(user, new() { Roles.CLIENT }));
+            errors.AddRange(await userService.SetUserRolesAsync(user, new() { Roles.CLIENT }, cancellationToken));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
             var loginParams = new LoginUserParams(request.Email, request.Password);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
-            var roles = await userService.GetUserRolesAsync(user);
+            var roles = await userService.GetUserRolesAsync(user, cancellationToken);
 
             return new UserAuthenticationResponse
             {
                 AuthToken = tokenDto,
                 Email = user.Email,
                 Roles = roles,
-                LoginProvider = user.LoginProvider
             };
         }
     }

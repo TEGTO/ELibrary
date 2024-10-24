@@ -40,10 +40,10 @@ namespace UserApi.Command.Client.RegisterUser.Tests
             var roles = new List<string> { "User" };
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
-            userServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>())).ReturnsAsync(new List<IdentityError>());
+            userServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<IdentityError>());
             authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
-            userServiceMock.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
+            userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
             // Act
             var result = await registerUserCommandHandler.Handle(new RegisterUserCommand(registrationRequest), CancellationToken.None);
             // Assert

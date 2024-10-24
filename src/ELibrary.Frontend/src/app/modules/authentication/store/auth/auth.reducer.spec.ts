@@ -9,6 +9,7 @@ describe('AuthReducer', () => {
         isUpdateSuccess: false,
         isRefreshSuccessful: false,
         userAuth: getDefaultUserAuth(),
+        codeVerifier: "",
         error: null
     };
 

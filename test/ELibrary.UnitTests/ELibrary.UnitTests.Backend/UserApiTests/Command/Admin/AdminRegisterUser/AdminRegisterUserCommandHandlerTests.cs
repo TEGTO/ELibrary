@@ -38,10 +38,10 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
             var adminResponse = new AdminUserResponse { Email = "admin@example.com" };
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
-            userService.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles)).ReturnsAsync(new List<IdentityError>());
-            userService.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>())).ReturnsAsync(user);
+            userService.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles, CancellationToken.None)).ReturnsAsync(new List<IdentityError>());
+            userService.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
-            userService.Setup(a => a.GetUserRolesAsync(user)).ReturnsAsync(roles);
+            userService.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
             // Act
             var result = await adminRegisterUserCommandHandler.Handle(new AdminRegisterUserCommand(adminRequest), CancellationToken.None);
             // Assert

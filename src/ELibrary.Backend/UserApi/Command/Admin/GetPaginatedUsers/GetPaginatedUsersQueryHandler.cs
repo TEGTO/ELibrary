@@ -25,7 +25,7 @@ namespace UserApi.Command.Admin.GetPaginatedUsers
             foreach (var user in users)
             {
                 var response = mapper.Map<AdminUserResponse>(user);
-                response.Roles = await userService.GetUserRolesAsync(user);
+                response.Roles = await userService.GetUserRolesAsync(user, cancellationToken);
                 responses.Add(response);
             }
 

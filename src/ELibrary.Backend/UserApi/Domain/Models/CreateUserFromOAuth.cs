@@ -6,6 +6,6 @@ namespace UserApi.Domain.Models
     {
         public string Email { get; set; }
         public string LoginProviderSubject { get; set; }
-        public LoginProvider LoginProvider { get; set; }
+        public AuthenticationMethod AuthMethod { get; set; }
     }
 }

@@ -28,13 +28,13 @@ namespace UserApi.Command.Client.DeleteUser.Tests
                 new Claim(ClaimTypes.NameIdentifier, "12345")
             }));
             var user = new User { Id = "12345", Email = "testuser@example.com" };
-            userServiceMock.Setup(s => s.GetUserAsync(claimsPrincipal))
+            userServiceMock.Setup(s => s.GetUserAsync(claimsPrincipal, CancellationToken.None))
                            .ReturnsAsync(user);
             // Act
             await deleteUserCommandHandler.Handle(new DeleteUserCommand(claimsPrincipal), CancellationToken.None);
             // Assert
-            userServiceMock.Verify(s => s.GetUserAsync(claimsPrincipal), Times.Once);
-            userServiceMock.Verify(s => s.DeleteUserAsync(user), Times.Once);
+            userServiceMock.Verify(s => s.GetUserAsync(claimsPrincipal, CancellationToken.None), Times.Once);
+            userServiceMock.Verify(s => s.DeleteUserAsync(user, CancellationToken.None), Times.Once);
         }
     }
 }

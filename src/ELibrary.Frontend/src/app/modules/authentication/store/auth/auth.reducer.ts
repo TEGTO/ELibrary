@@ -25,13 +25,13 @@ export const authReducer = createReducer(
     on(registerUser, (state) => ({
         ...initialAuthState,
     })),
-    on(registerSuccess, (state, { userAuth: userAuth }) => ({
+    on(registerSuccess, (state, { userAuth }) => ({
         ...state,
         userAuth: userAuth,
         isRegistrationSuccess: true,
         error: null
     })),
-    on(registerFailure, (state, { error: error }) => ({
+    on(registerFailure, (state, { error }) => ({
         ...initialAuthState,
         error: error
     })),
@@ -39,17 +39,17 @@ export const authReducer = createReducer(
     on(signInUser, (state) => ({
         ...initialAuthState
     })),
-    on(signInUserSuccess, (state, { userAuth: userAuth }) => ({
+    on(signInUserSuccess, (state, { userAuth }) => ({
         ...state,
         userAuth: userAuth,
         error: null
     })),
-    on(signInUserFailure, (state, { error: error }) => ({
+    on(signInUserFailure, (state, { error }) => ({
         ...initialAuthState,
         error: error
     })),
 
-    on(getAuthDataSuccess, (state, { userAuth: userAuth }) => ({
+    on(getAuthDataSuccess, (state, { userAuth }) => ({
         ...state,
         userAuth: userAuth,
         error: null
@@ -67,13 +67,13 @@ export const authReducer = createReducer(
         isRefreshSuccessful: false,
         error: null
     })),
-    on(refreshAccessTokenSuccess, (state, { authToken: authToken }) => ({
+    on(refreshAccessTokenSuccess, (state, { authToken }) => ({
         ...state,
         isRefreshSuccessful: true,
         userAuth: copyAuthTokenToUserAuth(state.userAuth, authToken),
         error: null
     })),
-    on(refreshAccessTokenFailure, (state, { error: error }) => ({
+    on(refreshAccessTokenFailure, (state, { error }) => ({
         ...initialAuthState,
         error: error
     })),
@@ -81,7 +81,7 @@ export const authReducer = createReducer(
     on(deleteUserSuccess, (state) => ({
         ...initialAuthState,
     })),
-    on(deleteUserFailure, (state, { error: error }) => ({
+    on(deleteUserFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
@@ -97,7 +97,7 @@ export const authReducer = createReducer(
         userAuth: copyUserUpdateRequestToAuthData(state.userAuth, updateRequest),
         error: null
     })),
-    on(updateUserDataFailure, (state, { error: error }) => ({
+    on(updateUserDataFailure, (state, { error }) => ({
         ...state,
         isUpdateSuccess: false,
         error: error

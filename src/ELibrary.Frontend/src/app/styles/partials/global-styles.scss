@@ -40,6 +40,7 @@ html {
 
 .mat-mdc-dialog-container .mat-mdc-dialog-title+.mat-mdc-dialog-content {
     overflow-y: auto !important;
+    padding-top: 5px !important;
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
@@ -73,6 +74,11 @@ html {
 
 .mat-mdc-dialog-container ::-webkit-scrollbar {
     width: 8px !important;
+}
+
+.mat-mdc-dialog-surface,
+.mdc-dialog__surface {
+    background-color: #ffffff !important;
 }
 
 .wrapper {

@@ -218,10 +218,6 @@ namespace UserApi.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("lockout_end");
 
-                    b.Property<int>("LoginProvider")
-                        .HasColumnType("integer")
-                        .HasColumnName("login_provider");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)")
@@ -291,6 +287,26 @@ namespace UserApi.Migrations
                     b.ToTable("asp_net_users", (string)null);
                 });
 
+            modelBuilder.Entity("UserEntities.Domain.Entities.UserAuthenticationMethod", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("AuthenticationMethod")
+                        .HasColumnType("integer")
+                        .HasColumnName("authentication_method");
+
+                    b.HasKey("UserId", "AuthenticationMethod")
+                        .HasName("pk_user_authentication_methods");
+
+                    b.HasIndex("UserId", "AuthenticationMethod")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_authentication_methods_user_id_authentication_method");
+
+                    b.ToTable("user_authentication_methods", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -346,6 +362,23 @@ namespace UserApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id");
+                });
+
+            modelBuilder.Entity("UserEntities.Domain.Entities.UserAuthenticationMethod", b =>
+                {
+                    b.HasOne("UserEntities.Domain.Entities.User", "User")
+                        .WithMany("AuthenticationMethods")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_authentication_methods_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserEntities.Domain.Entities.User", b =>
+                {
+                    b.Navigation("AuthenticationMethods");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,4 @@
-import { AdminUser } from "../../../..";
+import { AdminUser, AuthenticationMethod } from "../../../..";
 
 export interface AdminUserResponse {
     id: string;
@@ -7,6 +7,7 @@ export interface AdminUserResponse {
     registredAtUtc: Date;
     updatedAtUtc: Date;
     roles: string[];
+    authenticationMethods: AuthenticationMethod[];
 }
 
 export function mapAdminUserResponseToAdminUser(response: AdminUserResponse): AdminUser {
@@ -16,6 +17,7 @@ export function mapAdminUserResponseToAdminUser(response: AdminUserResponse): Ad
         email: response.email,
         registredAt: new Date(response.registredAtUtc),
         updatedAt: new Date(response.updatedAtUtc),
-        roles: response.roles
+        roles: response.roles,
+        authenticationMethods: response.authenticationMethods
     }
 }

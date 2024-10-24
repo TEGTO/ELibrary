@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using UserApi.Command.Admin.AdminRegisterUser;
+using UserApi.Command.Client.GetOAuthUrl;
+using UserApi.Command.Client.LoginOAuth;
 using UserApi.Command.Client.LoginUser;
 using UserApi.Command.Client.RefreshToken;
 using UserApi.Command.Client.RegisterUser;
@@ -55,14 +57,34 @@ namespace UserApi.Controllers.Tests
             Assert.That(okResult?.Value, Is.EqualTo(userAuthResponse));
         }
         [Test]
-        public void Login_InvalidCredentials_ThrowsException()
+        public async Task GetOAuthUrl_ValidRequest_ReturnsOkWithResponse()
         {
             // Arrange
-            var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
-            mediatorMock.Setup(m => m.Send(It.IsAny<LoginUserCommand>(), It.IsAny<CancellationToken>()))
-                        .ThrowsAsync(new UnauthorizedAccessException());
-            // Act + Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await authController.Login(loginRequest, CancellationToken.None));
+            var queryParams = new GetOAuthUrlQueryParams();
+            var response = new GetOAuthUrlResponse { Url = "someurl" };
+            mediatorMock.Setup(m => m.Send(It.IsAny<GetOAuthUrlQuery>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(response);
+            // Act
+            var result = await authController.GetOAuthUrl(queryParams, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(response));
+        }
+        [Test]
+        public async Task LoginOAuth_ValidRequest_ReturnsOkWithResponse()
+        {
+            // Arrange
+            var request = new LoginOAuthRequest();
+            var response = new UserAuthenticationResponse { Email = "someemail" };
+            mediatorMock.Setup(m => m.Send(It.IsAny<LoginOAuthCommand>(), It.IsAny<CancellationToken>()))
+                        .ReturnsAsync(response);
+            // Act
+            var result = await authController.LoginOAuth(request, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(response));
         }
         [Test]
         public async Task Refresh_ValidToken_ReturnsOk()

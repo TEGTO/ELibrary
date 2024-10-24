@@ -23,21 +23,20 @@ namespace UserApi.Command.Client.LoginUser
         public async Task<UserAuthenticationResponse> Handle(LoginUserCommand command, CancellationToken cancellationToken)
         {
             var request = command.Request;
-            var user = await userService.GetUserByUserInfoAsync(request.Login);
+            var user = await userService.GetUserByUserInfoAsync(request.Login, cancellationToken);
             if (user == null) throw new UnauthorizedAccessException("Invalid authentication! Wrong password or login!");
 
             var loginParams = new LoginUserParams(request.Login, request.Password);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
-            var roles = await userService.GetUserRolesAsync(user);
+            var roles = await userService.GetUserRolesAsync(user, cancellationToken);
 
             return new UserAuthenticationResponse
             {
                 AuthToken = tokenDto,
                 Email = user.Email,
                 Roles = roles,
-                LoginProvider = user.LoginProvider
             };
         }
     }

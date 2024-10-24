@@ -14,7 +14,8 @@ using UserApi.Domain.Dtos.Responses;
 
 namespace UserApi.Controllers
 {
-    [Route("user")]
+    [ResponseCache(Duration = 3)]
+    [Route("auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {

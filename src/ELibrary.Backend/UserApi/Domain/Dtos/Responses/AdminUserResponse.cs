@@ -10,7 +10,7 @@ namespace UserApi.Domain.Dtos.Responses
         public DateTime RegistredAtUtc { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
         public List<string> Roles { get; set; }
-        public LoginProvider LoginProvider { get; set; }
+        public List<AuthenticationMethod> AuthenticationMethods { get; set; }
 
     }
 }

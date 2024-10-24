@@ -22,16 +22,16 @@ namespace UserApi.Command.Admin.AdminUpdateUser
         {
             var request = command.Request;
             var updateData = mapper.Map<UserUpdateData>(request);
-            var user = await userService.GetUserByUserInfoAsync(request.CurrentLogin);
+            var user = await userService.GetUserByUserInfoAsync(request.CurrentLogin, cancellationToken);
 
-            var identityErrors = await userService.UpdateUserAsync(user, updateData, true);
+            var identityErrors = await userService.UpdateUserAsync(user, updateData, true, cancellationToken);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
-            identityErrors = await userService.SetUserRolesAsync(user, request.Roles);
+            identityErrors = await userService.SetUserRolesAsync(user, request.Roles, cancellationToken);
             if (Utilities.HasErrors(identityErrors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
             var response = mapper.Map<AdminUserResponse>(user);
-            response.Roles = await userService.GetUserRolesAsync(user);
+            response.Roles = await userService.GetUserRolesAsync(user, cancellationToken);
 
             return response;
         }

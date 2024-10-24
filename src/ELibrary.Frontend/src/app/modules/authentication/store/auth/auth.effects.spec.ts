@@ -4,13 +4,14 @@ import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable, of, throwError } from "rxjs";
 import { deleteUser, deleteUserFailure, deleteUserSuccess, getAuthData, getAuthDataFailure, getAuthDataSuccess, logOutUser, logOutUserSuccess, refreshAccessToken, refreshAccessTokenFailure, refreshAccessTokenSuccess, registerFailure, registerSuccess, registerUser, signInUser, signInUserFailure, signInUserSuccess, updateUserData, updateUserDataFailure, updateUserDataSuccess } from "../..";
-import { AuthenticationApiService, AuthToken, LocalStorageService, UserAuth } from "../../../shared";
+import { AuthenticationApiService, AuthToken, LocalStorageService, UserApiService, UserAuth } from "../../../shared";
 import { AuthEffects } from "./auth.effects";
 
 describe('AuthEffects', () => {
     let actions$: Observable<any>;
     let effects: AuthEffects;
-    let mockApiService: jasmine.SpyObj<AuthenticationApiService>;
+    let mockAuthApiService: jasmine.SpyObj<AuthenticationApiService>;
+    let mockUserApiService: jasmine.SpyObj<UserApiService>;
     let mockLocalStorage: jasmine.SpyObj<LocalStorageService>;
 
     const mockUserAuth: UserAuth = {
@@ -31,15 +32,17 @@ describe('AuthEffects', () => {
     };
 
     beforeEach(() => {
-        mockApiService = jasmine.createSpyObj('AuthenticationApiService', ['registerUser', 'loginUser', 'refreshToken', 'updateUser', 'deleteUser']);
+        mockAuthApiService = jasmine.createSpyObj('AuthenticationApiService', ['registerUser', 'loginUser', 'refreshToken']);
+        mockUserApiService = jasmine.createSpyObj('UserApiService', ['updateUser', 'deleteUser']);
         mockLocalStorage = jasmine.createSpyObj('LocalStorageService', ['setItem', 'getItem', 'removeItem']);
 
         TestBed.configureTestingModule({
             providers: [
                 AuthEffects,
                 provideMockActions(() => actions$),
-                { provide: AuthenticationApiService, useValue: mockApiService },
-                { provide: LocalStorageService, useValue: mockLocalStorage }
+                { provide: AuthenticationApiService, useValue: mockAuthApiService },
+                { provide: LocalStorageService, useValue: mockLocalStorage },
+                { provide: UserApiService, useValue: mockUserApiService },
             ]
         });
 
@@ -52,11 +55,11 @@ describe('AuthEffects', () => {
             const outcome = registerSuccess({ userAuth: mockUserAuth });
 
             actions$ = of(action);
-            mockApiService.registerUser.and.returnValue(of(mockUserAuth));
+            mockAuthApiService.registerUser.and.returnValue(of(mockUserAuth));
 
             effects.registerUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.registerUser).toHaveBeenCalledWith(action.req);
+                expect(mockAuthApiService.registerUser).toHaveBeenCalledWith(action.req);
                 expect(mockLocalStorage.setItem).toHaveBeenCalledWith('userAuth', JSON.stringify(mockUserAuth));
             });
         }));
@@ -67,11 +70,11 @@ describe('AuthEffects', () => {
             const outcome = registerFailure({ error: error.message });
 
             actions$ = of(action);
-            mockApiService.registerUser.and.returnValue(throwError(error));
+            mockAuthApiService.registerUser.and.returnValue(throwError(error));
 
             effects.registerUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.registerUser).toHaveBeenCalledWith(action.req);
+                expect(mockAuthApiService.registerUser).toHaveBeenCalledWith(action.req);
             });
         }));
     });
@@ -82,11 +85,11 @@ describe('AuthEffects', () => {
             const outcome = signInUserSuccess({ userAuth: mockUserAuth });
 
             actions$ = of(action);
-            mockApiService.loginUser.and.returnValue(of(mockUserAuth));
+            mockAuthApiService.loginUser.and.returnValue(of(mockUserAuth));
 
             effects.singInUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.loginUser).toHaveBeenCalledWith(action.req);
+                expect(mockAuthApiService.loginUser).toHaveBeenCalledWith(action.req);
                 expect(mockLocalStorage.setItem).toHaveBeenCalledWith('userAuth', JSON.stringify(mockUserAuth));
             });
         }));
@@ -97,11 +100,11 @@ describe('AuthEffects', () => {
             const outcome = signInUserFailure({ error: error.message });
 
             actions$ = of(action);
-            mockApiService.loginUser.and.returnValue(throwError(error));
+            mockAuthApiService.loginUser.and.returnValue(throwError(error));
 
             effects.singInUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.loginUser).toHaveBeenCalledWith(action.req);
+                expect(mockAuthApiService.loginUser).toHaveBeenCalledWith(action.req);
             });
         }));
     });
@@ -158,11 +161,11 @@ describe('AuthEffects', () => {
             mockLocalStorage.getItem.and.returnValue(JSON.stringify(mockUserAuth));
 
             actions$ = of(action);
-            mockApiService.refreshToken.and.returnValue(of(mockAuthToken));
+            mockAuthApiService.refreshToken.and.returnValue(of(mockAuthToken));
 
             effects.refreshToken$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.refreshToken).toHaveBeenCalledWith(action.authToken);
+                expect(mockAuthApiService.refreshToken).toHaveBeenCalledWith(action.authToken);
                 expect(mockLocalStorage.setItem).toHaveBeenCalledWith(effects.storageUserAuthKey, JSON.stringify({
                     ...mockUserAuth,
                     authToken: mockAuthToken
@@ -176,11 +179,11 @@ describe('AuthEffects', () => {
             const outcome = refreshAccessTokenFailure({ error: error.message });
 
             actions$ = of(action);
-            mockApiService.refreshToken.and.returnValue(throwError(error));
+            mockAuthApiService.refreshToken.and.returnValue(throwError(error));
 
             effects.refreshToken$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.refreshToken).toHaveBeenCalledWith(action.authToken);
+                expect(mockAuthApiService.refreshToken).toHaveBeenCalledWith(action.authToken);
                 expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
             });
         }));
@@ -192,13 +195,13 @@ describe('AuthEffects', () => {
             const outcome = updateUserDataSuccess({ req: action.req });
 
             mockLocalStorage.getItem.and.returnValue(JSON.stringify(mockUserAuth));
-            mockApiService.updateUser.and.returnValue(of(new HttpResponse<void>()));
+            mockUserApiService.updateUser.and.returnValue(of(new HttpResponse<void>()));
 
             actions$ = of(action);
 
             effects.updateUserData$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.updateUser).toHaveBeenCalledWith(action.req);
+                expect(mockUserApiService.updateUser).toHaveBeenCalledWith(action.req);
                 expect(mockLocalStorage.setItem).toHaveBeenCalledWith(effects.storageUserAuthKey, JSON.stringify({
                     ...mockUserAuth,
                     email: action.req.email
@@ -211,13 +214,13 @@ describe('AuthEffects', () => {
             const error = new Error('Update failed');
             const outcome = updateUserDataFailure({ error: error.message });
 
-            mockApiService.updateUser.and.returnValue(throwError(error));
+            mockUserApiService.updateUser.and.returnValue(throwError(error));
 
             actions$ = of(action);
 
             effects.updateUserData$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.updateUser).toHaveBeenCalledWith(action.req);
+                expect(mockUserApiService.updateUser).toHaveBeenCalledWith(action.req);
             });
         }));
     });
@@ -227,12 +230,12 @@ describe('AuthEffects', () => {
             const action = deleteUser();
             const outcome = deleteUserSuccess();
 
-            mockApiService.deleteUser.and.returnValue(of(new HttpResponse<void>()));
+            mockUserApiService.deleteUser.and.returnValue(of(new HttpResponse<void>()));
 
             actions$ = of(action);
             effects.deleteUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.deleteUser).toHaveBeenCalled();
+                expect(mockUserApiService.deleteUser).toHaveBeenCalled();
                 expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(effects.storageUserAuthKey);
             });
         }));
@@ -242,13 +245,13 @@ describe('AuthEffects', () => {
             const error = new Error('Delete failed');
             const outcome = deleteUserFailure({ error: error.message });
 
-            mockApiService.deleteUser.and.returnValue(throwError(error));
+            mockUserApiService.deleteUser.and.returnValue(throwError(error));
 
             actions$ = of(action);
 
             effects.deleteUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
-                expect(mockApiService.deleteUser).toHaveBeenCalled();
+                expect(mockUserApiService.deleteUser).toHaveBeenCalled();
             });
         }));
     });

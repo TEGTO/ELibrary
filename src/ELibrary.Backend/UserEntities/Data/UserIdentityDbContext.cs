@@ -7,6 +7,8 @@ namespace UserEntities.Data
 {
     public class UserIdentityDbContext : IdentityDbContext<User>
     {
+        public virtual DbSet<UserAuthenticationMethod> UserAuthenticationMethods { get; set; }
+
         public UserIdentityDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -22,6 +24,9 @@ namespace UserEntities.Data
             builder.Entity<IdentityRole>().ToTable("asp_net_roles");
             builder.Entity<IdentityUserRole<string>>().ToTable("asp_net_user_roles");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("asp_net_role_claims");
+
+            builder.Entity<UserAuthenticationMethod>()
+            .HasKey(um => new { um.UserId, um.AuthenticationMethod });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

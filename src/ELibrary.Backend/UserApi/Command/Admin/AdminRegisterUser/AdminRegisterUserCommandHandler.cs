@@ -34,13 +34,13 @@ namespace UserApi.Command.Admin.AdminRegisterUser
             errors.AddRange((await authService.RegisterUserAsync(registerParams, cancellationToken)).Errors);
             if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
-            errors.AddRange(await userService.SetUserRolesAsync(user, request.Roles));
+            errors.AddRange(await userService.SetUserRolesAsync(user, request.Roles, cancellationToken));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            user = await userService.GetUserByUserInfoAsync(request.Email);
+            user = await userService.GetUserByUserInfoAsync(request.Email, cancellationToken);
 
             var response = mapper.Map<AdminUserResponse>(user);
-            response.Roles = await userService.GetUserRolesAsync(user);
+            response.Roles = await userService.GetUserRolesAsync(user, cancellationToken);
             return response;
         }
     }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { CommandHandler, RedirectorService } from '../../../shared';
 import { ADD_CLIENT_COMMAND_HANDLER, AddClientCommand, ClientService } from '../../../shop';
 
@@ -24,7 +24,14 @@ export class CreateClientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clientService.getClient()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError((error) => {
+          console.error('Error:', error);
+          this.redirector.redirectToHome();
+          return of(null);
+        })
+      )
       .subscribe((client) => {
         if (client) {
           if (this.redirectUrl) {
@@ -36,7 +43,14 @@ export class CreateClientComponent implements OnInit, OnDestroy {
         }
       })
     this.route.queryParams
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError((error) => {
+          console.error('Error:', error);
+          this.redirector.redirectToHome();
+          return of();
+        })
+      )
       .subscribe(params => {
         this.redirectUrl = params['redirectTo'];
       });

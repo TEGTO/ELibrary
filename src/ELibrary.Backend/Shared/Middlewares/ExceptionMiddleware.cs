@@ -43,7 +43,7 @@ namespace Shared.Middlewares
             }
             catch (Exception ex)
             {
-                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { ex.Message }).ConfigureAwait(false);
+                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { "Internal server error occured." }).ConfigureAwait(false);
             }
         }
         private async Task SetError(HttpContext httpContext, HttpStatusCode httpStatusCode, Exception ex, string[] messages)

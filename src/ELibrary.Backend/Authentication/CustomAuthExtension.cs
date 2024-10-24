@@ -31,6 +31,8 @@ namespace Authentication
             services.AddSingleton(jwtSettings);
             services.AddSingleton(googleOAuthSettings);
 
+            services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policy.REQUIRE_CLIENT_ROLE,

@@ -13,6 +13,7 @@ describe('Authentication Selectors', () => {
         isRegistrationSuccess: false,
         isRefreshSuccessful: false,
         isUpdateSuccess: false,
+        codeVerifier: "",
         error: null,
     };
 

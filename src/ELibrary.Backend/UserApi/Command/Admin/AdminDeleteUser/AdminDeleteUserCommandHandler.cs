@@ -15,8 +15,8 @@ namespace UserApi.Command.Admin.AdminDeleteUser
 
         public async Task<Unit> Handle(AdminDeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await userService.GetUserByUserInfoAsync(command.Info);
-            var result = await userService.DeleteUserAsync(user);
+            var user = await userService.GetUserByUserInfoAsync(command.Info, cancellationToken);
+            var result = await userService.DeleteUserAsync(user, cancellationToken);
             if (Utilities.HasErrors(result.Errors.ToList(), out var errorResponse)) throw new AuthorizationException(errorResponse);
             return Unit.Value;
         }

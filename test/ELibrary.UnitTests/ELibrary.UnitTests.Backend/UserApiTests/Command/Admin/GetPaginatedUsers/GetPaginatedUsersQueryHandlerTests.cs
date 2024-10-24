@@ -34,7 +34,7 @@ namespace UserApiTests.Command.Admin.GetPaginatedUsers
             var userResponse = new AdminUserResponse { Email = "user1@example.com", Roles = roles };
             userServiceMock.Setup(a => a.GetPaginatedUsersAsync(filter, It.IsAny<CancellationToken>())).ReturnsAsync(users);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(It.IsAny<User>())).Returns(userResponse);
-            userServiceMock.Setup(a => a.GetUserRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+            userServiceMock.Setup(a => a.GetUserRolesAsync(It.IsAny<User>(), It.IsAny<CancellationToken>())).ReturnsAsync(roles);
             // Act
             var result = await getPaginatedUsersQueryHandler.Handle(new GetPaginatedUsersQuery(filter), CancellationToken.None);
             // Assert

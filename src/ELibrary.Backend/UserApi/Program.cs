@@ -56,6 +56,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<GoogleOAuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IGoogleOAuthHttpClient, GoogleOAuthHttpClient>();
+builder.Services.AddScoped<IUserOAuthCreationService, UserOAuthCreationService>();
+builder.Services.AddScoped<IUserAuthenticationMethodService, UserAuthenticationMethodService>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
 builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuthService>

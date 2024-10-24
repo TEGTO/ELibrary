@@ -8,6 +8,5 @@ namespace UserApi.Services.OAuth
     {
         public string GenerateOAuthRequestUrl(GenerateOAuthRequestUrlParams generateUrlParams);
         public Task<AccessTokenData> GetAccessOnCodeAsync(GetAccessOnCodeParams accessOnCodeParams, CancellationToken cancellationToken);
-        public Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, CancellationToken cancellationToken);
     }
 }

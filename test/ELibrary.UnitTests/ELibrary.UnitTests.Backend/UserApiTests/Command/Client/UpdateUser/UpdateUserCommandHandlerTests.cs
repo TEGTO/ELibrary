@@ -34,12 +34,12 @@ namespace UserApi.Command.Client.UpdateUser.Tests
             var updateData = new UserUpdateData { Email = "newemail@example.com" };
             var user = new User { Email = "testuser@example.com" };
             mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(updateData);
-            userServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
-            userServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, false)).ReturnsAsync(new List<IdentityError>());
+            userServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, false, CancellationToken.None)).ReturnsAsync(new List<IdentityError>());
             // Act
             await updateUserCommandHandler.Handle(new UpdateUserCommand(updateRequest, new Mock<ClaimsPrincipal>().Object), CancellationToken.None);
             // Assert
-            userServiceMock.Verify(a => a.UpdateUserAsync(user, updateData, false), Times.Once);
+            userServiceMock.Verify(a => a.UpdateUserAsync(user, updateData, false, CancellationToken.None), Times.Once);
         }
         [Test]
         public void Handle_FailedUpdate_ThrowsUnauthorizedAccessException()
@@ -50,8 +50,8 @@ namespace UserApi.Command.Client.UpdateUser.Tests
             var user = new User { Email = "testuser@example.com" };
             var errors = new List<IdentityError> { new IdentityError { Description = "Update failed" } };
             mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(updateData);
-            userServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
-            userServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, false)).ReturnsAsync(errors);
+            userServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.UpdateUserAsync(user, updateData, false, CancellationToken.None)).ReturnsAsync(errors);
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await updateUserCommandHandler.Handle(new UpdateUserCommand(updateRequest, new Mock<ClaimsPrincipal>().Object), CancellationToken.None));
             Assert.That(ex.Errors.First(), Is.EqualTo("Update failed"));

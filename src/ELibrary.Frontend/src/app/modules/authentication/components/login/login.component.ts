@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
-import { passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand, START_REGISTRATION_COMMAND_HANDLER, StartRegistrationCommand } from '../../index';
+import { CommandHandler, noSpaces, notEmptyString, OAuthLoginProvider, ValidationMessage } from '../../../shared';
+import { passwordValidator, SIGN_IN_COMMAND_HANDLER, SignInCommand, START_OAUTH_LOGIN_COMMAND_HANDLER, START_REGISTRATION_COMMAND_HANDLER, StartOAuthLoginCommand, StartRegistrationCommand } from '../../index';
 
 @Component({
   selector: 'app-auth-login',
@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(SIGN_IN_COMMAND_HANDLER) private readonly signInHandler: CommandHandler<SignInCommand>,
     @Inject(START_REGISTRATION_COMMAND_HANDLER) private readonly startRegistrationHandler: CommandHandler<StartRegistrationCommand>,
+    @Inject(START_OAUTH_LOGIN_COMMAND_HANDLER) private readonly startOauthHandler: CommandHandler<StartOAuthLoginCommand>,
     private readonly dialogRef: MatDialogRef<LoginComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
@@ -48,13 +49,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.hidePassword = !this.hidePassword;
     }
   }
-  openRegisterMenuOnKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      const command: StartRegistrationCommand = {};
-      this.startRegistrationHandler.dispatch(command);
-    }
-  }
   openRegisterMenu() {
     const command: StartRegistrationCommand = {};
     this.startRegistrationHandler.dispatch(command);
@@ -70,5 +64,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
       this.signInHandler.dispatch(command);
     }
+  }
+  signInOAuth() {
+    const command: StartOAuthLoginCommand =
+    {
+      oAuthLoginProvider: OAuthLoginProvider.Google
+    };
+    this.startOauthHandler.dispatch(command);
   }
 }

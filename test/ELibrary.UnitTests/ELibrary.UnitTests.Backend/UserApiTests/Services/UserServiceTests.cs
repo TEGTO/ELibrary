@@ -37,7 +37,7 @@ namespace UserApi.Services.Tests
             }));
             userManagerMock.Setup(x => x.FindByIdAsync(user.Id)).ReturnsAsync(user);
             // Act
-            var result = await userService.GetUserAsync(claimsPrincipal);
+            var result = await userService.GetUserAsync(claimsPrincipal, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(user));
         }
@@ -47,7 +47,7 @@ namespace UserApi.Services.Tests
             // Arrange
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
             // Act
-            var result = await userService.GetUserAsync(claimsPrincipal);
+            var result = await userService.GetUserAsync(claimsPrincipal, CancellationToken.None);
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -58,7 +58,7 @@ namespace UserApi.Services.Tests
             var user = new User { Id = "test-user-id", UserName = "testuser", Email = "testuser@example.com" };
             userManagerMock.Setup(x => x.FindByEmailAsync(user.Email)).ReturnsAsync(user);
             // Act
-            var result = await userService.GetUserByUserInfoAsync(user.Email);
+            var result = await userService.GetUserByUserInfoAsync(user.Email, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(user));
         }
@@ -71,7 +71,7 @@ namespace UserApi.Services.Tests
             userManagerMock.Setup(x => x.FindByNameAsync(info)).ReturnsAsync((User)null);
             userManagerMock.Setup(x => x.FindByIdAsync(info)).ReturnsAsync((User)null);
             // Act
-            var result = await userService.GetUserByUserInfoAsync(info);
+            var result = await userService.GetUserByUserInfoAsync(info, CancellationToken.None);
             // Assert
             Assert.That(result, Is.Null);
         }
@@ -120,7 +120,7 @@ namespace UserApi.Services.Tests
             userManagerMock.Setup(x => x.AddToRoleAsync(user, It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
             roleManagerMock.Setup(x => x.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
             // Act
-            var result = await userService.SetUserRolesAsync(user, roles);
+            var result = await userService.SetUserRolesAsync(user, roles, CancellationToken.None);
             // Assert
             Assert.That(result.Count, Is.EqualTo(0));
         }
@@ -135,7 +135,7 @@ namespace UserApi.Services.Tests
             roleManagerMock.Setup(x => x.RoleExistsAsync("InvalidRole")).ReturnsAsync(false);
             userManagerMock.Setup(x => x.RemoveFromRolesAsync(It.IsAny<User>(), It.IsAny<IEnumerable<string>>())).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
             // Act
-            var result = await userService.SetUserRolesAsync(user, roles);
+            var result = await userService.SetUserRolesAsync(user, roles, CancellationToken.None);
             // Assert
             Assert.That(result.Count, Is.EqualTo(identityErrors.Count));
             Assert.That(result[0].Description, Is.EqualTo(identityErrors[0].Description));
@@ -152,7 +152,7 @@ namespace UserApi.Services.Tests
             userManagerMock.Setup(x => x.ChangeEmailAsync(user, updateData.Email, "emailToken")).ReturnsAsync(identityResult);
             userManagerMock.Setup(x => x.ChangePasswordAsync(user, updateData.OldPassword, updateData.Password)).ReturnsAsync(identityResult);
             // Act
-            var result = await userService.UpdateUserAsync(user, updateData, false);
+            var result = await userService.UpdateUserAsync(user, updateData, false, CancellationToken.None);
             // Assert
             Assert.That(result.Count, Is.EqualTo(0));
         }
@@ -168,7 +168,7 @@ namespace UserApi.Services.Tests
             userManagerMock.Setup(x => x.ChangeEmailAsync(user, updateData.Email, "emailToken")).ReturnsAsync(IdentityResult.Success);
             userManagerMock.Setup(x => x.ChangePasswordAsync(user, updateData.OldPassword, updateData.Password)).ReturnsAsync(IdentityResult.Failed(identityErrors.ToArray()));
             // Act
-            var result = await userService.UpdateUserAsync(user, updateData, false);
+            var result = await userService.UpdateUserAsync(user, updateData, false, CancellationToken.None);
             // Assert
             Assert.That(result.Count, Is.EqualTo(identityErrors.Count));
             Assert.That(result[0].Description, Is.EqualTo(identityErrors[0].Description));
@@ -181,7 +181,7 @@ namespace UserApi.Services.Tests
             var identityResult = IdentityResult.Success;
             userManagerMock.Setup(x => x.DeleteAsync(user)).ReturnsAsync(identityResult);
             // Act
-            var result = await userService.DeleteUserAsync(user);
+            var result = await userService.DeleteUserAsync(user, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(identityResult));
         }
