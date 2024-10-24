@@ -22,7 +22,7 @@ describe('AdminUserTableComponent', () => {
 
     adminServiceMock.getPaginatedUserAmount.and.returnValue(of(100));
     adminServiceMock.getPaginatedUsers.and.returnValue(of([
-      { id: '1', userName: 'JohnDoe', email: 'john@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['admin'] }
+      { id: '1', userName: 'JohnDoe', email: 'john@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['admin'], authenticationMethods: [] }
     ]));
 
     await TestBed.configureTestingModule({
@@ -84,13 +84,13 @@ describe('AdminUserTableComponent', () => {
   });
 
   it('should redirect to user page on update', () => {
-    const user: AdminUser = { id: '1', userName: 'JohnDoe', email: 'john@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['admin'] };
+    const user: AdminUser = { id: '1', userName: 'JohnDoe', email: 'john@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['admin'], authenticationMethods: [] };
     component.update(user);
     expect(redirectorServiceMock.redirectTo).toHaveBeenCalledWith(jasmine.stringMatching(user.id));
   });
 
   it('should dispatch delete user command when deleting a user', () => {
-    const user: AdminUser = { id: '1', userName: 'JohnDoe', email: 'john@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['admin'] };
+    const user: AdminUser = { id: '1', userName: 'JohnDoe', email: 'john@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['admin'], authenticationMethods: [] };
     component.delete(user);
     expect(deleteHandlerMock.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({ userId: user.id }));
   });

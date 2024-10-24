@@ -28,7 +28,7 @@ describe('AdminControllerService', () => {
 
   it('should dispatch getUser action and select user by ID', () => {
     const userId = '123';
-    const mockUser: AdminUser = { id: '123', userName: 'JohnDoe', email: 'johndoe@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['Admin'] };
+    const mockUser: AdminUser = { id: '123', userName: 'JohnDoe', email: 'johndoe@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['Admin'], authenticationMethods: [] };
     spyOn(store, 'select').and.returnValue(of(mockUser));
 
     let result: AdminUser | undefined;
@@ -54,7 +54,7 @@ describe('AdminControllerService', () => {
   it('should dispatch getPaginatedUsers action and select users', () => {
     const filter: AdminGetUserFilter = { pageNumber: 1, pageSize: 10, containsInfo: 'Doe' };
     const mockUsers: AdminUser[] = [
-      { id: '1', userName: 'JohnDoe', email: 'johndoe@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['Admin'] }
+      { id: '1', userName: 'JohnDoe', email: 'johndoe@example.com', registredAt: new Date(), updatedAt: new Date(), roles: ['Admin'], authenticationMethods: [] }
     ];
     spyOn(store, 'select').and.returnValue(of(mockUsers));
 
