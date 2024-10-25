@@ -17,3 +17,13 @@ export function mapOrderToCreateOrderRequest(order: Order): CreateOrderRequest {
         orderBooks: order.orderBooks.map(x => mapOrderBookToOrderBookRequest(x))
     }
 }
+
+export function getDefaultCreateOrderRequest(): CreateOrderRequest {
+    return {
+        deliveryAddress: "",
+        deliveryTime: new Date(),
+        paymentMethod: PaymentMethod.Cash,
+        deliveryMethod: DeliveryMethod.AddressDelivery,
+        orderBooks: []
+    }
+}

@@ -7,59 +7,30 @@ import { ValidationMessage } from './validation-message';
   providedIn: 'root'
 })
 export class ValidationMessageService implements ValidationMessage {
+  private readonly errorMessages: Record<string, string> = {
+    required: "Field is required.",
+    email: "Email must be valid.",
+    minlength: "Input must be at least 8 characters.",
+    nonAlphanumeric: "Input must have non-alphanumeric characters.",
+    digit: "Input must have digits.",
+    uppercase: "Input must have upper case characters.",
+    passwordNoMatch: "Passwords don't match.",
+    invalidMinDate: "Date must be greater.",
+    dateInPast: "Date must be in the past.",
+    min: "Field must be bigger.",
+    max: "Field must be smaller.",
+    dateRangeFromInvalid: '"From" date must be before or equal to "To" date.',
+    dateRangeToInvalid: '"To" date must be after or equal to "From" date.',
+    rangeMinInvalid: '"Min" must be less than or equal to "Max".',
+    rangeMaxInvalid: '"Max" must be greater than or equal to "Min".',
+    noSpaces: 'Input must not contain spaces.',
+    invalidSelectInput: 'Item must be selected.'
+  };
 
-  getValidationMessage(input: AbstractControl<any, any>): { hasError: boolean, message: string } {
-    if (input.hasError('required')) {
-      return { hasError: true, message: "Field is required." };
-    }
-    else if (input.hasError('email')) {
-      return { hasError: true, message: "Email must be valid." };
-    }
-    else if (input.hasError('minlength')) {
-      return { hasError: true, message: "Input must be at least 8 characters." };
-    }
-    else if (input.hasError('nonAlphanumeric')) {
-      return { hasError: true, message: "Input must have non alphanumeric characters." };
-    }
-    else if (input.hasError('digit')) {
-      return { hasError: true, message: "Input must have digits." };
-    }
-    else if (input.hasError('uppercase')) {
-      return { hasError: true, message: "Input must have upper case characters." };
-    }
-    else if (input.hasError('passwordNoMatch')) {
-      return { hasError: true, message: "Passwords don't match." };
-    }
-    else if (input.hasError('invalidMinDate')) {
-      return { hasError: true, message: "Date must be greater." };
-    }
-    else if (input.hasError('dateInPast')) {
-      return { hasError: true, message: "Date must be in the past." };
-    }
-    else if (input.hasError('min')) {
-      return { hasError: true, message: "Field must be bigger." };
-    }
-    else if (input.hasError('max')) {
-      return { hasError: true, message: 'Field must be smaller.' };
-    }
-    else if (input.hasError('dateRangeFromInvalid')) {
-      return { hasError: true, message: '"From" date must be before or equal to "To" date.' };
-    }
-    else if (input.hasError('dateRangeToInvalid')) {
-      return { hasError: true, message: '"To" date must be after or equal to "From" date.' };
-    }
-    else if (input.hasError('rangeMinInvalid')) {
-      return { hasError: true, message: '"Min" must be less than or equal to "Max".' };
-    }
-    else if (input.hasError('rangeMaxInvalid')) {
-      return { hasError: true, message: '"Max" must be greater than or equal to "Min".' };
-    }
-    else if (input.hasError('noSpaces')) {
-      return { hasError: true, message: 'Input must not contain spaces.' };
-    }
-    else if (input.hasError('invalidSelectInput')) {
-      return { hasError: true, message: 'Item must be selected.' };
-    }
-    return { hasError: false, message: "" };
+  getValidationMessage(input: AbstractControl<any, any>): { hasError: boolean; message: string } {
+    const errorKey = Object.keys(this.errorMessages).find(key => input.hasError(key));
+    return errorKey
+      ? { hasError: true, message: this.errorMessages[errorKey] }
+      : { hasError: false, message: "" };
   }
 }

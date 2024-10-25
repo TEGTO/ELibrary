@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { OAUTH_LOGIN_COMMAND_HANDLER, OAuthLoginCommand } from '../..';
@@ -7,7 +7,8 @@ import { CommandHandler, RedirectorService } from '../../../shared';
 @Component({
   selector: 'app-oauth-callback',
   templateUrl: './oauth-callback.component.html',
-  styleUrl: './oauth-callback.component.scss'
+  styleUrl: './oauth-callback.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OAuthCallbackComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();

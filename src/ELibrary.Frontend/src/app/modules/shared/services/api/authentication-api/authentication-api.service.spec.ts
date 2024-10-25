@@ -120,12 +120,12 @@ describe('AuthenticationApiService', () => {
       confirmPassword: 'password'
     };
 
-    service.registerUser(request).subscribe(
-      () => fail('Expected an error, not a success'),
-      (error) => {
+    service.registerUser(request).subscribe({
+      next: () => fail('Expected an error, not a success'),
+      error: (error) => {
         expect(error).toBeTruthy();
       }
-    );
+    });
 
     const req = httpTestingController.expectOne(expectedReq);
     req.flush('Error', { status: 400, statusText: 'Bad Request' });
@@ -139,12 +139,13 @@ describe('AuthenticationApiService', () => {
       refreshTokenExpiryDate: new Date()
     };
 
-    service.refreshToken(request).subscribe(
-      () => fail('Expected an error, not a success'),
-      (error) => {
+    service.refreshToken(request).subscribe({
+      next: () => fail('Expected an error, not a success'),
+      error: (error) => {
         expect(error).toBeTruthy();
       }
-    );
+    });
+
 
     const req = httpTestingController.expectOne(expectedReq);
     req.flush('Error', { status: 400, statusText: 'Bad Request' });

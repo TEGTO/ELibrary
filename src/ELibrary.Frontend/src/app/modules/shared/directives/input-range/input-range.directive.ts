@@ -8,7 +8,7 @@ export class InputRangeDirective {
   @Input() min!: number;
   @Input() max!: number;
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private readonly elementRef: ElementRef) { }
 
   @HostListener('input', ['$event.target.value'])
   onInput(value: string) {

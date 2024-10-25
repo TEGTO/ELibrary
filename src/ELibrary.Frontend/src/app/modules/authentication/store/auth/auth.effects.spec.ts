@@ -70,7 +70,7 @@ describe('AuthEffects', () => {
             const outcome = registerFailure({ error: error.message });
 
             actions$ = of(action);
-            mockAuthApiService.registerUser.and.returnValue(throwError(error));
+            mockAuthApiService.registerUser.and.returnValue(throwError(() => error));
 
             effects.registerUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
@@ -100,7 +100,7 @@ describe('AuthEffects', () => {
             const outcome = signInUserFailure({ error: error.message });
 
             actions$ = of(action);
-            mockAuthApiService.loginUser.and.returnValue(throwError(error));
+            mockAuthApiService.loginUser.and.returnValue(throwError(() => error));
 
             effects.singInUser$.subscribe(result => {
                 expect(result).toEqual(outcome);
@@ -179,7 +179,7 @@ describe('AuthEffects', () => {
             const outcome = refreshAccessTokenFailure({ error: error.message });
 
             actions$ = of(action);
-            mockAuthApiService.refreshToken.and.returnValue(throwError(error));
+            mockAuthApiService.refreshToken.and.returnValue(throwError(() => error));
 
             effects.refreshToken$.subscribe(result => {
                 expect(result).toEqual(outcome);
@@ -214,7 +214,7 @@ describe('AuthEffects', () => {
             const error = new Error('Update failed');
             const outcome = updateUserDataFailure({ error: error.message });
 
-            mockUserApiService.updateUser.and.returnValue(throwError(error));
+            mockUserApiService.updateUser.and.returnValue(throwError(() => error));
 
             actions$ = of(action);
 
@@ -245,7 +245,7 @@ describe('AuthEffects', () => {
             const error = new Error('Delete failed');
             const outcome = deleteUserFailure({ error: error.message });
 
-            mockUserApiService.deleteUser.and.returnValue(throwError(error));
+            mockUserApiService.deleteUser.and.returnValue(throwError(() => error));
 
             actions$ = of(action);
 

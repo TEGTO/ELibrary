@@ -24,7 +24,7 @@ export class BookStockTableComponent implements OnInit {
   items$!: Observable<StockOrderItem[]>;
   totalAmount$!: Observable<number>;
 
-  private defaultPagination = { pageIndex: 1, pageSize: 10 };
+  private readonly defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Id', field: 'id', linkPath: (item: any) => getManagerBookStockDetailsPath(item.id) },
     { header: 'Created At', field: 'createdAt', pipe: new LocalizedDatePipe(this.localeService.getLocale()), pipeArgs: [true] },

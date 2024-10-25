@@ -21,3 +21,15 @@ export function mapClientToCreateClientRequest(client: Client): CreateClientRequ
         email: client.email
     }
 }
+
+export function getDefaultCreateClientRequest(): CreateClientRequest {
+    return {
+        name: 'Jane',
+        middleName: 'M',
+        lastName: 'Doe',
+        address: '456 Main St',
+        phone: '0987654321',
+        email: 'jane.doe@example.com',
+        dateOfBirth: new Date('1992-02-02')
+    }
+}

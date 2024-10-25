@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ChartType } from 'ng-apexcharts';
 import { ChartOptions } from '../../../../../shared';
 
 @Component({
   selector: 'app-statistics-chart',
   templateUrl: './statistics-chart.component.html',
-  styleUrl: './statistics-chart.component.scss'
+  styleUrl: './statistics-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsChartComponent {
   @Input({ required: true }) data!: Map<Date, number>;

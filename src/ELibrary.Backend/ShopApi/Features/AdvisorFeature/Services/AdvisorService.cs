@@ -57,7 +57,7 @@ namespace ShopApi.Features.AdvisorFeature.Services
         {
             return await resiliencePipeline.ExecuteAsync(async (ct) =>
             {
-                var prompt = chatConfig.GroundedPrompt.Replace("{sourcesFormatted}", sourcesFormatted.ToString());
+                var prompt = chatConfig.GroundedPrompt.Replace("{sources}", sourcesFormatted.ToString());
                 return await chatService.GetChatCompletionAsync(prompt, query, cancellationToken);
             }, cancellationToken);
         }
