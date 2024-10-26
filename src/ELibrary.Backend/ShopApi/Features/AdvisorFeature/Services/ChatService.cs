@@ -1,34 +1,98 @@
-﻿using OpenAI.Chat;
+﻿using LangChain.Databases.Postgres;
+using LangChain.DocumentLoaders;
+using LangChain.Extensions;
+using LangChain.Providers;
+using LangChain.Providers.OpenAI;
+using LangChain.Providers.OpenAI.Predefined;
+using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Entities.Library;
+using Microsoft.EntityFrameworkCore;
+using Shared.Repositories;
+using System.Text;
 
 namespace ShopApi.Features.AdvisorFeature.Services
 {
     public class ChatService : IChatService
     {
         private readonly ChatConfiguration chatConfig;
+        private readonly PostgresVectorDatabase vectorDatabase;
+        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly OpenAiLatestFastChatModel llm;
+        private readonly OpenAiProvider provider;
 
-        public ChatService(IConfiguration configuration)
+        public ChatService(IDatabaseRepository<LibraryShopDbContext> repository, IConfiguration configuration)
         {
             chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
-                                          .Get<ChatConfiguration>()!;
+                                      .Get<ChatConfiguration>()!;
+
+            this.repository = repository;
+
+            provider = new OpenAiProvider(chatConfig.OpenAiApiKey);
+            llm = new OpenAiLatestFastChatModel(provider);
+
+            vectorDatabase = new PostgresVectorDatabase(chatConfig.DbConnectionString);
         }
 
-        public async Task<string> GetChatCompletionAsync(string prompt, string query, CancellationToken cancellationToken)
+        public async Task<StringBuilder> AskQuestionAsync(string question, List<Document> documents, CancellationToken cancellationToken)
         {
-            var chatClient = CreateChatClient();
-            var chatCompletion = await chatClient.CompleteChatAsync(
-                new List<ChatMessage>
-                {
-                new SystemChatMessage(prompt),
-                new UserChatMessage(query)
-                },
+            var embeddingModel = new TextEmbeddingV3SmallModel(provider);
+            var vectorCollection = await vectorDatabase.GetOrCreateCollectionAsync(chatConfig.CollectionName, chatConfig.CollectionDimensions, cancellationToken);
+
+            if (documents.Count > 0)
+            {
+                await vectorCollection.AddDocumentsAsync(embeddingModel, await GetDocumentsAsync(cancellationToken));
+            }
+
+            var similarDocuments = await vectorCollection.GetSimilarDocuments(
+                embeddingModel: embeddingModel,
+                request: new EmbeddingRequest() { Strings = new List<string> { question } },
+                scoreThreshold: chatConfig.ScoreThreshold,
+                amount: chatConfig.MaxAmountOfSimmilarDocuments,
                 cancellationToken: cancellationToken
             );
 
-            return chatCompletion.Value.Content.FirstOrDefault()?.Text ?? "";
+            string request = chatConfig.GroundedPrompt.Replace("{sources}", string.Join("\n", similarDocuments)).Replace("{question}", question);
+
+            var responseEnumerator = llm.GenerateAsync(request, cancellationToken: cancellationToken);
+
+            StringBuilder result = new StringBuilder();
+            await foreach (var chunk in responseEnumerator)
+            {
+                result.Append(chunk.LastMessageContent);
+            }
+
+            return result;
         }
-        private ChatClient CreateChatClient()
+        public async Task<List<Document>> GetDocumentsAsync(CancellationToken cancellationToken)
         {
-            return new ChatClient(chatConfig.ChatModel, apiKey: chatConfig.OpenAiApiKey);
+            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
+
+            var bookDetails = await queryable
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Select(book => new
+                {
+                    BookName = book.Name,
+                    AuthorName = book.Author.Name,
+                    GenreName = book.Genre.Name,
+                    Publisher = book.Publisher == null ? "NONE" : book.Publisher.Name,
+                    BookId = book.Id
+                })
+                .ToListAsync(cancellationToken);
+
+            var documents = bookDetails.Select(detail => new Document(
+                content: $"Id: {detail.BookId}, Book: {detail.BookName}, Author: {detail.AuthorName}, Genre: {detail.GenreName}, Publisher: {detail.Publisher}",
+                metadata: new Dictionary<string, object>
+                {
+                    { "id", detail.BookId },
+                    { "bookName", detail.BookName },
+                    { "authorName", detail.AuthorName },
+                    { "genreName", detail.GenreName },
+                    { "publisher", detail.Publisher }
+                }
+            )).ToList();
+
+            return documents;
         }
     }
 }

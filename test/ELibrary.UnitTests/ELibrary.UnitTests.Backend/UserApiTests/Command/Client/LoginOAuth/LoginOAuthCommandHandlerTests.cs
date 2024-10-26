@@ -6,6 +6,7 @@ using System.Security.Claims;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
 using UserApi.Services;
+using UserApi.Services.Auth;
 using UserApi.Services.OAuth;
 using UserEntities.Domain.Entities;
 
@@ -17,6 +18,7 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
         private Mock<IUserService> mockUserService;
         private Mock<ITokenService> mockTokenService;
         private Mock<IOAuthService> mockOAuthService;
+        private Mock<IAuthService> mockAuthService;
         private Mock<IMapper> mockMapper;
         private LoginOAuthCommandHandler handler;
         private Dictionary<OAuthLoginProvider, IOAuthService> oAuthServices;
@@ -27,6 +29,7 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
             mockUserService = new Mock<IUserService>();
             mockTokenService = new Mock<ITokenService>();
             mockOAuthService = new Mock<IOAuthService>();
+            mockAuthService = new Mock<IAuthService>();
             mockMapper = new Mock<IMapper>();
 
             oAuthServices = new Dictionary<OAuthLoginProvider, IOAuthService>
@@ -34,7 +37,7 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
                 { OAuthLoginProvider.Google, mockOAuthService.Object }
             };
 
-            handler = new LoginOAuthCommandHandler(oAuthServices, mockUserService.Object, mockTokenService.Object, mockMapper.Object);
+            handler = new LoginOAuthCommandHandler(oAuthServices, mockAuthService.Object, mockUserService.Object, mockTokenService.Object, mockMapper.Object);
         }
 
         [Test]

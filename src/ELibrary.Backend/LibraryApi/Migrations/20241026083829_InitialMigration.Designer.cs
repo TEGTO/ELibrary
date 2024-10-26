@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryApi.Migrations
 {
     [DbContext(typeof(LibraryShopDbContext))]
-    [Migration("20240928134804_AdddedStockBookOrderType")]
-    partial class AdddedStockBookOrderType
+    [Migration("20241026083829_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,334 +29,419 @@ namespace LibraryApi.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_of_birth");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_authors");
 
-                    b.ToTable("Authors");
+                    b.ToTable("authors", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AuthorId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("author_id");
 
                     b.Property<string>("CoverImgUrl")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("cover_img_url");
 
                     b.Property<int>("CoverType")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("cover_type");
 
                     b.Property<int>("GenreId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("genre_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
                     b.Property<int>("PageAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("page_amount");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18, 2)")
+                        .HasColumnName("price");
 
                     b.Property<DateTime>("PublicationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("publication_date");
 
                     b.Property<int>("PublisherId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("publisher_id");
 
                     b.Property<int>("StockAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("stock_amount");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_books");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId")
+                        .HasDatabaseName("ix_books_author_id");
 
-                    b.HasIndex("GenreId");
+                    b.HasIndex("GenreId")
+                        .HasDatabaseName("ix_books_genre_id");
 
-                    b.HasIndex("PublisherId");
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_books_publisher_id");
 
-                    b.ToTable("Books");
+                    b.ToTable("books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_genres");
 
-                    b.ToTable("Genres");
+                    b.ToTable("genres", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Publisher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_publishers");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("publishers", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Cart", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_carts");
 
-                    b.ToTable("Carts");
+                    b.ToTable("carts", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.CartBook", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<int>("BookAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("book_amount");
 
                     b.Property<int>("BookId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("book_id");
 
                     b.Property<string>("CartId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cart_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_cart_books");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId")
+                        .HasDatabaseName("ix_cart_books_book_id");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("CartId")
+                        .HasDatabaseName("ix_cart_books_cart_id");
 
-                    b.ToTable("CartBooks");
+                    b.ToTable("cart_books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Client", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("address");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_of_birth");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("MiddleName")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("middle_name");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("phone");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_clients");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_clients_user_id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("clients", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<string>("DeliveryAddress")
                         .IsRequired()
                         .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("delivery_address");
+
+                    b.Property<int>("DeliveryMethod")
+                        .HasColumnType("integer")
+                        .HasColumnName("delivery_method");
 
                     b.Property<DateTime>("DeliveryTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delivery_time");
 
                     b.Property<int>("OrderAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("order_amount");
 
                     b.Property<int>("OrderStatus")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("order_status");
 
                     b.Property<int>("PaymentMethod")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_method");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18, 2)")
+                        .HasColumnName("total_price");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orders");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId")
+                        .HasDatabaseName("ix_orders_client_id");
 
-                    b.ToTable("Orders");
+                    b.ToTable("orders", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.OrderBook", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id");
 
                     b.Property<int>("BookAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("book_amount");
 
                     b.Property<int>("BookId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("book_id");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_order_books");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId")
+                        .HasDatabaseName("ix_order_books_book_id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_books_order_id");
 
-                    b.ToTable("OrderBooks");
+                    b.ToTable("order_books", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookChange", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("book_id");
 
                     b.Property<int>("ChangeAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("change_amount");
 
                     b.Property<int?>("StockBookOrderId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("stock_book_order_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_stock_book_changes");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId")
+                        .HasDatabaseName("ix_stock_book_changes_book_id");
 
-                    b.HasIndex("StockBookOrderId");
+                    b.HasIndex("StockBookOrderId")
+                        .HasDatabaseName("ix_stock_book_changes_stock_book_order_id");
 
-                    b.ToTable("StockBookChanges");
+                    b.ToTable("stock_book_changes", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("client_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<int>("TotalChangeAmount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("total_change_amount");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_stock_book_orders");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId")
+                        .HasDatabaseName("ix_stock_book_orders_client_id");
 
-                    b.ToTable("StockBookOrders");
+                    b.ToTable("stock_book_orders", (string)null);
                 });
 
             modelBuilder.Entity("LibraryShopEntities.Domain.Entities.Library.Book", b =>
@@ -365,19 +450,22 @@ namespace LibraryApi.Migrations
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_books_authors_author_id");
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_books_genres_genre_id");
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Publisher", "Publisher")
                         .WithMany()
                         .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_books_publishers_publisher_id");
 
                     b.Navigation("Author");
 
@@ -392,13 +480,15 @@ namespace LibraryApi.Migrations
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_cart_books_books_book_id");
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Cart", "Cart")
                         .WithMany("Books")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_cart_books_carts_cart_id");
 
                     b.Navigation("Book");
 
@@ -411,7 +501,8 @@ namespace LibraryApi.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_clients_client_id");
 
                     b.Navigation("Client");
                 });
@@ -421,14 +512,16 @@ namespace LibraryApi.Migrations
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_books_books_book_id");
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Order", "Order")
                         .WithMany("OrderBooks")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_order_books_orders_order_id");
 
                     b.Navigation("Book");
 
@@ -440,12 +533,14 @@ namespace LibraryApi.Migrations
                     b.HasOne("LibraryShopEntities.Domain.Entities.Library.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_stock_book_changes_books_book_id");
 
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.StockBookOrder", null)
                         .WithMany("StockBookChanges")
-                        .HasForeignKey("StockBookOrderId");
+                        .HasForeignKey("StockBookOrderId")
+                        .HasConstraintName("fk_stock_book_changes_stock_book_orders_stock_book_order_id");
 
                     b.Navigation("Book");
                 });
@@ -455,8 +550,9 @@ namespace LibraryApi.Migrations
                     b.HasOne("LibraryShopEntities.Domain.Entities.Shop.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_stock_book_orders_clients_client_id");
 
                     b.Navigation("Client");
                 });

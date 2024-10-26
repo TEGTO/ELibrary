@@ -20,6 +20,9 @@
 		<PackageReference Include="Azure.AI.OpenAI" Version="2.0.0" />
 		<PackageReference Include="Azure.Search.Documents" Version="11.6.0" />
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="LangChain" Version="0.15.2" />
+		<PackageReference Include="LangChain.Databases.Postgres" Version="0.15.3" />
+		<PackageReference Include="LangChain.Utilities.Postgres" Version="0.15.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
 	</ItemGroup>
 

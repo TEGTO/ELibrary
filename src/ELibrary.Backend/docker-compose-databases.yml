@@ -3,7 +3,7 @@ version: '3.4'
 services:
   elibrary-db:
     container_name: elibrary-db
-    image: postgres
+    image: pgvector/pgvector:pg16
     restart: always
     ports:
     - "54301:5432"

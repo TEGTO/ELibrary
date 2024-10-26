@@ -66,12 +66,15 @@ services:
       - Shop__MaxOrderAmount=${Shop__MaxOrderAmount}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - UseCORS=${UseCORS}
-      - Chat__SearchServiceEndpoint=${Chat__SearchServiceEndpoint}
-      - Chat__SearchIndexName=${Chat__SearchIndexName}
-      - Chat__SearchApiKey=${Chat__SearchApiKey}
-      - Chat__OpenAiApiKey=${Chat__OpenAiApiKey}
+      - Chat__MaxAmountOfSimmilarDocuments=${Chat__MaxAmountOfSimmilarDocuments}
       - Chat__ChatModel=${Chat__ChatModel}
+      - Chat__DbConnectionString=${Chat__DbConnectionString}
       - Chat__GroundedPrompt=${Chat__GroundedPrompt}
+      - Chat__OpenAiApiKey=${Chat__OpenAiApiKey}
+      - Chat__ScoreThreshold=${Chat__ScoreThreshold}
+      - Chat__CollectionName=${Chat__CollectionName}
+      - Chat__CollectionDimensions=${Chat__CollectionDimensions}
+      - Chat__GetDocumentsCacheTimeInMinutes=${Chat__GetDocumentsCacheTimeInMinutes}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

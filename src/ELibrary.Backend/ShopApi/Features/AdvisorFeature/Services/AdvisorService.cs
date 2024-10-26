@@ -1,65 +1,50 @@
-﻿using Azure.Search.Documents;
-using Azure.Search.Documents.Models;
+﻿using LangChain.DocumentLoaders;
 using Polly;
 using Polly.Registry;
-using System.Text;
 
 namespace ShopApi.Features.AdvisorFeature.Services
 {
     public class AdvisorService : IAdvisorService
     {
-        private readonly ChatConfiguration chatConfig;
-        private readonly ISearchClientFactory searchClientFactory;
         private readonly IChatService chatService;
         private readonly ResiliencePipeline resiliencePipeline;
+        private List<Document> cachedDocuments = new List<Document>();
+        private DateTime lastUpdate = DateTime.MinValue;
+        private readonly TimeSpan cacheDuration;
 
-        public AdvisorService(IConfiguration configuration, ISearchClientFactory searchClientFactory, IChatService chatService, ResiliencePipelineProvider<string> resiliencePipelineProvider)
+        public AdvisorService(IChatService chatService, ResiliencePipelineProvider<string> resiliencePipelineProvider, IConfiguration configuration)
         {
-            chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
-                                          .Get<ChatConfiguration>()!;
-            this.searchClientFactory = searchClientFactory;
             this.chatService = chatService;
             resiliencePipeline = resiliencePipelineProvider.GetPipeline(Configuration.DEFAULT_RESILIENCE_PIPELINE);
+
+            var chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
+                                    .Get<ChatConfiguration>()!;
+
+            cacheDuration = TimeSpan.FromMinutes(chatConfig.GetDocumentsCacheTimeInMinutes);
         }
+
         public async Task<string> SendQueryAsync(string query, CancellationToken cancellationToken)
         {
-            var sourcesFormatted = await GetSourcesAsync(query, cancellationToken);
-            return await GetChatResponseAsync(query, sourcesFormatted, cancellationToken);
+            return await GetChatResponseAsync(query, cancellationToken);
         }
-        private async Task<StringBuilder> GetSourcesAsync(string query, CancellationToken cancellationToken)
+
+        private async Task<string> GetChatResponseAsync(string query, CancellationToken cancellationToken)
         {
             return await resiliencePipeline.ExecuteAsync(async (ct) =>
             {
-                var searchClient = searchClientFactory.CreateSearchClient();
-
-                var searchOptions = new SearchOptions
-                {
-                    Size = 5,
-                    Select = { "Description", "HotelName", "Tags" }
-                };
-
-                var searchResults = await searchClient.SearchAsync<SearchDocument>(query, searchOptions, cancellationToken);
-
-                var sourcesFormatted = new StringBuilder();
-                foreach (var result in searchResults.Value.GetResults())
-                {
-                    string hotelName = result.Document["HotelName"]?.ToString();
-                    string description = result.Document["Description"]?.ToString();
-                    string tags = result.Document["Tags"]?.ToString();
-
-                    sourcesFormatted.AppendLine($"{hotelName}:{description}:{tags}");
-                }
-                return sourcesFormatted;
-
+                var documents = await GetCachedDocumentsAsync(cancellationToken);
+                return (await chatService.AskQuestionAsync(query, documents, cancellationToken)).ToString();
             }, cancellationToken);
         }
-        private async Task<string> GetChatResponseAsync(string query, StringBuilder sourcesFormatted, CancellationToken cancellationToken)
+        private async ValueTask<List<Document>> GetCachedDocumentsAsync(CancellationToken cancellationToken)
         {
-            return await resiliencePipeline.ExecuteAsync(async (ct) =>
+            if ((DateTime.UtcNow - lastUpdate) > cacheDuration)
             {
-                var prompt = chatConfig.GroundedPrompt.Replace("{sources}", sourcesFormatted.ToString());
-                return await chatService.GetChatCompletionAsync(prompt, query, cancellationToken);
-            }, cancellationToken);
+                cachedDocuments = await chatService.GetDocumentsAsync(cancellationToken);
+                lastUpdate = DateTime.UtcNow;
+            }
+
+            return cachedDocuments;
         }
     }
 }

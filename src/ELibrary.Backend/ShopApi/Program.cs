@@ -47,7 +47,6 @@ builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
-builder.Services.AddSingleton<ISearchClientFactory, SearchClientFactory>();
 builder.Services.AddSingleton<IChatService, ChatService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 

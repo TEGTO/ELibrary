@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Shared.Configurations;
 using Shared.Middlewares;
 using Shared.Validators;
@@ -66,10 +67,12 @@ namespace Shared
             return services;
         }
         public static IServiceCollection AddDbContextFactory<Context>(
-         this IServiceCollection services,
-         string connectionString,
-         string? migrationAssembly = null,
-         Action<DbContextOptionsBuilder>? additionalConfig = null) where Context : DbContext
+          this IServiceCollection services,
+          string connectionString,
+          string? migrationAssembly = null,
+          Action<NpgsqlDbContextOptionsBuilder>? dbAdditionalConfig = null,
+          Action<DbContextOptionsBuilder>? additionalConfig = null
+          ) where Context : DbContext
         {
             services.AddDbContextFactory<Context>(options =>
             {
@@ -79,11 +82,12 @@ namespace Shared
                     {
                         b.MigrationsAssembly(migrationAssembly);
                     }
+                    dbAdditionalConfig?.Invoke(b);
                 });
 
                 options.UseSnakeCaseNamingConvention();
-
                 npgsqlOptions.UseExceptionProcessor();
+
                 additionalConfig?.Invoke(options);
             });
 
