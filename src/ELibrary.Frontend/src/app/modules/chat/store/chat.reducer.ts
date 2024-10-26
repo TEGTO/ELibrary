@@ -15,7 +15,7 @@ export interface ChatState {
 }
 const initialChatState: ChatState = {
     messages: [
-        { text: "Hello! Ask me about any book 😊.", isSent: false }
+        { text: "Hello! Ask me about any book 😊.", isSent: false },
     ],
     isVisible: false,
     isResponseLoading: false,

@@ -29,6 +29,14 @@
 }
 
 
+:host p.received-message::ng-deep a {
+    color: blue;
+}
+
+:host p.received-message::ng-deep a:hover {
+    text-decoration: underline;
+}
+
 
 @mixin message {
     padding: 8px 12px;

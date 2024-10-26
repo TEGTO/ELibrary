@@ -40,7 +40,7 @@ namespace ShopApi.Features.AdvisorFeature.Services
 
             if (documents.Count > 0)
             {
-                await vectorCollection.AddDocumentsAsync(embeddingModel, await GetDocumentsAsync(cancellationToken));
+                await vectorCollection.AddDocumentsAsync(embeddingModel, documents, cancellationToken: cancellationToken);
             }
 
             var similarDocuments = await vectorCollection.GetSimilarDocuments(
@@ -75,20 +75,20 @@ namespace ShopApi.Features.AdvisorFeature.Services
                     BookName = book.Name,
                     AuthorName = book.Author.Name,
                     GenreName = book.Genre.Name,
-                    Publisher = book.Publisher == null ? "NONE" : book.Publisher.Name,
+                    PublisherName = book.Publisher == null ? "NONE" : book.Publisher.Name,
                     BookId = book.Id
                 })
                 .ToListAsync(cancellationToken);
 
             var documents = bookDetails.Select(detail => new Document(
-                content: $"Id: {detail.BookId}, Book: {detail.BookName}, Author: {detail.AuthorName}, Genre: {detail.GenreName}, Publisher: {detail.Publisher}",
+                content: $"Book: {detail.BookName}, Author: {detail.AuthorName}, Genre: {detail.GenreName}, Publisher: {detail.PublisherName}",
                 metadata: new Dictionary<string, object>
                 {
-                    { "id", detail.BookId },
+                    { "bookId", detail.BookId },
                     { "bookName", detail.BookName },
                     { "authorName", detail.AuthorName },
                     { "genreName", detail.GenreName },
-                    { "publisher", detail.Publisher }
+                    { "publisherName", detail.PublisherName }
                 }
             )).ToList();
 

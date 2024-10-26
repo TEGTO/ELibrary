@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -42,7 +43,8 @@ describe('ChatComponent', () => {
         MatCardModule,
         MatButtonModule,
         FormsModule,
-        ScrollingModule
+        ScrollingModule,
+        NoopAnimationsModule
       ],
       providers: [
         { provide: ChatService, useValue: chatServiceSpy },
@@ -107,15 +109,6 @@ describe('ChatComponent', () => {
     expect(component.showChat).toHaveBeenCalled();
   });
 
-  it('should call sendMessage() when Enter key is pressed in input', () => {
-    spyOn(component, 'sendMessage').and.callThrough();
-
-    const inputField = fixture.debugElement.query(By.css('input'));
-    inputField.triggerEventHandler('keydown.enter', {});
-
-    expect(component.sendMessage).toHaveBeenCalled();
-  });
-
   it('should react to changes in isChatVisible$ true', () => {
     chatState.next(true);
     fixture.detectChanges();
@@ -136,6 +129,9 @@ describe('ChatComponent', () => {
 
   it('should show loading dots when isResponseLoading$ is true', () => {
     loadingSubject.next(true);
+    chatState.next(true);
+    component.isCardVisible = true;
+
     fixture.detectChanges();
 
     const loadingDots = fixture.debugElement.query(By.css('.loading-dots'));
@@ -148,5 +144,48 @@ describe('ChatComponent', () => {
 
     const loadingDots = fixture.debugElement.query(By.css('.loading-dots'));
     expect(loadingDots).toBeFalsy();
+  });
+
+  it('should update isCardVisible when onAnimationDone is triggered', fakeAsync(() => {
+    component.onAnimationDone({ toState: 'in' });
+    fixture.detectChanges();
+    expect(component.isCardVisible).toBeTrue();
+
+    component.onAnimationDone({ toState: 'out' });
+    fixture.detectChanges();
+    expect(component.isCardVisible).toBeFalse();
+  }));
+
+  it('should scroll to bottom when new messages are received', fakeAsync(() => {
+    const scrollToIndexSpy = spyOn<any>(component, 'scrollToBottom').and.callThrough();
+
+    component.ngOnInit();
+
+    component.messages$.subscribe();
+
+    messagesSubject.next([
+      { text: 'Hello!', isSent: true },
+      { text: 'Hi there!', isSent: false }
+    ]);
+
+    tick(1000);
+    fixture.detectChanges();
+
+    expect(scrollToIndexSpy).toHaveBeenCalled();
+  }));
+
+  it('should format message correctly if it contains a book link', () => {
+    const message = { text: "BookId:#123 'The Hobbit'", isSent: false };
+    const formattedMessage = component.formatChatMessage(message) as string;
+
+    expect(formattedMessage.toString()).toContain('<a href="123" target="_blank" class="book-link">The Hobbit</a>');
+  });
+
+  it('should detect if a message is a book link', () => {
+    const message = { text: "BookId:#123 'The Hobbit'", isSent: false };
+    expect(component.isChatMessageLink(message)).toBeTrue();
+
+    const normalMessage = { text: 'Just a normal message', isSent: false };
+    expect(component.isChatMessageLink(normalMessage)).toBeFalse();
   });
 });

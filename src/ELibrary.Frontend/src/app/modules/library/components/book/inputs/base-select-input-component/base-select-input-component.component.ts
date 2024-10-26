@@ -20,7 +20,7 @@ export abstract class BaseSelectInputComponent<T extends { id: number }> impleme
     pageIndex = 0;
     private fetchedIds = new Set<number>();
 
-    private destroy$ = new Subject<void>();
+    private readonly destroy$ = new Subject<void>();
 
     get input() { return this.formGroup.get(this.getControlName())! as FormControl; }
     get selectionSize() {

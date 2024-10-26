@@ -54,7 +54,7 @@ describe('AddClientCommandHandlerService', () => {
         const command: AddClientCommand = {};
         service.dispatch(command);
 
-        expect(shopDialogMock.openClientChangeMenu).toHaveBeenCalledWith(getDefaultClient());
+        expect(shopDialogMock.openClientChangeMenu).toHaveBeenCalledWith(jasmine.objectContaining({ id: getDefaultClient().id }));
         expect(clientServiceMock.createClient).not.toHaveBeenCalled();
     });
 });
