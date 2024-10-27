@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, Inject, NgZone, OnInit, SecurityContext, ViewChild } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { Observable, tap } from 'rxjs';
 import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommand, ChatMessage, ChatService, SEND_ADVISOR_MESSAGE_COMMAND_HANDLER, SendAdvisorMessageCommand } from '../..';
 import { environment } from '../../../../../environment/environment';
@@ -43,7 +46,8 @@ export class ChatComponent implements OnInit {
     private readonly chatService: ChatService,
     @Inject(CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER) private readonly changeChatVisibilityHandler: CommandHandler<ChangeChatVisibilityCommand>,
     @Inject(SEND_ADVISOR_MESSAGE_COMMAND_HANDLER) private readonly sendAdvisorRequestHandler: CommandHandler<SendAdvisorMessageCommand>,
-    private readonly sanitizer: DomSanitizer,
+    private readonly dompurifySanitizer: NgDompurifySanitizer,
+    private readonly router: Router
   ) { }
 
   ngOnInit() {
@@ -86,10 +90,12 @@ export class ChatComponent implements OnInit {
 
   formatChatMessage(message: ChatMessage): SafeHtml {
     if (this.isChatMessageLink(message)) {
-      const formattedText = message.text.replace(/BookId:#(\d+)\s*'([^']+)'/g,
-        (match, id, title) => `<div><a href="${id}" target="_blank" class="book-link">${title}</a></div>`
+      const sanitizedHTML = this.sanitizeHTML(
+        message.text.replace(/BookId:#(\d+)\s*'([^']+)'/g,
+          (match, id, title) => `<div><a href="${id}" target="_blank" class="book-link">${title}</a></div>`
+        )
       );
-      return this.sanitizer.bypassSecurityTrustHtml(formattedText);
+      return sanitizedHTML;
     }
     else if (!message.isSent && !(/BookId:#\d+/.test(message.text))) {
       return message.text;
@@ -112,9 +118,18 @@ export class ChatComponent implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private sanitizeHTML(html: string): SafeHtml {
+    return this.dompurifySanitizer.sanitize(SecurityContext.HTML, html);
+  }
   onAnimationDone(event: any) {
     this.isCardVisible = event.toState === 'in';
+  }
+  processLinks(e: any) {
+    const element: HTMLElement = e.target;
+    if (element.nodeName === 'A') {
+      e.preventDefault();
+      const link = element.getAttribute('href');
+      this.router.navigate([link]);
+    }
   }
 }

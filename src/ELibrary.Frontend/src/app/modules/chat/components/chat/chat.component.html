@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 <div class="chat-wrapper fixed bottom-0 right-0">
     <ng-container [ngTemplateOutlet]="chatIsHidden"></ng-container>
     <mat-card class="mx-12 my-4 w-96" [@slideInOut]="(isChatVisible$ | async) ? 'in' : 'out'"
@@ -22,7 +24,7 @@
                             *cdkVirtualFor="let message of messages$ | async as messages; trackBy: trackByIndex">
                             <div class="flex px-2" [ngClass]="{'justify-end': message.isSent}">
                                 <p [ngClass]="{'sent-message': message.isSent, 'received-message': !message.isSent}"
-                                    [innerHTML]="formatChatMessage(message)">
+                                    [innerHTML]="formatChatMessage(message)" (click)="processLinks($event)">
                                 </p>
                             </div>
                         </ng-container>

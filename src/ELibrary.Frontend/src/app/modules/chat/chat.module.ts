@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { NgDompurifyModule } from '@tinkoff/ng-dompurify';
 import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommandHandlerService, ChatComponent, ChatControllerService, ChatEffects, chatReducer, ChatService, SEND_ADVISOR_MESSAGE_COMMAND_HANDLER, SendAdvisorMessageCommandHandlerService } from '.';
 
 @NgModule({
@@ -18,6 +19,7 @@ import { CHANGE_CHAT_VISIBILITY_COMMAND_HANDLER, ChangeChatVisibilityCommandHand
     MatCardModule,
     ScrollingModule,
     FormsModule,
+    NgDompurifyModule,
     StoreModule.forFeature('chat', chatReducer),
     EffectsModule.forFeature([ChatEffects]),
   ],
