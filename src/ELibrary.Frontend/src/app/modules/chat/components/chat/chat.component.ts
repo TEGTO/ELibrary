@@ -87,7 +87,7 @@ export class ChatComponent implements OnInit {
   formatChatMessage(message: ChatMessage): SafeHtml {
     if (this.isChatMessageLink(message)) {
       const formattedText = message.text.replace(/BookId:#(\d+)\s*'([^']+)'/g,
-        (match, id, title) => `<a href="${id}" target="_blank" class="book-link">${title}</a>`
+        (match, id, title) => `<div><a href="${id}" target="_blank" class="book-link">${title}</a></div>`
       );
       return this.sanitizer.bypassSecurityTrustHtml(formattedText);
     }

@@ -60,14 +60,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/register",
+							"raw": "https://localhost:7130/auth/register",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"user",
+								"auth",
 								"register"
 							]
 						}
@@ -125,14 +125,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/login",
+							"raw": "https://localhost:7130/auth/login",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"user",
+								"auth",
 								"login"
 							]
 						}
@@ -175,14 +175,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/refresh",
+							"raw": "https://localhost:7130/auth/refresh",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"user",
+								"auth",
 								"refresh"
 							]
 						}
@@ -236,14 +236,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/admin/register",
+							"raw": "https://localhost:7130/auth/admin/register",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"user",
+								"auth",
 								"admin",
 								"register"
 							]
@@ -308,14 +308,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/oauth?oauthloginprovider=0&redirecturl=http://localhost:4200&codeverifier=somecode",
+							"raw": "https://localhost:7130/auth/oauth?oauthloginprovider=0&redirecturl=http://localhost:4200&codeverifier=somecode",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"user",
+								"auth",
 								"oauth"
 							],
 							"query": [
@@ -390,14 +390,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/oauth",
+							"raw": "https://localhost:7130/auth/oauth",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7130",
 							"path": [
-								"user",
+								"auth",
 								"oauth"
 							]
 						}
@@ -3642,7 +3642,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"query\":\"Can you recommend a few hotels near the ocean with beach access and good views\"\r\n}",
+							"raw": "{\r\n    \"query\":\"Give me five interesting books\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

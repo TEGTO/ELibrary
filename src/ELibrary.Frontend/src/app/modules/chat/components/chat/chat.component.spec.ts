@@ -178,7 +178,7 @@ describe('ChatComponent', () => {
     const message = { text: "BookId:#123 'The Hobbit'", isSent: false };
     const formattedMessage = component.formatChatMessage(message) as string;
 
-    expect(formattedMessage.toString()).toContain('<a href="123" target="_blank" class="book-link">The Hobbit</a>');
+    expect(formattedMessage.toString()).toContain('<div><a href="123" target="_blank" class="book-link">The Hobbit</a></div>');
   });
 
   it('should detect if a message is a book link', () => {
