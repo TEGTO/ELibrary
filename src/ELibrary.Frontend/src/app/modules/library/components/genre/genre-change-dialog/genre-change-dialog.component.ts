@@ -16,7 +16,7 @@ export class GenreChangeDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public genre: Genre,
-    private dialogRef: MatDialogRef<GenreChangeDialogComponent>,
+    private readonly dialogRef: MatDialogRef<GenreChangeDialogComponent>,
     private readonly validateInput: ValidationMessage
   ) { }
 

@@ -21,22 +21,22 @@ const initialOrderState: OrderState = {
 export const orderReducer = createReducer(
     initialOrderState,
 
-    on(getOrdersSuccess, (state, { orders: orders }) => ({
+    on(getOrdersSuccess, (state, { orders }) => ({
         ...state,
         orders: orders,
         error: null
     })),
-    on(getOrdersFailure, (state, { error: error }) => ({
+    on(getOrdersFailure, (state, { error }) => ({
         ...initialOrderState,
         error: error
     })),
 
-    on(getOrderAmountSuccess, (state, { amount: amount }) => ({
+    on(getOrderAmountSuccess, (state, { amount }) => ({
         ...state,
         totalAmount: amount,
         error: null
     })),
-    on(getOrderAmountFailure, (state, { error: error }) => ({
+    on(getOrderAmountFailure, (state, { error }) => ({
         ...initialOrderState,
         error: error
     })),
@@ -47,25 +47,25 @@ export const orderReducer = createReducer(
         totalAmount: state.totalAmount + 1,
         error: null
     })),
-    on(createOrderSuccess, (state, { order: order }) => ({
+    on(createOrderSuccess, (state, { order }) => ({
         ...state,
         orders: [order, ...state.orders],
         isCreateSuccess: true,
         error: null
     })),
-    on(createOrderFailure, (state, { error: error }) => ({
+    on(createOrderFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(updateOrderSuccess, (state, { order: order }) => (
+    on(updateOrderSuccess, (state, { order }) => (
         {
             ...state,
             orders: state.orders.map(o => o.id === order.id ? order : o),
             error: null
         }
     )),
-    on(updateOrderFailure, (state, { error: error }) => ({
+    on(updateOrderFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
@@ -79,7 +79,7 @@ export const orderReducer = createReducer(
         ),
         error: null
     })),
-    on(cancelOrderFailure, (state, { error: error }) => ({
+    on(cancelOrderFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
@@ -104,49 +104,49 @@ const initialManagerOrderState: ManagerOrderState = {
 export const managerOrderReducer = createReducer(
     initialManagerOrderState,
 
-    on(managerGetOrderByIdSuccess, (state, { order: order }) => ({
+    on(managerGetOrderByIdSuccess, (state, { order }) => ({
         ...state,
         orders: [...state.orders, order],
         error: null
     })),
-    on(managerGetOrderByIdFailure, (state, { error: error }) => ({
+    on(managerGetOrderByIdFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(managerGetPaginatedOrdersSuccess, (state, { orders: orders }) => ({
+    on(managerGetPaginatedOrdersSuccess, (state, { orders }) => ({
         ...state,
         orders: orders,
         error: null
     })),
-    on(managerGetPaginatedOrdersFailure, (state, { error: error }) => ({
+    on(managerGetPaginatedOrdersFailure, (state, { error }) => ({
         ...initialManagerOrderState,
         error: error
     })),
 
-    on(managerGetOrderAmountSuccess, (state, { amount: amount }) => ({
+    on(managerGetOrderAmountSuccess, (state, { amount }) => ({
         ...state,
         totalAmount: amount,
         error: null
     })),
-    on(managerGetOrderAmountFailure, (state, { error: error }) => ({
+    on(managerGetOrderAmountFailure, (state, { error }) => ({
         ...initialOrderState,
         error: error
     })),
 
-    on(managerUpdateOrderSuccess, (state, { order: order }) => (
+    on(managerUpdateOrderSuccess, (state, { order }) => (
         {
             ...state,
             orders: state.orders.map(o => o.id === order.id ? order : o),
             error: null
         }
     )),
-    on(managerUpdateOrderFailure, (state, { error: error }) => ({
+    on(managerUpdateOrderFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(managerCancelOrderSuccess, (state, { id: id }) => (
+    on(managerCancelOrderSuccess, (state, { id }) => (
         {
             ...state,
             orders: state.orders.map(order =>
@@ -157,7 +157,7 @@ export const managerOrderReducer = createReducer(
             error: null
         }
     )),
-    on(managerCancelOrderFailure, (state, { error: error }) => ({
+    on(managerCancelOrderFailure, (state, { error }) => ({
         ...state,
         error: error
     })),

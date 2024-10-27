@@ -31,7 +31,13 @@
                 *ngIf="validateInputField(passwordConfirmInput).hasError">{{validateInputField(passwordConfirmInput).message}}</mat-error>
         </mat-form-field>
     </form>
+    <div class="actions__bottom-container">
+        <button mat-flat-button id="send-button" form="registrationForm" type="submit" color="primary">Create</button>
+        <span>
+            Already have an account?
+            <button mat-dialog-close id="to-login-link" (click)="openLoginMenu()">
+                Sign in here.
+            </button>
+        </span>
+    </div>
 </mat-dialog-content>
-<mat-dialog-actions class="actions__bottom-container flex-col">
-    <button mat-flat-button id="send-button" form="registrationForm" type="submit" color="primary">Create</button>
-</mat-dialog-actions>

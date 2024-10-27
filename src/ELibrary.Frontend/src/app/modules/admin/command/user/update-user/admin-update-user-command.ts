@@ -17,3 +17,13 @@ export function mapAdminUpdateUserCommandToAdminUserUpdateDataRequest(command: A
         roles: command.roles
     }
 }
+
+export function getDefaultAdminUpdateUserCommand(): AdminUpdateUserCommand {
+    return {
+        currentLogin: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        roles: [],
+    }
+}

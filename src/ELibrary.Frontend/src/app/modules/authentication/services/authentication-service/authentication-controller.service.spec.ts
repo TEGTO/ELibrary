@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { getAuthData, logOutUser, refreshAccessToken, registerUser, signInUser, updateUserData } from '../..';
-import { AuthToken, getDefaultAuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
+import { AuthenticationApiService, AuthToken, getDefaultAuthToken, UserAuth, UserAuthenticationRequest, UserRegistrationRequest, UserUpdateRequest } from '../../../shared';
 import { AuthenticationControllerService } from './authentication-controller.service';
 
 describe('AuthenticationControllerService', () => {
@@ -18,11 +18,13 @@ describe('AuthenticationControllerService', () => {
 
     beforeEach(() => {
         const storeSpy = jasmine.createSpyObj('Store', ['dispatch', 'select']);
+        const authenticationApiServiceSpy = jasmine.createSpyObj('AuthenticationApiService', ['getOAuthUrl']);
 
         TestBed.configureTestingModule({
             providers: [
                 AuthenticationControllerService,
-                { provide: Store, useValue: storeSpy }
+                { provide: Store, useValue: storeSpy },
+                { provide: AuthenticationApiService, useValue: authenticationApiServiceSpy }
             ]
         });
 

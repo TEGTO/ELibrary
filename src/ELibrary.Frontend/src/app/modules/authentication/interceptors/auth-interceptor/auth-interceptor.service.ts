@@ -13,7 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private authToken: AuthToken | null = null;
   private decodedToken: JwtPayload | null = null;
   private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private isAuthenticated = false;
 
   constructor(

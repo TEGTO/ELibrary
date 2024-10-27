@@ -18,7 +18,7 @@ export class LibraryFilterComponent {
       ...defaultLibraryFilterRequest(),
       pageNumber: 0,
       pageSize: 0,
-      containsName: this.inputControl.value || ""
+      containsName: this.inputControl.value ?? ""
     };
     this.filterChange.emit(req);
   }

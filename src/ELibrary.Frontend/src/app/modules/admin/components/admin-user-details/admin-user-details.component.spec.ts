@@ -26,7 +26,8 @@ describe('AdminUserDetailsComponent', () => {
     email: 'johndoe@example.com',
     registredAt: new Date(),
     updatedAt: new Date(),
-    roles: ['Admin']
+    roles: ['Admin'],
+    authenticationMethods: []
   };
 
   const activatedRouteStub = {

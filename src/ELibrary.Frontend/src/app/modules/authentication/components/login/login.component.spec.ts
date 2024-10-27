@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { SIGN_IN_COMMAND_HANDLER, SignInCommand, START_REGISTRATION_COMMAND_HANDLER, StartRegistrationCommand } from '../..';
+import { SIGN_IN_COMMAND_HANDLER, SignInCommand, START_OAUTH_LOGIN_COMMAND_HANDLER, START_REGISTRATION_COMMAND_HANDLER, StartOAuthLoginCommand, StartRegistrationCommand } from '../..';
 import { CommandHandler, ValidationMessage } from '../../../shared';
 import { LoginComponent } from './login.component';
 
@@ -16,6 +16,7 @@ describe('LoginComponent', () => {
     let fixture: ComponentFixture<LoginComponent>;
     let signInCommandHandlerSpy: jasmine.SpyObj<CommandHandler<SignInCommand>>;
     let startRegistrationHandlerSpy: jasmine.SpyObj<CommandHandler<StartRegistrationCommand>>;
+    let startOauthHandlerSpy: jasmine.SpyObj<CommandHandler<StartOAuthLoginCommand>>;
     let dialogRefSpy: jasmine.SpyObj<MatDialogRef<LoginComponent>>;
 
     beforeEach(waitForAsync(() => {
@@ -39,6 +40,7 @@ describe('LoginComponent', () => {
             providers: [
                 { provide: SIGN_IN_COMMAND_HANDLER, useValue: signInCommandHandlerSpyObj },
                 { provide: START_REGISTRATION_COMMAND_HANDLER, useValue: startRegistrationHandlerSpyObj },
+                { provide: START_OAUTH_LOGIN_COMMAND_HANDLER, useValue: startOauthHandlerSpy },
                 { provide: MatDialogRef, useValue: dialogRefSpyObj },
                 { provide: ValidationMessage, useValue: validationMessageSpyObj }
             ],
@@ -126,14 +128,6 @@ describe('LoginComponent', () => {
         expect(component.hidePassword).toBeTrue();
     });
 
-    it('should open register menu on Enter key press', () => {
-        const event = new KeyboardEvent('keydown', { key: 'Enter' });
-
-        component.openRegisterMenuOnKeydown(event);
-
-        expect(startRegistrationHandlerSpy.dispatch).toHaveBeenCalled();
-    });
-
     it('should open register menu on button click', () => {
         component.openRegisterMenu();
 
@@ -141,7 +135,7 @@ describe('LoginComponent', () => {
     });
 
     it('should dispatch StartRegistrationCommand on registration link click', () => {
-        fixture.debugElement.query(By.css('a#to-register-link')).nativeElement.click();
+        fixture.debugElement.query(By.css('button#to-register-link')).nativeElement.click();
         expect(startRegistrationHandlerSpy.dispatch).toHaveBeenCalled();
     });
 });

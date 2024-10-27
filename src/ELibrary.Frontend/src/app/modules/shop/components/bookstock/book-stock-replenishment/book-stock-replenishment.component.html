@@ -6,7 +6,7 @@
 <mat-dialog-content>
     <div class="stockBookChange-body">
         <ng-container *ngFor="let item of items;">
-            <div *ngTemplateOutlet="stockBookChange; context: { formGroup: item }"></div>
+            <ng-container *ngTemplateOutlet="stockBookChange; context: { formGroup: item }"></ng-container>
         </ng-container>
     </div>
     <div class="flex justify-start items-center">
@@ -32,8 +32,7 @@
                 <app-book-input [formGroup]="formGroup" class="w-8/12"></app-book-input>
                 <mat-form-field class="!w-4/12">
                     <mat-label>Amount</mat-label>
-                    <input matInput type="number" appInputRange [min]="1" [max]="maxAmount" [value]="1"
-                        formControlName="amount">
+                    <input matInput type="number" appInputRange [min]="1" [max]="maxAmount" formControlName="amount">
                 </mat-form-field>
             </div>
             <div class="delete-button flex w-3/12 justify-center items-center">

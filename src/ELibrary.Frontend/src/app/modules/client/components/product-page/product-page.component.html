@@ -29,7 +29,7 @@
             class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 relative">
             <div class="book__cover relative">
                 <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
-                    onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                    (error)="onErrorImage($event)" />
                 <!-- Gray Overlay with Centered "Out of Stock" Text -->
                 <div *ngIf="!checkIfInStock(book)"
                     class="absolute inset-0 bg-gray-100/70 flex items-center justify-center text-red-600 font-bold text-xs">

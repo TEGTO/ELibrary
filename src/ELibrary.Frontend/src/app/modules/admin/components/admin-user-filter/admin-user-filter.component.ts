@@ -14,7 +14,7 @@ export class AdminUserFilterComponent implements OnInit, OnDestroy {
 
   formGroup!: FormGroup;
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   get containsInfoInput() { return this.formGroup.get('containsInfo')! as FormControl; }
 

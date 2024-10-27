@@ -91,7 +91,8 @@ describe('BookFilterComponent', () => {
             maxPageAmount: null,
             authorId: null,
             genreId: null,
-            publisherId: null
+            publisherId: null,
+            sorting: 0,
         };
 
         expect(component.filterChange.emit).toHaveBeenCalledWith(expectedRequest);

@@ -33,7 +33,6 @@ import { InputRangeDirective, LoadingComponent } from '../shared';
   ],
   imports: [
     CommonModule,
-    MatDialogModule,
     MatInputModule,
     FormsModule,
     AuthenticationModule,

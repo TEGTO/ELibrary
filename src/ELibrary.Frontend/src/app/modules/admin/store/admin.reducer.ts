@@ -19,60 +19,60 @@ const initialAdminState: AdminState = {
 export const adminReducer = createReducer(
     initialAdminState,
 
-    on(getUserSuccess, (state, { user: user }) => ({
+    on(getUserSuccess, (state, { user }) => ({
         ...state,
         users: [user],
         error: null
     })),
-    on(getUserFailure, (state, { error: error }) => ({
+    on(getUserFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(registerUserSuccess, (state, { user: user }) => ({
+    on(registerUserSuccess, (state, { user }) => ({
         ...state,
         users: [user, ...state.users],
         userTotalAmount: state.userTotalAmount + 1,
         error: null
     })),
-    on(registerUserFailure, (state, { error: error }) => ({
+    on(registerUserFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(getPaginatedUsersSuccess, (state, { users: users }) => ({
+    on(getPaginatedUsersSuccess, (state, { users }) => ({
         ...state,
         users: users,
         error: null
     })),
-    on(getPaginatedUsersFailure, (state, { error: error }) => ({
+    on(getPaginatedUsersFailure, (state, { error }) => ({
         ...initialAdminState,
         error: error
     })),
 
-    on(getPaginatedUserAmountSuccess, (state, { amount: amount }) => ({
+    on(getPaginatedUserAmountSuccess, (state, { amount }) => ({
         ...state,
         userTotalAmount: amount,
         error: null
     })),
-    on(getPaginatedUserAmountFailure, (state, { error: error }) => ({
+    on(getPaginatedUserAmountFailure, (state, { error }) => ({
         ...initialAdminState,
         error: error
     })),
 
-    on(updateUserSuccess, (state, { user: user }) => (
+    on(updateUserSuccess, (state, { user }) => (
         {
             ...state,
             users: state.users.map(u => u.id === user.id ? user : u),
             error: null
         }
     )),
-    on(updateUserFailure, (state, { error: error }) => ({
+    on(updateUserFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(deleteUserSuccess, (state, { id: id }) => (
+    on(deleteUserSuccess, (state, { id }) => (
         {
             ...state,
             users: state.users.filter(user =>
@@ -82,37 +82,37 @@ export const adminReducer = createReducer(
             error: null
         }
     )),
-    on(deleteUserFailure, (state, { error: error }) => ({
+    on(deleteUserFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(getClientSuccess, (state, { client: client }) => ({
+    on(getClientSuccess, (state, { client }) => ({
         ...state,
         clients: [client, ...state.clients],
         error: null
     })),
-    on(getClientFailure, (state, { error: error }) => ({
+    on(getClientFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(createClientSuccess, (state, { client: client }) => ({
+    on(createClientSuccess, (state, { client }) => ({
         ...state,
         clients: [client, ...state.clients],
         error: null
     })),
-    on(createClientFailure, (state, { error: error }) => ({
+    on(createClientFailure, (state, { error }) => ({
         ...state,
         error: error
     })),
 
-    on(updateClientSuccess, (state, { client: client }) => ({
+    on(updateClientSuccess, (state, { client }) => ({
         ...state,
         clients: state.clients.map(c => c.id === client.id ? client : c),
         error: null
     })),
-    on(updateClientFailure, (state, { error: error }) => ({
+    on(updateClientFailure, (state, { error }) => ({
         ...state,
         error: error
     })),

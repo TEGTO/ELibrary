@@ -1,16 +1,37 @@
-// import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { CartService, UpdateCartBookCommand } from '../../..';
+import { CartBook, getDefaultBook, mapCartBookToUpdateCartBookRequest, UpdateCartBookRequest } from '../../../../shared';
+import { UpdateCartBookCommandHandlerService } from './update-cartbook-command-handler.service';
 
-// import { UpdateCartBookCommandHandlerService } from './update-cartbook-command-handler.service';
+describe('UpdateCartBookCommandHandlerService', () => {
+    let service: UpdateCartBookCommandHandlerService;
+    let cartServiceSpy: jasmine.SpyObj<CartService>;
 
-// describe('UpdateCartBookCommandHandlerService', () => {
-//   let service: UpdateCartBookCommandHandlerService;
+    beforeEach(() => {
+        const spy = jasmine.createSpyObj('CartService', ['updateCartBook']);
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({});
-//     service = TestBed.inject(UpdateCartBookCommandHandlerService);
-//   });
+        TestBed.configureTestingModule({
+            providers: [
+                UpdateCartBookCommandHandlerService,
+                { provide: CartService, useValue: spy }
+            ]
+        });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
-// });
+        service = TestBed.inject(UpdateCartBookCommandHandlerService);
+        cartServiceSpy = TestBed.inject(CartService) as jasmine.SpyObj<CartService>;
+    });
+
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
+
+    it('dispatch should call cartService.updateCartBook with mapped request', () => {
+        const cartBook: CartBook = { id: '1', bookAmount: 1, bookId: 2, book: getDefaultBook() };
+        const command: UpdateCartBookCommand = { cartBook };
+        const expectedRequest: UpdateCartBookRequest = mapCartBookToUpdateCartBookRequest(cartBook);
+
+        service.dispatch(command);
+
+        expect(cartServiceSpy.updateCartBook).toHaveBeenCalledWith(expectedRequest);
+    });
+});

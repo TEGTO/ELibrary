@@ -4,9 +4,9 @@ import { Inject, Injectable, LOCALE_ID } from '@angular/core';
   providedIn: 'root'
 })
 export class LocaleService {
-  private currentCurrency = 'UAH';
+  private readonly currentCurrency = 'UAH';
 
-  constructor(@Inject(LOCALE_ID) private locale: string) { }
+  constructor(@Inject(LOCALE_ID) private readonly locale: string) { }
 
   getLocale(): string {
     return this.locale;

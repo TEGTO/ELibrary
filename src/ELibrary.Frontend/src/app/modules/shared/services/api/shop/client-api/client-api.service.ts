@@ -22,8 +22,8 @@ export class ClientApiService extends BaseApiService {
       catchError((error) => this.handleError(error)),
     );
   }
-  update(request: UpdateClientRequest): Observable<ClientResponse> {
-    return this.httpClient.put<Client>(this.combinePathWithClientApiUrl(``), request).pipe(
+  update(request: UpdateClientRequest): Observable<Client> {
+    return this.httpClient.put<ClientResponse>(this.combinePathWithClientApiUrl(``), request).pipe(
       map((response) => mapClientResponseToClient(response)),
       catchError((error) => this.handleError(error)),
     );
@@ -45,8 +45,8 @@ export class ClientApiService extends BaseApiService {
       catchError((error) => this.handleError(error)),
     );
   }
-  adminUpdate(id: string, request: UpdateClientRequest): Observable<ClientResponse> {
-    return this.httpClient.put<Client>(this.combinePathWithClientApiUrl(`/admin/${id}`), request).pipe(
+  adminUpdate(id: string, request: UpdateClientRequest): Observable<Client> {
+    return this.httpClient.put<ClientResponse>(this.combinePathWithClientApiUrl(`/admin/${id}`), request).pipe(
       map((response) => mapClientResponseToClient(response)),
       catchError((error) => this.handleError(error)),
     );

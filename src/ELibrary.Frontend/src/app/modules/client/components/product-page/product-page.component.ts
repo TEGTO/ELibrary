@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { map, Observable, tap } from 'rxjs';
+import { environment } from '../../../../../environment/environment';
 import { BookService } from '../../../library';
 import { Book, BookFilterRequest, CommandHandler, CurrencyPipeApplier, defaultBookFilterRequest } from '../../../shared';
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from '../../../shop';
@@ -20,7 +21,7 @@ export class ProductPageComponent implements OnInit {
   bookAddedMap: Record<string, boolean> = {};
   pageSize = 8;
   pageSizeOptions: number[] = [8, 16, 32];
-  private defaultPagination = { pageIndex: 1, pageSize: 8 };
+  private readonly defaultPagination = { pageIndex: 1, pageSize: 8 };
   private filterReq: BookFilterRequest = defaultBookFilterRequest();
 
   constructor(
@@ -98,5 +99,9 @@ export class ProductPageComponent implements OnInit {
   }
   checkIfInStock(book: Book): boolean {
     return book.stockAmount > 0;
+  }
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }

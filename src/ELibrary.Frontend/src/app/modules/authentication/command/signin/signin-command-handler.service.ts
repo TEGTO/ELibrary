@@ -7,7 +7,7 @@ import { CommandHandler, SnackbarManager } from '../../../shared';
   providedIn: 'root'
 })
 export class SignInCommandHandlerService extends CommandHandler<SignInCommand> implements OnDestroy {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly authService: AuthenticationService,

@@ -17,4 +17,7 @@ export class RedirectorService {
   redirectTo(path: string, queryParams?: Record<string, any>): void {
     this.router.navigate([path], { queryParams });
   }
+  redirectToExternalUrl(url: string): void {
+    window.location.href = url;
+  }
 }

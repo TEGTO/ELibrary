@@ -2,13 +2,14 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, mergeMap, of } from "rxjs";
 import { createClient, createClientFailure, createClientSuccess, deleteUser, deleteUserFailure, deleteUserSuccess, getClient, getClientFailure, getClientSuccess, getPaginatedUserAmount, getPaginatedUserAmountFailure, getPaginatedUserAmountSuccess, getPaginatedUsers, getPaginatedUsersFailure, getPaginatedUsersSuccess, getUser, getUserFailure, getUserSuccess, registerUser, registerUserFailure, registerUserSuccess, updateClient, updateClientFailure, updateClientSuccess, updateUser, updateUserFailure, updateUserSuccess } from "..";
-import { AuthenticationApiService, ClientApiService } from "../../shared";
+import { AuthenticationApiService, ClientApiService, UserApiService } from "../../shared";
 
 @Injectable()
 export class AdminEffects {
     constructor(
         private readonly actions$: Actions,
-        private readonly userApiService: AuthenticationApiService,
+        private readonly authApiService: AuthenticationApiService,
+        private readonly userApiService: UserApiService,
         private readonly clientApiService: ClientApiService,
     ) { }
 
@@ -30,7 +31,7 @@ export class AdminEffects {
         this.actions$.pipe(
             ofType(registerUser),
             mergeMap((action) =>
-                this.userApiService.adminRegisterUser(action.req).pipe(
+                this.authApiService.adminRegisterUser(action.req).pipe(
                     map(response => registerUserSuccess({ user: response })),
                     catchError(error => of(registerUserFailure({ error: error.message })))
                 )

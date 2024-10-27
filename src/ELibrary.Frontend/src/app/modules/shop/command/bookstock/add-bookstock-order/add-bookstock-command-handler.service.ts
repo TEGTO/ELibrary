@@ -37,7 +37,7 @@ export class AddBookStockCommandHandlerService extends CommandHandler<AddBookSto
         })
       )
       .subscribe(result => {
-        if (result && result.changes) {
+        if (result?.changes) {
           const req: CreateStockBookOrderRequest = {
             type: StockBookOrderType.StockReplenishment,
             clientId: result.client.id,
@@ -49,5 +49,4 @@ export class AddBookStockCommandHandlerService extends CommandHandler<AddBookSto
         }
       });
   }
-
 }

@@ -14,32 +14,32 @@ const initialClientState: ClientState = {
 export const clientReducer = createReducer(
     initialClientState,
 
-    on(getClientSuccess, (state, { client: client }) => ({
+    on(getClientSuccess, (state, { client }) => ({
         ...state,
         client: client,
         error: null
     })),
-    on(getClientFailure, (state, { error: error }) => ({
+    on(getClientFailure, (state, { error }) => ({
         ...initialClientState,
         error: error
     })),
 
-    on(createClientSuccess, (state, { client: client }) => ({
+    on(createClientSuccess, (state, { client }) => ({
         ...state,
         client: client,
         error: null
     })),
-    on(createClientFailure, (state, { error: error }) => ({
+    on(createClientFailure, (state, { error }) => ({
         ...initialClientState,
         error: error
     })),
 
-    on(updateClientSuccess, (state, { client: client }) => ({
+    on(updateClientSuccess, (state, { client }) => ({
         ...state,
         client: client,
         error: null
     })),
-    on(updateClientFailure, (state, { error: error }) => ({
+    on(updateClientFailure, (state, { error }) => ({
         ...initialClientState,
         error: error
     })),

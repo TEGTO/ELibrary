@@ -4,8 +4,8 @@ using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;
-using Shared.Repositories;
 using ShopApi;
+using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Services;
@@ -26,8 +26,9 @@ if (useCors)
 }
 
 #endregion
-builder.Services.AddDbContextFactory<LibraryShopDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)));
+
+builder.Services.AddDbContextFactory<LibraryShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!);
+
 
 #region Identity & Authentication
 
@@ -46,10 +47,12 @@ builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
-
-builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
+builder.Services.AddSingleton<IChatService, ChatService>();
+builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
+builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 #endregion
 
 builder.Services.AddMemoryCache();

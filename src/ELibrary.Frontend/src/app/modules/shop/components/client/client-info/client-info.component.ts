@@ -16,7 +16,7 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
   readonly panelOpenState = signal(false);
   formGroup!: FormGroup;
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   get nameInput() { return this.formGroup.get('name')!; }
   get middleNameInput() { return this.formGroup.get('middleName')!; }
@@ -59,6 +59,7 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
       });
   }
   updateClient() {
+    console.log(this.formGroup.valid);
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
       const client: Client = {

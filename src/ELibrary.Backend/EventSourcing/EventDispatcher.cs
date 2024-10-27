@@ -14,7 +14,7 @@
             var handler = serviceProvider.GetService(typeof(IEventHandler<TEvent>)) as IEventHandler<TEvent>;
             if (handler != null)
             {
-                await handler.HandleAsync(@event, cancellationToken);
+                await handler.HandleAsync(@event, cancellationToken).ConfigureAwait(false);
             }
         }
     }

@@ -24,7 +24,7 @@ namespace ShopApi.Controllers.Tests
         {
             mockMapper = new Mock<IMapper>();
             mockCartService = new Mock<ICartService>();
-            cartController = new CartController(mockMapper.Object, null, mockCartService.Object);
+            cartController = new CartController(mockMapper.Object, mockCartService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

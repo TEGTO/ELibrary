@@ -1,9 +1,13 @@
-﻿using FluentValidation;
+﻿using EntityFramework.Exceptions.PostgreSQL;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
+using Shared.Configurations;
 using Shared.Middlewares;
 using Shared.Validators;
 
@@ -37,7 +41,7 @@ namespace Shared
         }
         public static IServiceCollection AddPaginationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var paginationConf = new PaginationConfiguration(int.Parse(configuration[Configuration.MAX_PAGINATION_PAGE_SIZE]!));
+            var paginationConf = new PaginationConfiguration(int.Parse(configuration[Configuration.MAX_PAGINATION_PAGE_SIZE] ?? "0"));
             services.AddSingleton(paginationConf);
             return services;
         }
@@ -60,6 +64,33 @@ namespace Shared
                     }
                 });
             });
+            return services;
+        }
+        public static IServiceCollection AddDbContextFactory<Context>(
+          this IServiceCollection services,
+          string connectionString,
+          string? migrationAssembly = null,
+          Action<NpgsqlDbContextOptionsBuilder>? dbAdditionalConfig = null,
+          Action<DbContextOptionsBuilder>? additionalConfig = null
+          ) where Context : DbContext
+        {
+            services.AddDbContextFactory<Context>(options =>
+            {
+                var npgsqlOptions = options.UseNpgsql(connectionString, b =>
+                {
+                    if (!string.IsNullOrEmpty(migrationAssembly))
+                    {
+                        b.MigrationsAssembly(migrationAssembly);
+                    }
+                    dbAdditionalConfig?.Invoke(b);
+                });
+
+                options.UseSnakeCaseNamingConvention();
+                npgsqlOptions.UseExceptionProcessor();
+
+                additionalConfig?.Invoke(options);
+            });
+
             return services;
         }
     }

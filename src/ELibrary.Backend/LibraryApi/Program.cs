@@ -6,7 +6,6 @@ using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Middlewares;
-using Shared.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +21,7 @@ if (useCors)
 
 #endregion
 
-builder.Services.AddDbContextFactory<LibraryShopDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING),
-        b => b.MigrationsAssembly("LibraryApi")));
+builder.Services.AddDbContextFactory<LibraryShopDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING), "LibraryApi");
 
 #region Identity & Authentication
 
@@ -38,9 +35,9 @@ builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
 builder.Services.AddSingleton<ILibraryEntityService<Author>, AuthorService>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
-builder.Services.AddSingleton<IDatabaseRepository<LibraryShopDbContext>, DatabaseRepository<LibraryShopDbContext>>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
