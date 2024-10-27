@@ -1,5 +1,6 @@
 using Authentication;
-using Authentication.Services;
+using Authentication.OAuth;
+using Authentication.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared;
@@ -7,6 +8,9 @@ using Shared.Middlewares;
 using Shared.Repositories;
 using UserApi;
 using UserApi.Services;
+using UserApi.Services.Auth;
+using UserApi.Services.OAuth;
+using UserApi.Services.OAuth.Google;
 using UserEntities.Data;
 using UserEntities.Domain.Entities;
 
@@ -24,9 +28,7 @@ if (useCors)
 
 #endregion
 
-builder.Services.AddDbContextFactory<UserIdentityDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING), b =>
-        b.MigrationsAssembly("UserApi")));
+builder.Services.AddDbContextFactory<UserIdentityDbContext>(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING)!, "UserApi");
 
 #region Identity 
 
@@ -44,18 +46,38 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.ConfigureIdentityServices(builder.Configuration);
 builder.Services.AddScoped<ITokenHandler, JwtHandler>();
+
 #endregion
 
 #region Project Services 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserManager, UserManager>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<GoogleOAuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IGoogleOAuthHttpClient, GoogleOAuthHttpClient>();
+builder.Services.AddScoped<IUserOAuthCreationService, UserOAuthCreationService>();
+builder.Services.AddScoped<IUserAuthenticationMethodService, UserAuthenticationMethodService>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 
+builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuthService>
+    {
+        { OAuthLoginProvider.Google, provider.GetService<GoogleOAuthService>()! },
+    });
+
 builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<UserIdentityDbContext>(builder.Configuration);
+
+builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
+
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddMediatR(conf =>
+{
+    conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
 
 builder.Services.AddMemoryCache();
 

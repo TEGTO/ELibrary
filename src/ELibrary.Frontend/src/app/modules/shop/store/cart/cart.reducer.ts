@@ -16,29 +16,29 @@ const initialCartState: CartState = {
 export const cartReducer = createReducer(
     initialCartState,
 
-    on(getCartSuccess, (state, { cart: cart }) => ({
+    on(getCartSuccess, (state, { cart }) => ({
         ...state,
         amount: cart.books.reduce((total, book) => total + book.bookAmount, 0),
         cartBooks: cart.books,
         error: null
     })),
-    on(getCartFailure, (state, { error: error }) => ({
+    on(getCartFailure, (state, { error }) => ({
         ...initialCartState,
         error: error
     })),
 
-    on(getInCartAmountSuccess, (state, { amount: amount }) => ({
+    on(getInCartAmountSuccess, (state, { amount }) => ({
         ...state,
         amount: amount,
         error: null
     })),
-    on(getInCartAmountFailure, (state, { error: error }) => ({
+    on(getInCartAmountFailure, (state, { error }) => ({
         ...initialCartState,
         error: error
     })),
 
-    on(addBookToCartSuccess, (state, { req: req, cartBook: cartBook }) => {
-        const updatedBooks = state.cartBooks
+    on(addBookToCartSuccess, (state, { req, cartBook }) => {
+        const updatedBooks = state.cartBooks.find(x => x.id === cartBook.id)
             ? state.cartBooks.map(book =>
                 book.id === cartBook.id
                     ? cartBook
@@ -53,12 +53,12 @@ export const cartReducer = createReducer(
             error: null
         };
     }),
-    on(addBookToCartFailure, (state, { error: error }) => ({
+    on(addBookToCartFailure, (state, { error }) => ({
         ...initialCartState,
         error: error
     })),
 
-    on(updateCartBookSuccess, (state, { cartBook: cartBook }) => {
+    on(updateCartBookSuccess, (state, { cartBook }) => {
         const existingCartBook = state.cartBooks.find(book => book.id === cartBook.id);
         const updatedBooks = state.cartBooks.map(book =>
             book.id === cartBook.id ? cartBook : book
@@ -73,18 +73,18 @@ export const cartReducer = createReducer(
             error: null
         };
     }),
-    on(updateCartBookFailure, (state, { error: error }) => ({
+    on(updateCartBookFailure, (state, { error }) => ({
         ...initialCartState,
         error: error
     })),
 
-    on(deleteBooksFromCartSuccess, (state, { cart: cart }) => ({
+    on(deleteBooksFromCartSuccess, (state, { cart }) => ({
         ...state,
         cartBooks: cart.books,
         amount: cart.books.reduce((total, book) => total + book.bookAmount, 0),
         error: null
     })),
-    on(deleteBooksFromCartFailure, (state, { error: error }) => ({
+    on(deleteBooksFromCartFailure, (state, { error }) => ({
         ...initialCartState,
         error: error
     })),

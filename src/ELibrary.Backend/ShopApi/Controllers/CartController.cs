@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.CartFeature.Services;
-using ShopApi.Features.ClientFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers
@@ -18,13 +17,11 @@ namespace ShopApi.Controllers
     public class CartController : ControllerBase
     {
         private readonly IMapper mapper;
-        private readonly IClientService clientService;
         private readonly ICartService cartService;
 
-        public CartController(IMapper mapper, IClientService clientService, ICartService cartService)
+        public CartController(IMapper mapper, ICartService cartService)
         {
             this.mapper = mapper;
-            this.clientService = clientService;
             this.cartService = cartService;
         }
 

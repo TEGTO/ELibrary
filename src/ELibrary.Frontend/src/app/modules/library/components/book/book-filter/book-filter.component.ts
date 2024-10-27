@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { BookFilterRequest, CoverType, dateRangeValidatorFrom, dateRangeValidatorTo, defaultBookFilterRequest as getDefaultBookFilterRequest, rangeMaxValidator, rangeMinValidator, ValidationMessage } from '../../../../shared';
+import { BookFilterRequest, BookSorting, CoverType, dateRangeValidatorFrom, dateRangeValidatorTo, defaultBookFilterRequest as getDefaultBookFilterRequest, rangeMaxValidator, rangeMinValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-filter',
@@ -15,7 +15,7 @@ export class BookFilterComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   readonly panelOpenState = signal(false);
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   get containsNameInput() { return this.formGroup.get('containsName')! as FormControl; }
   get publicationFromUTCInput() { return this.formGroup.get('publicationFromUTC')! as FormControl; }
@@ -26,6 +26,12 @@ export class BookFilterComponent implements OnInit, OnDestroy {
   get maxPageAmountInput() { return this.formGroup.get('maxPageAmount')! as FormControl; }
   get coverTypeInput() { return this.formGroup.get('coverType')! as FormControl; }
   get onlyInStockInput() { return this.formGroup.get('onlyInStock')! as FormControl; }
+  get sortingInput() { return this.formGroup.get('sorting')! as FormControl; }
+  get anyCoverType() { return CoverType.Any; }
+  get hardCoverType() { return CoverType.Hard; }
+  get softCoverType() { return CoverType.Soft; }
+  get mostPopular() { return BookSorting.MostPopular; }
+  get leastPopular() { return BookSorting.LeastPopular; }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -60,6 +66,7 @@ export class BookFilterComponent implements OnInit, OnDestroy {
       author: new FormControl(null),
       genre: new FormControl(null),
       publisher: new FormControl(null),
+      sorting: new FormControl(BookSorting.MostPopular, [Validators.required]),
     });
   }
   onFilterChange(): void {
@@ -81,7 +88,9 @@ export class BookFilterComponent implements OnInit, OnDestroy {
         authorId: formValues.author?.id ?? null,
         genreId: formValues.genre?.id ?? null,
         publisherId: formValues.publisher?.id ?? null,
+        sorting: formValues.sorting,
       };
+      console.log(req);
       this.filterChange.emit(req);
     }
   }

@@ -1,10 +1,12 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { By } from '@angular/platform-browser';
+import { MatNativeDateTimeModule, MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { of } from 'rxjs';
 import { CartBook, Client, CommandHandler, CurrencyPipeApplier, getDefaultBook, getDefaultClient, PaymentMethod, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
@@ -38,10 +40,11 @@ describe('MakeOrderComponent', () => {
             imports: [
                 ReactiveFormsModule,
                 MatDialogModule,
-                NgxMatTimepickerModule,
-                NgxMatNativeDateModule,
-                NgxMatDatetimePickerModule,
-                MatRadioModule
+                MatRadioModule,
+                MatTimepickerModule,
+                MatNativeDateTimeModule,
+                MatNativeDateModule,
+                MatDatepickerModule
             ],
             providers: [
                 { provide: CartService, useValue: cartServiceSpy },

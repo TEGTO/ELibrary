@@ -11,6 +11,8 @@ namespace UserEntities.Domain.Entities
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         [Required]
+        public List<UserAuthenticationMethod> AuthenticationMethods { get; set; } = new List<UserAuthenticationMethod>();
+        [Required]
         public DateTime RegistredAtUtc { get; set; }
         [Required]
         public DateTime UpdatedAtUtc { get; set; }

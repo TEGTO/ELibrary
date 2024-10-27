@@ -69,22 +69,31 @@
                         <label for="order" class="text-xl font-bold">Edit Order</label>
                         <form id="order" class="flex flex-col space-y-1" [formGroup]="getFormGroup(order)"
                             (ngSubmit)="updateOrder(order)">
-                            <div class="flex gap-3">
-                                <mat-form-field class="w-6/12">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <mat-form-field>
+                                    <mat-label>Delivery Date</mat-label>
+                                    <input matInput [matDatepicker]="picker" [formControl]="deliveryDateInput(order)">
+                                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <mat-error
+                                        *ngIf="validateInputField(deliveryDateInput(order)).hasError">{{validateInputField(deliveryDateInput(order)).message}}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field>
                                     <mat-label>Delivery Time</mat-label>
-                                    <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
-                                        formControlName="deliveryTime" [readonly]="true">
-                                    <ngx-mat-datepicker-toggle [for]="picker" matSuffix></ngx-mat-datepicker-toggle>
-                                    <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
-                                    <mat-error *ngIf="validateInputField(deliveryTimeInput(order)).hasError">
-                                        {{validateInputField(deliveryTimeInput(order)).message}}
-                                    </mat-error>
+                                    <input type="text" matInput [matTimepicker]="timepicker"
+                                        [formControl]="deliveryTimeInput(order)" [min]="minOrderTime"
+                                        [max]="maxOrderTime" />
+                                    <mat-timepicker-toggle matSuffix [for]="timepicker"></mat-timepicker-toggle>
+                                    <mat-timepicker #timepicker mode="input" format="24h"> </mat-timepicker>
+                                    <mat-error
+                                        *ngIf="validateInputField(deliveryTimeInput(order)).hasError">{{validateInputField(deliveryTimeInput(order)).message}}</mat-error>
                                 </mat-form-field>
 
-                                <mat-form-field class="w-6/12">
+                                <mat-form-field>
                                     <mat-label>Delivery Address</mat-label>
                                     <input matInput type="text" autocomplete="delivery-address"
-                                        formControlName="address" placeholder="123 Main St" maxlength="256">
+                                        [formControl]="deliveryAddressInput(order)" placeholder="123 Main St"
+                                        maxlength="256">
                                     <mat-error
                                         *ngIf="validateInputField(deliveryAddressInput(order)).hasError">{{validateInputField(deliveryAddressInput(order)).message}}</mat-error>
                                 </mat-form-field>
@@ -93,7 +102,7 @@
                                 <div>
                                     <label for="payment">Payment</label>
                                     <div>
-                                        <mat-radio-group id="payment" formControlName="payment">
+                                        <mat-radio-group id="payment" [formControl]="paymentInput(order)">
                                             <mat-radio-button *ngFor="let item of paymentMethods"
                                                 [value]="item.value">{{item.name}}</mat-radio-button>
                                             <mat-error
@@ -104,11 +113,11 @@
                                 <div>
                                     <label for="delivery">Delivery</label>
                                     <div>
-                                        <mat-radio-group id="delivery" formControlName="delivery">
+                                        <mat-radio-group id="delivery" [formControl]="deliveryMethodInput(order)">
                                             <mat-radio-button *ngFor="let item of deliveryMethods"
                                                 [value]="item.value">{{item.name}}</mat-radio-button>
                                             <mat-error
-                                                *ngIf="validateInputField(deliveryInput(order)).hasError">{{validateInputField(deliveryInput(order)).message}}</mat-error>
+                                                *ngIf="validateInputField(deliveryMethodInput(order)).hasError">{{validateInputField(deliveryMethodInput(order)).message}}</mat-error>
                                         </mat-radio-group>
                                     </div>
                                 </div>
@@ -158,7 +167,7 @@
             <div class=" flex flex gap-5">
                 <a class="book__cover hover:cursor-pointer" [routerLink]="getBookPage(orderBook)">
                     <img class="h-42 w-24" crossorigin='anonymous' [src]="orderBook.book.coverImgUrl" alt="Book cover"
-                        onerror="this.src='../../../../../assets/book_cover_placeholder.png';" />
+                        (error)="onErrorImage($event)" />
                 </a>
                 <a class="h-full flex flex-col items-start pt-5">
                     <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"

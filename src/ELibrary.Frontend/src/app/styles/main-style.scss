@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use "@dhutaryan/ngx-mat-timepicker" as mat-timepicker;
 @import "./partials/global-styles.scss";
 @import "@angular/material/prebuilt-themes/azure-blue.css";
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,700|Lato:400,800,900");
@@ -46,3 +47,5 @@ $button-icon-light: mat.define-theme((color: (theme-type: dark,
     @include square-elements;
     // @include toolbar-theme($theme);
 }
+
+@include mat-timepicker.timepicker-theme($theme);

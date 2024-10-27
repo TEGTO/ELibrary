@@ -1,5 +1,7 @@
-﻿using Authentication.Configuration;
-using Authentication.Identity;
+﻿using Authentication.Identity;
+using Authentication.OAuth;
+using Authentication.OAuth.Google;
+using Authentication.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,18 @@ namespace Authentication
                 Issuer = configuration[JwtConfiguration.JWT_SETTINGS_ISSUER]!,
                 ExpiryInMinutes = Convert.ToDouble(configuration[JwtConfiguration.JWT_SETTINGS_EXPIRY_IN_MINUTES]!),
             };
+            var googleOAuthSettings = new GoogleOAuthSettings()
+            {
+                ClientId = configuration[OAuthConfiguration.GOOGLE_OAUTH_CLIENT_ID]!,
+                ClientSecret = configuration[OAuthConfiguration.GOOGLE_OAUTH_CLIENT_SECRET]!,
+                Scope = configuration[OAuthConfiguration.GOOGLE_OAUTH_SCOPE]!,
+            };
+
             services.AddSingleton(jwtSettings);
+            services.AddSingleton(googleOAuthSettings);
+
+            services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policy.REQUIRE_CLIENT_ROLE,
@@ -29,9 +42,9 @@ namespace Authentication
                 options.AddPolicy(Policy.REQUIRE_ADMIN_ROLE,
                     policy => policy.RequireRole(Roles.ADMINISTRATOR));
             });
-            services.AddCustomJwtAuthentication(jwtSettings);
+            services.AddCustomAuthentication(jwtSettings);
         }
-        public static void AddCustomJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
+        public static void AddCustomAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
         {
             services.AddAuthentication(options =>
             {

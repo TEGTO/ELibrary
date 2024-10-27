@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../../../environment/environment';
 import { Book, Client, CurrencyPipeApplier, getClientName, getProductInfoPath, RouteReader, StockBookChange, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from '../../../../../shared';
 import { BookstockOrderService } from '../../../../../shop';
 
@@ -50,5 +51,9 @@ export class BookStockDetailsComponent implements OnInit {
   }
   getClientName(client: Client): string {
     return getClientName(client);
+  }
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }

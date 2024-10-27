@@ -66,7 +66,7 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
             Assert.That(result.AveragePrice, Is.EqualTo(50));
             Assert.That(result.StockAmount, Is.EqualTo(10));
             Assert.That(result.EarnedMoney, Is.EqualTo(100));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Exactly(4));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Exactly(7));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Exactly(2));
         }
         [Test]
@@ -89,7 +89,7 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken)).ReturnsAsync(orderDbSetMock.Object);
             // Act
             var metohdInfo = service.GetType().GetMethod("GetInOrderCopiesAsync", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = await (Task<int>)metohdInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            var result = await (Task<long>)metohdInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
             // Assert
             Assert.That(result, Is.EqualTo(2));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
@@ -114,10 +114,82 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken)).ReturnsAsync(orderDbSetMock.Object);
             // Act
             var metohdInfo = service.GetType().GetMethod("GetCanceledCopiesAsync", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = await (Task<int>)metohdInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            var result = await (Task<long>)metohdInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
             // Assert
             Assert.That(result, Is.EqualTo(2));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task GetOrderAmountAsync_ReturnsCorrectOrderCount()
+        {
+            // Arrange
+            var getBookStatistics = new GetBookStatistics { FromUTC = DateTime.UtcNow.AddDays(-10), ToUTC = DateTime.UtcNow.AddDays(10) };
+            var orders = new List<Order>
+            {
+                new Order { Id = 1, CreatedAt = DateTime.UtcNow, OrderAmount = 2, OrderStatus = OrderStatus.Completed },
+                new Order { Id = 2, CreatedAt = DateTime.UtcNow, OrderAmount = 1, OrderStatus = OrderStatus.Canceled }
+            };
+            var orderDbSetMock = GetDbSetMock(orders);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken)).ReturnsAsync(orderDbSetMock.Object);
+            // Act
+            var methodInfo = service.GetType().GetMethod("GetOrderAmountAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = await (Task<long>)methodInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task GetCanceledOrdersAsync_ReturnsCorrectCanceledOrderCount()
+        {
+            // Arrange
+            var getBookStatistics = new GetBookStatistics { FromUTC = DateTime.UtcNow.AddDays(-10), ToUTC = DateTime.UtcNow.AddDays(10) };
+            var orders = new List<Order>
+            {
+                new Order { Id = 1, CreatedAt = DateTime.UtcNow, OrderAmount = 2, OrderStatus = OrderStatus.Canceled },
+                new Order { Id = 2, CreatedAt = DateTime.UtcNow, OrderAmount = 1, OrderStatus = OrderStatus.Completed }
+            };
+            var orderDbSetMock = GetDbSetMock(orders);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken)).ReturnsAsync(orderDbSetMock.Object);
+            // Act
+            var methodInfo = service.GetType().GetMethod("GetCanceledOrdersAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = await (Task<long>)methodInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            // Assert
+            Assert.That(result, Is.EqualTo(1));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task GetStockAmountAsync_ReturnsCorrectTotalStockAmount()
+        {
+            // Arrange
+            var getBookStatistics = new GetBookStatistics { IncludeBooks = new[] { new Book { Id = 1 } } };
+            var books = new List<Book>
+            {
+                new Book { Id = 1, StockAmount = 10 },
+                new Book { Id = 2, StockAmount = 15 }
+            };
+            var bookDbSetMock = GetDbSetMock(books);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken)).ReturnsAsync(bookDbSetMock.Object);
+            // Act
+            var methodInfo = service.GetType().GetMethod("GetStockAmountAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = await (Task<long>)methodInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            // Assert
+            Assert.That(result, Is.EqualTo(10));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task GetAveragePriceAsync_ReturnsCorrectAveragePrice()
+        {
+            // Arrange
+            var getBookStatistics = new GetBookStatistics();
+            var books = new List<Book> { new Book { Id = 1, Price = 50 }, new Book { Id = 2, Price = 100 } };
+            var bookDbSetMock = GetDbSetMock(books);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken)).ReturnsAsync(bookDbSetMock.Object);
+            // Act
+            var methodInfo = service.GetType().GetMethod("GetAveragePriceAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = await (Task<decimal>)methodInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            // Assert
+            Assert.That(result, Is.EqualTo(75));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
         [Test]
         public async Task GetEarnedMoneyAsync_ReturnsCorrectAmount()
@@ -145,19 +217,32 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetAveragePriceAsync_ReturnsCorrectAveragePrice()
+        public async Task GetOrderAmountInDaysAsync_ReturnsCorrectOrderCountPerDay()
         {
             // Arrange
-            var getBookStatistics = new GetBookStatistics { IncludeBooks = new[] { new Book { Id = 1 } } };
-            var books = new List<Book> { new Book { Id = 1, Price = 50 }, new Book { Id = 2, Price = 60 } };
-            var bookDbSetMock = GetDbSetMock(books);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken)).ReturnsAsync(bookDbSetMock.Object);
+            var getBookStatistics = new GetBookStatistics();
+
+            var orders = new List<Order>
+            {
+                new Order { Id = 1, CreatedAt = new DateTime(2024, 4, 13), OrderAmount = 5 },
+                new Order { Id = 2, CreatedAt = new DateTime(2024, 4, 13), OrderAmount = 3},
+                new Order { Id = 3, CreatedAt = new DateTime(2024, 5, 14), OrderAmount = 2}
+            };
+
+            var orderDbSetMock = GetDbSetMock(orders);
+            repositoryMock
+                .Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken))
+                .ReturnsAsync(orderDbSetMock.Object);
             // Act
-            var metohdInfo = service.GetType().GetMethod("GetAveragePriceAsync", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = await (Task<decimal>)metohdInfo.Invoke(service, new object[] { getBookStatistics, cancellationToken });
+            var methodInfo = service.GetType()
+                .GetMethod("GetOrderAmountInDaysAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = await (Task<Dictionary<DateTime, long>>)methodInfo
+                .Invoke(service, new object[] { getBookStatistics, cancellationToken });
             // Assert
-            Assert.That(result, Is.EqualTo(50));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result[new DateTime(2024, 4, 13)], Is.EqualTo(2));
+            Assert.That(result[new DateTime(2024, 5, 14)], Is.EqualTo(1));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Order>(cancellationToken), Times.Once);
         }
     }
 }

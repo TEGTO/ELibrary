@@ -26,8 +26,8 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
   }
   openLoginMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(LoginComponent, {
-      maxHeight: '345px',
-      width: '450px',
+      maxHeight: '455px',
+      width: '500px',
     });
     return dialogRef;
   }
@@ -40,8 +40,8 @@ export class AuthenticationDialogManagerService implements AuthenticationDialogM
   }
   openRegisterMenu(): MatDialogRef<any> {
     const dialogRef = this.dialog.open(RegisterComponent, {
-      maxHeight: '390px',
-      width: '450px',
+      maxHeight: '455px',
+      width: '500px',
     });
     return dialogRef;
   }

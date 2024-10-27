@@ -5,6 +5,8 @@
             <ng-container *ngIf="statistics$ | async as item; else loading">
                 <div class="statistics-wrapper">
                     <ng-container *ngTemplateOutlet="details;  context: { statistics: item}"></ng-container>
+                    <app-statistics-chart [data]="item.orderAmountInDays"
+                        class="md:absolute right-6 sm:w-full md:w-6/12"></app-statistics-chart>
                 </div>
             </ng-container>
             <div class="w-full p-6">
@@ -36,6 +38,14 @@
                         <span class="detail-header__dots">⠀</span>
                     </div>
                     <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Order Amount</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
+                        <span class="font-semibold">Canceled Order Amount</span>
+                        <span class="detail-header__dots">⠀</span>
+                    </div>
+                    <div class="statistics__detail-header text-gray-400">
                         <span class="font-semibold">Average Price (At The Moment)</span>
                         <span class="detail-header__dots">⠀</span>
                     </div>
@@ -59,7 +69,13 @@
                         <span>{{ statistics.soldCopies }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ statistics.canceledOrders }}</span>
+                        <span>{{ statistics.canceledCopies }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ statistics.orderAmount }}</span>
+                    </div>
+                    <div class="statistics__detail-value text-gray-400">
+                        <span>{{ statistics.canceledOrderAmount }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
                         <span>{{ applyCurrencyPipe(statistics.averagePrice) }}</span>

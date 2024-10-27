@@ -1,6 +1,7 @@
 ﻿using LibraryApi.Domain.Dtos;
 using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
@@ -17,11 +18,11 @@ namespace LibraryApi.Services
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
             return await queryable
-                    .Include(b => b.Author)
-                    .Include(b => b.Genre)
-                    .Include(b => b.Publisher)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
         public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
@@ -29,17 +30,18 @@ namespace LibraryApi.Services
             List<Book> paginatedBooks = new List<Book>();
 
             var query = queryable
-                 .Include(b => b.Author)
-                 .Include(b => b.Genre)
-                 .Include(b => b.Publisher)
-                 .AsNoTracking();
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
+                .AsNoTracking();
 
             query = ApplyFilter(query, req);
 
-            paginatedBooks.AddRange(await query
+            var sortedBooks = await ApplySortingAsync(query, req, cancellationToken);
+
+            paginatedBooks.AddRange(sortedBooks
                   .Skip((req.PageNumber - 1) * req.PageSize)
-                  .Take(req.PageSize)
-                  .ToListAsync(cancellationToken));
+                  .Take(req.PageSize));
 
             return paginatedBooks;
         }
@@ -58,10 +60,10 @@ namespace LibraryApi.Services
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
             var entityInDb = await queryable
-                                       .Include(b => b.Author)
-                                       .Include(b => b.Genre)
-                                       .Include(b => b.Publisher)
-                                       .FirstAsync(b => b.Id == book.Id, cancellationToken);
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
+                .FirstAsync(b => b.Id == book.Id, cancellationToken);
             return entityInDb;
         }
         public override async Task<Book> UpdateAsync(Book entity, CancellationToken cancellationToken)
@@ -75,10 +77,10 @@ namespace LibraryApi.Services
             await repository.UpdateAsync(entityInDb, cancellationToken);
 
             entityInDb = await queryable
-                                         .Include(b => b.Author)
-                                         .Include(b => b.Genre)
-                                         .Include(b => b.Publisher)
-                                         .FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher)
+                .FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
             return entityInDb;
         }
 
@@ -134,17 +136,66 @@ namespace LibraryApi.Services
                 {
                     query = query.Where(b => b.PageAmount <= bookFilter.MaxPageAmount);
                 }
-                return query
-                  .OrderByDescending(b => b.Id)
-                  .OrderByDescending(b => b.StockAmount > 0);
+                return query;
             }
-            else
+            return query
+                .Where(b => b.Name.Contains(req.ContainsName));
+        }
+
+        private async Task<IEnumerable<Book>> ApplySortingAsync(IQueryable<Book> query, LibraryFilterRequest req, CancellationToken cancellationToken)
+        {
+            if (req is BookFilterRequest bookFilter)
             {
-                return query
-                    .Where(b => b.Name.Contains(req.ContainsName))
-                    .OrderByDescending(b => b.Id)
-                    .OrderByDescending(b => b.StockAmount > 0);
+                if (!bookFilter.Sorting.HasValue)
+                {
+                    bookFilter.Sorting = BookSorting.MostPopular;
+                }
+                var books = await query
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
+
+                var bookIds = books.Select(x => x.Id);
+
+                var orderBooksCountQuery = await (await repository.GetQueryableAsync<Order>(cancellationToken))
+                    .SelectMany(o => o.OrderBooks)
+                    .Where(ob => bookIds.Contains(ob.BookId))
+                    .GroupBy(ob => ob.BookId)
+                    .Select(g => new { BookId = g.Key, OrderCount = g.Count() })
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
+
+                var orderCountDict = orderBooksCountQuery.ToDictionary(x => x.BookId, x => x.OrderCount);
+
+                var bookToSort = books
+                    .Select(book => new
+                    {
+                        Book = book,
+                        OrderCount = orderCountDict.ContainsKey(book.Id) ? orderCountDict[book.Id] : 0
+                    });
+
+                switch (bookFilter.Sorting.Value)
+                {
+                    case BookSorting.MostPopular:
+                        return bookToSort
+                              .OrderByDescending(b => b.Book.StockAmount > 0)
+                              .ThenByDescending(b => b.OrderCount)
+                              .Select(b => b.Book)
+                              .ToList();
+                    case BookSorting.LeastPopular:
+                        return bookToSort
+                              .OrderByDescending(b => b.Book.StockAmount > 0)
+                              .ThenBy(b => b.OrderCount)
+                              .Select(b => b.Book)
+                              .ToList();
+                    default:
+                        break;
+                }
             }
+
+            return query
+                .Where(b => b.Name.Contains(req.ContainsName))
+                .OrderByDescending(b => b.Id)
+                .OrderByDescending(b => b.StockAmount > 0);
         }
     }
 }

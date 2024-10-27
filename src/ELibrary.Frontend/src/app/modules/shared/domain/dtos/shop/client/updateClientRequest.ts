@@ -21,3 +21,15 @@ export function mapClientToUpdateClientRequest(client: Client): UpdateClientRequ
         email: client.email
     }
 }
+
+export function getDefaultUpdateClientRequest(): UpdateClientRequest {
+    return {
+        name: 'Jane',
+        middleName: 'M',
+        lastName: 'Doe',
+        address: '456 Main St',
+        phone: '0987654321',
+        email: 'jane.doe@example.com',
+        dateOfBirth: new Date('1992-02-02')
+    }
+}

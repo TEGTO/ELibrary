@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthenticationService, SIGN_UP_COMMAND_HANDLER, SignUpCommand } from '../..';
+import { AuthenticationService, SIGN_UP_COMMAND_HANDLER, SignUpCommand, START_LOGIN_COMMAND_HANDLER, StartLoginCommand } from '../..';
 import { CommandHandler, SnackbarManager, ValidationMessage } from '../../../shared';
 import { RegisterComponent } from './register.component';
 
@@ -14,12 +14,14 @@ describe('RegisterComponent', () => {
     let component: RegisterComponent;
     let fixture: ComponentFixture<RegisterComponent>;
     let signUpHandlerSpy: jasmine.SpyObj<CommandHandler<SignUpCommand>>;
+    let loginHandlerSpy: jasmine.SpyObj<CommandHandler<StartLoginCommand>>;
 
     beforeEach(async () => {
         const authServiceSpy = jasmine.createSpyObj('AuthenticationService', ['registerUser', 'getRegistrationErrors']);
         const snackbarManagerSpy = jasmine.createSpyObj('SnackbarManager', ['openInfoSnackbar', 'openErrorSnackbar']);
         const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
         signUpHandlerSpy = jasmine.createSpyObj<CommandHandler<SignUpCommand>>(['dispatch']);
+        loginHandlerSpy = jasmine.createSpyObj<CommandHandler<StartLoginCommand>>(['dispatch']);
         const validationMessageSpy = jasmine.createSpyObj<ValidationMessage>(['getValidationMessage']);
 
         validationMessageSpy.getValidationMessage.and.returnValue({ hasError: false, message: "" });
@@ -39,6 +41,7 @@ describe('RegisterComponent', () => {
                 { provide: MatDialogRef, useValue: dialogRefSpy },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: SIGN_UP_COMMAND_HANDLER, useValue: signUpHandlerSpy },
+                { provide: START_LOGIN_COMMAND_HANDLER, useValue: loginHandlerSpy },
                 { provide: ValidationMessage, useValue: validationMessageSpy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]

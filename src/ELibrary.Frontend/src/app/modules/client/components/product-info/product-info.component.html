@@ -10,7 +10,7 @@
         <div class="w-full flex gap-10">
             <div class="book__cover">
                 <img class="h-56 w-36" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
-                    onerror="this.src='../../../../../assets/book_cover_placeholder.png'" />
+                    (error)="onErrorImage($event)" />
             </div>
             <!-- Book Details -->
             <div class="h-full w-5/12 pt-5 flex">

@@ -10,13 +10,16 @@ describe('StatisticsApiService', () => {
   let urlDefinerSpy: jasmine.SpyObj<URLDefiner>;
 
   const mockStatisticsResponse: BookStatisticsResponse = {
-    inOrderCopies: 10,
     inCartCopies: 5,
+    inOrderCopies: 10,
     soldCopies: 15,
-    canceledOrders: 2,
+    canceledCopies: 2,
+    orderAmount: 2,
+    canceledOrderAmount: 2,
     averagePrice: 20,
     stockAmount: 50,
     earnedMoney: 300,
+    orderAmountInDays: []
   };
 
   const mockStatisticsRequest: GetBookStatisticsRequest = {

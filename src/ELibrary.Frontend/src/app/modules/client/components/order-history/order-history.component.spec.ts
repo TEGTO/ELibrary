@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatNativeDateTimeModule, MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { of } from 'rxjs';
 import { Client, CommandHandler, CurrencyPipeApplier, getDefaultClient, getDefaultOrder, getDefaultOrderBook, Order, OrderStatus, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
@@ -47,9 +49,11 @@ describe('OrderHistoryComponent', () => {
                 ReactiveFormsModule,
                 MatPaginatorModule,
                 BrowserAnimationsModule,
-                NgxMatDatetimePickerModule,
-                NgxMatNativeDateModule,
-                MatRadioModule
+                MatRadioModule,
+                MatTimepickerModule,
+                MatNativeDateTimeModule,
+                MatNativeDateModule,
+                MatDatepickerModule
             ],
             providers: [
                 { provide: ClientService, useValue: clientServiceSpy },

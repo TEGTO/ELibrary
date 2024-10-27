@@ -30,20 +30,20 @@ namespace Shared.Middlewares
                 var errors = ex.Errors
                  .Select(e => $"{e.PropertyName}: {e.ErrorMessage}")
                  .ToArray();
-                await SetError(httpContext, HttpStatusCode.BadRequest, ex, errors);
+                await SetError(httpContext, HttpStatusCode.BadRequest, ex, errors).ConfigureAwait(false);
             }
             catch (AuthorizationException ex)
             {
                 var errors = ex.Errors.ToArray();
-                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, errors);
+                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, errors).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException ex)
             {
-                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, new[] { ex.Message });
+                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, new[] { ex.Message }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { ex.Message });
+                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { "Internal server error occured." }).ConfigureAwait(false);
             }
         }
         private async Task SetError(HttpContext httpContext, HttpStatusCode httpStatusCode, Exception ex, string[] messages)
@@ -56,7 +56,7 @@ namespace Shared.Middlewares
                 Messages = messages
             };
             logger.LogError(ex, responseError.ToString());
-            await httpContext.Response.WriteAsync(responseError.ToString());
+            await httpContext.Response.WriteAsync(responseError.ToString()).ConfigureAwait(false);
         }
     }
     public static class ExceptionMiddlewareExtensions

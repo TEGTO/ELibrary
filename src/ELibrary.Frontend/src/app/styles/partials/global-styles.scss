@@ -40,6 +40,7 @@ html {
 
 .mat-mdc-dialog-container .mat-mdc-dialog-title+.mat-mdc-dialog-content {
     overflow-y: auto !important;
+    padding-top: 5px !important;
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
@@ -47,12 +48,37 @@ html {
     box-shadow: 2px 2px 7px 1px rgba(0, 0, 0, 0.1);
 }
 
+.mat-datepicker-content-container,
+.mat-timepicker-content-container {
+    background-color: #ffffff !important;
+    border-radius: 10px;
+    box-shadow: 2px 2px 7px 1px rgba(0, 0, 0, 0.15);
+}
+
+.mat-time-inputs-field .mat-mdc-text-field-wrapper,
+.mat-clock-dial-value,
+.mat-clock-dial {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.082);
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px 1px rgba(0, 0, 0, 0.05);
+}
+
 .cdk-overlay-pane:not(.mat-mdc-autocomplete-panel-above) div.mat-mdc-autocomplete-panel {
+    background-color: #ffffff !important;
+}
+
+.mat-mdc-card {
     background-color: #ffffff !important;
 }
 
 .mat-mdc-dialog-container ::-webkit-scrollbar {
     width: 8px !important;
+}
+
+.mat-mdc-dialog-surface,
+.mdc-dialog__surface {
+    background-color: #ffffff !important;
 }
 
 .wrapper {
@@ -77,19 +103,4 @@ html {
 
 ::-webkit-scrollbar {
     width: 15px;
-}
-
-.mat-datepicker-content {
-    box-shadow: 0 2px 4px -1px #0003, 0 4px 5px #00000024, 0 1px 10px #0000001f;
-    background-color: #fff;
-    color: #000000de
-}
-
-.mat-calendar-body-selected {
-    background-color: #007f51;
-    color: #fff;
-}
-
-.mat-calendar-body-cell-content {
-    border: none !important;
 }

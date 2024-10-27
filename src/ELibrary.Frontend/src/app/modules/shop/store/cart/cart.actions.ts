@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAction, props } from "@ngrx/store";
-import { AddBookToCartRequest, Cart, CartBook, DeleteCartBookFromCartRequest as DeleteBookFromCartRequest, UpdateCartBookRequest } from "../../../shared";
+import { AddBookToCartRequest, Cart, CartBook, DeleteCartBookFromCartRequest, UpdateCartBookRequest } from "../../../shared";
 
 export const getCart = createAction(
     '[Cart] Get Cart'
@@ -54,7 +54,7 @@ export const updateCartBookFailure = createAction(
 
 export const deleteBooksFromCart = createAction(
     '[Cart] Delete Books From Cart',
-    props<{ requests: DeleteBookFromCartRequest[] }>()
+    props<{ requests: DeleteCartBookFromCartRequest[] }>()
 );
 export const deleteBooksFromCartSuccess = createAction(
     '[Cart] elete Books From Cart Success',

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using MockQueryable.Moq;
 using Moq;
+using Polly;
+using Polly.Registry;
 
 namespace Shared.Repositories.Tests
 {
@@ -35,7 +37,10 @@ namespace Shared.Repositories.Tests
             dbContextFactoryMock.Setup(x => x.CreateDbContextAsync(It.IsAny<CancellationToken>()))
                                 .ReturnsAsync(mockDbContext.Object);
 
-            repository = new DatabaseRepository<MockDbContext>(dbContextFactoryMock.Object);
+            var mockPipelineProvider = new Mock<ResiliencePipelineProvider<string>>();
+            mockPipelineProvider.Setup(x => x.GetPipeline(It.IsAny<string>())).Returns(ResiliencePipeline.Empty);
+
+            repository = new DatabaseRepository<MockDbContext>(dbContextFactoryMock.Object, mockPipelineProvider.Object);
             cancellationToken = new CancellationToken();
         }
 

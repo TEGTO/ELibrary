@@ -1,10 +1,12 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatNativeDateTimeModule, MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { CurrencyPipeApplier, getDefaultBook, ValidationMessage } from '../../../../shared';
 import { BookStatisticsFilterComponent } from './book-statistics-filter.component';
 
@@ -27,9 +29,10 @@ describe('BookStatisticsFilterComponent', () => {
         MatFormFieldModule,
         MatInputModule,
         BrowserAnimationsModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
-        NgxMatDatetimePickerModule,
+        MatTimepickerModule,
+        MatNativeDateTimeModule,
+        MatNativeDateModule,
+        MatDatepickerModule
       ],
       providers: [
         { provide: ValidationMessage, useValue: mockValidationMessageService },
@@ -65,6 +68,8 @@ describe('BookStatisticsFilterComponent', () => {
     const values = {
       fromUTC: new Date(0, 0, 0, 0),
       toUTC: new Date(1, 1, 1, 1),
+      fromTime: new Date(0, 0, 0, 0),
+      toTime: new Date(1, 1, 1, 1),
       book: getDefaultBook()
     };
 

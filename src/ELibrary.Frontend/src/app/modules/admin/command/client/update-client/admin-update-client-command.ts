@@ -22,3 +22,16 @@ export function mapAdminUpdateClientCommandToUpdateClientRequest(command: AdminU
         email: command.email
     }
 }
+
+export function getDefaultAdminUpdateClientCommand(): AdminUpdateClientCommand {
+    return {
+        userId: "",
+        name: "",
+        middleName: "",
+        lastName: "",
+        dateOfBirth: new Date(),
+        address: "",
+        phone: "",
+        email: "",
+    }
+}

@@ -53,7 +53,7 @@ namespace ShopApi.Features.CartFeature.Services
                 throw new InvalidOperationException("Cart is not found.");
             }
 
-            var existingCartBook = cartInDb.Books.FirstOrDefault(cb => cb.BookId == cartBook.BookId);
+            var existingCartBook = cartInDb.Books.Find(cb => cb.BookId == cartBook.BookId);
 
             if (existingCartBook == null)
             {

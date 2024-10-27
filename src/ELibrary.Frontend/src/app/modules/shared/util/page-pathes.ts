@@ -1,5 +1,8 @@
 export const pathes =
 {
+    auth: "auth",
+    auth_oauthRedirectPath: "callback",
+
     admin: "admin",
     admin_userTable: "users",
     admin_userPage: "users/:id",
@@ -23,6 +26,10 @@ export const pathes =
     client_order_addInformation: "add-contact-info",
     client_order_history: "history",
 };
+
+export function getFullOAuthRedirectPath() {
+    return `${window.location.origin}/${pathes.auth}/${pathes.auth_oauthRedirectPath}`;
+}
 
 export function getManagerBookStockPath() {
     return `${pathes.manager}/${pathes.manager_bookstock}`;

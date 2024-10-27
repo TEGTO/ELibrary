@@ -1,5 +1,9 @@
 import { CoverType, LibraryFilterRequest } from "../../..";
 
+export enum BookSorting {
+    MostPopular, LeastPopular
+}
+
 export interface BookFilterRequest extends LibraryFilterRequest {
     publicationFrom: Date | null;
     publicationTo: Date | null;
@@ -12,6 +16,7 @@ export interface BookFilterRequest extends LibraryFilterRequest {
     authorId: number | null;
     genreId: number | null;
     publisherId: number | null;
+    sorting: BookSorting | null;
 }
 
 export function defaultBookFilterRequest(): BookFilterRequest {
@@ -30,5 +35,6 @@ export function defaultBookFilterRequest(): BookFilterRequest {
         authorId: null,
         genreId: null,
         publisherId: null,
+        sorting: null,
     };
 }

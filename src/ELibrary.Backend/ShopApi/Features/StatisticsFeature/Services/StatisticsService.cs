@@ -23,20 +23,26 @@ namespace ShopApi.Features.StatisticsFeature.Services
             var inCartCopies = GetInCartCopiesAsync(getBookStatistics, cancellationToken);
             var inOrderCopies = GetInOrderCopiesAsync(getBookStatistics, cancellationToken);
             var soldCopies = GetSoldCopiesAsync(getBookStatistics, cancellationToken);
-            var canceledOrders = GetCanceledCopiesAsync(getBookStatistics, cancellationToken);
+            var canceledCopies = GetCanceledCopiesAsync(getBookStatistics, cancellationToken);
+            var orderAmount = GetOrderAmountAsync(getBookStatistics, cancellationToken);
+            var canceledOrderAmount = GetCanceledOrdersAsync(getBookStatistics, cancellationToken);
             var averagePrice = GetAveragePriceAsync(getBookStatistics, cancellationToken);
             var stockAmount = GetStockAmountAsync(getBookStatistics, cancellationToken);
             var earnedMoney = GetEarnedMoneyAsync(getBookStatistics, cancellationToken);
+            var orderAmountInDays = GetOrderAmountInDaysAsync(getBookStatistics, cancellationToken);
 
             var tasks = new List<Task>
             {
                 inCartCopies,
                 inOrderCopies,
                 soldCopies,
-                canceledOrders,
+                canceledCopies,
+                orderAmount,
+                canceledOrderAmount,
                 averagePrice,
                 stockAmount,
                 earnedMoney,
+                orderAmountInDays
             };
 
             await Task.WhenAll(tasks);
@@ -46,10 +52,13 @@ namespace ShopApi.Features.StatisticsFeature.Services
                 InCartCopies = await inCartCopies,
                 InOrderCopies = await inOrderCopies,
                 SoldCopies = await soldCopies,
-                CanceledOrders = await canceledOrders,
+                CanceledCopies = await canceledCopies,
+                OrderAmount = await orderAmount,
+                CanceledOrderAmount = await canceledOrderAmount,
                 AveragePrice = await averagePrice,
                 StockAmount = await stockAmount,
-                EarnedMoney = await earnedMoney
+                EarnedMoney = await earnedMoney,
+                OrderAmountInDays = await orderAmountInDays
             };
         }
 
@@ -57,7 +66,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
 
         #region Private Helpers
 
-        private async Task<int> GetInCartCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        private async Task<long> GetInCartCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
 
@@ -67,7 +76,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
                     .SelectMany(cart => cart.Books)
                     .SumAsync(cartBook => cartBook.BookAmount, cancellationToken);
         }
-        private async Task<int> GetInOrderCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        private async Task<long> GetInOrderCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
 
@@ -77,7 +86,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
                   .SelectMany(order => order.OrderBooks)
                   .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
         }
-        private async Task<int> GetSoldCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        private async Task<long> GetSoldCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
 
@@ -88,16 +97,33 @@ namespace ShopApi.Features.StatisticsFeature.Services
                    .SelectMany(order => order.OrderBooks)
                    .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
         }
-        private async Task<int> GetCanceledCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        private async Task<long> GetCanceledCopiesAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
 
             queryable = QueryableWithIncludedBooks(queryable, getBookStatistics);
 
             return await queryable
-                  .Where(x => x.OrderStatus == OrderStatus.Canceled)
-                  .SelectMany(order => order.OrderBooks)
-                  .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
+                   .Where(x => x.OrderStatus == OrderStatus.Canceled)
+                   .SelectMany(order => order.OrderBooks)
+                   .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
+        }
+        private async Task<long> GetOrderAmountAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        {
+            var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
+
+            queryable = QueryableWithIncludedBooks(queryable, getBookStatistics);
+
+            return await queryable.CountAsync(cancellationToken);
+        }
+        private async Task<long> GetCanceledOrdersAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        {
+            var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
+
+            queryable = QueryableWithIncludedBooks(queryable, getBookStatistics);
+
+            return await queryable
+                    .Where(x => x.OrderStatus == OrderStatus.Canceled).CountAsync(cancellationToken);
         }
         private async Task<decimal> GetAveragePriceAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {
@@ -108,7 +134,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
             return await queryable
                                .AverageAsync(book => book.Price);
         }
-        private async Task<int> GetStockAmountAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        private async Task<long> GetStockAmountAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
@@ -127,6 +153,21 @@ namespace ShopApi.Features.StatisticsFeature.Services
                     .Where(x => x.OrderStatus == OrderStatus.Completed)
                     .SelectMany(order => order.OrderBooks)
                     .SumAsync(orderBook => orderBook.Book.Price * orderBook.BookAmount, cancellationToken);
+        }
+        private async Task<Dictionary<DateTime, long>> GetOrderAmountInDaysAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
+        {
+            var queryable = await QuearyableWithAppliedDateAsync(getBookStatistics, cancellationToken);
+
+            queryable = QueryableWithIncludedBooks(queryable, getBookStatistics);
+
+            var result = await queryable
+              .AsSplitQuery()
+              .GroupBy(order => order.CreatedAt.Date)
+              .Select(g => new { Date = g.Key, Count = g.Count() })
+              .OrderBy(x => x.Date)
+              .ToDictionaryAsync(x => x.Date, x => (long)x.Count, cancellationToken);
+
+            return result;
         }
 
         private async Task<IQueryable<Order>> QuearyableWithAppliedDateAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)

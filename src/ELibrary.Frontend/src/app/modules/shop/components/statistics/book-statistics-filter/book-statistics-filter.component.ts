@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { Book, CurrencyPipeApplier, dateRangeValidatorFrom, dateRangeValidatorTo, GetBookStatistics, getDefaultGetBookStatistics, getProductInfoPath, inputSelectValidator, ValidationMessage } from '../../../../shared';
+import { environment } from '../../../../../../environment/environment';
+import { Book, CurrencyPipeApplier, dateRangeWithTimeValidatorFrom, dateRangeWithTimeValidatorTo, GetBookStatistics, getDateOrNull, getDefaultGetBookStatistics, getProductInfoPath, inputSelectValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-statistics-filter',
@@ -19,10 +20,12 @@ export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
   bookFormControl!: FormControl;
   includeBooks: Book[] = [];
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
-  get fromUTCInput() { return this.formGroup.get('fromUTC')!; }
-  get toUTCInput() { return this.formGroup.get('toUTC')!; }
+  get fromUTCDateInput() { return this.formGroup.get('fromUTC')! as FormControl; }
+  get fromTimeInput() { return this.formGroup.get('fromTime')! as FormControl; }
+  get toUTCDateInput() { return this.formGroup.get('toUTC')! as FormControl; }
+  get toTimeInput() { return this.formGroup.get('toTime')! as FormControl; }
 
   constructor(
     private readonly validateInput: ValidationMessage,
@@ -58,18 +61,21 @@ export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
       });
 
     this.formGroup = new FormGroup({
-      fromUTC: new FormControl(null, [dateRangeValidatorFrom('toUTC')]),
-      toUTC: new FormControl(null, [dateRangeValidatorTo('fromUTC')]),
+      fromUTC: new FormControl(null, [dateRangeWithTimeValidatorFrom('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      fromTime: new FormControl(null, [dateRangeWithTimeValidatorFrom('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      toUTC: new FormControl(null, [dateRangeWithTimeValidatorTo('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      toTime: new FormControl(null, [dateRangeWithTimeValidatorTo('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
       book: this.bookFormControl,
     });
   }
   onFilterChange(): void {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
+
       const req: GetBookStatistics = {
         ...getDefaultGetBookStatistics(),
-        fromUTC: formValues.fromUTC,
-        toUTC: formValues.toUTC,
+        fromUTC: getDateOrNull(formValues.fromUTC, formValues.fromTime),
+        toUTC: getDateOrNull(formValues.toUTC, formValues.toTime),
         includeBooks: this.includeBooks
       };
       this.filterChange.emit(req);
@@ -95,5 +101,9 @@ export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
   }
   trackById(index: number, book: Book): number {
     return book.id;
+  }
+  onErrorImage(event: Event) {
+    const element = event.target as HTMLImageElement;
+    element.src = environment.bookCoverPlaceholder;
   }
 }

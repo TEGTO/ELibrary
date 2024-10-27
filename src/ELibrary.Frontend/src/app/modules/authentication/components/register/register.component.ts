@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/cor
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CommandHandler, noSpaces, notEmptyString, ValidationMessage } from '../../../shared';
-import { confirmPasswordValidator, passwordValidator, SIGN_UP_COMMAND_HANDLER, SignUpCommand } from '../../index';
+import { confirmPasswordValidator, passwordValidator, SIGN_UP_COMMAND_HANDLER, SignUpCommand, START_LOGIN_COMMAND_HANDLER, StartLoginCommand } from '../../index';
 
 @Component({
   selector: 'app-register',
@@ -20,6 +20,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     @Inject(SIGN_UP_COMMAND_HANDLER) private readonly signUpHandler: CommandHandler<SignUpCommand>,
+    @Inject(START_LOGIN_COMMAND_HANDLER) private readonly loginHandler: CommandHandler<StartLoginCommand>,
     private readonly validateInput: ValidationMessage,
     private readonly dialogRef: MatDialogRef<RegisterComponent>,
   ) { }
@@ -42,6 +43,10 @@ export class RegisterComponent implements OnInit {
       event.preventDefault();
       this.hidePassword = !this.hidePassword;
     }
+  }
+  openLoginMenu() {
+    const command: StartLoginCommand = {};
+    this.loginHandler.dispatch(command);
   }
   registerUser() {
     if (this.formGroup.valid) {
