@@ -1,21 +1,24 @@
-﻿using LangChain.DocumentLoaders;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Moq;
 using Polly;
 using Polly.Registry;
-using System.Text;
+using Shared.Helpers;
+using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 
 namespace ShopApi.Features.AdvisorFeature.Services.Tests
 {
     [TestFixture]
     internal class AdvisorServiceTests
     {
-        private Mock<IChatService> mockChatService;
+
+        private Mock<IHttpHelper> mockHttpHelper;
         private Mock<ResiliencePipelineProvider<string>> mockPipelineProvider;
         private AdvisorService advisorService;
         private ResiliencePipeline mockPipeline;
-        private List<Document> mockDocuments;
         private IConfiguration configuration;
+
+        private const string ChatEndpoint = "/advisor";
+        private const string BotUrl = "https://fake-bot-url.com";
 
         [SetUp]
         public void SetUp()
@@ -23,68 +26,79 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
             configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    { $"{Configuration.CHAT_CONFIGURATION_SECTION}:GetDocumentsCacheTimeInMinutes", "10" }
+                { $"{Configuration.CHAT_CONFIGURATION_SECTION}:BotUrl", BotUrl }
                 })
                 .Build();
 
-            mockChatService = new Mock<IChatService>();
+            mockHttpHelper = new Mock<IHttpHelper>();
 
             mockPipeline = ResiliencePipeline.Empty;
             mockPipelineProvider = new Mock<ResiliencePipelineProvider<string>>();
             mockPipelineProvider.Setup(p => p.GetPipeline(It.IsAny<string>())).Returns(mockPipeline);
 
-            advisorService = new AdvisorService(mockChatService.Object, mockPipelineProvider.Object, configuration);
+            advisorService = new AdvisorService(mockPipelineProvider.Object, mockHttpHelper.Object, configuration);
+        }
 
-            mockDocuments = new List<Document>
+        [Test]
+        public async Task SendQueryAsync_ReturnsAdvisorResponse()
+        {
+            // Arrange
+            var queryRequest = new AdvisorQueryRequest
             {
-                new Document("Sample content 1", new Dictionary<string, object> { { "bookId", 1 } }),
-                new Document("Sample content 2", new Dictionary<string, object> { { "bookId", 2 } })
+                Query = "What are the latest trends in AI?"
             };
-        }
-
-        [Test]
-        public async Task SendQueryAsync_ReturnsChatResponse()
-        {
-            // Arrange
-            string query = "Tell me about book 1.";
-            string chatResponse = "Book 1 is great!";
-            mockChatService.Setup(s => s.AskQuestionAsync(query, mockDocuments, It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(new StringBuilder(chatResponse));
-            mockChatService.Setup(s => s.GetDocumentsAsync(It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(mockDocuments);
+            var expectedResponse = new AdvisorResponse
+            {
+                Message = "The latest trends in AI include advancements in deep learning and natural language processing."
+            };
+            mockHttpHelper.Setup(h => h.SendPostRequestAsync<AdvisorResponse>(
+                    $"{BotUrl}{ChatEndpoint}",
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()
+                ))
+            .ReturnsAsync(expectedResponse);
             // Act
-            var result = await advisorService.SendQueryAsync(query, CancellationToken.None);
+            var result = await advisorService.SendQueryAsync(queryRequest, CancellationToken.None);
             // Assert
-            Assert.That(result, Is.EqualTo(chatResponse));
-        }
-        [Test]
-        public async Task GetCachedDocumentsAsync_UpdatesCache_WhenExpired()
-        {
-            // Arrange
-            await Task.Delay(1);
-
-            mockChatService.Setup(s => s.GetDocumentsAsync(It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(mockDocuments);
-            mockChatService.Setup(s => s.AskQuestionAsync(It.IsAny<string>(), It.IsAny<List<Document>>(), It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(new StringBuilder());
-            // Act
-            await advisorService.SendQueryAsync("Test query", CancellationToken.None);
-            // Assert
-            mockChatService.Verify(s => s.GetDocumentsAsync(It.IsAny<CancellationToken>()), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.That(result.Message, Is.EqualTo(expectedResponse.Message));
+            mockHttpHelper.Verify(h => h.SendPostRequestAsync<AdvisorResponse>(
+                $"{BotUrl}{ChatEndpoint}",
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
-        public async Task GetCachedDocumentsAsync_UsesCache_IfNotExpired()
+        public async Task SendQueryAsync_HandlesErrorGracefully()
         {
             // Arrange
-            mockChatService.Setup(s => s.GetDocumentsAsync(It.IsAny<CancellationToken>()))
-                           .ReturnsAsync(mockDocuments);
-            mockChatService.Setup(s => s.AskQuestionAsync(It.IsAny<string>(), It.IsAny<List<Document>>(), It.IsAny<CancellationToken>()))
-                      .ReturnsAsync(new StringBuilder());
-            await advisorService.SendQueryAsync("Prime cache", CancellationToken.None);
-            // Act
-            await advisorService.SendQueryAsync("Another query", CancellationToken.None);
-            // Assert
-            mockChatService.Verify(s => s.GetDocumentsAsync(It.IsAny<CancellationToken>()), Times.Once);
+            var queryRequest = new AdvisorQueryRequest
+            {
+                Query = "What is the best way to learn programming?"
+            };
+            mockHttpHelper.Setup(h => h.SendPostRequestAsync<AdvisorResponse>(
+                    $"{BotUrl}{ChatEndpoint}",
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()
+                ))
+                .ThrowsAsync(new HttpRequestException("Network Error"));
+            // Act & Assert
+            try
+            {
+                var result = await advisorService.SendQueryAsync(queryRequest, CancellationToken.None);
+                Assert.Fail("Expected an exception to be thrown.");
+            }
+            catch (HttpRequestException ex)
+            {
+                Assert.That(ex.Message, Is.EqualTo("Network Error"));
+            }
+            mockHttpHelper.Verify(h => h.SendPostRequestAsync<AdvisorResponse>(
+                $"{BotUrl}{ChatEndpoint}",
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

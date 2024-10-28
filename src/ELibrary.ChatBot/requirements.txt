@@ -6,3 +6,5 @@ langgraph==0.2.39
 pydantic==2.9.2
 uvicorn==0.32.0
 gunicorn==23.0.0
+psycopg2==2.9.10
+faiss-cpu==1.9.0

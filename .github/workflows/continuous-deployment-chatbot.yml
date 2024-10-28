@@ -1,7 +1,7 @@
 name: Continuous Deployment Chat Bot
 
 env:
-  AZURE_WEBAPP_NAME: elibrary-chatbot-api-germanywestcentral-002
+  AZURE_WEBAPP_NAME: elibrary-chatbot-api-polandcentral-002
   PYTHON_VERSION: "3.12"
 
 on:
