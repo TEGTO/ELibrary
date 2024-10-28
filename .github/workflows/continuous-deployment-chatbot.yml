@@ -38,7 +38,8 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install -r src/ELibrary.ChatBot/requirements.txt
+        run: pip install -r requirements.txt
+        working-directory: "src/ELibrary.ChatBot"
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
@@ -65,8 +66,7 @@ jobs:
 
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@85270a1854658d167ab239bce43949edb336fa7c
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot: production
           publish-profile: ${{ secrets.CHATBOT_API_PUBLISH_SECRET }}
