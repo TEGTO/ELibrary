@@ -1,0 +1,1 @@
+WEBSITE_STARTUP_FILE=main:app

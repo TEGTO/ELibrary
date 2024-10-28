@@ -17,10 +17,10 @@ namespace ShopApi.Controllers
 
         [ResponseCache(Duration = 3)]
         [HttpPost]
-        public async Task<ActionResult<string>> SendQuery(AdvisorQueryRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<AdvisorResponse?>> SendQuery(AdvisorQueryRequest request, CancellationToken cancellationToken)
         {
-            var response = await advisorService.SendQueryAsync(request.Query, cancellationToken);
-            return Ok(new AdvisorResponse() { Message = response });
+            var response = await advisorService.SendQueryAsync(request, cancellationToken);
+            return Ok(response);
         }
     }
 }

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  elibray-chatbot:
+    build: .
+    container_name: elibray-chatbot
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}  
+      - DB_CONNECTION_STRING=${DB_CONNECTION_STRING}  
+      - MODEL=${MODEL}  
+      - RETRIEVER_DESCRIPTION=${RETRIEVER_DESCRIPTION}  
+      - GROUND_PROMT=${GROUND_PROMT}  
+      - REFRESH_DATA_IN_MINUTES=${REFRESH_DATA_IN_MINUTES}  
+    ports:
+      - "12000:8000"
+    volumes:
+      - .:/app
+    networks:
+      - elibrary-backend-dev_backend-net
+
+networks:
+  elibrary-backend-dev_backend-net:
+    external: true
