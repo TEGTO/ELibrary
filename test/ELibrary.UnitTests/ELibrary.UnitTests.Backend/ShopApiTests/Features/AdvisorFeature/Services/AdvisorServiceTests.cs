@@ -10,7 +10,6 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
     [TestFixture]
     internal class AdvisorServiceTests
     {
-
         private Mock<IHttpHelper> mockHttpHelper;
         private Mock<ResiliencePipelineProvider<string>> mockPipelineProvider;
         private AdvisorService advisorService;
