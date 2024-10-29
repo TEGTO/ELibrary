@@ -107,6 +107,7 @@ export class ChatComponent implements OnInit {
     }
     return message.text;
   }
+
   isChatMessageLink(message: ChatMessage): boolean {
     return !message.isSent && /BookId:\s*#?\d+/.test(message.text);
   }

@@ -18,6 +18,7 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
 
         private const string ChatEndpoint = "/advisor";
         private const string BotUrl = "https://fake-bot-url.com";
+        
         [SetUp]
         public void SetUp()
         {
