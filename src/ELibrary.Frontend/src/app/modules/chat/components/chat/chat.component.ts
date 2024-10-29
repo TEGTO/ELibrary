@@ -30,6 +30,7 @@ import { CommandHandler } from '../../../shared';
 })
 export class ChatComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
+
   readonly itemHeight = 50;
   readonly scollSize = 370;
   newMessage = '';
@@ -89,21 +90,26 @@ export class ChatComponent implements OnInit {
   }
 
   formatChatMessage(message: ChatMessage): SafeHtml {
+    const bookLinkRegex = /BookId:\s*#?(\d+)\s*'([^']+)'/g;
+
     if (this.isChatMessageLink(message)) {
       const sanitizedHTML = this.sanitizeHTML(
-        message.text.replace(/BookId:#(\d+)\s*'([^']+)'/g,
-          (match, id, title) => `<div><a href="${id}" target="_blank" class="book-link">${title}</a></div>`
+        message.text.replace(
+          bookLinkRegex,
+          (match, id, title) =>
+            `<span><a href="${id}" target="_blank" class="book-link">${title}</a></span>`
         )
       );
       return sanitizedHTML;
     }
-    else if (!message.isSent && !(/BookId:#\d+/.test(message.text))) {
+    else if (!message.isSent && !bookLinkRegex.test(message.text)) {
       return message.text;
     }
     return message.text;
   }
-  isChatMessageLink(message: ChatMessage) {
-    return !message.isSent && /BookId:#\d+/.test(message.text);
+
+  isChatMessageLink(message: ChatMessage): boolean {
+    return !message.isSent && /BookId:\s*#?\d+/.test(message.text);
   }
   sendMessage() {
     if (this.newMessage.trim()) {

@@ -47,12 +47,12 @@ builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
-builder.Services.AddSingleton<IChatService, ChatService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
+builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 #endregion
 
 builder.Services.AddMemoryCache();

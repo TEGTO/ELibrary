@@ -1,7 +1,9 @@
-﻿namespace ShopApi.Features.AdvisorFeature.Services
+﻿using ShopApi.Features.AdvisorFeature.Domain.Dtos;
+
+namespace ShopApi.Features.AdvisorFeature.Services
 {
     public interface IAdvisorService
     {
-        public Task<string> SendQueryAsync(string query, CancellationToken cancellationToken);
+        public Task<AdvisorResponse?> SendQueryAsync(AdvisorQueryRequest req, CancellationToken cancellationToken);
     }
 }

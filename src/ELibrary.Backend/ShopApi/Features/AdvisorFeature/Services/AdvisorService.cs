@@ -1,50 +1,40 @@
-﻿using LangChain.DocumentLoaders;
-using Polly;
+﻿using Polly;
 using Polly.Registry;
+using Shared.Helpers;
+using ShopApi.Features.AdvisorFeature.Domain.Dtos;
+using System.Text.Json;
 
 namespace ShopApi.Features.AdvisorFeature.Services
 {
     public class AdvisorService : IAdvisorService
     {
-        private readonly IChatService chatService;
-        private readonly ResiliencePipeline resiliencePipeline;
-        private List<Document> cachedDocuments = new List<Document>();
-        private DateTime lastUpdate = DateTime.MinValue;
-        private readonly TimeSpan cacheDuration;
+        private const string CHAT_ADVISOR_ENDPOINT = "/advisor";
 
-        public AdvisorService(IChatService chatService, ResiliencePipelineProvider<string> resiliencePipelineProvider, IConfiguration configuration)
+        private readonly ResiliencePipeline resiliencePipeline;
+        private readonly IHttpHelper httpHelper;
+        private readonly ChatConfiguration chatConfig;
+
+        public AdvisorService(ResiliencePipelineProvider<string> resiliencePipelineProvider, IHttpHelper httpHelper, IConfiguration configuration)
         {
-            this.chatService = chatService;
             resiliencePipeline = resiliencePipelineProvider.GetPipeline(Configuration.DEFAULT_RESILIENCE_PIPELINE);
 
-            var chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
+            chatConfig = configuration.GetSection(Configuration.CHAT_CONFIGURATION_SECTION)
                                     .Get<ChatConfiguration>()!;
 
-            cacheDuration = TimeSpan.FromMinutes(chatConfig.GetDocumentsCacheTimeInMinutes);
+            this.httpHelper = httpHelper;
         }
 
-        public async Task<string> SendQueryAsync(string query, CancellationToken cancellationToken)
+        public async Task<AdvisorResponse?> SendQueryAsync(AdvisorQueryRequest req, CancellationToken cancellationToken)
         {
-            return await GetChatResponseAsync(query, cancellationToken);
+            return await AskChatAsync(req, cancellationToken);
         }
 
-        private async Task<string> GetChatResponseAsync(string query, CancellationToken cancellationToken)
+        private async Task<AdvisorResponse?> AskChatAsync(AdvisorQueryRequest query, CancellationToken cancellationToken)
         {
             return await resiliencePipeline.ExecuteAsync(async (ct) =>
             {
-                var documents = await GetCachedDocumentsAsync(cancellationToken);
-                return (await chatService.AskQuestionAsync(query, documents, cancellationToken)).ToString();
+                return (await httpHelper.SendPostRequestAsync<AdvisorResponse>(chatConfig.BotUrl + CHAT_ADVISOR_ENDPOINT, JsonSerializer.Serialize(query), cancellationToken: cancellationToken));
             }, cancellationToken);
-        }
-        private async ValueTask<List<Document>> GetCachedDocumentsAsync(CancellationToken cancellationToken)
-        {
-            if ((DateTime.UtcNow - lastUpdate) > cacheDuration)
-            {
-                cachedDocuments = await chatService.GetDocumentsAsync(cancellationToken);
-                lastUpdate = DateTime.UtcNow;
-            }
-
-            return cachedDocuments;
         }
     }
 }
