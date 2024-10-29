@@ -10,7 +10,6 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
     [TestFixture]
     internal class AdvisorServiceTests
     {
-
         private Mock<IHttpHelper> mockHttpHelper;
         private Mock<ResiliencePipelineProvider<string>> mockPipelineProvider;
         private AdvisorService advisorService;
@@ -19,7 +18,6 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
 
         private const string ChatEndpoint = "/advisor";
         private const string BotUrl = "https://fake-bot-url.com";
-
         [SetUp]
         public void SetUp()
         {
