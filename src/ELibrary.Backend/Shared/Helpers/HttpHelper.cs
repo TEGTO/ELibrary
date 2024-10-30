@@ -54,7 +54,7 @@ namespace Shared.Helpers
                 request.Content = httpContent;
             }
 
-            using var httpClient = httpClientFactory.CreateClient(Configuration.HTTP_CLIENT_RESILIENCE_PIPELINE);
+            using var httpClient = httpClientFactory.CreateClient(SharedConfiguration.HTTP_CLIENT_RESILIENCE_PIPELINE);
             using var response = await httpClient.SendAsync(request, cancellationToken);
 
             var resultJson = await response.Content.ReadAsStringAsync(cancellationToken);

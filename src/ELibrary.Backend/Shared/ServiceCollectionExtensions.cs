@@ -41,13 +41,13 @@ namespace Shared
         }
         public static IServiceCollection AddPaginationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var paginationConf = new PaginationConfiguration(int.Parse(configuration[Configuration.MAX_PAGINATION_PAGE_SIZE] ?? "0"));
+            var paginationConf = new PaginationConfiguration(int.Parse(configuration[SharedConfiguration.MAX_PAGINATION_PAGE_SIZE] ?? "0"));
             services.AddSingleton(paginationConf);
             return services;
         }
         public static IServiceCollection AddApplicationCors(this IServiceCollection services, IConfiguration configuration, string allowSpecificOrigins, bool isDevelopment)
         {
-            var allowedOriginsString = configuration[Configuration.ALLOWED_CORS_ORIGINS] ?? string.Empty;
+            var allowedOriginsString = configuration[SharedConfiguration.ALLOWED_CORS_ORIGINS] ?? string.Empty;
             var allowedOrigins = allowedOriginsString.Split(",", StringSplitOptions.RemoveEmptyEntries);
 
             services.AddCors(options =>

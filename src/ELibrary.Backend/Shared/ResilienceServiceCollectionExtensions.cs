@@ -14,10 +14,10 @@ namespace Shared
     {
         public static IServiceCollection AddRepositoryPatternWithResilience<Context>(this IServiceCollection services, IConfiguration configuration) where Context : DbContext
         {
-            var pipelineConfiguration = configuration.GetSection(Configuration.REPOSITORY_RESILIENCE_PIPELINE)
+            var pipelineConfiguration = configuration.GetSection(SharedConfiguration.REPOSITORY_RESILIENCE_PIPELINE)
                                         .Get<ResiliencePipelineConfiguration>() ?? new ResiliencePipelineConfiguration();
 
-            services.AddResiliencePipeline(Configuration.REPOSITORY_RESILIENCE_PIPELINE, (builder, context) =>
+            services.AddResiliencePipeline(SharedConfiguration.REPOSITORY_RESILIENCE_PIPELINE, (builder, context) =>
             {
                 ConfigureResiliencePipeline(builder, context, pipelineConfiguration);
             });
@@ -28,13 +28,13 @@ namespace Shared
         }
         public static IServiceCollection AddCustomHttpClientServiceWithResilience(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHttpClient(Configuration.HTTP_CLIENT_RESILIENCE_PIPELINE).AddStandardResilienceHandler();
+            services.AddHttpClient(SharedConfiguration.HTTP_CLIENT_RESILIENCE_PIPELINE).AddStandardResilienceHandler();
             services.AddSingleton<IHttpHelper, HttpHelper>();
             return services;
         }
         public static IServiceCollection AddDefaultResiliencePipeline(this IServiceCollection services, IConfiguration configuration, string defaultName = "Default")
         {
-            var pipelineConfiguration = configuration.GetSection(Configuration.DEFAULT_RESILIENCE_PIPELINE_SECTION)
+            var pipelineConfiguration = configuration.GetSection(SharedConfiguration.DEFAULT_RESILIENCE_PIPELINE_SECTION)
                                         .Get<ResiliencePipelineConfiguration>() ?? new ResiliencePipelineConfiguration();
 
             services.AddResiliencePipeline(defaultName, (builder, context) =>

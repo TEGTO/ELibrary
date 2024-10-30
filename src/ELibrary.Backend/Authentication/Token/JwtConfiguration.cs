@@ -1,10 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("AuthenticationTests")]
-
-namespace Authentication.Token
+﻿namespace Authentication.Token
 {
-    internal static class JwtConfiguration
+    public static class JwtConfiguration
     {
         public static string JWT_SETTINGS_KEY { get; } = "AuthSettings:Key";
         public static string JWT_SETTINGS_AUDIENCE { get; } = "AuthSettings:Audience";

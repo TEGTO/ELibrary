@@ -101,8 +101,7 @@ app.UseExceptionMiddleware();
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseIdentity();
 
 app.MapControllers();
 

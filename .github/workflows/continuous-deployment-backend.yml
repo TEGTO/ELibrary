@@ -56,7 +56,7 @@ jobs:
         run: |
           dotnet build src/ELibrary.Backend/ELibrary.Backend.sln
 
-      - name: Run unit tests
+      - name: Run tests
         run: |
           dotnet test src/ELibrary.Backend/ELibrary.Backend.sln
 
