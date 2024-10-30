@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LibraryApi.Domain.Dtos;
+using Shared.Configurations;
 using Shared.Validators;
 
 namespace LibraryApi.Validators

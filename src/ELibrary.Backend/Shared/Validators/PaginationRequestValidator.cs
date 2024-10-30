@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
+using Shared.Configurations;
 using Shared.Domain.Dtos;
 
 namespace Shared.Validators
 {
-    public record class PaginationConfiguration(int MaxPaginationPageSize);
     public class PaginationRequestValidator : AbstractValidator<PaginationRequest>
     {
         public PaginationRequestValidator(PaginationConfiguration paginationConfiguration)

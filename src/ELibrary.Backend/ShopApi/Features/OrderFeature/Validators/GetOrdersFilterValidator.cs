@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Shared.Configurations;
 using Shared.Validators;
 using ShopApi.Features.OrderFeature.Dtos;
 

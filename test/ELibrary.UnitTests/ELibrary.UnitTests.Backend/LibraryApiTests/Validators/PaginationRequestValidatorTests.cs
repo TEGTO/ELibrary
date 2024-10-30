@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using LibraryApi.Domain.Dtos;
-using Shared.Validators;
+using Shared.Configurations;
 
 namespace LibraryApi.Validators.Tests
 {
