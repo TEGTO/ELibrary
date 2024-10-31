@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Shared.Domain.Dtos;
 using Shared.Exceptions;
 using System.Net;
@@ -35,11 +36,15 @@ namespace Shared.Middlewares
             catch (AuthorizationException ex)
             {
                 var errors = ex.Errors.ToArray();
-                await SetError(httpContext, HttpStatusCode.Unauthorized, ex, errors).ConfigureAwait(false);
+                await SetError(httpContext, HttpStatusCode.Conflict, ex, errors).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException ex)
             {
                 await SetError(httpContext, HttpStatusCode.Unauthorized, ex, new[] { ex.Message }).ConfigureAwait(false);
+            }
+            catch (SecurityTokenMalformedException ex)
+            {
+                await SetError(httpContext, HttpStatusCode.Conflict, ex, new[] { "Access Token Exception" }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

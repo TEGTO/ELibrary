@@ -43,14 +43,15 @@ namespace UserApi.Command.Admin.GetUserByInfo.Tests
             Assert.That(result.Roles, Is.EqualTo(roles));
         }
         [Test]
-        public void Handle_UserDoesNotExist_ThrowsKeyNotFoundException()
+        public async Task Handle_UserDoesNotExist_ReturnsNull()
         {
             // Arrange
             var login = "nonexistentuser";
             userServiceMock.Setup(a => a.GetUserByUserInfoAsync(login, CancellationToken.None)).ReturnsAsync((User)null);
-            // Act & Assert
-            var ex = Assert.ThrowsAsync<KeyNotFoundException>(async () => await getUserByInfoQueryHandler.Handle(new GetUserByInfoQuery(login), CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("User is not found!"));
+            // Act
+            var result = await getUserByInfoQueryHandler.Handle(new GetUserByInfoQuery(login), CancellationToken.None);
+            // Assert
+            Assert.IsNull(result);
         }
     }
 }

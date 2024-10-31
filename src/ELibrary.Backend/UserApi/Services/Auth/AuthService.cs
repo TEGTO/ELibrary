@@ -57,7 +57,7 @@ namespace UserApi.Services.Auth
                 user.RefreshToken != accessTokenData.RefreshToken ||
                 user.RefreshTokenExpiryTime < DateTime.UtcNow)
             {
-                throw new InvalidDataException("Refresh token is not valid!");
+                throw new UnauthorizedAccessException("Refresh token is not valid!");
             }
 
             var refreshTokenExpiryDate = DateTime.UtcNow.AddDays(expiryInDays);
