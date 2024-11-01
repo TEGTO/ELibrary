@@ -56,6 +56,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CertificatePassword}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
+      - EFCreateDatabase=${EFCreateDatabase}
       - ConnectionStrings__LibraryShopDb=${ConnectionStrings__LibraryShopDb}
       - AuthSettings__Key=${AuthSettings__Key}
       - AuthSettings__Audience=${AuthSettings__Audience}
@@ -67,6 +68,7 @@ services:
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - UseCORS=${UseCORS}
       - Chat__BotUrl=${Chat__BotUrl}
+      - LibraryApiUrl=${LibraryApiUrl}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

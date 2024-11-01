@@ -43,7 +43,7 @@ namespace UserApi.Command.Client.LoginOAuth
             var tokenDto = mapper.Map<AuthToken>(token);
             var roles = await userService.GetUserRolesAsync(user, cancellationToken);
 
-            if (!roles.Any())
+            if (roles.Count == 0)
             {
                 var errors = new List<IdentityError>();
                 errors.AddRange(await userService.SetUserRolesAsync(user, new() { Roles.CLIENT }, cancellationToken));
@@ -51,6 +51,7 @@ namespace UserApi.Command.Client.LoginOAuth
 
                 token = await authService.RefreshTokenAsync(token, cancellationToken);
                 tokenDto = mapper.Map<AuthToken>(token);
+                roles = [Roles.CLIENT];
             }
 
             return new UserAuthenticationResponse

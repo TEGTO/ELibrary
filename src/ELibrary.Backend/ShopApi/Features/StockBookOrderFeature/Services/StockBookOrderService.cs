@@ -10,10 +10,10 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
 {
     public class StockBookOrderService : IStockBookOrderService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IDatabaseRepository<ShopDbContext> repository;
         private readonly IEventDispatcher eventDispatcher;
 
-        public StockBookOrderService(IDatabaseRepository<LibraryShopDbContext> repository, IEventDispatcher eventDispatcher)
+        public StockBookOrderService(IDatabaseRepository<ShopDbContext> repository, IEventDispatcher eventDispatcher)
         {
             this.repository = repository;
             this.eventDispatcher = eventDispatcher;
@@ -53,7 +53,6 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
                 .AsNoTracking()
                 .Include(x => x.Client)
                 .Include(x => x.StockBookChanges)
-                .ThenInclude(x => x.Book)
                 .OrderByDescending(b => b.CreatedAt)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }

@@ -12,13 +12,13 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
     [TestFixture]
     internal class OrderServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> mockRepository;
+        private Mock<IDatabaseRepository<ShopDbContext>> mockRepository;
         private OrderService orderService;
 
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            mockRepository = new Mock<IDatabaseRepository<ShopDbContext>>();
             orderService = new OrderService(mockRepository.Object);
         }
         private IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class

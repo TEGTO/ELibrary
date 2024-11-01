@@ -11,14 +11,14 @@ namespace LibraryApi.Services.Tests
     [TestFixture]
     internal class LibraryEntityServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> repositoryMock;
+        private Mock<IDatabaseRepository<ShopDbContext>> repositoryMock;
         private CancellationToken cancellationToken;
         private LibraryEntityService<TestEntity> service;
 
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            repositoryMock = new Mock<IDatabaseRepository<ShopDbContext>>();
             service = new LibraryEntityService<TestEntity>(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }

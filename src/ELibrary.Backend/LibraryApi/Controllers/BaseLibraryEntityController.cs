@@ -31,6 +31,7 @@ namespace LibraryApi.Controllers
 
         #region Endpoints
 
+        [ResponseCache(Duration = 1)]
         [HttpGet("{id}")]
         [AllowAnonymous]
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
@@ -44,6 +45,7 @@ namespace LibraryApi.Controllers
 
             return Ok(mapper.Map<TGetResponse>(entity));
         }
+        [ResponseCache(Duration = 1)]
         [HttpPost("ids")]
         [AllowAnonymous]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)

@@ -1,6 +1,6 @@
 ﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
@@ -8,9 +8,9 @@ namespace LibraryApi.Services
 {
     public class LibraryEntityService<TEntity> : ILibraryEntityService<TEntity> where TEntity : BaseLibraryEntity
     {
-        protected readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        protected readonly IDatabaseRepository<LibraryDbContext> repository;
 
-        public LibraryEntityService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public LibraryEntityService(IDatabaseRepository<LibraryDbContext> repository)
         {
             this.repository = repository;
         }

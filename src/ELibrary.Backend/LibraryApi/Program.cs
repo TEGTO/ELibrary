@@ -21,7 +21,7 @@ if (useCors)
 
 #endregion
 
-builder.Services.AddDbContextFactory<LibraryShopDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING), "LibraryApi");
+builder.Services.AddDbContextFactory<LibraryDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING)!, "LibraryApi");
 
 #region Identity & Authentication
 
@@ -31,13 +31,14 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 #region Project Services
 
-builder.Services.AddSingleton<ILibraryEntityService<Book>, BookService>();
+builder.Services.AddSingleton<IBookService, BookService>();
+builder.Services.AddSingleton<ILibraryEntityService<Book>>(sp => sp.GetRequiredService<IBookService>());
 builder.Services.AddSingleton<ILibraryEntityService<Author>, AuthorService>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<LibraryDbContext>(builder.Configuration);
 #endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -52,7 +53,7 @@ var app = builder.Build();
 
 if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
 {
-    await app.ConfigureDatabaseAsync<LibraryShopDbContext>(CancellationToken.None);
+    await app.ConfigureDatabaseAsync<LibraryDbContext>(CancellationToken.None);
 }
 
 if (useCors)
@@ -62,7 +63,10 @@ if (useCors)
 
 app.UseExceptionMiddleware();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseIdentity();
 

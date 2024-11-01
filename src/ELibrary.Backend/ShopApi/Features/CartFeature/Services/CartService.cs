@@ -7,10 +7,10 @@ namespace ShopApi.Features.CartFeature.Services
 {
     public class CartService : ICartService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IDatabaseRepository<ShopDbContext> repository;
         private readonly int maxBookAmount;
 
-        public CartService(IDatabaseRepository<LibraryShopDbContext> repository, IConfiguration configuration)
+        public CartService(IDatabaseRepository<ShopDbContext> repository, IConfiguration configuration)
         {
             this.repository = repository;
             maxBookAmount = int.Parse(configuration[Configuration.SHOP_MAX_ORDER_AMOUNT]!);
@@ -76,8 +76,7 @@ namespace ShopApi.Features.CartFeature.Services
         {
             var queryable = await repository.GetQueryableAsync<CartBook>(cancellationToken);
             var cartBookInDb = await queryable
-                         .AsSplitQuery()
-                         .Include(x => x.Book)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(x => x.Id == cartBook.Id && x.CartId == cart.Id, cancellationToken);
 
             if (cartBookInDb == null)
@@ -130,8 +129,7 @@ namespace ShopApi.Features.CartFeature.Services
             return queryable
                  .AsNoTracking()
                  .AsSplitQuery()
-                     .Include(x => x.Books)
-                         .ThenInclude(book => book.Book);
+                     .Include(x => x.Books);
         }
 
         #endregion

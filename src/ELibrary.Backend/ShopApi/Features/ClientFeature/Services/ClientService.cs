@@ -7,9 +7,9 @@ namespace ShopApi.Features.ClientFeature.Services
 {
     public class ClientService : IClientService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IDatabaseRepository<ShopDbContext> repository;
 
-        public ClientService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public ClientService(IDatabaseRepository<ShopDbContext> repository)
         {
             this.repository = repository;
         }

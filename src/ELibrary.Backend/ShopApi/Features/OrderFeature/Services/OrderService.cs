@@ -1,5 +1,4 @@
 ﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
@@ -9,9 +8,9 @@ namespace ShopApi.Features.OrderFeature.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IDatabaseRepository<ShopDbContext> repository;
 
-        public OrderService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public OrderService(IDatabaseRepository<ShopDbContext> repository)
         {
             this.repository = repository;
         }
@@ -46,21 +45,12 @@ namespace ShopApi.Features.OrderFeature.Services
         }
         public async Task<Order> CreateOrderAsync(Order order, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
-
             order.OrderAmount = order.OrderBooks.Sum(x => x.BookAmount);
 
             var bookIds = order.OrderBooks.Select(ob => ob.BookId).ToList();
-            var booksInOrder = await queryable
-                .Where(book => bookIds.Contains(book.Id))
-                .ToListAsync(cancellationToken);
 
             order.TotalPrice = order.OrderBooks
-                .Sum(orderBook =>
-                {
-                    var book = booksInOrder.First(b => b.Id == orderBook.BookId);
-                    return book != null ? orderBook.BookAmount * book.Price : 0;
-                });
+                .Sum(orderBook => orderBook.BookAmount * orderBook.BookPrice);
 
             var newOrder = await repository.AddAsync(order, cancellationToken);
             var orderQueryable = await repository.GetQueryableAsync<Order>(cancellationToken);
@@ -105,7 +95,6 @@ namespace ShopApi.Features.OrderFeature.Services
                 .AsSplitQuery()
                 .AsNoTracking()
                 .Include(x => x.OrderBooks)
-                    .ThenInclude(book => book.Book)
                 .Include(x => x.Client);
         }
         private IQueryable<Order> ApplyFilter(IQueryable<Order> queryable, GetOrdersFilter filter)

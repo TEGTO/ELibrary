@@ -9,9 +9,9 @@ namespace ShopApi.Features.StatisticsFeature.Services
 {
     public class StatisticsService : IStatisticsService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IDatabaseRepository<ShopDbContext> repository;
 
-        public StatisticsService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public StatisticsService(IDatabaseRepository<ShopDbContext> repository)
         {
             this.repository = repository;
         }
@@ -151,8 +151,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
 
             return await queryable
                     .Where(x => x.OrderStatus == OrderStatus.Completed)
-                    .SelectMany(order => order.OrderBooks)
-                    .SumAsync(orderBook => orderBook.Book.Price * orderBook.BookAmount, cancellationToken);
+                    .SumAsync(o => o.TotalPrice, cancellationToken);
         }
         private async Task<Dictionary<DateTime, long>> GetOrderAmountInDaysAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken)
         {

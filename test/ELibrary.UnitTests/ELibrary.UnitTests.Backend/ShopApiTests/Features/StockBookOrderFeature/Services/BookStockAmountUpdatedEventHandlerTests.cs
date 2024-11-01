@@ -11,14 +11,14 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
     [TestFixture]
     public class BookStockAmountUpdatedEventHandlerTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> repositoryMock;
+        private Mock<IDatabaseRepository<ShopDbContext>> repositoryMock;
         private BookStockAmountUpdatedEventHandler handler;
         private CancellationToken cancellationToken;
 
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            repositoryMock = new Mock<IDatabaseRepository<ShopDbContext>>();
             handler = new BookStockAmountUpdatedEventHandler(repositoryMock.Object);
             cancellationToken = CancellationToken.None;
         }

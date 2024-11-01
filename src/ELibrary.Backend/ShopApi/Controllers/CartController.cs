@@ -46,7 +46,7 @@ namespace ShopApi.Controllers
             return Ok(response);
         }
         [HttpPost("cartbook")]
-        public async Task<ActionResult<BookListingResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<CartBookResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new AddBookToCartCommand(userId, request), cancellationToken);
@@ -54,7 +54,7 @@ namespace ShopApi.Controllers
             return Ok(response);
         }
         [HttpPut("cartbook")]
-        public async Task<ActionResult<BookListingResponse>> UpdateCartBookInCart(UpdateCartBookRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<CartBookResponse>> UpdateCartBookInCart(UpdateCartBookRequest request, CancellationToken cancellationToken)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new UpdateCartBookInCartCommand(userId, request), cancellationToken);

@@ -1,5 +1,4 @@
 ﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.Extensions.Configuration;
 using MockQueryable.Moq;
@@ -13,14 +12,14 @@ namespace ShopApiTests.Features.CartFeature.Services
     [TestFixture]
     internal class CartServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> mockRepository;
+        private Mock<IDatabaseRepository<ShopDbContext>> mockRepository;
         private CartService cartService;
         private Mock<IConfiguration> mockConfiguration;
 
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            mockRepository = new Mock<IDatabaseRepository<ShopDbContext>>();
             mockConfiguration = new Mock<IConfiguration>();
             mockConfiguration.Setup(c => c[It.Is<string>(s => s == Configuration.SHOP_MAX_ORDER_AMOUNT)])
                              .Returns("10");
@@ -181,7 +180,7 @@ namespace ShopApiTests.Features.CartFeature.Services
         {
             // Arrange
             var cart = new Cart { Id = "cart-1", Books = new List<CartBook>() };
-            var cartBook = new CartBook { BookId = 1, CartId = cart.Id, Book = new Book { Id = 1, Author = new Author(), Publisher = new Publisher(), Genre = new Genre() } };
+            var cartBook = new CartBook { BookId = 1, CartId = cart.Id };
             var carts = GetDbSetMock(new List<Cart> { cart });
             mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>()))
                           .ReturnsAsync(carts);
@@ -192,10 +191,6 @@ namespace ShopApiTests.Features.CartFeature.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.That(result.BookId, Is.EqualTo(cartBook.BookId));
-            Assert.IsNotNull(result.Book);
-            Assert.IsNotNull(result.Book.Author);
-            Assert.IsNotNull(result.Book.Publisher);
-            Assert.IsNotNull(result.Book.Genre);
             mockRepository.Verify(r => r.UpdateAsync(cart, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
@@ -207,7 +202,6 @@ namespace ShopApiTests.Features.CartFeature.Services
                 BookId = 1,
                 BookAmount = 1,
                 CartId = "cart-1",
-                Book = new Book { Id = 1, Author = new Author(), Publisher = new Publisher(), Genre = new Genre() }
             };
             var cart = new Cart { Id = "cart-1", Books = new List<CartBook> { cartBook } };
             var carts = GetDbSetMock(new List<Cart> { cart });
@@ -219,10 +213,6 @@ namespace ShopApiTests.Features.CartFeature.Services
             Assert.IsNotNull(result);
             Assert.That(result.BookId, Is.EqualTo(cartBook.BookId));
             Assert.That(result.BookAmount, Is.EqualTo(2));
-            Assert.IsNotNull(result.Book);
-            Assert.IsNotNull(result.Book.Author);
-            Assert.IsNotNull(result.Book.Publisher);
-            Assert.IsNotNull(result.Book.Genre);
             mockRepository.Verify(r => r.UpdateAsync(cartBook, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
@@ -243,7 +233,7 @@ namespace ShopApiTests.Features.CartFeature.Services
         {
             // Arrange
             var cart = new Cart { Id = "cart-1" };
-            var cartBook = new CartBook { Id = "cart-book-1", CartId = cart.Id, BookId = 1, Book = new Book { Id = 1, Author = new Author(), Publisher = new Publisher(), Genre = new Genre() } };
+            var cartBook = new CartBook { Id = "cart-book-1", CartId = cart.Id, BookId = 1 };
             var cartBooks = GetDbSetMock(new List<CartBook> { cartBook });
 
             mockRepository.Setup(r => r.GetQueryableAsync<CartBook>(It.IsAny<CancellationToken>()))
@@ -255,10 +245,6 @@ namespace ShopApiTests.Features.CartFeature.Services
             // Assert
             Assert.That(result.Id, Is.EqualTo(cartBook.Id));
             Assert.That(result.BookId, Is.EqualTo(1));
-            Assert.IsNotNull(result.Book);
-            Assert.IsNotNull(result.Book.Author);
-            Assert.IsNotNull(result.Book.Publisher);
-            Assert.IsNotNull(result.Book.Genre);
             mockRepository.Verify(r => r.UpdateAsync(cartBook, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
@@ -289,7 +275,7 @@ namespace ShopApiTests.Features.CartFeature.Services
             };
             var booksToDelete = new[]
             {
-                new Book { Id = 1 }
+               1
             };
             var cartQueryable = new List<Cart> { cart }.AsQueryable().BuildMock();
             mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
@@ -308,7 +294,7 @@ namespace ShopApiTests.Features.CartFeature.Services
             var cart = new Cart { Id = "non-existing-cart" };
             var booksToDelete = new[]
             {
-                new Book { Id = 1 }
+                1
             };
             var cartQueryable = new List<Cart>().AsQueryable().BuildMock();
             mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
@@ -334,7 +320,7 @@ namespace ShopApiTests.Features.CartFeature.Services
             };
             var booksToDelete = new[]
             {
-                new Book { Id = 1 }
+                1
             };
             var cartQueryable = new List<Cart> { cart }.AsQueryable().BuildMock();
             mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);
@@ -353,7 +339,7 @@ namespace ShopApiTests.Features.CartFeature.Services
             var cart = new Cart { Id = "cart-1", Books = new List<CartBook>() };
             var booksToDelete = new[]
             {
-                new Book { Id = 1 }
+                1
             };
             var cartQueryable = new List<Cart> { cart }.AsQueryable().BuildMock();
             mockRepository.Setup(r => r.GetQueryableAsync<Cart>(It.IsAny<CancellationToken>())).ReturnsAsync(cartQueryable);

@@ -28,8 +28,8 @@ namespace ShopApi
 
             CreateMap<Cart, CartResponse>();
 
-            CreateMap<CartBook, BookListingResponse>();
-            CreateMap<OrderBook, BookListingResponse>();
+            CreateMap<CartBook, CartBookResponse>();
+            CreateMap<OrderBook, OrderBookResponse>();
             CreateMap<OrderBookRequest, OrderBook>();
 
             CreateMap<AddBookToCartRequest, CartBook>();

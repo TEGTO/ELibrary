@@ -10,13 +10,13 @@ namespace ShopApiTests.Features.ClientFeature.Services
     [TestFixture]
     public class ClientServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> mockRepository;
+        private Mock<IDatabaseRepository<ShopDbContext>> mockRepository;
         private ClientService clientService;
 
         [SetUp]
         public void SetUp()
         {
-            mockRepository = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            mockRepository = new Mock<IDatabaseRepository<ShopDbContext>>();
             clientService = new ClientService(mockRepository.Object);
         }
         private static IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class

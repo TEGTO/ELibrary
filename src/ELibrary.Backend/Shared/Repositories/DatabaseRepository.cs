@@ -57,6 +57,17 @@ namespace Shared.Repositories
             }, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task UpdateRangeAsync<T>(T[] obj, CancellationToken cancellationToken) where T : class
+        {
+            await resiliencePipeline.ExecuteAsync(async ct =>
+            {
+                var dbContext = await CreateDbContextAsync(ct).ConfigureAwait(false);
+                dbContext.UpdateRange(obj);
+                await dbContext.SaveChangesAsync(ct).ConfigureAwait(false);
+                return obj;
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task DeleteAsync<T>(T obj, CancellationToken cancellationToken) where T : class
         {
             await resiliencePipeline.ExecuteAsync(async ct =>

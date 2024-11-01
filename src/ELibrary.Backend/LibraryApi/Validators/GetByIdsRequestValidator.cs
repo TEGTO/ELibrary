@@ -8,7 +8,7 @@ namespace LibraryApi.Validators
     {
         public GetByIdsRequestValidator(PaginationConfiguration paginationConfiguration)
         {
-            RuleFor(x => x.Ids).NotNull().NotEmpty().Must(x => x.Count <= paginationConfiguration.MaxPaginationPageSize);
+            RuleFor(x => x.Ids).NotNull().Must(x => x != null && x.Count <= paginationConfiguration.MaxPaginationPageSize);
         }
     }
 }

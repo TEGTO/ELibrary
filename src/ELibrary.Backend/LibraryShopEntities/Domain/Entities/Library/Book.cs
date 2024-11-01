@@ -25,6 +25,8 @@ namespace LibraryShopEntities.Domain.Entities.Library
         [MaxLength(1024)]
         public string CoverImgUrl { get; set; } = default!;
         [Required]
+        public BookPopularity BookPopularity { get; set; } = default!;
+        [Required]
         public int AuthorId { get; set; }
         [ForeignKey("AuthorId")]
         public Author Author { get; set; } = default!;
@@ -41,15 +43,15 @@ namespace LibraryShopEntities.Domain.Entities.Library
         {
             if (other is Book otherBook)
             {
-                this.Name = otherBook.Name;
-                this.PublicationDate = otherBook.PublicationDate;
-                this.Price = otherBook.Price;
-                this.CoverType = otherBook.CoverType;
-                this.PageAmount = otherBook.PageAmount;
-                this.CoverImgUrl = otherBook.CoverImgUrl;
-                this.AuthorId = otherBook.AuthorId;
-                this.GenreId = otherBook.GenreId;
-                this.PublisherId = otherBook.PublisherId;
+                Name = otherBook.Name;
+                PublicationDate = otherBook.PublicationDate;
+                Price = otherBook.Price;
+                CoverType = otherBook.CoverType;
+                PageAmount = otherBook.PageAmount;
+                CoverImgUrl = otherBook.CoverImgUrl;
+                AuthorId = otherBook.AuthorId;
+                GenreId = otherBook.GenreId;
+                PublisherId = otherBook.PublisherId;
             }
         }
     }

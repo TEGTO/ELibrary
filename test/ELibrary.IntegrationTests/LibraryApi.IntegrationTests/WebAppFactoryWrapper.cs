@@ -60,9 +60,9 @@ namespace LibraryApi.IntegrationTests
 
                   builder.ConfigureTestServices(services =>
                   {
-                      services.RemoveAll(typeof(IDbContextFactory<LibraryShopDbContext>));
+                      services.RemoveAll(typeof(IDbContextFactory<ShopDbContext>));
 
-                      services.AddDbContextFactory<LibraryShopDbContext>(options =>
+                      services.AddDbContextFactory<ShopDbContext>(options =>
                           options.UseNpgsql(dbContainer.GetConnectionString()));
                   });
               });

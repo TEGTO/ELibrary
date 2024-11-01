@@ -1,15 +1,14 @@
 ﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
 namespace LibraryApi.Services
 {
-    public class BookService : LibraryEntityService<Book>
+    public class BookService : LibraryEntityService<Book>, IBookService
     {
-        public BookService(IDatabaseRepository<LibraryShopDbContext> repository) : base(repository)
+        public BookService(IDatabaseRepository<LibraryDbContext> repository) : base(repository)
         {
         }
 
@@ -22,7 +21,7 @@ namespace LibraryApi.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
-        public virtual async Task<IEnumerable<Book>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Book>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
@@ -31,6 +30,21 @@ namespace LibraryApi.Services
                 .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(cancellationToken);
+        }
+        public async Task RaisePopularityAsync(List<int> ids, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<BookPopularity>(cancellationToken);
+
+            var popularitiesToUpdate = await queryable
+                .Where(bp => ids.Contains(bp.BookId))
+                .ToListAsync(cancellationToken);
+
+            foreach (var popularity in popularitiesToUpdate)
+            {
+                popularity.Popularity += 1;
+            }
+
+            await repository.UpdateRangeAsync(popularitiesToUpdate.ToArray(), cancellationToken);
         }
         public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
@@ -146,43 +160,19 @@ namespace LibraryApi.Services
                 {
                     bookFilter.Sorting = BookSorting.MostPopular;
                 }
-                var books = await query
-                    .AsNoTracking()
-                    .ToListAsync(cancellationToken);
-
-                var bookIds = books.Select(x => x.Id);
-
-                var orderBooksCountQuery = await (await repository.GetQueryableAsync<Order>(cancellationToken))
-                    .SelectMany(o => o.OrderBooks)
-                    .Where(ob => bookIds.Contains(ob.BookId))
-                    .GroupBy(ob => ob.BookId)
-                    .Select(g => new { BookId = g.Key, OrderCount = g.Count() })
-                    .AsNoTracking()
-                    .ToListAsync(cancellationToken);
-
-                var orderCountDict = orderBooksCountQuery.ToDictionary(x => x.BookId, x => x.OrderCount);
-
-                var bookToSort = books
-                    .Select(book => new
-                    {
-                        Book = book,
-                        OrderCount = orderCountDict.ContainsKey(book.Id) ? orderCountDict[book.Id] : 0
-                    });
 
                 switch (bookFilter.Sorting.Value)
                 {
                     case BookSorting.MostPopular:
-                        return bookToSort
-                              .OrderByDescending(b => b.Book.StockAmount > 0)
-                              .ThenByDescending(b => b.OrderCount)
-                              .Select(b => b.Book)
-                              .ToList();
+                        return query
+                              .OrderByDescending(b => b.StockAmount > 0)
+                              .ThenByDescending(b => b.BookPopularity.Popularity);
+
                     case BookSorting.LeastPopular:
-                        return bookToSort
-                              .OrderByDescending(b => b.Book.StockAmount > 0)
-                              .ThenBy(b => b.OrderCount)
-                              .Select(b => b.Book)
-                              .ToList();
+                        return query
+                              .OrderByDescending(b => b.StockAmount > 0)
+                              .ThenBy(b => b.BookPopularity.Popularity);
+
                     default:
                         break;
                 }

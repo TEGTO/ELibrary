@@ -4,5 +4,5 @@ using ShopApi.Features.CartFeature.Dtos;
 
 namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart
 {
-    public record UpdateCartBookInCartCommand(string UserId, UpdateCartBookRequest Request) : IRequest<BookListingResponse>;
+    public record UpdateCartBookInCartCommand(string UserId, UpdateCartBookRequest Request) : IRequest<CartBookResponse>;
 }

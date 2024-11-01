@@ -4,5 +4,5 @@ using ShopApi.Features.CartFeature.Dtos;
 
 namespace ShopApi.Features.CartFeature.Command.AddBookToCart
 {
-    public record AddBookToCartCommand(string UserId, AddBookToCartRequest Request) : IRequest<BookListingResponse>;
+    public record AddBookToCartCommand(string UserId, AddBookToCartRequest Request) : IRequest<CartBookResponse>;
 }

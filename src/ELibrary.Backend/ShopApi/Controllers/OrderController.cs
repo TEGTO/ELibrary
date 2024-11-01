@@ -1,11 +1,19 @@
 ﻿using Authentication.Identity;
 using LibraryShopEntities.Domain.Dtos.Shop;
-using LibraryShopEntities.Domain.Entities.Shop;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShopApi.Features.ClientFeature.Services;
+using ShopApi.Features.OrderFeature.Command.CancelOrder;
+using ShopApi.Features.OrderFeature.Command.CreateOrder;
+using ShopApi.Features.OrderFeature.Command.GetOrderAmount;
+using ShopApi.Features.OrderFeature.Command.GetOrders;
+using ShopApi.Features.OrderFeature.Command.ManagerCancelOrder;
+using ShopApi.Features.OrderFeature.Command.ManagerGetOrderAmount;
+using ShopApi.Features.OrderFeature.Command.ManagerGetOrderById;
+using ShopApi.Features.OrderFeature.Command.ManagerGetPaginatedOrders;
+using ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder;
+using ShopApi.Features.OrderFeature.Command.UpdateOrder;
 using ShopApi.Features.OrderFeature.Dtos;
-using ShopApi.Features.OrderFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers
@@ -15,15 +23,11 @@ namespace ShopApi.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderManager orderManager;
-        private readonly IClientService clientService;
+        private readonly IMediator mediator;
 
-        public OrderController(
-            IOrderManager orderCommandHandler,
-            IClientService clientService)
+        public OrderController(IMediator mediator)
         {
-            this.orderManager = orderCommandHandler;
-            this.clientService = clientService;
+            this.mediator = mediator;
         }
 
         #region Endpoints
@@ -32,67 +36,51 @@ namespace ShopApi.Controllers
         [HttpPost("pagination")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            var client = await GetClientAsync(cancellationToken);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
 
-            if (client == null)
-            {
-                return BadRequest("Client is not found!");
-            }
-
-            var orders = await orderManager.GetPaginatedOrdersAsync(request, client, cancellationToken);
-            return Ok(orders);
+            return Ok(response);
         }
         [ResponseCache(Duration = 10)]
         [HttpPost("amount")]
         public async Task<ActionResult<int>> GetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            var client = await GetClientAsync(cancellationToken);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
 
-            if (client == null)
-            {
-                return BadRequest("Client is not found!");
-            }
+            return Ok(response);
+        }
+        [ResponseCache(Duration = 10)]
+        [HttpPost("amount")]
+        public async Task<ActionResult<int>> GerOrderAmountForBooks(GetOrdersFilter request, CancellationToken cancellationToken)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
 
-            int amount = await orderManager.GetOrderAmountAsync(request, client, cancellationToken);
-            return Ok(amount);
+            return Ok(response);
         }
         [HttpPost]
         public async Task<ActionResult<OrderResponse>> CreateOrder(CreateOrderRequest request, CancellationToken cancellationToken)
         {
-            var client = await GetClientAsync(cancellationToken);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new CreateOrderCommand(userId, request), cancellationToken);
 
-            if (client == null)
-            {
-                return BadRequest("Client is not found!");
-            }
-
-            var response = await orderManager.CreateOrderAsync(request, client, cancellationToken);
             return Created($"", response);
         }
         [HttpPatch]
         public async Task<ActionResult<OrderResponse>> UpdateOrder(ClientUpdateOrderRequest request, CancellationToken cancellationToken)
         {
-            var client = await GetClientAsync(cancellationToken);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new UpdateOrderCommand(userId, request), cancellationToken);
 
-            if (client == null)
-            {
-                return BadRequest("Client is not found!");
-            }
-
-            var response = await orderManager.UpdateOrderAsync(request, client, cancellationToken);
             return Ok(response);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelOrder(int id, CancellationToken cancellationToken)
         {
-            var client = await GetClientAsync(cancellationToken);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new CancelOrderCommand(userId, id), cancellationToken);
 
-            if (client == null)
-            {
-                return BadRequest("Client is not found!");
-            }
-
-            await orderManager.CancelOrderAsync(id, client, cancellationToken);
             return Ok();
         }
 
@@ -104,54 +92,44 @@ namespace ShopApi.Controllers
         [HttpGet("manager/{id}")]
         public async Task<ActionResult<OrderResponse>> ManagerGetOrderById(int id, CancellationToken cancellationToken)
         {
-            var order = await orderManager.GetOrderByIdAsync(id, cancellationToken);
+            var response = await mediator.Send(new ManagerGetOrderByIdQuery(id), cancellationToken);
 
-            if (order == null)
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(response);
         }
         [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/pagination")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> ManagerGetPaginatedOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            var orders = await orderManager.GetPaginatedOrdersAsync(request, cancellationToken);
-            return Ok(orders);
+            var response = await mediator.Send(new ManagerGetPaginatedOrdersQuery(request), cancellationToken);
+            return Ok(response);
         }
         [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/amount")]
         public async Task<ActionResult<int>> ManagerGetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            int amount = await orderManager.GetOrderAmountAsync(request, cancellationToken);
-            return Ok(amount);
+            var response = await mediator.Send(new ManagerGetOrderAmountQuery(request), cancellationToken);
+            return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPut("manager")]
         public async Task<ActionResult<OrderResponse>> ManagerUpdateOrder(ManagerUpdateOrderRequest request, CancellationToken cancellationToken)
         {
-            var response = await orderManager.UpdateOrderAsync(request, cancellationToken);
+            var response = await mediator.Send(new ManagerUpdateOrderCommand(request), cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpDelete("manager/{id}")]
         public async Task<IActionResult> ManagerCancelOrder(int id, CancellationToken cancellationToken)
         {
-            await orderManager.CancelOrderAsync(id, cancellationToken);
+            await mediator.Send(new ManagerCancelOrderCommand(id), cancellationToken);
             return Ok();
-        }
-
-        #endregion
-
-        #region Private Helpers
-
-        private async Task<Client?> GetClientAsync(CancellationToken cancellationToken)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return await clientService.GetClientByUserIdAsync(userId, cancellationToken);
         }
 
         #endregion

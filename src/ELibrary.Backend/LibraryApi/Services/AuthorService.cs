@@ -1,6 +1,6 @@
 ﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
@@ -8,7 +8,7 @@ namespace LibraryApi.Services
 {
     public class AuthorService : LibraryEntityService<Author>
     {
-        public AuthorService(IDatabaseRepository<LibraryShopDbContext> repository) : base(repository)
+        public AuthorService(IDatabaseRepository<LibraryDbContext> repository) : base(repository)
         {
         }
 

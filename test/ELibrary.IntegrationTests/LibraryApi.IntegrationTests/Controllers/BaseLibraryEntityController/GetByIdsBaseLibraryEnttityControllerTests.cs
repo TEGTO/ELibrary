@@ -34,7 +34,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             Assert.That(mapper.Map<TEntity>(responseEntities[0]).Name, Is.EqualTo(list[0].Name));
         }
         [Test]
-        public async Task GetPaginatedEntities_ReturnsOkWithEmptyList()
+        public async Task GetByIds_ReturnsOkWithEmptyList()
         {
             // Arrange
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/ids");
@@ -51,6 +51,18 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             });
             Assert.NotNull(responseEntities);
             Assert.That(responseEntities.Count, Is.EqualTo(0));
+        }
+        [Test]
+        public async Task GetByIds_InvalidRequest_ReturnsBadRequest()
+        {
+            // Arrange
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/ids");
+            var idsRequest = new GetByIdsRequest() { Ids = null };
+            request.Content = new StringContent(JsonSerializer.Serialize(idsRequest), Encoding.UTF8, "application/json");
+            // Act 
+            var response = await client.SendAsync(request);
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
     }
 }

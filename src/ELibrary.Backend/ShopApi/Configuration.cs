@@ -9,5 +9,8 @@
         public static string CHAT_RESILIENCE_PIPELINE { get; } = "ChatResiliencePipeline";
         public static string DEFAULT_RESILIENCE_PIPELINE { get; } = "Default";
         public static string LIBRARY_API_URL { get; } = "LibraryApiUrl";
+        public static string LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT { get; } = "book/ids";
+        public static string LIBRARY_API_RAISE_BOOK_POPULARITY_ENDPOINT { get; } = "book/popularity";
+        public static string EF_CREATE_DATABASE { get; } = "EFCreateDatabase";
     }
 }

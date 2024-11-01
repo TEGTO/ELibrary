@@ -13,14 +13,14 @@ namespace ShopApi.Features.StatisticsFeature.Services.Tests
     [TestFixture]
     internal class StatisticsServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> repositoryMock;
+        private Mock<IDatabaseRepository<ShopDbContext>> repositoryMock;
         private CancellationToken cancellationToken;
         private StatisticsService service;
 
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            repositoryMock = new Mock<IDatabaseRepository<ShopDbContext>>();
             service = new StatisticsService(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }

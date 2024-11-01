@@ -28,7 +28,7 @@ if (useCors)
 
 #endregion
 
-builder.Services.AddDbContextFactory<LibraryShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!);
+builder.Services.AddDbContextFactory<ShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!, "ShopApi");
 
 
 #region Identity & Authentication
@@ -42,17 +42,15 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 builder.Services.AddSingleton<IClientService, ClientService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICartService, CartService>();
-builder.Services.AddSingleton<IOrderManager, OrderManager>();
-builder.Services.AddSingleton<IClientManager, ClientManager>();
 builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
-builder.Services.AddSingleton<IGetLibraryItemsService, GetLibraryItemsService>();
+builder.Services.AddSingleton<ILibraryService, LibraryService>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<ShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 #endregion
@@ -72,6 +70,11 @@ builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 var app = builder.Build();
 
+if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
+{
+    await app.ConfigureDatabaseAsync<ShopDbContext>(CancellationToken.None);
+}
+
 if (useCors)
 {
     app.UseCors(MyAllowSpecificOrigins);
@@ -86,3 +89,5 @@ app.UseIdentity();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

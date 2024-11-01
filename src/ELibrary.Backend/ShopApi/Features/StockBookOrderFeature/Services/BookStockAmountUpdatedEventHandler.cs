@@ -9,9 +9,9 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
 {
     public class BookStockAmountUpdatedEventHandler : IEventHandler<BookStockAmountUpdatedEvent>
     {
-        protected readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        protected readonly IDatabaseRepository<ShopDbContext> repository;
 
-        public BookStockAmountUpdatedEventHandler(IDatabaseRepository<LibraryShopDbContext> repository)
+        public BookStockAmountUpdatedEventHandler(IDatabaseRepository<ShopDbContext> repository)
         {
             this.repository = repository;
         }

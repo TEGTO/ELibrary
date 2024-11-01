@@ -3,8 +3,8 @@ using LibraryApi.Domain.Dto.Author;
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dto.Genre;
 using LibraryApi.Domain.Dto.Publisher;
-using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Domain.Dtos.Library;
 
 namespace LibraryApi
 {

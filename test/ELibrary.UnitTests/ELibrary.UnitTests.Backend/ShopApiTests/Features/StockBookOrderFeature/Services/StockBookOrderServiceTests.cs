@@ -12,7 +12,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
     [TestFixture]
     public class StockBookOrderServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryShopDbContext>> repositoryMock;
+        private Mock<IDatabaseRepository<ShopDbContext>> repositoryMock;
         private Mock<IEventDispatcher> eventDispatcherMock;
         private StockBookOrderService stockBookOrderService;
         private CancellationToken cancellationToken;
@@ -20,7 +20,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<LibraryShopDbContext>>();
+            repositoryMock = new Mock<IDatabaseRepository<ShopDbContext>>();
             eventDispatcherMock = new Mock<IEventDispatcher>();
             stockBookOrderService = new StockBookOrderService(repositoryMock.Object, eventDispatcherMock.Object);
             cancellationToken = CancellationToken.None;

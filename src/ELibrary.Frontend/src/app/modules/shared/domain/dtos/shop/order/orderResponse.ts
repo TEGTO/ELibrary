@@ -1,4 +1,4 @@
-import { BookListingResponse, ClientResponse, DeliveryMethod, mapBookListingResponseToOrderBook, mapClientResponseToClient, Order, OrderStatus, PaymentMethod } from "../../../..";
+import { ClientResponse, DeliveryMethod, mapClientResponseToClient, mapOrderBookResponseToOrderBook, Order, OrderBookResponse, OrderStatus, PaymentMethod } from "../../../..";
 
 export interface OrderResponse {
     id: number,
@@ -12,7 +12,7 @@ export interface OrderResponse {
     paymentMethod: PaymentMethod,
     deliveryMethod: DeliveryMethod,
     client: ClientResponse,
-    orderBooks: BookListingResponse[]
+    orderBooks: OrderBookResponse[]
 }
 
 export function mapOrderResponseToOrder(response: OrderResponse): Order {
@@ -28,6 +28,6 @@ export function mapOrderResponseToOrder(response: OrderResponse): Order {
         paymentMethod: response?.paymentMethod,
         deliveryMethod: response?.deliveryMethod,
         client: mapClientResponseToClient(response?.client),
-        orderBooks: response?.orderBooks.map(x => mapBookListingResponseToOrderBook(x))
+        orderBooks: response?.orderBooks.map(x => mapOrderBookResponseToOrderBook(x))
     }
 }

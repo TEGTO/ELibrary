@@ -2,7 +2,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { AddBookToCartRequest, BookListingResponse, Cart, DeleteCartBookFromCartRequest, UpdateCartBookRequest, URLDefiner } from '../../../..';
+import { AddBookToCartRequest, Cart, CartBookResponse, DeleteCartBookFromCartRequest, UpdateCartBookRequest, URLDefiner } from '../../../..';
 import { CartApiService } from './cart-api.service';
 
 describe('CartApiService', () => {
@@ -65,7 +65,7 @@ describe('CartApiService', () => {
   it('addBookToCart should post a new cart book', () => {
     const request: AddBookToCartRequest = { bookId: 1, bookAmount: 2 };
     const expectedUrl = `/api/cart/cartbook`;
-    const mockResponse: BookListingResponse = { id: '1', bookId: 1, bookAmount: 2, book: {} as any };
+    const mockResponse: CartBookResponse = { id: '1', bookId: 1, bookAmount: 2, book: {} as any };
 
     service.addBookToCart(request).subscribe(response => {
       expect(response.id).toBe('1');
@@ -80,7 +80,7 @@ describe('CartApiService', () => {
   it('updateCartBookInCart should update a cart book', () => {
     const request: UpdateCartBookRequest = { id: '1', bookAmount: 3 };
     const expectedUrl = `/api/cart/cartbook`;
-    const mockResponse: BookListingResponse = { id: '1', bookId: 1, bookAmount: 3, book: {} as any };
+    const mockResponse: CartBookResponse = { id: '1', bookId: 1, bookAmount: 3, book: {} as any };
 
     service.updateCartBookInCart(request).subscribe(response => {
       expect(response.bookAmount).toBe(3);
