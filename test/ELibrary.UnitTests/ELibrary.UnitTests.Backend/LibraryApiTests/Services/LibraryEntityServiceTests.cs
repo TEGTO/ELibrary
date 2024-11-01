@@ -58,6 +58,22 @@ namespace LibraryApi.Services.Tests
             repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
         }
         [Test]
+        public async Task GetByIds_ValidIds_ReturnsEntities()
+        {
+            // Arrange
+            var entities = new List<TestEntity> { new TestEntity { Id = 1, Name = "Entity1" }, new TestEntity { Id = 2, Name = "Entity2" } };
+            var dbSetMock = GetDbSetMock(entities);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
+               .ReturnsAsync(dbSetMock.Object);
+            var ids = new List<int> { 1, 2, 3 };
+            // Act
+            var result = await service.GetByIdsAsync(ids, CancellationToken.None);
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(2));
+            Assert.That(result.First().Name, Is.EqualTo("Entity1"));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+        }
+        [Test]
         public async Task GetPaginatedAsync_ValidPage_ReturnsEntities()
         {
             // Arrange
@@ -65,7 +81,7 @@ namespace LibraryApi.Services.Tests
             var dbSetMock = GetDbSetMock(entities);
             repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
                .ReturnsAsync(dbSetMock.Object);
-            var paginationRequest = new BookFilterRequest() { PageNumber = 1, PageSize = 10 };
+            var paginationRequest = new LibraryFilterRequest() { PageNumber = 1, PageSize = 10 };
             // Act
             var result = await service.GetPaginatedAsync(paginationRequest, CancellationToken.None);
             // Assert

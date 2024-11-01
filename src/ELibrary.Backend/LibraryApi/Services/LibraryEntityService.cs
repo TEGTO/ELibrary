@@ -21,6 +21,12 @@ namespace LibraryApi.Services
 
             return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
+        public virtual async Task<IEnumerable<TEntity>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
+
+            return await queryable.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+        }
         public virtual async Task<IEnumerable<TEntity>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             var list = new List<TEntity>();

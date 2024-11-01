@@ -56,6 +56,31 @@ namespace LibraryApi.Controllers.Tests
             Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
         [Test]
+        public async Task GetByIds_ValidRequest_ReturnsOkWithItems()
+        {
+            // Arrange
+            var genres = new List<Genre>
+            {
+                new Genre { Id = 1, Name = "Science Fiction" },
+                new Genre { Id = 2, Name = "Fantasy" }
+            };
+            var request = new GetByIdsRequest
+            {
+                Ids = new List<int> { 1, 2, 3 }
+            };
+            mockEntityService.Setup(s => s.GetByIdsAsync(request.Ids, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(genres);
+            mockMapper.Setup(m => m.Map<GenreResponse>(It.IsAny<Genre>()))
+                .Returns((Genre g) => new GenreResponse { Id = g.Id, Name = g.Name });
+            // Act
+            var result = await controller.GetByIds(request, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That((okResult.Value as IEnumerable<GenreResponse>).Count(), Is.EqualTo(2));
+        }
+        [Test]
         public async Task GetPaginated_ValidRequest_ReturnsOkWithPaginatedResults()
         {
             // Arrange
@@ -65,7 +90,6 @@ namespace LibraryApi.Controllers.Tests
                 new Genre { Id = 2, Name = "Fantasy" }
             };
             var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 2 };
-            var responses = genres.Select(g => new GenreResponse { Id = g.Id, Name = g.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(genres);
             mockMapper.Setup(m => m.Map<GenreResponse>(It.IsAny<Genre>()))

@@ -33,6 +33,10 @@ namespace Shared.Middlewares
                  .ToArray();
                 await SetError(httpContext, HttpStatusCode.BadRequest, ex, errors).ConfigureAwait(false);
             }
+            catch (InvalidDataException ex)
+            {
+                await SetError(httpContext, HttpStatusCode.BadRequest, ex, new[] { ex.Message }).ConfigureAwait(false);
+            }
             catch (AuthorizationException ex)
             {
                 var errors = ex.Errors.ToArray();

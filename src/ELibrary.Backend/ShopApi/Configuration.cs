@@ -8,5 +8,6 @@
         public static string CHAT_CONFIGURATION_SECTION { get; } = "Chat";
         public static string CHAT_RESILIENCE_PIPELINE { get; } = "ChatResiliencePipeline";
         public static string DEFAULT_RESILIENCE_PIPELINE { get; } = "Default";
+        public static string LIBRARY_API_URL { get; } = "LibraryApiUrl";
     }
 }

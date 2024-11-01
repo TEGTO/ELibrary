@@ -69,6 +69,67 @@ namespace LibraryApi.Services.Tests
             Assert.IsNull(result);
         }
         [Test]
+        public async Task GetByIds_ValidIds_ReturnsEntities()
+        {
+            // Arrange
+            var books = new List<Book>
+            {
+                new Book
+                {
+                    Id = 1,
+                    Name =  "Book1",
+                    Author = new Author { Id = 1, Name = "Author1" },
+                    Genre = new Genre { Id = 1, Name = "Genre1" },
+                    Publisher = new Publisher { Id = 1, Name = "Publisher1" },
+                    PublicationDate = DateTime.UtcNow,
+                    Price = 10,
+                    PageAmount = 10,
+                    StockAmount = 10,
+                },
+                new Book
+                {
+                    Id = 2,
+                    Name = "Book2",
+                    Author = new Author { Id = 2, Name = "Author2" },
+                    Genre = new Genre { Id = 2, Name = "Genre2" },
+                    Publisher = new Publisher { Id = 1, Name = "Publisher2" },
+                    PublicationDate = DateTime.UtcNow,
+                    Price = 10,
+                    PageAmount = 10,
+                    StockAmount = 10,
+                }
+            };
+            var orders = new List<Order>
+            {
+                new Order
+                {
+                    OrderBooks= new List<OrderBook>
+                    {
+                        new OrderBook
+                        {
+                            Id = "1",
+                            BookId = 1
+                        },
+                    }
+                }
+            };
+            var dbBookSetMock = GetDbSetMock(books);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+               .ReturnsAsync(dbBookSetMock.Object);
+            var dbOrderSetMock = GetDbSetMock(orders);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken))
+                .ReturnsAsync(dbOrderSetMock.Object);
+            var ids = new List<int> { 1, 2, 3 };
+            // Act
+            var result = await service.GetByIdsAsync(ids, CancellationToken.None);
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(2));
+            Assert.That(result.First().Author!.Name, Is.EqualTo("Author1"));
+            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre1"));
+            Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher1"));
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+        [Test]
         public async Task GetPaginatedAsync_ValidPage_ReturnsBooksWithEntities()
         {
             // Arrange

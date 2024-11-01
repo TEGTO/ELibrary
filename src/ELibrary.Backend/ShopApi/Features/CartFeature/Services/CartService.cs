@@ -1,5 +1,4 @@
 ﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
@@ -90,7 +89,7 @@ namespace ShopApi.Features.CartFeature.Services
             await repository.UpdateAsync(cartBookInDb, cancellationToken);
             return cartBookInDb;
         }
-        public async Task<Cart> DeleteBooksFromCartAsync(Cart cart, Book[] books, CancellationToken cancellationToken)
+        public async Task<Cart> DeleteBooksFromCartAsync(Cart cart, int[] bookIds, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
             var cartInDb = await GetQueryableCartWithBook(queryable)
@@ -101,7 +100,6 @@ namespace ShopApi.Features.CartFeature.Services
                 return cartInDb;
             }
 
-            var bookIds = books.Select(x => x.Id).ToHashSet();
             var cartBooksInDB = cartInDb.Books.Where(x => bookIds.Contains(x.BookId)).ToList();
 
             if (cartBooksInDB.Any())

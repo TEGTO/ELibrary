@@ -44,6 +44,13 @@ namespace LibraryApi.Controllers
 
             return Ok(mapper.Map<TGetResponse>(entity));
         }
+        [HttpPost("ids")]
+        [AllowAnonymous]
+        public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)
+        {
+            var entities = await entityService.GetByIdsAsync(request.Ids, cancellationToken);
+            return Ok(entities.Select(mapper.Map<TGetResponse>));
+        }
         [ResponseCache(Duration = 10)]
         [AllowAnonymous]
         [HttpPost("pagination")]

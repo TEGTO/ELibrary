@@ -32,7 +32,7 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
             Assert.That(authResponse.Email, Is.EqualTo("someemail@gmail.com"));
         }
         [Test]
-        public async Task LoginOAuthRequest_InvalidRequestData_ReturnsInternalServerError()
+        public async Task LoginOAuthRequest_InvalidRequestData_ReturnsBadRequest()
         {
             //Arrange
             var loginRequest = new LoginOAuthRequest
@@ -47,7 +47,7 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
             // Act
             var response = await client.SendAsync(request);
             // Assert
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
         [Test]
         public async Task LoginOAuthRequest_InvalidRequest_ReturnsBadRequest()

@@ -56,6 +56,31 @@ namespace LibraryApi.Controllers.Tests
             Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
         [Test]
+        public async Task GetByIds_ValidRequest_ReturnsOkWithItems()
+        {
+            // Arrange
+            var books = new List<Book>
+            {
+                new Book { Id = 1, Name = "Dune" },
+                new Book { Id = 2, Name = "1984" }
+            };
+            var request = new GetByIdsRequest
+            {
+                Ids = new List<int> { 1, 2, 3 }
+            };
+            mockEntityService.Setup(s => s.GetByIdsAsync(request.Ids, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(books);
+            mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))
+                .Returns((Book b) => new BookResponse { Id = b.Id, Name = b.Name });
+            // Act
+            var result = await controller.GetByIds(request, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That((okResult.Value as IEnumerable<BookResponse>).Count(), Is.EqualTo(2));
+        }
+        [Test]
         public async Task GetPaginated_ValidRequest_ReturnsOkWithPaginatedResults()
         {
             // Arrange
@@ -65,7 +90,6 @@ namespace LibraryApi.Controllers.Tests
                 new Book { Id = 2, Name = "1984" }
             };
             var request = new BookFilterRequest { PageNumber = 1, PageSize = 2 };
-            var responses = books.Select(b => new BookResponse { Id = b.Id, Name = b.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(books);
             mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))

@@ -56,6 +56,31 @@ namespace LibraryApi.Controllers.Tests
             Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
         [Test]
+        public async Task GetByIds_ValidRequest_ReturnsOkWithItems()
+        {
+            // Arrange
+            var authors = new List<Author>
+            {
+                new Author { Id = 1, Name = "John", LastName = "Doe" },
+                new Author { Id = 2, Name = "Jane", LastName = "Doe" }
+            };
+            var request = new GetByIdsRequest
+            {
+                Ids = new List<int> { 1, 2, 3 }
+            };
+            mockEntityService.Setup(s => s.GetByIdsAsync(request.Ids, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(authors);
+            mockMapper.Setup(m => m.Map<AuthorResponse>(It.IsAny<Author>()))
+                .Returns((Author a) => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName });
+            // Act
+            var result = await controller.GetByIds(request, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That((okResult.Value as IEnumerable<AuthorResponse>).Count(), Is.EqualTo(2));
+        }
+        [Test]
         public async Task GetPaginated_ValidRequest_ReturnsOkWithPaginatedResults()
         {
             // Arrange
@@ -65,7 +90,6 @@ namespace LibraryApi.Controllers.Tests
                 new Author { Id = 2, Name = "Jane", LastName = "Doe" }
             };
             var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 2 };
-            var responses = authors.Select(a => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authors);
             mockMapper.Setup(m => m.Map<AuthorResponse>(It.IsAny<Author>()))

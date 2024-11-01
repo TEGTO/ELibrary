@@ -17,23 +17,27 @@ namespace LibraryApi.Services
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
-            return await queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
+            return await
+                IncludeBookEnities(queryable)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+        }
+        public virtual async Task<IEnumerable<Book>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
+
+            return await
+                IncludeBookEnities(queryable)
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(cancellationToken);
         }
         public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
             List<Book> paginatedBooks = new List<Book>();
 
-            var query = queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .AsNoTracking();
+            var query = IncludeBookEnities(queryable).AsNoTracking();
 
             query = ApplyFilter(query, req);
 
@@ -59,11 +63,7 @@ namespace LibraryApi.Services
 
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
-            var entityInDb = await queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .FirstAsync(b => b.Id == book.Id, cancellationToken);
+            var entityInDb = await IncludeBookEnities(queryable).FirstAsync(b => b.Id == book.Id, cancellationToken);
             return entityInDb;
         }
         public override async Task<Book> UpdateAsync(Book entity, CancellationToken cancellationToken)
@@ -76,11 +76,7 @@ namespace LibraryApi.Services
 
             await repository.UpdateAsync(entityInDb, cancellationToken);
 
-            entityInDb = await queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
+            entityInDb = await IncludeBookEnities(queryable).FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
             return entityInDb;
         }
 
@@ -194,8 +190,15 @@ namespace LibraryApi.Services
 
             return query
                 .Where(b => b.Name.Contains(req.ContainsName))
-                .OrderByDescending(b => b.Id)
-                .OrderByDescending(b => b.StockAmount > 0);
+                .OrderByDescending(b => b.StockAmount > 0)
+                .ThenByDescending(b => b.Id);
+        }
+        private IQueryable<Book> IncludeBookEnities(IQueryable<Book> queryable)
+        {
+            return queryable
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .Include(b => b.Publisher);
         }
     }
 }

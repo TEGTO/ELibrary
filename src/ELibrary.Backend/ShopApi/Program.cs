@@ -12,6 +12,7 @@ using ShopApi.Features.OrderFeature.Services;
 using ShopApi.Features.StatisticsFeature.Services;
 using ShopApi.Features.StockBookOrderFeature.Models;
 using ShopApi.Features.StockBookOrderFeature.Services;
+using ShopApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,12 +49,18 @@ builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookSt
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
+builder.Services.AddSingleton<IGetLibraryItemsService, GetLibraryItemsService>();
 
 builder.Services.AddPaginationConfiguration(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 #endregion
+
+builder.Services.AddMediatR(conf =>
+{
+    conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
 
 builder.Services.AddMemoryCache();
 
