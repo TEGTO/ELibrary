@@ -24,8 +24,7 @@ namespace LibraryShopEntities.Domain.Entities.Library
         [Required]
         [MaxLength(1024)]
         public string CoverImgUrl { get; set; } = default!;
-        [Required]
-        public BookPopularity BookPopularity { get; set; } = default!;
+        public BookPopularity? BookPopularity { get; set; } = default!;
         [Required]
         public int AuthorId { get; set; }
         [ForeignKey("AuthorId")]

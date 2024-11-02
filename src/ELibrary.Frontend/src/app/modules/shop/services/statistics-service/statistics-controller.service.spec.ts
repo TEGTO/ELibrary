@@ -1,18 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { BookStatistics, GetBookStatistics, getDefaultBookStatistics, getDefaultGetBookStatistics, mapGetBookStatisticsToGetBookStatisticsRequest, StatisticsApiService } from '../../../shared';
+import { getDefaultGetShopStatistics, getDefaultShopStatistics, GetShopStatistics, mapGetShopStatisticsToGetShopStatisticsRequest, ShopStatistics, StatisticsApiService } from '../../../shared';
 import { StatisticsControllerService } from './statistics-controller.service';
 
 describe('StatisticsControllerService', () => {
   let service: StatisticsControllerService;
   let apiServiceSpy: jasmine.SpyObj<StatisticsApiService>;
 
-  const mockBookStatistics: BookStatistics = getDefaultBookStatistics();
+  const mockBookStatistics: ShopStatistics = getDefaultShopStatistics();
 
-  const mockGetBookStatistics: GetBookStatistics = getDefaultGetBookStatistics();
+  const mockGetBookStatistics: GetShopStatistics = getDefaultGetShopStatistics();
 
   beforeEach(() => {
-    const apiServiceSpyObj = jasmine.createSpyObj('StatisticsApiService', ['getBookStatistics']);
+    const apiServiceSpyObj = jasmine.createSpyObj<StatisticsApiService>(['getShopStatistics']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -30,13 +30,13 @@ describe('StatisticsControllerService', () => {
   });
 
   it('should call apiService.getBookStatistics with correct request and return expected statistics', () => {
-    const mappedRequest = mapGetBookStatisticsToGetBookStatisticsRequest(mockGetBookStatistics);
-    apiServiceSpy.getBookStatistics.and.returnValue(of(mockBookStatistics));
+    const mappedRequest = mapGetShopStatisticsToGetShopStatisticsRequest(mockGetBookStatistics);
+    apiServiceSpy.getShopStatistics.and.returnValue(of(mockBookStatistics));
 
-    service.getBookStatistics(mockGetBookStatistics).subscribe((result) => {
+    service.getShopStatistics(mockGetBookStatistics).subscribe((result) => {
       expect(result).toEqual(mockBookStatistics);
     });
 
-    expect(apiServiceSpy.getBookStatistics).toHaveBeenCalledWith(mappedRequest);
+    expect(apiServiceSpy.getShopStatistics).toHaveBeenCalledWith(mappedRequest);
   });
 });

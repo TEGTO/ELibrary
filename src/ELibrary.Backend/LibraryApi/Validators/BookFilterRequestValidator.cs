@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LibraryApi.Domain.Dtos;
+using LibraryApi.Domain.Dtos.Book;
 using Shared.Configurations;
 using Shared.Validators;
 

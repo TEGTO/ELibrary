@@ -35,7 +35,6 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.authApiService.loginUser(action.req).pipe(
                     map((response) => {
-                        console.log(response);
                         this.localStorage.setItem(this.storageUserAuthKey, JSON.stringify(response));
                         return signInUserSuccess({ userAuth: response });
                     }),

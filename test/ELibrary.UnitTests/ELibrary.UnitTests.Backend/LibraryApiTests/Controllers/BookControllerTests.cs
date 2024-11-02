@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dtos;
+using LibraryApi.Domain.Dtos.Book;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,6 +16,7 @@ namespace LibraryApi.Controllers.Tests
     {
         private Mock<ILibraryEntityService<Book>> mockEntityService;
         private Mock<IMapper> mockMapper;
+        private Mock<IBookService> mockBookService;
         private BookController controller;
 
         [SetUp]
@@ -21,7 +24,8 @@ namespace LibraryApi.Controllers.Tests
         {
             mockEntityService = new Mock<ILibraryEntityService<Book>>();
             mockMapper = new Mock<IMapper>();
-            controller = new BookController(mockEntityService.Object, mockMapper.Object);
+            mockBookService = new Mock<IBookService>();
+            controller = new BookController(mockEntityService.Object, mockMapper.Object, mockBookService.Object);
         }
 
         [Test]
@@ -79,6 +83,45 @@ namespace LibraryApi.Controllers.Tests
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
             Assert.That((okResult.Value as IEnumerable<BookResponse>).Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public async Task RaisePopularity_ValidIds_ReturnsOk()
+        {
+            // Arrange
+            var bookIds = new List<int> { 1, 2, 3 };
+            var request = new RaiseBookPopularityRequest { Ids = bookIds };
+            mockBookService.Setup(s => s.RaisePopularityAsync(bookIds, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await controller.RaisePopularity(request, CancellationToken.None);
+
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+            mockBookService.Verify(s => s.RaisePopularityAsync(bookIds, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateStockAmount_ValidRequests_ReturnsOk()
+        {
+            // Arrange
+            var requests = new List<UpdateBookStockAmountRequest>
+        {
+            new UpdateBookStockAmountRequest { BookId = 1, ChangeAmount = 5 },
+            new UpdateBookStockAmountRequest { BookId = 2, ChangeAmount = -2 }
+        };
+            var requestDict = requests.ToDictionary(r => r.BookId, r => r.ChangeAmount);
+
+            mockBookService.Setup(s => s.ChangeBookStockAmount(requestDict, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await controller.UpdateStockAmount(requests, CancellationToken.None);
+
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+            mockBookService.Verify(s => s.ChangeBookStockAmount(requestDict, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public async Task GetPaginated_ValidRequest_ReturnsOkWithPaginatedResults()

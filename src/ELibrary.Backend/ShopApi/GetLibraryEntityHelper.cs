@@ -12,13 +12,13 @@ namespace ShopApi
         {
             var responses = (await libraryService.GetByIdsAsync<BookResponse>(
                 ids,
-                $"/{Configuration.LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT}",
+                $"/{LibraryConfiguration.LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT}",
                 cancellationToken
             )).ToList();
 
-            if (responses.Count != ids.Count)
+            if (responses.Count != ids.Distinct().Count())
             {
-                throw new InvalidDataException("Not all books exist!");
+                throw new InvalidDataException($"Not all books exist!");
             }
 
             return responses;
@@ -61,7 +61,7 @@ namespace ShopApi
 
             return orderResponses;
         }
-        public static async Task<IEnumerable<StockBookOrderResponse>> GetStockBookOrderResponseWiithBooksAsync(IEnumerable<StockBookOrderResponse> orders, ILibraryService libraryService, IMapper mapper, CancellationToken cancellationToken)
+        public static async Task<IEnumerable<StockBookOrderResponse>> GetStockBookOrderResponseWiithBooksAsync(IEnumerable<StockBookOrder> orders, ILibraryService libraryService, IMapper mapper, CancellationToken cancellationToken)
         {
             var orderResponses = orders.Select(mapper.Map<StockBookOrderResponse>).ToList();
 

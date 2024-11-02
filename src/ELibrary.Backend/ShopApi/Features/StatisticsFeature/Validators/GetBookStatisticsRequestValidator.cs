@@ -3,7 +3,7 @@ using ShopApi.Features.StatisticsFeature.Domain.Dtos;
 
 namespace ShopApi.Features.StatisticsFeature.Validators
 {
-    public class GetBookStatisticsRequestValidator : AbstractValidator<GetBookStatisticsRequest>
+    public class GetBookStatisticsRequestValidator : AbstractValidator<GetShopStatisticsRequest>
     {
         public GetBookStatisticsRequestValidator()
         {

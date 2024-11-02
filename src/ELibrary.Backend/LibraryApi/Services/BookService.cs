@@ -1,6 +1,7 @@
 ﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Domain.Entities.Library;
+using LibraryApi.Domain.Dtos.Book;
 using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 
@@ -35,17 +36,47 @@ namespace LibraryApi.Services
         {
             var queryable = await repository.GetQueryableAsync<BookPopularity>(cancellationToken);
 
-            var popularitiesToUpdate = await queryable
+            var existingPopularities = await queryable
                 .Where(bp => ids.Contains(bp.BookId))
-                .ToListAsync(cancellationToken);
+                .ToDictionaryAsync(bp => bp.BookId, cancellationToken);
 
-            foreach (var popularity in popularitiesToUpdate)
+            var popularitiesToUpdate = new List<BookPopularity>();
+
+            foreach (var id in ids)
             {
-                popularity.Popularity += 1;
+                if (existingPopularities.TryGetValue(id, out var popularity))
+                {
+                    popularity.Popularity += 1;
+                }
+                else
+                {
+                    popularitiesToUpdate.Add(new BookPopularity { BookId = id, Popularity = 1 });
+                }
             }
+
+            popularitiesToUpdate.AddRange(existingPopularities.Values);
 
             await repository.UpdateRangeAsync(popularitiesToUpdate.ToArray(), cancellationToken);
         }
+        public async Task ChangeBookStockAmount(Dictionary<int, int> changeRequests, CancellationToken cancellationToken)
+        {
+            var bookIds = changeRequests.Keys.ToList();
+
+            var books = await (await repository.GetQueryableAsync<Book>(cancellationToken))
+                .Where(book => bookIds.Contains(book.Id))
+                .ToListAsync(cancellationToken);
+
+            foreach (var book in books)
+            {
+                if (changeRequests.TryGetValue(book.Id, out var changeAmount))
+                {
+                    book.StockAmount += changeAmount;
+                }
+            }
+
+            await repository.UpdateRangeAsync(books.ToArray(), cancellationToken);
+        }
+
         public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
@@ -166,13 +197,11 @@ namespace LibraryApi.Services
                     case BookSorting.MostPopular:
                         return query
                               .OrderByDescending(b => b.StockAmount > 0)
-                              .ThenByDescending(b => b.BookPopularity.Popularity);
-
+                              .ThenByDescending(b => b.BookPopularity != null ? b.BookPopularity.Popularity : 0);
                     case BookSorting.LeastPopular:
                         return query
                               .OrderByDescending(b => b.StockAmount > 0)
-                              .ThenBy(b => b.BookPopularity.Popularity);
-
+                              .ThenBy(b => b.BookPopularity != null ? b.BookPopularity.Popularity : 0);
                     default:
                         break;
                 }

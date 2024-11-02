@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ShopApi.Features.StatisticsFeature.Domain.Dtos;
+using ShopApi.Features.StatisticsFeature.Domain.Models;
 
 namespace ShopApi.Features.StatisticsFeature.Validators
 {

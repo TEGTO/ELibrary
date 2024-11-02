@@ -22,7 +22,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.CreateStockBookOrder
 
         public async Task<StockBookOrderResponse> Handle(CreateStockBookOrderCommand command, CancellationToken cancellationToken)
         {
-            var order = mapper.Map<StockBookOrder>(command);
+            var order = mapper.Map<StockBookOrder>(command.Request);
 
             var bookIds = command.Request.StockBookChanges.Select(x => x.BookId).Distinct().ToList();
             var bookResponses = await GetLibraryEntityHelper.GetBookResponsesForIdsAsync(bookIds, libraryService, cancellationToken);

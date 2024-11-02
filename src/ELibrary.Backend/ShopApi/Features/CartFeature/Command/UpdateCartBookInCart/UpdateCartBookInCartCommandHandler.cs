@@ -35,12 +35,12 @@ namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart
                 throw new InvalidDataException("Cart book is not found in the cart!");
             }
 
+            var response = await cartService.UpdateCartBookAsync(cart, cartBook, cancellationToken);
+
             var bookResponse = await GetLibraryEntityHelper.
-                GetBookResponsesForIdsAsync([cartBook.BookId],
+                GetBookResponsesForIdsAsync([response.BookId],
                 libraryService,
                 cancellationToken);
-
-            var response = await cartService.UpdateCartBookAsync(cart, cartBook, cancellationToken);
 
             var bookListingResponse = mapper.Map<CartBookResponse>(response);
             bookListingResponse.Book = bookResponse[0];

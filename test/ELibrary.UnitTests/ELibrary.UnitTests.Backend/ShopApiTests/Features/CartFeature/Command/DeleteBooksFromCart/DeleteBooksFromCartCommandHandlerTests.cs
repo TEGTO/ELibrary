@@ -14,7 +14,7 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart.Tests
     internal class DeleteBooksFromCartCommandHandlerTests
     {
         private Mock<ICartService> mockCartService;
-        private Mock<IGetLibraryItemsService> mockGetItemsService;
+        private Mock<ILibraryService> mockLibraryService;
         private Mock<IMapper> mockMapper;
         private DeleteBooksFromCartCommandHandler handler;
 
@@ -22,9 +22,9 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart.Tests
         public void SetUp()
         {
             mockCartService = new Mock<ICartService>();
-            mockGetItemsService = new Mock<IGetLibraryItemsService>();
+            mockLibraryService = new Mock<ILibraryService>();
             mockMapper = new Mock<IMapper>();
-            handler = new DeleteBooksFromCartCommandHandler(mockCartService.Object, mockGetItemsService.Object, mockMapper.Object);
+            handler = new DeleteBooksFromCartCommandHandler(mockCartService.Object, mockLibraryService.Object, mockMapper.Object);
         }
 
         [Test]
@@ -39,12 +39,12 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart.Tests
                 .ReturnsAsync(new Cart { Id = "newCartId" });
             mockMapper.Setup(m => m.Map<Book>(It.IsAny<DeleteCartBookFromCartRequest>()))
               .Returns(new Book { Id = 1 });
-            mockGetItemsService.Setup(s => s.GetByIdsAsync<BookResponse>(
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(
                It.IsAny<List<int>>(),
                It.IsAny<string>(),
                cancellationToken)
            ).ReturnsAsync(new List<BookResponse> { new BookResponse { Id = 1, Name = "Mapped Book" } });
-            var cartResponse = new CartResponse { Books = new List<BookListingResponse> { new BookListingResponse { BookId = 1 } } };
+            var cartResponse = new CartResponse { Books = new List<CartBookResponse> { new CartBookResponse { BookId = 1 } } };
             mockMapper.Setup(m => m.Map<CartResponse>(It.IsAny<Cart>())).Returns(cartResponse);
             // Act
             await handler.Handle(command, cancellationToken);
@@ -62,14 +62,14 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart.Tests
                 .ReturnsAsync(cart);
             mockMapper.Setup(m => m.Map<Book>(It.IsAny<DeleteCartBookFromCartRequest>()))
                 .Returns(new Book { Id = 1 });
-            mockGetItemsService.Setup(s => s.GetByIdsAsync<BookResponse>(
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(
                 It.IsAny<List<int>>(),
                 It.IsAny<string>(),
                 cancellationToken)
             ).ReturnsAsync(new List<BookResponse> { new BookResponse { Id = 1, Name = "Sample Book" } });
             mockCartService.Setup(cs => cs.DeleteBooksFromCartAsync(It.IsAny<Cart>(), It.IsAny<int[]>(), cancellationToken))
                 .ReturnsAsync(cart);
-            var cartResponse = new CartResponse { Books = new List<BookListingResponse> { new BookListingResponse { BookId = 1 } } };
+            var cartResponse = new CartResponse { Books = new List<CartBookResponse> { new CartBookResponse { BookId = 1 } } };
             mockMapper.Setup(m => m.Map<CartResponse>(It.IsAny<Cart>())).Returns(cartResponse);
             // Act
             var result = await handler.Handle(command, cancellationToken);
@@ -90,14 +90,14 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart.Tests
                 .ReturnsAsync(cart);
             mockMapper.Setup(m => m.Map<Book>(It.IsAny<DeleteCartBookFromCartRequest>()))
                 .Returns(new Book { Id = 2 });
-            mockGetItemsService.Setup(s => s.GetByIdsAsync<BookResponse>(
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(
                 It.IsAny<List<int>>(),
                 It.IsAny<string>(),
                 cancellationToken)
             ).ReturnsAsync(new List<BookResponse> { new BookResponse { Id = 2, Name = "Mapped Book" } });
             mockCartService.Setup(cs => cs.DeleteBooksFromCartAsync(cart, It.IsAny<int[]>(), cancellationToken))
                 .ReturnsAsync(cart);
-            var cartResponse = new CartResponse { Books = new List<BookListingResponse> { new BookListingResponse { BookId = 2 } } };
+            var cartResponse = new CartResponse { Books = new List<CartBookResponse> { new CartBookResponse { BookId = 2 } } };
             mockMapper.Setup(m => m.Map<CartResponse>(cart)).Returns(cartResponse);
             // Act
             var result = await handler.Handle(command, cancellationToken);

@@ -3,7 +3,6 @@
     <ng-container *ngTemplateOutlet="details;  context: { user: item}"></ng-container>
     <ng-container *ngTemplateOutlet="edit; context: { user: item }"></ng-container>
 </ng-container>
-
 <!-- User -->
 <ng-template #details let-user="user">
     <div class="user mr-2 w-full px-10 pt-0">
@@ -106,5 +105,7 @@
 </ng-template>
 
 <ng-template #loading>
-    <app-loading></app-loading>
+    <div class="h-96 w-full flex justify-center">
+        <app-loading></app-loading>
+    </div>
 </ng-template>

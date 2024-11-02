@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
@@ -47,11 +48,13 @@ namespace ShopApi
             CreateMap<StockBookChangeRequest, StockBookChange>();
             CreateMap<StockBookChange, StockBookChangeResponse>();
 
-            CreateMap<StatisticsBook, Book>();
-            CreateMap<GetBookStatisticsRequest, GetBookStatistics>();
-            CreateMap<BookStatistics, BookStatisticsResponse>();
+            CreateMap<StatisticsBookRequest, StatisticsBook>();
+            CreateMap<GetShopStatisticsRequest, GetShopStatistics>();
+            CreateMap<ShopStatistics, ShopStatisticsResponse>();
 
             CreateMap<PaginationRequest, GetOrdersFilter>();
+
+            CreateMap<StockBookChange, UpdateBookStockAmountRequest>();
         }
     }
 }

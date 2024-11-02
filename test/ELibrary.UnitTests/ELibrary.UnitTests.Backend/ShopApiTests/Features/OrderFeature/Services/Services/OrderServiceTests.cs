@@ -1,5 +1,4 @@
 ﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using MockQueryable.Moq;
 using Moq;
@@ -103,16 +102,10 @@ namespace ShopApiTests.Features.OrderFeature.Services.Services
                 DeliveryAddress = "Test Address",
                 OrderBooks = new List<OrderBook>
                 {
-                    new OrderBook { BookId = 1, BookAmount = 1 }
+                    new OrderBook { BookId = 1, BookAmount = 1, BookPrice = 10 }
                 }
             };
-            var books = GetDbSetMock(new List<Book>
-            {
-                new Book { Id = 1, Price = 10 }
-            });
 
-            mockRepository.Setup(r => r.GetQueryableAsync<Book>(It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(books);
             mockRepository.Setup(r => r.AddAsync(order, It.IsAny<CancellationToken>()))
                           .ReturnsAsync(order);
             mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))

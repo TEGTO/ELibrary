@@ -4,6 +4,6 @@ namespace ShopApi.Features.StatisticsFeature.Services
 {
     public interface IStatisticsService
     {
-        public Task<BookStatistics> GetStatisticsAsync(GetBookStatistics getBookStatistics, CancellationToken cancellationToken);
+        public Task<ShopStatistics> GetStatisticsAsync(GetShopStatistics getBookStatistics, CancellationToken cancellationToken);
     }
 }

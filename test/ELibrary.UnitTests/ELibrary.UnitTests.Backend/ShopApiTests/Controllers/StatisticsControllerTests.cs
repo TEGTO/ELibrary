@@ -25,19 +25,19 @@ namespace ShopApi.Controllers.Tests
             }
 
             [Test]
-            public async Task GetBookStatistics_ValidRequest_ReturnsOkWithStatistics()
+            public async Task GetShopStatistics_ValidRequest_ReturnsOkWithStatistics()
             {
                 // Arrange
-                var request = new GetBookStatisticsRequest();
-                var getStatistics = new GetBookStatistics();
-                var statistics = new BookStatistics();
-                var response = new BookStatisticsResponse();
-                mapperMock.Setup(m => m.Map<GetBookStatistics>(request)).Returns(getStatistics);
+                var request = new GetShopStatisticsRequest();
+                var getStatistics = new GetShopStatistics();
+                var statistics = new ShopStatistics();
+                var response = new ShopStatisticsResponse();
+                mapperMock.Setup(m => m.Map<GetShopStatistics>(request)).Returns(getStatistics);
                 statisticsServiceMock.Setup(s => s.GetStatisticsAsync(getStatistics, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(statistics);
-                mapperMock.Setup(m => m.Map<BookStatisticsResponse>(statistics)).Returns(response);
+                mapperMock.Setup(m => m.Map<ShopStatisticsResponse>(statistics)).Returns(response);
                 // Act
-                var result = await controller.GetBookStatistics(request, CancellationToken.None);
+                var result = await controller.GetShopStatistics(request, CancellationToken.None);
                 // Assert
                 var okResult = result.Result as OkObjectResult;
                 Assert.IsNotNull(okResult);

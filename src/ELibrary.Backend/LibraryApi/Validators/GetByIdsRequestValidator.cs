@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LibraryApi.Domain.Dtos;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using Shared.Configurations;
 
 namespace LibraryApi.Validators

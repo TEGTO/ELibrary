@@ -50,15 +50,6 @@ namespace ShopApi.Controllers
 
             return Ok(response);
         }
-        [ResponseCache(Duration = 10)]
-        [HttpPost("amount")]
-        public async Task<ActionResult<int>> GerOrderAmountForBooks(GetOrdersFilter request, CancellationToken cancellationToken)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
-
-            return Ok(response);
-        }
         [HttpPost]
         public async Task<ActionResult<OrderResponse>> CreateOrder(CreateOrderRequest request, CancellationToken cancellationToken)
         {

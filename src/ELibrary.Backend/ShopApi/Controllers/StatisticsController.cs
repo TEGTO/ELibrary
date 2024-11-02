@@ -26,13 +26,13 @@ namespace ShopApi.Controllers
 
         [ResponseCache(Duration = 10)]
         [HttpPost]
-        public async Task<ActionResult<BookStatisticsResponse>> GetBookStatistics(GetBookStatisticsRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ShopStatisticsResponse>> GetShopStatistics(GetShopStatisticsRequest request, CancellationToken cancellationToken)
         {
-            var getStatistics = mapper.Map<GetBookStatistics>(request);
+            var getStatistics = mapper.Map<GetShopStatistics>(request);
 
             var statistics = await statisticsService.GetStatisticsAsync(getStatistics, cancellationToken);
 
-            return Ok(mapper.Map<BookStatisticsResponse>(statistics));
+            return Ok(mapper.Map<ShopStatisticsResponse>(statistics));
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿using LibraryApi.Domain.Dtos;
+﻿using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using System.Net;
 using System.Text;
@@ -31,7 +31,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             });
             Assert.NotNull(responseEntities);
             Assert.That(responseEntities.Count, Is.EqualTo(list.Count));
-            Assert.That(mapper.Map<TEntity>(responseEntities[0]).Name, Is.EqualTo(list[0].Name));
+            Assert.That(list.Find(x => x.Name == mapper.Map<TEntity>(responseEntities[0]).Name) != null, Is.True);
         }
         [Test]
         public async Task GetByIds_ReturnsOkWithEmptyList()

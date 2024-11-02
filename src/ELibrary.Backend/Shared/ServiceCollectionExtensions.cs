@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Shared.Configurations;
 using Shared.Middlewares;
-using Shared.Validators;
 
 namespace Shared
 {

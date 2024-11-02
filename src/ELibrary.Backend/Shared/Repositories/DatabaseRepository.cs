@@ -9,6 +9,7 @@ namespace Shared.Repositories
     {
         private readonly IDbContextFactory<TContext> dbContextFactory;
         private readonly ResiliencePipeline resiliencePipeline;
+
         public DatabaseRepository(IDbContextFactory<TContext> dbContextFactory, ResiliencePipelineProvider<string> resiliencePipelineProvider)
         {
             this.dbContextFactory = dbContextFactory;

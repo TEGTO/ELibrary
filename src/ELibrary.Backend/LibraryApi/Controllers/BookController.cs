@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using LibraryApi.Domain.Dto.Book;
-using LibraryApi.Domain.Dtos;
+using LibraryApi.Domain.Dtos.Book;
 using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LibraryShopEntities.Domain.Dtos.Library;
 
 namespace LibraryApi.Controllers
 {
@@ -30,9 +31,17 @@ namespace LibraryApi.Controllers
 
         [HttpPost("popularity")]
         [AllowAnonymous]
-        public virtual async Task<IActionResult> RaisePopularity(List<int> ids, CancellationToken cancellationToken)
+        public virtual async Task<IActionResult> RaisePopularity(RaiseBookPopularityRequest request, CancellationToken cancellationToken)
         {
-            await bookService.RaisePopularityAsync(ids, cancellationToken);
+            await bookService.RaisePopularityAsync(request.Ids, cancellationToken);
+            return Ok();
+        }
+        [HttpPost("stockamount")]
+        [AllowAnonymous]
+        public virtual async Task<IActionResult> UpdateStockAmount(List<UpdateBookStockAmountRequest> requests, CancellationToken cancellationToken)
+        {
+            var d = requests.ToDictionary(x => x.BookId, y => y.ChangeAmount);
+            await bookService.ChangeBookStockAmount(d, cancellationToken);
             return Ok();
         }
     }

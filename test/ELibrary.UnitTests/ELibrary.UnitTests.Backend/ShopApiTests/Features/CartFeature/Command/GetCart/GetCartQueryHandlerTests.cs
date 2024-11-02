@@ -12,7 +12,7 @@ namespace ShopApi.Features.CartFeature.Command.GetCart.Tests
     internal class GetCartQueryHandlerTests
     {
         private Mock<ICartService> mockCartService;
-        private Mock<IGetLibraryItemsService> mockGetItemsService;
+        private Mock<ILibraryService> mockLibraryService;
         private Mock<IMapper> mockMapper;
         private GetCartQueryHandler handler;
 
@@ -20,9 +20,9 @@ namespace ShopApi.Features.CartFeature.Command.GetCart.Tests
         public void SetUp()
         {
             mockCartService = new Mock<ICartService>();
-            mockGetItemsService = new Mock<IGetLibraryItemsService>();
+            mockLibraryService = new Mock<ILibraryService>();
             mockMapper = new Mock<IMapper>();
-            handler = new GetCartQueryHandler(mockCartService.Object, mockGetItemsService.Object, mockMapper.Object);
+            handler = new GetCartQueryHandler(mockCartService.Object, mockLibraryService.Object, mockMapper.Object);
         }
 
         [Test]
@@ -58,16 +58,16 @@ namespace ShopApi.Features.CartFeature.Command.GetCart.Tests
             mockCartService.Setup(cs => cs.GetCartByUserIdAsync(It.IsAny<string>(), true, cancellationToken))
                 .ReturnsAsync(existingCart);
             var bookResponses = new List<BookResponse> { new BookResponse { Id = 1, Name = "Book1" } };
-            mockGetItemsService.Setup(s => s.GetByIdsAsync<BookResponse>(
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(
                 It.IsAny<List<int>>(),
                 It.IsAny<string>(),
                 cancellationToken)
             ).ReturnsAsync(bookResponses);
             var mappedCartResponse = new CartResponse
             {
-                Books = new List<BookListingResponse>
+                Books = new List<CartBookResponse>
                 {
-                    new BookListingResponse { BookId = 1, Book = bookResponses.First() }
+                    new CartBookResponse { BookId = 1, Book = bookResponses.First() }
                 }
             };
             mockMapper.Setup(m => m.Map<CartResponse>(existingCart)).Returns(mappedCartResponse);
@@ -92,14 +92,14 @@ namespace ShopApi.Features.CartFeature.Command.GetCart.Tests
             mockCartService.Setup(cs => cs.GetCartByUserIdAsync(It.IsAny<string>(), true, cancellationToken))
                 .ReturnsAsync(existingCart);
             var bookResponses = new List<BookResponse> { new BookResponse { Id = 2, Name = "Mapped Book" } };
-            mockGetItemsService.Setup(s => s.GetByIdsAsync<BookResponse>(
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(
                 It.IsAny<List<int>>(),
                 It.IsAny<string>(),
                 cancellationToken)
             ).ReturnsAsync(bookResponses);
             var cartResponse = new CartResponse
             {
-                Books = new List<BookListingResponse> { new BookListingResponse { BookId = 2 } }
+                Books = new List<CartBookResponse> { new CartBookResponse { BookId = 2 } }
             };
             mockMapper.Setup(m => m.Map<CartResponse>(existingCart)).Returns(cartResponse);
             // Act

@@ -3,6 +3,7 @@ using LibraryApi.Domain.Dto.Author;
 using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

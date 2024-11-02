@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { BookStatistics, CurrencyPipeApplier, GetBookStatistics, getDefaultBookStatistics, getDefaultGetBookStatistics, LocaleService } from '../../../../../shared';
+import { CurrencyPipeApplier, getDefaultGetShopStatistics, getDefaultShopStatistics, GetShopStatistics, LocaleService, ShopStatistics } from '../../../../../shared';
 import { StatisticsService } from '../../../../../shop';
 import { StatisticsPageComponent } from './statistics-page.component';
 
@@ -12,18 +12,17 @@ describe('StatisticsPageComponent', () => {
   let mockStatisticsService: jasmine.SpyObj<StatisticsService>;
   let mockCurrencyPipeApplier: jasmine.SpyObj<CurrencyPipeApplier>;
 
-  const mockStatistics: BookStatistics = {
-    ...getDefaultBookStatistics(),
+  const mockStatistics: ShopStatistics = {
+    ...getDefaultShopStatistics(),
     inCartCopies: 10,
     inOrderCopies: 15,
     soldCopies: 100,
     averagePrice: 50,
-    stockAmount: 20,
     earnedMoney: 5000,
   };
 
   beforeEach(async () => {
-    mockStatisticsService = jasmine.createSpyObj('StatisticsService', ['getBookStatistics']);
+    mockStatisticsService = jasmine.createSpyObj('StatisticsService', ['getShopStatistics']);
     mockCurrencyPipeApplier = jasmine.createSpyObj('CurrencyPipeApplier', ['applyCurrencyPipe']);
     const mockLocaleService = jasmine.createSpyObj<LocaleService>('LocaleService', ['getLocale']);
 
@@ -44,7 +43,7 @@ describe('StatisticsPageComponent', () => {
     fixture = TestBed.createComponent(StatisticsPageComponent);
     component = fixture.componentInstance;
 
-    mockStatisticsService.getBookStatistics.and.returnValue(of(mockStatistics));
+    mockStatisticsService.getShopStatistics.and.returnValue(of(mockStatistics));
     mockCurrencyPipeApplier.applyCurrencyPipe.and.callFake(value => `$${value}`);
 
     fixture.detectChanges();
@@ -54,8 +53,8 @@ describe('StatisticsPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch book statistics on initialization', () => {
-    expect(mockStatisticsService.getBookStatistics).toHaveBeenCalledWith(getDefaultGetBookStatistics());
+  it('should fetch shop statistics on initialization', () => {
+    expect(mockStatisticsService.getShopStatistics).toHaveBeenCalledWith(getDefaultGetShopStatistics());
     fixture.detectChanges();
 
     const statsDebugElement: DebugElement = fixture.debugElement;
@@ -70,11 +69,11 @@ describe('StatisticsPageComponent', () => {
     expect(formattedValue).toBe('$1000');
   });
 
-  it('should call getBookStatistics when filter changes', () => {
-    const newFilter: GetBookStatistics = { ...getDefaultGetBookStatistics() };
-    component.getBookStatistics(newFilter);
+  it('should call getShopStatistics when filter changes', () => {
+    const newFilter: GetShopStatistics = { ...getDefaultGetShopStatistics() };
+    component.getShopStatistics(newFilter);
 
-    expect(mockStatisticsService.getBookStatistics).toHaveBeenCalledWith(newFilter);
+    expect(mockStatisticsService.getShopStatistics).toHaveBeenCalledWith(newFilter);
   });
 
   it('should display statistics after data is fetched', () => {
@@ -89,8 +88,7 @@ describe('StatisticsPageComponent', () => {
     const orderAmountElement = statsDebugElement.query(By.css('.statistics__detail-value:nth-child(5) span')).nativeElement;
     const canceledOrderAmountElement = statsDebugElement.query(By.css('.statistics__detail-value:nth-child(6) span')).nativeElement;
     const averagePriceElement = statsDebugElement.query(By.css('.statistics__detail-value:nth-child(7) span')).nativeElement;
-    const stockAmountElement = statsDebugElement.query(By.css('.statistics__detail-value:nth-child(8) span')).nativeElement;
-    const earnedMoneyElement = statsDebugElement.query(By.css('.statistics__detail-value:nth-child(9) span')).nativeElement;
+    const earnedMoneyElement = statsDebugElement.query(By.css('.statistics__detail-value:nth-child(8) span')).nativeElement;
 
     expect(inCartCopiesElement.textContent).toContain('10');
     expect(inOrderCopiesElement.textContent).toContain('15');
@@ -99,7 +97,6 @@ describe('StatisticsPageComponent', () => {
     expect(orderAmountElement.textContent).toContain('0');
     expect(canceledOrderAmountElement.textContent).toContain('0');
     expect(averagePriceElement.textContent).toContain('$50');
-    expect(stockAmountElement.textContent).toContain('20');
     expect(earnedMoneyElement.textContent).toContain('$5000');
   });
 });

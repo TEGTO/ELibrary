@@ -55,7 +55,7 @@ namespace ShopApi.Features.OrderFeature.Command.CreateOrder
                 }
             }
 
-            await libraryService.RaiseBookPopularityByIdsAsyn(bookIds, cancellationToken);
+            await libraryService.RaiseBookPopularityByIdsAsync(bookIds, cancellationToken);
 
             await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, StockBookOrderType.ClientOrder, cancellationToken);
             var createdOrder = await orderService.CreateOrderAsync(order, cancellationToken);

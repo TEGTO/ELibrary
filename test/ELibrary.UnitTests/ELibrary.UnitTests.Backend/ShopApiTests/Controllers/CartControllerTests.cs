@@ -43,9 +43,9 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var cartResponse = new CartResponse
             {
-                Books = new List<BookListingResponse>
+                Books = new List<CartBookResponse>
                 {
-                    new BookListingResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() }
+                    new CartBookResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() }
                 }
             };
             mockMediator.Setup(m => m.Send(It.IsAny<GetCartQuery>(), It.IsAny<CancellationToken>()))
@@ -79,7 +79,7 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var request = new AddBookToCartRequest { BookId = 1, BookAmount = 2 };
-            var bookListingResponse = new BookListingResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() };
+            var bookListingResponse = new CartBookResponse { Id = "book-1", BookAmount = 2, BookId = 1, Book = new BookResponse() };
             mockMediator.Setup(m => m.Send(It.IsAny<AddBookToCartCommand>(), It.IsAny<CancellationToken>()))
                         .ReturnsAsync(bookListingResponse);
             // Act
@@ -95,7 +95,7 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var request = new UpdateCartBookRequest { Id = "book-1", BookAmount = 3 };
-            var updatedBookListingResponse = new BookListingResponse { Id = "book-1", BookAmount = 3, BookId = 1, Book = new BookResponse() };
+            var updatedBookListingResponse = new CartBookResponse { Id = "book-1", BookAmount = 3, BookId = 1, Book = new BookResponse() };
             mockMediator.Setup(m => m.Send(It.IsAny<UpdateCartBookInCartCommand>(), It.IsAny<CancellationToken>()))
                         .ReturnsAsync(updatedBookListingResponse);
             // Act

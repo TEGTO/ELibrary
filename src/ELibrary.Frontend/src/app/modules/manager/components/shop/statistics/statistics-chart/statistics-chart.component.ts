@@ -13,14 +13,21 @@ export class StatisticsChartComponent {
 
   chartOptions!: Partial<ChartOptions>;
   multiMonth = false;
+  hourly = false;
 
   initChartOptions(data: Map<Date, number>): boolean {
     const dateRange = this.getDateRange(data);
     this.multiMonth = this.isMultiMonth(dateRange.start, dateRange.end);
+    this.hourly = this.isHourly(dateRange.start, dateRange.end);
 
-    const formattedData = this.multiMonth
-      ? this.aggregateDataByMonth(data)
-      : this.formatDataByDay(data);
+    let formattedData;
+    if (this.multiMonth) {
+      formattedData = this.aggregateDataByMonth(data);
+    } else if (this.hourly) {
+      formattedData = this.formatDataByHour(data);
+    } else {
+      formattedData = this.formatDataByDay(data);
+    }
 
     this.chartOptions = {
       chart: {
@@ -78,15 +85,32 @@ export class StatisticsChartComponent {
   }
 
   private isMultiMonth(start: Date, end: Date): boolean {
-    return (
-      start.getFullYear() !== end.getFullYear() ||
-      start.getMonth() !== end.getMonth()
-    );
+    return start.getFullYear() !== end.getFullYear() || start.getMonth() !== end.getMonth();
+  }
+
+  private isHourly(start: Date, end: Date): boolean {
+    const msInDay = 24 * 60 * 60 * 1000;
+    return (end.getTime() - start.getTime()) <= msInDay;
   }
 
   private formatDataByDay(data: Map<Date, number>): { x: number, y: number }[] {
     return Array.from(data.entries()).map(([date, value]) => ({
       x: date.getTime(),
+      y: value,
+    }));
+  }
+
+  private formatDataByHour(data: Map<Date, number>): { x: number, y: number }[] {
+    const hourlyData = new Map<number, number>();
+
+    data.forEach((value, date) => {
+      const hourKey = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours()).getTime();
+      const existingValue = hourlyData.get(hourKey) ?? 0;
+      hourlyData.set(hourKey, existingValue + value);
+    });
+
+    return Array.from(hourlyData.entries()).map(([timestamp, value]) => ({
+      x: timestamp,
       y: value,
     }));
   }
@@ -106,16 +130,26 @@ export class StatisticsChartComponent {
     }));
   }
 
-  labelFormatter(value: string, timestamp?: number) {
+  private labelFormatter(value: string, timestamp?: number) {
     const date = new Date(timestamp ?? parseInt(value));
-    return this.multiMonth
-      ? date.toLocaleString('en-EN', { year: 'numeric', month: 'short' })
-      : `${date.getDate()} ${date.toLocaleString('en-EN', { month: 'short' })}`;
+    return this.getForrmattedString(date);
   }
-  tooltipformatter(val: number): string {
+
+  private tooltipformatter(val: number): string {
     const date = new Date(val);
-    return this.multiMonth
-      ? date.toLocaleString('en-EN', { year: 'numeric', month: 'short' })
-      : `${date.getDate()} ${date.toLocaleString('en-EN', { month: 'short' })}`;
+    return this.getForrmattedString(date);
+  }
+
+  private getForrmattedString(date: Date) {
+    let labelText;
+    if (this.multiMonth) {
+      labelText = date.toLocaleString('en-EN', { year: 'numeric', month: 'short' });
+    } else if (this.hourly) {
+      labelText = `${date.getHours()}:00`;
+    } else {
+      labelText = `${date.getDate()} ${date.toLocaleString('en-EN', { month: 'short' })}`;
+    }
+    return labelText;
   }
 }
+

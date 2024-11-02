@@ -1,4 +1,4 @@
-﻿using LibraryApi.Domain.Dtos;
+﻿using LibraryApi.Domain.Dtos.Book;
 using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
@@ -12,14 +12,14 @@ namespace LibraryApi.Services.Tests
     [TestFixture]
     internal class BookServiceTests
     {
-        private Mock<IDatabaseRepository<ShopDbContext>> repositoryMock;
+        private Mock<IDatabaseRepository<LibraryDbContext>> repositoryMock;
         private CancellationToken cancellationToken;
         private BookService service;
 
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<ShopDbContext>>();
+            repositoryMock = new Mock<IDatabaseRepository<LibraryDbContext>>();
             service = new BookService(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }
@@ -128,6 +128,47 @@ namespace LibraryApi.Services.Tests
             Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre1"));
             Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher1"));
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task RaisePopularityAsync_ExistingAndNewIds_UpdatesAndCreatesPopularity()
+        {
+            // Arrange
+            var existingPopularity = new BookPopularity { BookId = 1, Popularity = 3 };
+            var popularities = new List<BookPopularity> { existingPopularity };
+            var dbSetMock = GetDbSetMock(popularities);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<BookPopularity>(cancellationToken))
+                .ReturnsAsync(dbSetMock.Object);
+            var ids = new List<int> { 1, 2 };
+            // Act
+            await service.RaisePopularityAsync(ids, cancellationToken);
+            // Assert
+            repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.Is<BookPopularity[]>(p =>
+                p.Any(bp => bp.BookId == 1 && bp.Popularity == 4) &&
+                p.Any(bp => bp.BookId == 2 && bp.Popularity == 1)), cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task ChangeBookStockAmount_ValidRequests_UpdatesStockAmount()
+        {
+            // Arrange
+            var books = new List<Book>
+            {
+                new Book { Id = 1, StockAmount = 5 },
+                new Book { Id = 2, StockAmount = 10 }
+            };
+            var dbSetMock = GetDbSetMock(books);
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+                .ReturnsAsync(dbSetMock.Object);
+            var changeRequests = new Dictionary<int, int>
+            {
+                { 1, 3 },
+                { 2, -5 }
+            };
+            // Act
+            await service.ChangeBookStockAmount(changeRequests, cancellationToken);
+            // Assert
+            repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.Is<Book[]>(b =>
+                b.Any(book => book.Id == 1 && book.StockAmount == 8) &&
+                b.Any(book => book.Id == 2 && book.StockAmount == 5)), cancellationToken), Times.Once);
         }
         [Test]
         public async Task GetPaginatedAsync_ValidPage_ReturnsBooksWithEntities()
