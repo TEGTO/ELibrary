@@ -5,24 +5,22 @@ using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using Shared.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region Cors
 
 bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 if (useCors)
 {
-    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+    builder.Services.AddApplicationCors(builder.Configuration, myAllowSpecificOrigins, builder.Environment.IsDevelopment());
 }
 
 #endregion
 
 builder.Services.AddDbContextFactory<LibraryDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING)!, "LibraryApi");
-
 builder.Host.SerilogConfiguration();
 
 #region Identity & Authentication
@@ -39,17 +37,16 @@ builder.Services.AddSingleton<ILibraryEntityService<Author>, AuthorService>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
 
+#endregion
+
 builder.Services.AddPaginationConfiguration(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<LibraryDbContext>(builder.Configuration);
-#endregion
+builder.Services.AddSharedFluentValidation(typeof(Program));
+builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddSharedFluentValidation(typeof(Program));
-
 builder.Services.AddMemoryCache();
-
-builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 var app = builder.Build();
 
@@ -60,10 +57,10 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
 
 if (useCors)
 {
-    app.UseCors(MyAllowSpecificOrigins);
+    app.UseCors(myAllowSpecificOrigins);
 }
 
-app.UseExceptionMiddleware();
+app.UseSharedMiddlewares();
 
 if (!app.Environment.IsDevelopment())
 {

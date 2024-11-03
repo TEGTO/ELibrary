@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Shared.Middlewares;
 using Shared.Repositories;
 
 namespace Shared
@@ -26,6 +27,14 @@ namespace Shared
                     logger.Error(ex, "An error occurred while migrating the database.");
                 }
             }
+            return builder;
+        }
+
+        public static IApplicationBuilder UseSharedMiddlewares(this IApplicationBuilder builder)
+        {
+            builder.UseExceptionMiddleware();
+            builder.UseSerilogRequestLogging();
+
             return builder;
         }
     }

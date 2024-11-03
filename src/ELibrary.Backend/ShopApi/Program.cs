@@ -3,7 +3,6 @@ using EventSourcing;
 using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using Shared.Middlewares;
 using ShopApi;
 using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
@@ -19,17 +18,16 @@ var builder = WebApplication.CreateBuilder(args);
 #region Cors
 
 bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 if (useCors)
 {
-    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+    builder.Services.AddApplicationCors(builder.Configuration, myAllowSpecificOrigins, builder.Environment.IsDevelopment());
 }
 
 #endregion
 
 builder.Services.AddDbContextFactory<ShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!, "ShopApi");
-
 builder.Host.SerilogConfiguration();
 
 #region Identity & Authentication
@@ -50,11 +48,14 @@ builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 builder.Services.AddSingleton<ILibraryService, LibraryService>();
 
+#endregion
+
 builder.Services.AddPaginationConfiguration(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<ShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
-#endregion
+builder.Services.AddSharedFluentValidation(typeof(Program));
+builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 builder.Services.AddMediatR(conf =>
 {
@@ -65,10 +66,6 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddSharedFluentValidation(typeof(Program));
-
-builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-
 var app = builder.Build();
 
 if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
@@ -78,12 +75,15 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
 
 if (useCors)
 {
-    app.UseCors(MyAllowSpecificOrigins);
+    app.UseCors(myAllowSpecificOrigins);
 }
 
-app.UseExceptionMiddleware();
+app.UseSharedMiddlewares();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseIdentity();
 

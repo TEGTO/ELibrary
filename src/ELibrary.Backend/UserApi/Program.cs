@@ -4,7 +4,6 @@ using Authentication.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using Shared.Middlewares;
 using Shared.Repositories;
 using UserApi;
 using UserApi.Services;
@@ -19,20 +18,19 @@ var builder = WebApplication.CreateBuilder(args);
 #region Cors
 
 bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 if (useCors)
 {
-    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+    builder.Services.AddApplicationCors(builder.Configuration, myAllowSpecificOrigins, builder.Environment.IsDevelopment());
 }
 
 #endregion
 
 builder.Services.AddDbContextFactory<UserIdentityDbContext>(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING)!, "UserApi");
-
 builder.Host.SerilogConfiguration();
 
-#region Identity 
+#region Identity & Authentication
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -61,18 +59,18 @@ builder.Services.AddScoped<IGoogleOAuthHttpClient, GoogleOAuthHttpClient>();
 builder.Services.AddScoped<IUserOAuthCreationService, UserOAuthCreationService>();
 builder.Services.AddScoped<IUserAuthenticationMethodService, UserAuthenticationMethodService>();
 builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
-
 builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuthService>
     {
         { OAuthLoginProvider.Google, provider.GetService<GoogleOAuthService>()! },
     });
 
+#endregion
+
 builder.Services.AddPaginationConfiguration(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<UserIdentityDbContext>(builder.Configuration);
-
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
-
-#endregion
+builder.Services.AddSharedFluentValidation(typeof(Program));
+builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -83,10 +81,6 @@ builder.Services.AddMediatR(conf =>
 
 builder.Services.AddMemoryCache();
 
-builder.Services.AddSharedFluentValidation(typeof(Program));
-
-builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-
 var app = builder.Build();
 
 if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
@@ -96,12 +90,15 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
 
 if (useCors)
 {
-    app.UseCors(MyAllowSpecificOrigins);
+    app.UseCors(myAllowSpecificOrigins);
 }
 
-app.UseExceptionMiddleware();
+app.UseSharedMiddlewares();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseIdentity();
 
