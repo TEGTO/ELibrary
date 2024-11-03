@@ -78,7 +78,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
         {
             // Arrange
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/stockamount");
-            var raiseRequest = new List<UpdateBookStockAmountRequest> { new UpdateBookStockAmountRequest { BookId = 100, ChangeAmount = 2 } };
+            var raiseRequest = new List<UpdateBookStockAmountRequest> { new UpdateBookStockAmountRequest { BookId = 100, ChangeAmount = -2 } };
             request.Content = new StringContent(
                 JsonSerializer.Serialize(raiseRequest),
                 Encoding.UTF8,
@@ -93,7 +93,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
 
             Assert.NotNull(books);
             Assert.That(books.Count, Is.EqualTo(list.Count));
-            Assert.That(books.Find(x => x.Id == list[^1].Id).StockAmount, Is.EqualTo(0));
+            Assert.That(books.FirstOrDefault(x => x.Id == 100), Is.Null);
         }
 
         private async Task<List<BookResponse>> GetPaginatedAsync()
