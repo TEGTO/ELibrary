@@ -35,7 +35,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CertificatePassword}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
       - EFCreateDatabase=${EFCreateDatabase}
-      - ConnectionStrings__LibraryShopDb=${ConnectionStrings__LibraryShopDb}
+      - ConnectionStrings__LibraryDb=${ConnectionStrings__LibraryShopDb}
       - AuthSettings__Key=${AuthSettings__Key}
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
@@ -57,7 +57,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CertificatePassword}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
       - EFCreateDatabase=${EFCreateDatabase}
-      - ConnectionStrings__LibraryShopDb=${ConnectionStrings__LibraryShopDb}
+      - ConnectionStrings__ShopDb=${ConnectionStrings__LibraryShopDb}
       - AuthSettings__Key=${AuthSettings__Key}
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}

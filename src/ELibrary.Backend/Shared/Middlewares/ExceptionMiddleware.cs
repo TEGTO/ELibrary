@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using EntityFramework.Exceptions.Common;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,10 @@ namespace Shared.Middlewares
             {
                 var errors = ex.Errors.ToArray();
                 await SetError(httpContext, HttpStatusCode.Conflict, ex, errors).ConfigureAwait(false);
+            }
+            catch (UniqueConstraintException ex)
+            {
+                await SetError(httpContext, HttpStatusCode.Conflict, ex, new[] { $"{ex.Message}: '{ex.Entries[0].Entity.GetType().Name}'" }).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException ex)
             {
