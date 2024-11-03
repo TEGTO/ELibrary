@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using EntityFramework.Exceptions.Common;
+using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Moq;
+using Serilog;
+using Shared.Exceptions;
 using System.Net;
 
 namespace Shared.Middlewares.Tests
@@ -10,13 +12,13 @@ namespace Shared.Middlewares.Tests
     [TestFixture]
     internal class ExceptionMiddlewareTests
     {
-        private Mock<ILogger<ExceptionMiddleware>> loggerMock;
+        private Mock<ILogger> loggerMock;
         private DefaultHttpContext httpContext;
 
         [SetUp]
         public void Setup()
         {
-            loggerMock = new Mock<ILogger<ExceptionMiddleware>>();
+            loggerMock = new Mock<ILogger>();
             httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
         }
@@ -28,28 +30,89 @@ namespace Shared.Middlewares.Tests
         public async Task InvokeAsync_ValidationException_StatusCodeBadRequest()
         {
             // Arrange
-            var validationException = new ValidationException("Validation error.");
-            RequestDelegate next = context => throw validationException;
+            var exception = new ValidationException("Validation error.");
+            RequestDelegate next = context => throw exception;
             var exceptionMiddleware = CreateMiddleware(next);
             // Act
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.BadRequest));
-            loggerMock.Verify(x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                validationException,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ), Times.Exactly(1));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
+        }
+        [Test]
+        public async Task InvokeAsync_UniqueConstraintException_StatusCodeConflict()
+        {
+            // Arrange
+            var exception = new UniqueConstraintException("Constraint error.");
+            RequestDelegate next = context => throw exception;
+            var exceptionMiddleware = CreateMiddleware(next);
+            // Act
+            await exceptionMiddleware.InvokeAsync(httpContext);
+            // Assert
+            Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Conflict));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
+        }
+        [Test]
+        public async Task InvokeAsync_InvalidDataException_StatusBadRequest()
+        {
+            // Arrange
+            var exception = new InvalidDataException("Invalid data error.");
+            RequestDelegate next = context => throw exception;
+            var exceptionMiddleware = CreateMiddleware(next);
+            // Act
+            await exceptionMiddleware.InvokeAsync(httpContext);
+            // Assert
+            Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.BadRequest));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
+        }
+        [Test]
+        public async Task InvokeAsync_AuthorizationException_StatusCodeConflict()
+        {
+            // Arrange
+            var exception = new AuthorizationException(["Authorization error."]);
+            RequestDelegate next = context => throw exception;
+            var exceptionMiddleware = CreateMiddleware(next);
+            // Act
+            await exceptionMiddleware.InvokeAsync(httpContext);
+            // Assert
+            Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Conflict));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
+        }
+        [Test]
+        public async Task InvokeAsync_SecurityTokenMalformedException_StatusCodeConflict()
+        {
+            // Arrange
+            var exception = new Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException("Security token error.");
+            RequestDelegate next = context => throw exception;
+            var exceptionMiddleware = CreateMiddleware(next);
+            // Act
+            await exceptionMiddleware.InvokeAsync(httpContext);
+            // Assert
+            Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Conflict));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
         }
         [Test]
         public async Task InvokeAsync_ValidationException_ResponseBodyContainsErrors()
         {
             // Arrange
             IEnumerable<ValidationFailure> errors = new List<ValidationFailure> { new ValidationFailure("Name", "Name is required.") };
-            var validationException = new ValidationException(errors);
-            RequestDelegate next = context => throw validationException;
+            var exception = new ValidationException(errors);
+            RequestDelegate next = context => throw exception;
             var exceptionMiddleware = CreateMiddleware(next);
             // Act
             await exceptionMiddleware.InvokeAsync(httpContext);
@@ -58,13 +121,10 @@ namespace Shared.Middlewares.Tests
             var expectedResponseBody = "400";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            loggerMock.Verify(x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                validationException,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ), Times.Exactly(1));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
         }
         [Test]
         public async Task InvokeAsync_GenericException_StatusCodeInternalServerError()
@@ -77,13 +137,10 @@ namespace Shared.Middlewares.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
-            loggerMock.Verify(x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                exception,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ), Times.Exactly(1));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
         }
         [Test]
         public async Task InvokeAsync_GenericException_ResponseBodyContainsErrorMessage()
@@ -99,13 +156,10 @@ namespace Shared.Middlewares.Tests
             var expectedResponseBody = "500";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            loggerMock.Verify(x => x.Log(
-               LogLevel.Error,
-               It.IsAny<EventId>(),
-               It.IsAny<It.IsAnyType>(),
-               exception,
-               It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-               ), Times.Exactly(1));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
         }
         [Test]
         public async Task InvokeAsync_UnauthorizedAccessException_StatusCodeUnauthorized()
@@ -118,13 +172,10 @@ namespace Shared.Middlewares.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Unauthorized));
-            loggerMock.Verify(x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.IsAny<It.IsAnyType>(),
-                exception,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-                ), Times.Exactly(1));
+            loggerMock.Verify(
+               x => x.Error(exception, It.IsAny<string>()),
+               Times.Once
+            );
         }
         [Test]
         public async Task InvokeAsync_InvalidDataException_ResponseBodyContainsErrorMessage()
@@ -140,13 +191,10 @@ namespace Shared.Middlewares.Tests
             var expectedResponseBody = "500";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            loggerMock.Verify(x => x.Log(
-               LogLevel.Error,
-               It.IsAny<EventId>(),
-               It.IsAny<It.IsAnyType>(),
-               exception,
-               It.IsAny<Func<It.IsAnyType, Exception?, string>>()
-               ), Times.Exactly(1));
+            loggerMock.Verify(
+                x => x.Error(exception, It.IsAny<string>()),
+                Times.Once
+             );
         }
     }
 }

@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
+using Serilog;
 using Shared.Repositories;
 
 namespace Shared.Tests
@@ -16,7 +16,7 @@ namespace Shared.Tests
         private Mock<IServiceScope> serviceScopeMock;
         private Mock<IServiceScopeFactory> serviceScopeFactoryMock;
         private Mock<IConfiguration> configurationMock;
-        private Mock<ILogger<IApplicationBuilder>> loggerMock;
+        private Mock<ILogger> loggerMock;
         private Mock<IDatabaseRepository<DbContext>> repositoryMock;
         private CancellationToken cancellationToken;
 
@@ -28,7 +28,7 @@ namespace Shared.Tests
             serviceScopeMock = new Mock<IServiceScope>();
             serviceScopeFactoryMock = new Mock<IServiceScopeFactory>();
             configurationMock = new Mock<IConfiguration>();
-            loggerMock = new Mock<ILogger<IApplicationBuilder>>();
+            loggerMock = new Mock<ILogger>();
             repositoryMock = new Mock<IDatabaseRepository<DbContext>>();
 
             serviceScopeFactoryMock.Setup(factory => factory.CreateScope()).Returns(serviceScopeMock.Object);
@@ -36,7 +36,7 @@ namespace Shared.Tests
 
             serviceProviderMock.Setup(provider => provider.GetService(typeof(IServiceScopeFactory))).Returns(serviceScopeFactoryMock.Object);
             serviceProviderMock.Setup(provider => provider.GetService(typeof(IConfiguration))).Returns(configurationMock.Object);
-            serviceProviderMock.Setup(provider => provider.GetService(typeof(ILogger<IApplicationBuilder>))).Returns(loggerMock.Object);
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(ILogger))).Returns(loggerMock.Object);
             serviceProviderMock.Setup(provider => provider.GetService(typeof(IDatabaseRepository<DbContext>))).Returns(repositoryMock.Object);
 
             appBuilderMock.Setup(app => app.ApplicationServices).Returns(serviceProviderMock.Object);

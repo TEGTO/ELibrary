@@ -30,6 +30,7 @@ if (useCors)
 
 builder.Services.AddDbContextFactory<ShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!, "ShopApi");
 
+builder.Host.SerilogConfiguration();
 
 #region Identity & Authentication
 

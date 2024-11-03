@@ -1,5 +1,4 @@
-﻿
-namespace EventSourcing
+﻿namespace EventSourcing
 {
     public interface IEventDispatcher
     {

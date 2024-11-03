@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Shared.Repositories;
 
 namespace Shared
@@ -13,17 +13,17 @@ namespace Shared
             using (var scope = builder.ApplicationServices.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<IApplicationBuilder>>();
+                var logger = services.GetRequiredService<ILogger>();
                 var repository = services.GetRequiredService<IDatabaseRepository<TContext>>();
                 try
                 {
-                    logger.LogInformation("Applying database migrations...");
+                    logger.Information("Applying database migrations...");
                     await repository.MigrateDatabaseAsync(cancellationToken);
-                    logger.LogInformation("Database migrations applied successfully.");
+                    logger.Information("Database migrations applied successfully.");
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "An error occurred while migrating the database.");
+                    logger.Error(ex, "An error occurred while migrating the database.");
                 }
             }
             return builder;

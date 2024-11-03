@@ -30,6 +30,8 @@ if (useCors)
 
 builder.Services.AddDbContextFactory<UserIdentityDbContext>(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING)!, "UserApi");
 
+builder.Host.SerilogConfiguration();
+
 #region Identity 
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>

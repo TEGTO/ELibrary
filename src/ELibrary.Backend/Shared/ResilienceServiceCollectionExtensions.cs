@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.DependencyInjection;
+using Serilog;
 using Shared.Configurations;
 using Shared.Helpers;
 using Shared.Repositories;
@@ -57,7 +57,7 @@ namespace Shared
                 {
                     var logger = context.ServiceProvider.GetService<ILogger>();
                     var str = $"Retry {args.AttemptNumber} due to {args.Outcome.Exception?.Message}. Waiting {args.Duration.TotalSeconds} seconds before next retry.";
-                    logger?.LogWarning(str);
+                    logger?.Warning(str);
                     return default;
                 }
             })
@@ -70,14 +70,14 @@ namespace Shared
                 {
                     var logger = context.ServiceProvider.GetService<ILogger>();
                     var str = $"Circuit breaker triggered. Circuit will be open for {args.BreakDuration.TotalSeconds} seconds due to {args.Outcome.Exception?.Message}.";
-                    logger?.LogWarning(str);
+                    logger?.Warning(str);
                     return default;
                 },
                 OnClosed = args =>
                 {
                     var logger = context.ServiceProvider.GetService<ILogger>();
                     var str = "Circuit breaker closed.";
-                    logger?.LogWarning(str);
+                    logger?.Warning(str);
                     return default;
                 }
             });

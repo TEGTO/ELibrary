@@ -23,6 +23,8 @@ if (useCors)
 
 builder.Services.AddDbContextFactory<LibraryDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING)!, "LibraryApi");
 
+builder.Host.SerilogConfiguration();
+
 #region Identity & Authentication
 
 builder.Services.ConfigureIdentityServices(builder.Configuration);

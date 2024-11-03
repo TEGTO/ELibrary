@@ -2,8 +2,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using Shared.Domain.Dtos;
 using Shared.Exceptions;
 using System.Net;
@@ -13,9 +13,9 @@ namespace Shared.Middlewares
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly ILogger<ExceptionMiddleware> logger;
+        private readonly ILogger logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next, ILogger logger)
         {
             this.next = next;
             this.logger = logger;
@@ -45,7 +45,7 @@ namespace Shared.Middlewares
             }
             catch (UniqueConstraintException ex)
             {
-                await SetError(httpContext, HttpStatusCode.Conflict, ex, new[] { $"{ex.Message}: '{ex.Entries[0].Entity.GetType().Name}'" }).ConfigureAwait(false);
+                await SetError(httpContext, HttpStatusCode.Conflict, ex, new[] { $"{ex.Message}: '{ex.Entries.FirstOrDefault()?.Entity.GetType().Name ?? ""}'" }).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -69,7 +69,7 @@ namespace Shared.Middlewares
                 StatusCode = httpContext.Response.StatusCode.ToString(),
                 Messages = messages
             };
-            logger.LogError(ex, responseError.ToString());
+            logger.Error(ex, responseError.ToString());
             await httpContext.Response.WriteAsync(responseError.ToString()).ConfigureAwait(false);
         }
     }
