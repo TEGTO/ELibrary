@@ -4,6 +4,6 @@ namespace ShopApi.Features.AdvisorFeature.Services
 {
     public interface IAdvisorService
     {
-        public Task<AdvisorResponse?> SendQueryAsync(AdvisorQueryRequest req, CancellationToken cancellationToken);
+        public Task<ChatAdvisorResponse?> SendQueryAsync(ChatAdvisorQueryRequest req, CancellationToken cancellationToken);
     }
 }

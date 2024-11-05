@@ -71,6 +71,7 @@ builder.Services.AddRepositoryPatternWithResilience<UserIdentityDbContext>(build
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
+builder.Services.AddCachingHelper();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

@@ -5,6 +5,7 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Shared.Domain.Dtos;
+using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.ClientFeature.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
@@ -55,6 +56,9 @@ namespace ShopApi
             CreateMap<PaginationRequest, GetOrdersFilter>();
 
             CreateMap<StockBookChange, UpdateBookStockAmountRequest>();
+
+            CreateMap<ChatAdvisorResponse, AdvisorResponse>();
+            CreateMap<AdvisorQueryRequest, ChatAdvisorQueryRequest>();
         }
     }
 }

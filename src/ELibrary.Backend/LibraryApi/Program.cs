@@ -5,6 +5,7 @@ using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddSingleton<ILibraryEntityService<Book>>(sp => sp.GetRequiredS
 builder.Services.AddSingleton<ILibraryEntityService<Author>, AuthorService>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
+builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 
@@ -43,6 +45,7 @@ builder.Services.AddPaginationConfiguration(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<LibraryDbContext>(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
+builder.Services.AddCachingHelper();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

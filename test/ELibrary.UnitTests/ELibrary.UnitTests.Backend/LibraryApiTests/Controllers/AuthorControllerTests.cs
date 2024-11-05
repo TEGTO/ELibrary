@@ -5,8 +5,12 @@ using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Helpers;
+using Shared.Services;
+using System.Security.Claims;
 
 namespace LibraryApi.Controllers.Tests
 {
@@ -14,6 +18,8 @@ namespace LibraryApi.Controllers.Tests
     internal class AuthorControllerTests
     {
         private Mock<ILibraryEntityService<Author>> mockEntityService;
+        private Mock<ICacheService> mockCacheService;
+        private Mock<ICachingHelper> mockCachingHelper;
         private Mock<IMapper> mockMapper;
         private AuthorController controller;
 
@@ -21,8 +27,23 @@ namespace LibraryApi.Controllers.Tests
         public void Setup()
         {
             mockEntityService = new Mock<ILibraryEntityService<Author>>();
+            mockCacheService = new Mock<ICacheService>();
+
+            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
+
+            mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();
-            controller = new AuthorController(mockEntityService.Object, mockMapper.Object);
+            controller = new AuthorController(mockEntityService.Object, mockCacheService.Object, mockCachingHelper.Object, mockMapper.Object);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
         }
 
         [Test]

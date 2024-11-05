@@ -3,9 +3,9 @@ using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 
 namespace ShopApi.Features.AdvisorFeature.Domain.Validators
 {
-    public class AskAdvisorRequestValidator : AbstractValidator<AdvisorQueryRequest>
+    public class ChatAdvisorQueryRequestValidator : AbstractValidator<ChatAdvisorQueryRequest>
     {
-        public AskAdvisorRequestValidator()
+        public ChatAdvisorQueryRequestValidator()
         {
             RuleFor(x => x.Query).NotNull().NotEmpty().MaximumLength(2048);
         }

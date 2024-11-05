@@ -3,6 +3,7 @@ using EventSourcing;
 using LibraryShopEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using Shared.Services;
 using ShopApi;
 using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
@@ -47,6 +48,7 @@ builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 builder.Services.AddSingleton<ILibraryService, LibraryService>();
+builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 
@@ -56,6 +58,7 @@ builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configurati
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
+builder.Services.AddCachingHelper();
 
 builder.Services.AddMediatR(conf =>
 {

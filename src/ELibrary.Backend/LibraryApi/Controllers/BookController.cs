@@ -7,6 +7,8 @@ using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Helpers;
+using Shared.Services;
 
 namespace LibraryApi.Controllers
 {
@@ -24,7 +26,13 @@ namespace LibraryApi.Controllers
     {
         private readonly IBookService bookService;
 
-        public BookController(ILibraryEntityService<Book> entityService, IMapper mapper, IBookService bookService) : base(entityService, mapper)
+        public BookController(
+            ILibraryEntityService<Book> entityService,
+            ICacheService cacheService,
+            ICachingHelper cachingHelper,
+            IMapper mapper,
+            IBookService bookService
+            ) : base(entityService, cacheService, cachingHelper, mapper)
         {
             this.bookService = bookService;
         }

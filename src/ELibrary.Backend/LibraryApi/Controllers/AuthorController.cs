@@ -2,10 +2,12 @@
 using LibraryApi.Domain.Dto.Author;
 using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LibraryShopEntities.Domain.Dtos.Library;
+using Shared.Helpers;
+using Shared.Services;
 
 namespace LibraryApi.Controllers
 {
@@ -21,7 +23,12 @@ namespace LibraryApi.Controllers
         AuthorResponse,
         LibraryFilterRequest>
     {
-        public AuthorController(ILibraryEntityService<Author> entityService, IMapper mapper) : base(entityService, mapper)
+        public AuthorController(
+            ILibraryEntityService<Author> entityService,
+            ICacheService cacheService,
+            ICachingHelper cachingHelper,
+            IMapper mapper
+            ) : base(entityService, cacheService, cachingHelper, mapper)
         {
         }
     }

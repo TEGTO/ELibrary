@@ -2,12 +2,15 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Shared.Configurations;
+using Shared.Helpers;
 using Shared.Middlewares;
 
 namespace Shared
@@ -88,6 +91,19 @@ namespace Shared
                 npgsqlOptions.UseExceptionProcessor();
 
                 additionalConfig?.Invoke(options);
+            });
+
+            return services;
+        }
+        public static IServiceCollection AddCachingHelper(this IServiceCollection services)
+        {
+            services.AddSingleton<ICachingHelper, CachingHelper>();
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
             });
 
             return services;

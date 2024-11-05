@@ -26,7 +26,7 @@ namespace ShopApi.Controllers.Tests
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
-            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
             }, "mock"));
 
             clientController.ControllerContext = new ControllerContext()

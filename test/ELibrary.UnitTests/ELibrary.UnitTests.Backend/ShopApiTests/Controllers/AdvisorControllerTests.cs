@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Services;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.AdvisorFeature.Services;
 
@@ -9,13 +11,17 @@ namespace ShopApi.Controllers.Tests
     internal class AdvisorControllerTests
     {
         private Mock<IAdvisorService> mockAdvisorService;
+        private Mock<ICacheService> mockCacheService;
+        private Mock<IMapper> mockMapper;
         private AdvisorController advisorController;
 
         [SetUp]
         public void SetUp()
         {
             mockAdvisorService = new Mock<IAdvisorService>();
-            advisorController = new AdvisorController(mockAdvisorService.Object);
+            mockCacheService = new Mock<ICacheService>();
+            mockMapper = new Mock<IMapper>();
+            advisorController = new AdvisorController(mockAdvisorService.Object, mockCacheService.Object, mockMapper.Object);
         }
 
         [Test]
@@ -26,12 +32,18 @@ namespace ShopApi.Controllers.Tests
             {
                 Query = "Tell me about the latest in AI."
             };
+            var chatExpectedResponse = new ChatAdvisorResponse
+            {
+                Message = "The latest trends in AI include advancements in deep learning."
+            };
             var expectedResponse = new AdvisorResponse
             {
                 Message = "The latest trends in AI include advancements in deep learning."
             };
-            mockAdvisorService.Setup(s => s.SendQueryAsync(It.IsAny<AdvisorQueryRequest>(), It.IsAny<CancellationToken>()))
-                              .ReturnsAsync(expectedResponse);
+            mockAdvisorService.Setup(s => s.SendQueryAsync(It.IsAny<ChatAdvisorQueryRequest>(), It.IsAny<CancellationToken>()))
+                              .ReturnsAsync(chatExpectedResponse);
+            mockMapper.Setup(s => s.Map<AdvisorResponse>(It.IsAny<ChatAdvisorResponse>()))
+                              .Returns(expectedResponse);
             // Act
             var result = await advisorController.SendQuery(request, CancellationToken.None);
             // Assert
@@ -42,7 +54,7 @@ namespace ShopApi.Controllers.Tests
             Assert.IsInstanceOf<AdvisorResponse>(okResult.Value);
             var response = okResult.Value as AdvisorResponse;
             Assert.That(response.Message, Is.EqualTo(expectedResponse.Message));
-            mockAdvisorService.Verify(s => s.SendQueryAsync(It.IsAny<AdvisorQueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAdvisorService.Verify(s => s.SendQueryAsync(It.IsAny<ChatAdvisorQueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public async Task SendQuery_ReturnsOkResultWithNullResponse_WhenNoAnswerFound()
@@ -52,8 +64,8 @@ namespace ShopApi.Controllers.Tests
             {
                 Query = "Can you tell me about quantum computing?"
             };
-            mockAdvisorService.Setup(s => s.SendQueryAsync(It.IsAny<AdvisorQueryRequest>(), It.IsAny<CancellationToken>()))
-                              .ReturnsAsync((AdvisorResponse?)null);
+            mockAdvisorService.Setup(s => s.SendQueryAsync(It.IsAny<ChatAdvisorQueryRequest>(), It.IsAny<CancellationToken>()))
+                              .ReturnsAsync((ChatAdvisorResponse?)null);
             // Act
             var result = await advisorController.SendQuery(request, CancellationToken.None);
 
@@ -62,7 +74,7 @@ namespace ShopApi.Controllers.Tests
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
             Assert.IsNull(okResult.Value);
-            mockAdvisorService.Verify(s => s.SendQueryAsync(It.IsAny<AdvisorQueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAdvisorService.Verify(s => s.SendQueryAsync(It.IsAny<ChatAdvisorQueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
