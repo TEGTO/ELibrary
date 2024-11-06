@@ -39,7 +39,7 @@ namespace ShopApi.IntegrationTests.Controllers.AdvisorController
             using var request = new HttpRequestMessage(HttpMethod.Post, "/advisor");
             request.Content = new StringContent(JsonSerializer.Serialize(advisorRequest), Encoding.UTF8, "application/json");
             // Act
-            var response = await client.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             var content = await response.Content.ReadAsStringAsync();
@@ -88,7 +88,7 @@ namespace ShopApi.IntegrationTests.Controllers.AdvisorController
             using var request = new HttpRequestMessage(HttpMethod.Post, "/advisor");
             request.Content = new StringContent(JsonSerializer.Serialize(advisorRequest), Encoding.UTF8, "application/json");
             // Act
-            var response = await client.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
@@ -97,7 +97,7 @@ namespace ShopApi.IntegrationTests.Controllers.AdvisorController
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, "/advisor");
             request.Content = new StringContent(JsonSerializer.Serialize(advisorRequest), Encoding.UTF8, "application/json");
-            var response = await client.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
             var advisorResponse = JsonSerializer.Deserialize<AdvisorResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return advisorResponse;

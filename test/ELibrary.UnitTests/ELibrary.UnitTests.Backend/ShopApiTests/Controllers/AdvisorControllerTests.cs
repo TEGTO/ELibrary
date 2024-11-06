@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Helpers;
 using Shared.Services;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.AdvisorFeature.Services;
@@ -12,6 +13,7 @@ namespace ShopApi.Controllers.Tests
     {
         private Mock<IAdvisorService> mockAdvisorService;
         private Mock<ICacheService> mockCacheService;
+        private Mock<ICachingHelper> mockCachingHelper;
         private Mock<IMapper> mockMapper;
         private AdvisorController advisorController;
 
@@ -20,8 +22,9 @@ namespace ShopApi.Controllers.Tests
         {
             mockAdvisorService = new Mock<IAdvisorService>();
             mockCacheService = new Mock<ICacheService>();
+            mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();
-            advisorController = new AdvisorController(mockAdvisorService.Object, mockCacheService.Object, mockMapper.Object);
+            advisorController = new AdvisorController(mockAdvisorService.Object, mockCacheService.Object, mockCachingHelper.Object, mockMapper.Object);
         }
 
         [Test]

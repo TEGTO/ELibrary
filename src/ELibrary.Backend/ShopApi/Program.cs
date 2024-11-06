@@ -66,6 +66,7 @@ builder.Services.AddMediatR(conf =>
 });
 
 builder.Services.AddMemoryCache();
+builder.Services.AddResponseCaching();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

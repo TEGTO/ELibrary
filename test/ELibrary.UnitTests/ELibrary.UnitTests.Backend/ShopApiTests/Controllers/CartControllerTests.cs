@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Services;
 using ShopApi.Features.CartFeature.Command.AddBookToCart;
 using ShopApi.Features.CartFeature.Command.DeleteBooksFromCart;
 using ShopApi.Features.CartFeature.Command.GetCart;
@@ -18,13 +19,15 @@ namespace ShopApi.Controllers.Tests
     internal class CartControllerTests
     {
         private Mock<IMediator> mockMediator;
+        private Mock<ICacheService> mockCacheService;
         private CartController cartController;
 
         [SetUp]
         public void SetUp()
         {
             mockMediator = new Mock<IMediator>();
-            cartController = new CartController(mockMediator.Object);
+            mockCacheService = new Mock<ICacheService>();
+            cartController = new CartController(mockMediator.Object, mockCacheService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

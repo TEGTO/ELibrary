@@ -4,11 +4,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Domain.Dtos;
+using Shared.Services;
 using ShopApi.Features.StockBookOrderFeature.Command.CreateStockBookOrder;
 using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderAmount;
 using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById;
 using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderPaginated;
 using ShopApi.Features.StockBookOrderFeature.Dtos;
+using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
@@ -18,10 +20,12 @@ namespace ShopApi.Controllers
     public class StockBookOrderController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly ICacheService cacheService;
 
-        public StockBookOrderController(IMediator mediator)
+        public StockBookOrderController(IMediator mediator, ICacheService cacheService)
         {
             this.mediator = mediator;
+            this.cacheService = cacheService;
         }
 
         [HttpGet("{id}")]
@@ -36,19 +40,39 @@ namespace ShopApi.Controllers
 
             return Ok(response);
         }
-        [ResponseCache(Duration = 10)]
         [HttpGet("amount")]
         public async Task<ActionResult<int>> GetStockOrderAmount(CancellationToken cancellationToken)
         {
-            var response = await mediator.Send(new GetStockOrderAmountQuery(), cancellationToken);
-            return Ok(response);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetStockOrderAmount_{userId}";
+            var cachedResponse = cacheService.Get<int?>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetStockOrderAmountQuery(), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
-        [ResponseCache(Duration = 10)]
         [HttpPost("pagination")]
         public async Task<ActionResult<IEnumerable<StockBookOrderResponse>>> GetStockOrderPaginated(PaginationRequest paginationRequest, CancellationToken cancellationToken)
         {
-            var response = await mediator.Send(new GetStockOrderPaginatedQuery(paginationRequest), cancellationToken);
-            return Ok(response);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetStockOrderPaginated_{userId}";
+            var cachedResponse = cacheService.Get<IEnumerable<StockBookOrderResponse>>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetStockOrderPaginatedQuery(paginationRequest), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
         [HttpPost]
         public async Task<ActionResult<StockBookOrderResponse>> CreateStockBookOrder(CreateStockBookOrderRequest request, CancellationToken cancellationToken)

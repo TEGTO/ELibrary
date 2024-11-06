@@ -50,6 +50,7 @@ builder.Services.AddCachingHelper();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddMemoryCache();
+builder.Services.AddResponseCaching();
 
 var app = builder.Build();
 

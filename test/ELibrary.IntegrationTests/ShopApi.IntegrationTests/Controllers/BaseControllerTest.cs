@@ -8,6 +8,7 @@ namespace ShopApi.IntegrationTests.Controllers
     internal abstract class BaseControllerTest : BaseIntegrationTest
     {
         private string adminAccessToken = string.Empty;
+        private string managerAccessToken = string.Empty;
         private string accessToken = string.Empty;
 
         protected string AdminAccessToken
@@ -19,6 +20,17 @@ namespace ShopApi.IntegrationTests.Controllers
                     adminAccessToken = GetAdminAccessTokenData().AccessToken;
                 }
                 return adminAccessToken;
+            }
+        }
+        protected string ManagerAccessToken
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(managerAccessToken))
+                {
+                    managerAccessToken = GetManagerAccessTokenData().AccessToken;
+                }
+                return managerAccessToken;
             }
         }
         protected string AccessToken
@@ -43,6 +55,17 @@ namespace ShopApi.IntegrationTests.Controllers
                 Email = "test@example.com"
             };
             return jwtHandler.CreateToken(identity, [Roles.ADMINISTRATOR]);
+        }
+        protected AccessTokenData GetManagerAccessTokenData()
+        {
+            var jwtHandler = new JwtHandler(settings);
+            IdentityUser identity = new IdentityUser()
+            {
+                Id = "1",
+                UserName = "testuser",
+                Email = "test@example.com"
+            };
+            return jwtHandler.CreateToken(identity, [Roles.MANAGER]);
         }
         protected AccessTokenData GetAccessTokenData()
         {

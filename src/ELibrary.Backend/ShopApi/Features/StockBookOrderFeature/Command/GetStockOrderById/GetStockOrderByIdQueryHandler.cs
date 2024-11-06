@@ -23,6 +23,11 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById
         {
             var order = await stockBookOrderService.GetStockBookOrderByIdAsync(command.StockOrderId, cancellationToken);
 
+            if (order == null)
+            {
+                return null;
+            }
+
             var response = mapper.Map<StockBookOrderResponse>(order);
 
             var bookIds = response.StockBookChanges.Select(x => x.BookId).Distinct().ToList();

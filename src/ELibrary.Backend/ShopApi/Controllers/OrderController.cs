@@ -3,6 +3,7 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Services;
 using ShopApi.Features.OrderFeature.Command.CancelOrder;
 using ShopApi.Features.OrderFeature.Command.CreateOrder;
 using ShopApi.Features.OrderFeature.Command.GetOrderAmount;
@@ -24,36 +25,56 @@ namespace ShopApi.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly ICacheService cacheService;
 
-        public OrderController(IMediator mediator)
+        public OrderController(IMediator mediator, ICacheService cacheService)
         {
             this.mediator = mediator;
+            this.cacheService = cacheService;
         }
 
         #region Endpoints
 
-        [ResponseCache(Duration = 10)]
         [HttpPost("pagination")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return Ok(response);
+            var cacheKey = $"GetOrders_{userId}";
+            var cachedResponse = cacheService.Get<IEnumerable<OrderResponse>>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+            }
+
+            return Ok(cachedResponse);
         }
-        [ResponseCache(Duration = 10)]
         [HttpPost("amount")]
         public async Task<ActionResult<int>> GetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return Ok(response);
+            var cacheKey = $"GetOrderAmount_{userId}";
+            var cachedResponse = cacheService.Get<int?>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+            }
+
+            return Ok(cachedResponse);
         }
         [HttpPost]
         public async Task<ActionResult<OrderResponse>> CreateOrder(CreateOrderRequest request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new CreateOrderCommand(userId, request), cancellationToken);
 
             return Created($"", response);
@@ -61,7 +82,7 @@ namespace ShopApi.Controllers
         [HttpPatch]
         public async Task<ActionResult<OrderResponse>> UpdateOrder(ClientUpdateOrderRequest request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new UpdateOrderCommand(userId, request), cancellationToken);
 
             return Ok(response);
@@ -69,7 +90,7 @@ namespace ShopApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelOrder(int id, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new CancelOrderCommand(userId, id), cancellationToken);
 
             return Ok();
@@ -92,7 +113,6 @@ namespace ShopApi.Controllers
 
             return Ok(response);
         }
-        [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/pagination")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> ManagerGetPaginatedOrders(GetOrdersFilter request, CancellationToken cancellationToken)
@@ -100,7 +120,6 @@ namespace ShopApi.Controllers
             var response = await mediator.Send(new ManagerGetPaginatedOrdersQuery(request), cancellationToken);
             return Ok(response);
         }
-        [ResponseCache(Duration = 10)]
         [Authorize(Policy = Policy.REQUIRE_MANAGER_ROLE)]
         [HttpPost("manager/amount")]
         public async Task<ActionResult<int>> ManagerGetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)

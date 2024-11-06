@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Services;
 using ShopApi.Features.OrderFeature.Command.CreateOrder;
 using ShopApi.Features.OrderFeature.Command.GetOrderAmount;
 using ShopApi.Features.OrderFeature.Command.GetOrders;
@@ -21,15 +22,20 @@ namespace ShopApi.Controllers.Tests
     internal class OrderControllerTests
     {
         private Mock<IMediator> mockMediator;
+        private Mock<ICacheService> mockCacheService;
         private OrderController orderController;
 
         [SetUp]
         public void SetUp()
         {
             mockMediator = new Mock<IMediator>();
+            mockCacheService = new Mock<ICacheService>();
+
+            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
 
             orderController = new OrderController(
-                mockMediator.Object
+                mockMediator.Object,
+                mockCacheService.Object
             );
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]

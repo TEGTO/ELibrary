@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Shared.Services;
 using ShopApi.Features.ClientFeature.Command.CreateClient;
 using ShopApi.Features.ClientFeature.Command.GetClient;
 using ShopApi.Features.ClientFeature.Command.UpdateClient;
@@ -14,15 +15,17 @@ namespace ShopApi.Controllers.Tests
     [TestFixture]
     internal class ClientControllerTests
     {
-        private Mock<IMediator> mediatorMock;
+        private Mock<IMediator> mockMediator;
+        private Mock<ICacheService> mockCacheService;
         private ClientController clientController;
 
         [SetUp]
         public void SetUp()
         {
-            mediatorMock = new Mock<IMediator>();
+            mockMediator = new Mock<IMediator>();
+            mockCacheService = new Mock<ICacheService>();
 
-            clientController = new ClientController(mediatorMock.Object);
+            clientController = new ClientController(mockMediator.Object, mockCacheService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -40,7 +43,7 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var clientResponse = new GetClientResponse { Client = new ClientResponse { Id = "test-client-id" } };
-            mediatorMock
+            mockMediator
                 .Setup(m => m.Send(It.IsAny<GetClientQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
@@ -56,7 +59,7 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var createRequest = new CreateClientRequest { Name = "John" };
             var clientResponse = new ClientResponse { Id = "test-client-id" };
-            mediatorMock
+            mockMediator
                 .Setup(m => m.Send(It.IsAny<CreateClientCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
@@ -72,7 +75,7 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var updateRequest = new UpdateClientRequest { Name = "Updated Name" };
             var updatedClientResponse = new ClientResponse { Id = "test-client-id" };
-            mediatorMock
+            mockMediator
                 .Setup(m => m.Send(It.IsAny<UpdateClientCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClientResponse);
             // Act
@@ -87,7 +90,7 @@ namespace ShopApi.Controllers.Tests
         {
             // Arrange
             var clientResponse = new GetClientResponse { Client = new ClientResponse { Id = "admin-client-id" } };
-            mediatorMock
+            mockMediator
                 .Setup(m => m.Send(It.IsAny<GetClientQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
@@ -103,7 +106,7 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var createRequest = new CreateClientRequest { Name = "Admin Client" };
             var clientResponse = new ClientResponse { Id = "admin-client-id" };
-            mediatorMock
+            mockMediator
                 .Setup(m => m.Send(It.IsAny<CreateClientCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
@@ -119,7 +122,7 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var updateRequest = new UpdateClientRequest { Name = "Updated Admin Client" };
             var updatedClientResponse = new ClientResponse { Id = "admin-client-id" };
-            mediatorMock
+            mockMediator
                 .Setup(m => m.Send(It.IsAny<UpdateClientCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClientResponse);
             // Act

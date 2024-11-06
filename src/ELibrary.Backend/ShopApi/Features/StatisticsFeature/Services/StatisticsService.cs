@@ -79,8 +79,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
             queryable = GetOrderQueryableWithIncludedBooks(queryable, getBookStatistics);
 
             return await queryable
-                  .SelectMany(order => order.OrderBooks)
-                  .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
+                   .SumAsync(o => o.OrderAmount, cancellationToken);
         }
         private async Task<long> GetSoldCopiesAsync(GetShopStatistics getBookStatistics, CancellationToken cancellationToken)
         {
@@ -90,8 +89,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
 
             return await queryable
                    .Where(x => x.OrderStatus == OrderStatus.Completed)
-                   .SelectMany(order => order.OrderBooks)
-                   .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
+                   .SumAsync(o => o.OrderAmount, cancellationToken);
         }
         private async Task<long> GetCanceledCopiesAsync(GetShopStatistics getBookStatistics, CancellationToken cancellationToken)
         {
@@ -101,8 +99,7 @@ namespace ShopApi.Features.StatisticsFeature.Services
 
             return await queryable
                    .Where(x => x.OrderStatus == OrderStatus.Canceled)
-                   .SelectMany(order => order.OrderBooks)
-                   .SumAsync(orderBook => orderBook.BookAmount, cancellationToken);
+                   .SumAsync(o => o.OrderAmount, cancellationToken);
         }
         private async Task<long> GetOrderAmountAsync(GetShopStatistics getBookStatistics, CancellationToken cancellationToken)
         {
@@ -162,12 +159,12 @@ namespace ShopApi.Features.StatisticsFeature.Services
 
             if (getBookStatistics.FromUTC.HasValue)
             {
-                queryable = queryable.Where(x => x.CreatedAt >= getBookStatistics.FromUTC.Value);
+                queryable = queryable.Where(x => x.CreatedAt.ToUniversalTime() >= getBookStatistics.FromUTC.Value.ToUniversalTime());
             }
 
             if (getBookStatistics.ToUTC.HasValue)
             {
-                queryable = queryable.Where(x => x.CreatedAt <= getBookStatistics.ToUTC.Value);
+                queryable = queryable.Where(x => x.CreatedAt.ToUniversalTime() <= getBookStatistics.ToUTC.Value.ToUniversalTime());
             }
 
             return queryable;

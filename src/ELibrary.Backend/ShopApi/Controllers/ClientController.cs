@@ -3,6 +3,7 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Services;
 using ShopApi.Features.ClientFeature.Command.CreateClient;
 using ShopApi.Features.ClientFeature.Command.GetClient;
 using ShopApi.Features.ClientFeature.Command.UpdateClient;
@@ -17,27 +18,37 @@ namespace ShopApi.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly ICacheService cacheService;
 
-        public ClientController(IMediator mediator)
+        public ClientController(IMediator mediator, ICacheService cacheService)
         {
             this.mediator = mediator;
+            this.cacheService = cacheService;
         }
 
         #region Endpoints
 
-        [ResponseCache(Duration = 10)]
         [HttpGet]
         public async Task<ActionResult<GetClientResponse>> GetClient(CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new GetClientQuery(userId), cancellationToken);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetClient_{userId}";
+            var cachedResponse = cacheService.Get<GetClientResponse>(cacheKey);
 
-            return Ok(response);
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetClientQuery(userId), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
         [HttpPost]
         public async Task<ActionResult<ClientResponse>> CreateClient([FromBody] CreateClientRequest request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new CreateClientCommand(userId, request), cancellationToken);
 
             return Created("", response);
@@ -45,7 +56,7 @@ namespace ShopApi.Controllers
         [HttpPut]
         public async Task<ActionResult<ClientResponse>> UpdateClient([FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new UpdateClientCommand(userId, request), cancellationToken);
 
             return Created("", response);

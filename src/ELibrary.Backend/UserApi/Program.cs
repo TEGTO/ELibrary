@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 using Shared.Repositories;
+using Shared.Services;
 using UserApi;
 using UserApi.Services;
 using UserApi.Services.Auth;
@@ -63,6 +64,7 @@ builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuth
     {
         { OAuthLoginProvider.Google, provider.GetService<GoogleOAuthService>()! },
     });
+builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 

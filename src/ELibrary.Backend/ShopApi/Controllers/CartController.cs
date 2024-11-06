@@ -3,6 +3,7 @@ using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Services;
 using ShopApi.Features.CartFeature.Command.AddBookToCart;
 using ShopApi.Features.CartFeature.Command.DeleteBooksFromCart;
 using ShopApi.Features.CartFeature.Command.GetCart;
@@ -19,36 +20,54 @@ namespace ShopApi.Controllers
     public class CartController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly ICacheService cacheService;
 
-        public CartController(IMediator mediator)
+        public CartController(IMediator mediator, ICacheService cacheService)
         {
             this.mediator = mediator;
+            this.cacheService = cacheService;
         }
 
         #region EndPoints
 
-        [ResponseCache(Duration = 1)]
         [HttpGet]
         public async Task<ActionResult<CartResponse>> GetCart(CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new GetCartQuery(userId), cancellationToken);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetCart_{userId}";
+            var cachedResponse = cacheService.Get<CartResponse>(cacheKey);
 
-            return Ok(response);
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetCartQuery(userId), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+            }
+
+            return Ok(cachedResponse);
         }
-        [ResponseCache(Duration = 1)]
         [HttpGet("amount")]
         public async Task<ActionResult<int>> GetInCartAmount(CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new GetInCartAmountQuery(userId), cancellationToken);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetInCartAmount_{userId}";
+            var cachedResponse = cacheService.Get<int?>(cacheKey);
 
-            return Ok(response);
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetInCartAmountQuery(userId), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+            }
+
+            return Ok(cachedResponse);
         }
         [HttpPost("cartbook")]
         public async Task<ActionResult<CartBookResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new AddBookToCartCommand(userId, request), cancellationToken);
 
             return Ok(response);
@@ -56,7 +75,7 @@ namespace ShopApi.Controllers
         [HttpPut("cartbook")]
         public async Task<ActionResult<CartBookResponse>> UpdateCartBookInCart(UpdateCartBookRequest request, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new UpdateCartBookInCartCommand(userId, request), cancellationToken);
 
             return Ok(response);
@@ -64,7 +83,7 @@ namespace ShopApi.Controllers
         [HttpPut]
         public async Task<ActionResult<CartResponse>> DeleteBooksFromCart(DeleteCartBookFromCartRequest[] requests, CancellationToken cancellationToken)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response = await mediator.Send(new DeleteBooksFromCartCommand(userId, requests), cancellationToken);
 
             return Ok(response);

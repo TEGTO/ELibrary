@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Helpers;
 using Shared.Services;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.AdvisorFeature.Services;
@@ -12,19 +13,21 @@ namespace ShopApi.Controllers
     {
         private readonly IAdvisorService advisorService;
         private readonly ICacheService cacheService;
+        private readonly ICachingHelper cachingHelper;
         private readonly IMapper mapper;
 
-        public AdvisorController(IAdvisorService advisorService, ICacheService cacheService, IMapper mapper)
+        public AdvisorController(IAdvisorService advisorService, ICacheService cacheService, ICachingHelper cachingHelper, IMapper mapper)
         {
             this.advisorService = advisorService;
             this.cacheService = cacheService;
+            this.cachingHelper = cachingHelper;
             this.mapper = mapper;
         }
 
         [HttpPost]
         public async Task<ActionResult<AdvisorResponse?>> SendQuery(AdvisorQueryRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"AdvisorResponse_{request.Query}";
+            var cacheKey = cachingHelper.GetCacheKey("AdvisorResponse", HttpContext);
             var cachedResponse = cacheService.Get<AdvisorResponse>(cacheKey);
 
             if (cachedResponse == null)
