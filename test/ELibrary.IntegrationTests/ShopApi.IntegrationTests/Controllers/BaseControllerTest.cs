@@ -45,7 +45,7 @@ namespace ShopApi.IntegrationTests.Controllers
             }
         }
 
-        protected AccessTokenData GetAdminAccessTokenData()
+        private AccessTokenData GetAdminAccessTokenData()
         {
             var jwtHandler = new JwtHandler(settings);
             IdentityUser identity = new IdentityUser()
@@ -56,7 +56,7 @@ namespace ShopApi.IntegrationTests.Controllers
             };
             return jwtHandler.CreateToken(identity, [Roles.ADMINISTRATOR]);
         }
-        protected AccessTokenData GetManagerAccessTokenData()
+        private AccessTokenData GetManagerAccessTokenData()
         {
             var jwtHandler = new JwtHandler(settings);
             IdentityUser identity = new IdentityUser()
@@ -67,7 +67,7 @@ namespace ShopApi.IntegrationTests.Controllers
             };
             return jwtHandler.CreateToken(identity, [Roles.MANAGER]);
         }
-        protected AccessTokenData GetAccessTokenData()
+        private AccessTokenData GetAccessTokenData()
         {
             var jwtHandler = new JwtHandler(settings);
             IdentityUser identity = new IdentityUser()

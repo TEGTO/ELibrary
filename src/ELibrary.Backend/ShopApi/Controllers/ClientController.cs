@@ -37,7 +37,7 @@ namespace ShopApi.Controllers
 
             if (cachedResponse == null)
             {
-                var response = await mediator.Send(new GetClientQuery(userId), cancellationToken);
+                var response = await mediator.Send(new GetClientForUserQuery(userId), cancellationToken);
                 cachedResponse = response;
 
                 cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
@@ -49,7 +49,7 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<ClientResponse>> CreateClient([FromBody] CreateClientRequest request, CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new CreateClientCommand(userId, request), cancellationToken);
+            var response = await mediator.Send(new CreateClientForUserCommand(userId, request), cancellationToken);
 
             return Created("", response);
         }
@@ -57,33 +57,33 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<ClientResponse>> UpdateClient([FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new UpdateClientCommand(userId, request), cancellationToken);
+            var response = await mediator.Send(new UpdateClientForUserCommand(userId, request), cancellationToken);
 
-            return Created("", response);
+            return Ok(response);
         }
         #endregion
 
         #region Admin Endpoints
 
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
-        [HttpGet("admin/{id}")]
-        public async Task<ActionResult<GetClientResponse>> AdminGetClient(string id, CancellationToken cancellationToken)
+        [HttpGet("admin/{userId}")]
+        public async Task<ActionResult<GetClientResponse>> AdminGetClient(string userId, CancellationToken cancellationToken)
         {
-            var response = await mediator.Send(new GetClientQuery(id), cancellationToken);
+            var response = await mediator.Send(new GetClientForUserQuery(userId), cancellationToken);
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
-        [HttpPost("admin/{id}")]
-        public async Task<ActionResult<ClientResponse>> AdminCreateClient(string id, [FromBody] CreateClientRequest request, CancellationToken cancellationToken)
+        [HttpPost("admin/{userId}")]
+        public async Task<ActionResult<ClientResponse>> AdminCreateClient(string userId, [FromBody] CreateClientRequest request, CancellationToken cancellationToken)
         {
-            var response = await mediator.Send(new CreateClientCommand(id, request), cancellationToken);
+            var response = await mediator.Send(new CreateClientForUserCommand(userId, request), cancellationToken);
             return Created("", response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]
-        [HttpPut("admin/{id}")]
-        public async Task<ActionResult<ClientResponse>> AdminUpdateClient(string id, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
+        [HttpPut("admin/{userId}")]
+        public async Task<ActionResult<ClientResponse>> AdminUpdateClient(string userId, [FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
         {
-            var response = await mediator.Send(new UpdateClientCommand(id, request), cancellationToken);
+            var response = await mediator.Send(new UpdateClientForUserCommand(userId, request), cancellationToken);
             return Ok(response);
         }
 

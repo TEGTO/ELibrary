@@ -44,7 +44,7 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var clientResponse = new GetClientResponse { Client = new ClientResponse { Id = "test-client-id" } };
             mockMediator
-                .Setup(m => m.Send(It.IsAny<GetClientQuery>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(It.IsAny<GetClientForUserQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.GetClient(CancellationToken.None);
@@ -60,7 +60,7 @@ namespace ShopApi.Controllers.Tests
             var createRequest = new CreateClientRequest { Name = "John" };
             var clientResponse = new ClientResponse { Id = "test-client-id" };
             mockMediator
-                .Setup(m => m.Send(It.IsAny<CreateClientCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(It.IsAny<CreateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.CreateClient(createRequest, CancellationToken.None);
@@ -76,13 +76,13 @@ namespace ShopApi.Controllers.Tests
             var updateRequest = new UpdateClientRequest { Name = "Updated Name" };
             var updatedClientResponse = new ClientResponse { Id = "test-client-id" };
             mockMediator
-                .Setup(m => m.Send(It.IsAny<UpdateClientCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(It.IsAny<UpdateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClientResponse);
             // Act
             var result = await clientController.UpdateClient(updateRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<CreatedResult>(result.Result);
-            var okResult = result.Result as CreatedResult;
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
             Assert.That(okResult?.Value, Is.EqualTo(updatedClientResponse));
         }
         [Test]
@@ -91,7 +91,7 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var clientResponse = new GetClientResponse { Client = new ClientResponse { Id = "admin-client-id" } };
             mockMediator
-                .Setup(m => m.Send(It.IsAny<GetClientQuery>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(It.IsAny<GetClientForUserQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.AdminGetClient("admin-user-id", CancellationToken.None);
@@ -107,7 +107,7 @@ namespace ShopApi.Controllers.Tests
             var createRequest = new CreateClientRequest { Name = "Admin Client" };
             var clientResponse = new ClientResponse { Id = "admin-client-id" };
             mockMediator
-                .Setup(m => m.Send(It.IsAny<CreateClientCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(It.IsAny<CreateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.AdminCreateClient("admin-user-id", createRequest, CancellationToken.None);
@@ -123,7 +123,7 @@ namespace ShopApi.Controllers.Tests
             var updateRequest = new UpdateClientRequest { Name = "Updated Admin Client" };
             var updatedClientResponse = new ClientResponse { Id = "admin-client-id" };
             mockMediator
-                .Setup(m => m.Send(It.IsAny<UpdateClientCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(It.IsAny<UpdateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClientResponse);
             // Act
             var result = await clientController.AdminUpdateClient("admin-user-id", updateRequest, CancellationToken.None);

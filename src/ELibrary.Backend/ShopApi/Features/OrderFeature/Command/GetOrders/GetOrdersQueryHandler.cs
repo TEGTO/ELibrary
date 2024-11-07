@@ -37,7 +37,7 @@ namespace ShopApi.Features.OrderFeature.Command.GetOrders
 
             command.Request.ClientId = client.Id;
             var orders = await orderService.GetPaginatedOrdersAsync(command.Request, cancellationToken);
-            return await GetLibraryEntityHelper.GetOrderResponsesWiithBooksAsync(orders, libraryService, mapper, cancellationToken);
+            return await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync(orders, libraryService, mapper, cancellationToken);
         }
     }
 }

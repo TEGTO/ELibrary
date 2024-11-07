@@ -140,7 +140,7 @@ namespace ShopApi.Tests
             mockMapper.Setup(mapper => mapper.Map<OrderResponse>(It.IsAny<Order>()))
                 .Returns((Order order) => orderResponses[orders.IndexOf(order)]);
             // Act
-            var result = await GetLibraryEntityHelper.GetOrderResponsesWiithBooksAsync(orders, mockLibraryService.Object, mockMapper.Object, cancellationToken);
+            var result = await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync(orders, mockLibraryService.Object, mockMapper.Object, cancellationToken);
             // Assert
             Assert.That(result, Is.EqualTo(orderResponses));
             Assert.That(orderResponses[0].OrderBooks[0].Book, Is.EqualTo(bookResponses[0]));

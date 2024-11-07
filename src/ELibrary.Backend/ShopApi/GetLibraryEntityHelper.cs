@@ -40,7 +40,7 @@ namespace ShopApi
             }
             return cartResponse;
         }
-        public static async Task<IEnumerable<OrderResponse>> GetOrderResponsesWiithBooksAsync(IEnumerable<Order> orders, ILibraryService libraryService, IMapper mapper, CancellationToken cancellationToken)
+        public static async Task<IEnumerable<OrderResponse>> GetOrderResponsesWithBooksAsync(IEnumerable<Order> orders, ILibraryService libraryService, IMapper mapper, CancellationToken cancellationToken)
         {
             var orderResponses = orders.Select(mapper.Map<OrderResponse>).ToList();
 

@@ -43,6 +43,14 @@
             <mat-error
                 *ngIf="validateInputField(coverImgUrlInput).hasError">{{validateInputField(coverImgUrlInput).message}}</mat-error>
         </mat-form-field>
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="5" autocomplete="book-description" [formControl]="descriptionInput"
+                maxlength="4096"></textarea>
+            <mat-error
+                *ngIf="validateInputField(descriptionInput).hasError">{{validateInputField(descriptionInput).message}}</mat-error>
+        </mat-form-field>
         <div class="form__cover-type">
             <label for="cover">Cover Type</label>
             <div>

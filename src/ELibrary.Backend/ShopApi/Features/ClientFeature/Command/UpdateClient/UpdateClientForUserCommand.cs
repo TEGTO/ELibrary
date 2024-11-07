@@ -4,5 +4,5 @@ using ShopApi.Features.ClientFeature.Dtos;
 
 namespace ShopApi.Features.ClientFeature.Command.UpdateClient
 {
-    public record UpdateClientCommand(string UserId, UpdateClientRequest Request) : IRequest<ClientResponse>;
+    public record UpdateClientForUserCommand(string UserId, UpdateClientRequest Request) : IRequest<ClientResponse>;
 }

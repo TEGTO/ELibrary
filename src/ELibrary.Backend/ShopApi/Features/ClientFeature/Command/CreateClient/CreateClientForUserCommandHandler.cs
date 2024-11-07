@@ -6,18 +6,18 @@ using ShopApi.Features.ClientFeature.Services;
 
 namespace ShopApi.Features.ClientFeature.Command.CreateClient
 {
-    public class CreateClientCommandHandler : IRequestHandler<CreateClientCommand, ClientResponse>
+    public class CreateClientForUserCommandHandler : IRequestHandler<CreateClientForUserCommand, ClientResponse>
     {
         private readonly IClientService clientService;
         private readonly IMapper mapper;
 
-        public CreateClientCommandHandler(IClientService clientService, IMapper mapper)
+        public CreateClientForUserCommandHandler(IClientService clientService, IMapper mapper)
         {
             this.clientService = clientService;
             this.mapper = mapper;
         }
 
-        public async Task<ClientResponse> Handle(CreateClientCommand command, CancellationToken cancellationToken)
+        public async Task<ClientResponse> Handle(CreateClientForUserCommand command, CancellationToken cancellationToken)
         {
             var client = mapper.Map<Client>(command.Request);
             client.UserId = command.UserId;

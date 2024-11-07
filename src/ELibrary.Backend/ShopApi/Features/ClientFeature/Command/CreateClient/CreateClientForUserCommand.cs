@@ -4,5 +4,5 @@ using ShopApi.Features.ClientFeature.Dtos;
 
 namespace ShopApi.Features.ClientFeature.Command.CreateClient
 {
-    public record CreateClientCommand(string UserId, CreateClientRequest Request) : IRequest<ClientResponse>;
+    public record CreateClientForUserCommand(string UserId, CreateClientRequest Request) : IRequest<ClientResponse>;
 }

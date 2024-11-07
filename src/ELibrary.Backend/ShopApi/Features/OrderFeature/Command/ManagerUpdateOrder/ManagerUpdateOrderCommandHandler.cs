@@ -29,7 +29,7 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder
 
             var updatedOrder = await orderService.UpdateOrderAsync(order, cancellationToken);
 
-            return (await GetLibraryEntityHelper.GetOrderResponsesWiithBooksAsync([updatedOrder], libraryService, mapper, cancellationToken)).First();
+            return (await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync([updatedOrder], libraryService, mapper, cancellationToken)).First();
         }
     }
 }

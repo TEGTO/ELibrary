@@ -24,6 +24,8 @@ namespace LibraryShopEntities.Domain.Entities.Library
         [Required]
         [MaxLength(1024)]
         public string CoverImgUrl { get; set; } = default!;
+        [MaxLength(4096)]
+        public string? Description { get; set; } = default!;
         public BookPopularity? BookPopularity { get; set; } = default!;
         [Required]
         public int AuthorId { get; set; }
@@ -48,6 +50,7 @@ namespace LibraryShopEntities.Domain.Entities.Library
                 CoverType = otherBook.CoverType;
                 PageAmount = otherBook.PageAmount;
                 CoverImgUrl = otherBook.CoverImgUrl;
+                Description = otherBook.Description;
                 AuthorId = otherBook.AuthorId;
                 GenreId = otherBook.GenreId;
                 PublisherId = otherBook.PublisherId;

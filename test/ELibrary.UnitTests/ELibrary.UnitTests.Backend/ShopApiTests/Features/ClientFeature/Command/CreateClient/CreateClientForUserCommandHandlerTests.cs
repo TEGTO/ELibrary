@@ -8,25 +8,25 @@ using ShopApi.Features.ClientFeature.Services;
 namespace ShopApi.Features.ClientFeature.Command.CreateClient.Tests
 {
     [TestFixture]
-    internal class CreateClientCommandHandlerTests
+    internal class CreateClientForUserCommandHandlerTests
     {
         private Mock<IClientService> mockClientService;
         private Mock<IMapper> mockMapper;
-        private CreateClientCommandHandler handler;
+        private CreateClientForUserCommandHandler handler;
 
         [SetUp]
         public void SetUp()
         {
             mockClientService = new Mock<IClientService>();
             mockMapper = new Mock<IMapper>();
-            handler = new CreateClientCommandHandler(mockClientService.Object, mockMapper.Object);
+            handler = new CreateClientForUserCommandHandler(mockClientService.Object, mockMapper.Object);
         }
 
         [Test]
         public async Task Handle_ValidCommand_CreatesClientAndReturnsClientResponse()
         {
             // Arrange
-            var command = new CreateClientCommand(
+            var command = new CreateClientForUserCommand(
               "user123",
               new CreateClientRequest { Name = "Test Client" }
             );
@@ -48,7 +48,7 @@ namespace ShopApi.Features.ClientFeature.Command.CreateClient.Tests
         public async Task Handle_ValidCommand_SetsUserIdOnClient()
         {
             // Arrange
-            var command = new CreateClientCommand(
+            var command = new CreateClientForUserCommand(
                 "user123",
                 new CreateClientRequest { Name = "Test Client" }
            );

@@ -1,4 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -38,6 +39,7 @@ import { AuthorChangeDialogComponent, AuthorControllerService, AuthorEffects, Au
     ReactiveFormsModule,
     MatInputModule,
     ScrollingModule,
+    TextFieldModule,
     MatFormFieldModule,
     MatDialogModule,
     MatButtonModule,

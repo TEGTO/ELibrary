@@ -7,7 +7,7 @@
 
 <ng-template #book let-book="book" let-bookAdded="bookAdded">
     <div class="book mr-2 h-full w-full border border-gray-200 rounded-lg p-10">
-        <div class="w-full flex gap-10">
+        <div class="w-full flex flex-wrap gap-10">
             <div class="book__cover">
                 <img class="h-56 w-36" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
                     (error)="onErrorImage($event)" />
@@ -96,6 +96,19 @@
                     <span class="material-icons text-green-600">check</span>
                 </div>
             </ng-template>
+        </div>
+        <div class="book__description text-gray-400">
+            <span class="font-semibold">
+                Description
+            </span>
+            <div class="description__text">
+                @if (book.description === null) {
+                Description is not provided, we will fix it soon... 😔
+                }
+                @else {
+                {{ book.description }}
+                }
+            </div>
         </div>
     </div>
 </ng-template>

@@ -8,25 +8,25 @@ using ShopApi.Features.ClientFeature.Services;
 namespace ShopApi.Features.ClientFeature.Command.UpdateClient.Tests
 {
     [TestFixture]
-    public class UpdateClientCommandHandlerTests
+    public class UpdateClientForUserCommandHandlerTests
     {
         private Mock<IClientService> mockClientService;
         private Mock<IMapper> mockMapper;
-        private UpdateClientCommandHandler handler;
+        private UpdateClientForUserCommandHandler handler;
 
         [SetUp]
         public void SetUp()
         {
             mockClientService = new Mock<IClientService>();
             mockMapper = new Mock<IMapper>();
-            handler = new UpdateClientCommandHandler(mockClientService.Object, mockMapper.Object);
+            handler = new UpdateClient.UpdateClientForUserCommandHandler(mockClientService.Object, mockMapper.Object);
         }
 
         [Test]
         public async Task Handle_ExistingUserId_UpdatesAndReturnsClientResponse()
         {
             // Arrange
-            var command = new UpdateClientCommand("user123", new UpdateClientRequest { Name = "Updated Name" });
+            var command = new UpdateClientForUserCommand("user123", new UpdateClientRequest { Name = "Updated Name" });
             var existingClient = new Client { Id = "1", UserId = "user123", Name = "Old Name" };
             var updatedClient = new Client { Id = "1", UserId = "user123", Name = "Updated Name" };
             var expectedResponse = new ClientResponse { Id = "1", UserId = "user123", Name = "Updated Name" };
@@ -49,7 +49,7 @@ namespace ShopApi.Features.ClientFeature.Command.UpdateClient.Tests
         public void Handle_NonExistingUserId_ThrowsInvalidOperationException()
         {
             // Arrange
-            var command = new UpdateClientCommand("nonexistentUser", new UpdateClientRequest { Name = "New Name" });
+            var command = new UpdateClientForUserCommand("nonexistentUser", new UpdateClientRequest { Name = "New Name" });
             mockClientService.Setup(s => s.GetClientByUserIdAsync(command.UserId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Client)null);
             // Act & Assert

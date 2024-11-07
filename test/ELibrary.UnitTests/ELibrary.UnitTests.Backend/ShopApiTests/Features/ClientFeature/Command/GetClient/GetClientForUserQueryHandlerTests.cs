@@ -7,25 +7,25 @@ using ShopApi.Features.ClientFeature.Services;
 namespace ShopApi.Features.ClientFeature.Command.GetClient.Tests
 {
     [TestFixture]
-    internal class GetClientQueryHandlerTests
+    internal class GetClientForUserQueryHandlerTests
     {
         private Mock<IClientService> mockClientService;
         private Mock<IMapper> mockMapper;
-        private GetClientQueryHandler handler;
+        private GetClientForUserQueryHandler handler;
 
         [SetUp]
         public void SetUp()
         {
             mockClientService = new Mock<IClientService>();
             mockMapper = new Mock<IMapper>();
-            handler = new GetClientQueryHandler(mockClientService.Object, mockMapper.Object);
+            handler = new GetClient.GetClientForUserQueryHandler(mockClientService.Object, mockMapper.Object);
         }
 
         [Test]
         public async Task Handle_ExistingUserId_ReturnsMappedClientResponse()
         {
             // Arrange
-            var query = new GetClientQuery("user123");
+            var query = new GetClientForUserQuery("user123");
             var client = new Client { Id = "1", UserId = "user123", Name = "John Doe" };
             var expectedResponse = new ClientResponse { Id = "1", UserId = "user123", Name = "John Doe" };
             mockClientService.Setup(s => s.GetClientByUserIdAsync(query.UserId, It.IsAny<CancellationToken>()))
@@ -43,7 +43,7 @@ namespace ShopApi.Features.ClientFeature.Command.GetClient.Tests
         public async Task Handle_NonExistingUserId_ReturnsNullClient()
         {
             // Arrange
-            var query = new GetClientQuery("nonexistentUser");
+            var query = new GetClientForUserQuery("nonexistentUser");
             mockClientService.Setup(s => s.GetClientByUserIdAsync(query.UserId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Client)null);
             // Act

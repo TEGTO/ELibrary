@@ -41,12 +41,12 @@ namespace ShopApi.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var cacheKey = $"GetOrders_{userId}";
-            var cachedResponse = cacheService.Get<IEnumerable<OrderResponse>>(cacheKey);
+            var cachedResponse = cacheService.Get<List<OrderResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
-                cachedResponse = response;
+                cachedResponse = response.ToList();
 
                 cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }

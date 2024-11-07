@@ -62,12 +62,12 @@ namespace LibraryApi.Controllers
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)
         {
             var cacheKey = cachingHelper.GetCacheKey($"GetByIds_{typeof(TGetResponse).Name}", HttpContext);
-            var cachedResponse = cacheService.Get<IEnumerable<TGetResponse>>(cacheKey);
+            var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var entities = await entityService.GetByIdsAsync(request.Ids, cancellationToken);
-                cachedResponse = entities.Select(mapper.Map<TGetResponse>);
+                cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
 
                 cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
             }
@@ -79,12 +79,12 @@ namespace LibraryApi.Controllers
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
         {
             var cacheKey = cachingHelper.GetCacheKey($"GetPaginated_{typeof(TGetResponse).Name}", HttpContext);
-            var cachedResponse = cacheService.Get<IEnumerable<TGetResponse>>(cacheKey);
+            var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
-                cachedResponse = entities.Select(mapper.Map<TGetResponse>);
+                cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
 
                 cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }

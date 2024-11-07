@@ -19,6 +19,7 @@ export class ValidationMessageService implements ValidationMessage {
     dateInPast: "Date must be in the past.",
     min: "Field must be bigger.",
     max: "Field must be smaller.",
+    notEmptyString: "Field must not be an empty string.",
     dateRangeFromInvalid: '"From" date must be before or equal to "To" date.',
     dateRangeToInvalid: '"To" date must be after or equal to "From" date.',
     rangeMinInvalid: '"Min" must be less than or equal to "Max".',

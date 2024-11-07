@@ -25,7 +25,7 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerGetPaginatedOrders
         public async Task<IEnumerable<OrderResponse>> Handle(ManagerGetPaginatedOrdersQuery command, CancellationToken cancellationToken)
         {
             var orders = await orderService.GetPaginatedOrdersAsync(command.Filter, cancellationToken);
-            return await GetLibraryEntityHelper.GetOrderResponsesWiithBooksAsync(orders, libraryService, mapper, cancellationToken);
+            return await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync(orders, libraryService, mapper, cancellationToken);
         }
     }
 }

@@ -62,12 +62,12 @@ namespace ShopApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cacheKey = $"GetStockOrderPaginated_{userId}";
-            var cachedResponse = cacheService.Get<IEnumerable<StockBookOrderResponse>>(cacheKey);
+            var cachedResponse = cacheService.Get<List<StockBookOrderResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetStockOrderPaginatedQuery(paginationRequest), cancellationToken);
-                cachedResponse = response;
+                cachedResponse = response.ToList();
 
                 cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }

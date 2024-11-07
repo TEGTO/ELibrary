@@ -38,6 +38,10 @@ namespace Shared.Middlewares
             {
                 await SetError(httpContext, HttpStatusCode.BadRequest, ex, new[] { ex.Message }).ConfigureAwait(false);
             }
+            catch (InvalidOperationException ex)
+            {
+                await SetError(httpContext, HttpStatusCode.Conflict, ex, new[] { ex.Message }).ConfigureAwait(false);
+            }
             catch (AuthorizationException ex)
             {
                 var errors = ex.Errors.ToArray();
