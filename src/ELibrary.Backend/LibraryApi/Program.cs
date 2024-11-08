@@ -1,11 +1,16 @@
 using Authentication;
+using Caching;
+using Caching.Services;
+using DatabaseControl;
+using ExceptionHandling;
 using LibraryApi;
 using LibraryApi.Services;
 using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
+using Logging;
 using Microsoft.EntityFrameworkCore;
+using Pagination;
 using Shared;
-using Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +27,7 @@ if (useCors)
 #endregion
 
 builder.Services.AddDbContextFactory<LibraryDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING)!, "LibraryApi");
-builder.Host.SerilogConfiguration();
+builder.Host.AddLogging();
 
 #region Identity & Authentication
 
@@ -41,7 +46,7 @@ builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 
-builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddPagination(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<LibraryDbContext>(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();

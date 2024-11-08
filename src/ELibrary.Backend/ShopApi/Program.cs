@@ -1,9 +1,15 @@
 using Authentication;
+using Caching;
+using Caching.Services;
+using DatabaseControl;
 using EventSourcing;
+using ExceptionHandling;
 using LibraryShopEntities.Data;
+using Logging;
 using Microsoft.EntityFrameworkCore;
+using Pagination;
+using Resilience;
 using Shared;
-using Shared.Services;
 using ShopApi;
 using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
@@ -29,7 +35,7 @@ if (useCors)
 #endregion
 
 builder.Services.AddDbContextFactory<ShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!, "ShopApi");
-builder.Host.SerilogConfiguration();
+builder.Host.AddLogging();
 
 #region Identity & Authentication
 
@@ -52,7 +58,7 @@ builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 
-builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddPagination(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<ShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);

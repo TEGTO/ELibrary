@@ -1,4 +1,4 @@
-﻿using Shared.Domain.Dtos;
+﻿using Pagination;
 
 namespace ShopApi.Features.OrderFeature.Dtos
 {

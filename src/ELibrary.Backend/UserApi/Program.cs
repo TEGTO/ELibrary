@@ -1,11 +1,14 @@
 using Authentication;
 using Authentication.OAuth;
 using Authentication.Token;
+using DatabaseControl;
+using ExceptionHandling;
+using Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Pagination;
 using Shared;
 using Shared.Repositories;
-using Shared.Services;
 using UserApi;
 using UserApi.Services;
 using UserApi.Services.Auth;
@@ -29,7 +32,7 @@ if (useCors)
 #endregion
 
 builder.Services.AddDbContextFactory<UserIdentityDbContext>(builder.Configuration.GetConnectionString(Configuration.AUTH_DATABASE_CONNECTION_STRING)!, "UserApi");
-builder.Host.SerilogConfiguration();
+builder.Host.AddLogging();
 
 #region Identity & Authentication
 
@@ -64,16 +67,14 @@ builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuth
     {
         { OAuthLoginProvider.Google, provider.GetService<GoogleOAuthService>()! },
     });
-builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 
-builder.Services.AddPaginationConfiguration(builder.Configuration);
+builder.Services.AddPagination(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<UserIdentityDbContext>(builder.Configuration);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-builder.Services.AddCachingHelper();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

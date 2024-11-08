@@ -1,9 +1,9 @@
-﻿using LibraryShopEntities.Domain.Dtos.Shop;
+﻿using Caching.Services;
+using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Services;
 using ShopApi.Features.ClientFeature.Command.CreateClient;
 using ShopApi.Features.ClientFeature.Command.GetClient;
 using ShopApi.Features.ClientFeature.Command.UpdateClient;

@@ -1,9 +1,9 @@
 ﻿using Authentication.Identity;
+using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Services;
 using ShopApi.Features.CartFeature.Command.AddBookToCart;
 using ShopApi.Features.CartFeature.Command.DeleteBooksFromCart;
 using ShopApi.Features.CartFeature.Command.GetCart;

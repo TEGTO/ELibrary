@@ -1,50 +1,21 @@
-﻿using EntityFramework.Exceptions.PostgreSQL;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Shared.Configurations;
 using Shared.Helpers;
-using Shared.Middlewares;
 
 namespace Shared
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection ConfigureCustomInvalidModelStateResponseControllers(this IServiceCollection services)
-        {
-            services.AddControllers().ConfigureApiBehaviorOptions(options =>
-            {
-                options.InvalidModelStateResponseFactory = context =>
-                {
-                    var errors = context.ModelState
-                        .Where(x => x.Value.ValidationState == ModelValidationState.Invalid)
-                        .SelectMany(x => x.Value.Errors.Select(e => new ValidationFailure(x.Key, e.ErrorMessage)))
-                        .ToList();
-                    throw new ValidationException(errors);
-                };
-            });
-            return services;
-        }
         public static IServiceCollection AddSharedFluentValidation(this IServiceCollection services, Type type)
         {
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();
-            services.AddValidatorsFromAssemblyContaining<ExceptionMiddleware>();
+            services.AddValidatorsFromAssemblyContaining(typeof(ServiceCollectionExtensions));
             services.AddValidatorsFromAssemblyContaining(type);
             ValidatorOptions.Global.LanguageManager.Enabled = false;
-            return services;
-        }
-        public static IServiceCollection AddPaginationConfiguration(this IServiceCollection services, IConfiguration configuration)
-        {
-            var paginationConf = new PaginationConfiguration(int.Parse(configuration[SharedConfiguration.MAX_PAGINATION_PAGE_SIZE] ?? "0"));
-            services.AddSingleton(paginationConf);
             return services;
         }
         public static IServiceCollection AddApplicationCors(this IServiceCollection services, IConfiguration configuration, string allowSpecificOrigins, bool isDevelopment)
@@ -68,44 +39,10 @@ namespace Shared
             });
             return services;
         }
-        public static IServiceCollection AddDbContextFactory<Context>(
-          this IServiceCollection services,
-          string connectionString,
-          string? migrationAssembly = null,
-          Action<NpgsqlDbContextOptionsBuilder>? dbAdditionalConfig = null,
-          Action<DbContextOptionsBuilder>? additionalConfig = null
-          ) where Context : DbContext
+        public static IServiceCollection AddCustomHttpClientServiceWithResilience(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContextFactory<Context>(options =>
-            {
-                var npgsqlOptions = options.UseNpgsql(connectionString, b =>
-                {
-                    if (!string.IsNullOrEmpty(migrationAssembly))
-                    {
-                        b.MigrationsAssembly(migrationAssembly);
-                    }
-                    dbAdditionalConfig?.Invoke(b);
-                });
-
-                options.UseSnakeCaseNamingConvention();
-                npgsqlOptions.UseExceptionProcessor();
-
-                additionalConfig?.Invoke(options);
-            });
-
-            return services;
-        }
-        public static IServiceCollection AddCachingHelper(this IServiceCollection services)
-        {
-            services.AddSingleton<ICachingHelper, CachingHelper>();
-
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-            });
-
+            services.AddHttpClient(SharedConfiguration.HTTP_CLIENT_RESILIENCE_PIPELINE).AddStandardResilienceHandler();
+            services.AddSingleton<IHttpHelper, HttpHelper>();
             return services;
         }
     }

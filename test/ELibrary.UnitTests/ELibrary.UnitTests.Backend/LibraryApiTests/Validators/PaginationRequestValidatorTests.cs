@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using LibraryApi.Domain.Dtos;
-using Shared.Configurations;
+using Pagination;
 
 namespace LibraryApi.Validators.Tests
 {
@@ -8,12 +8,12 @@ namespace LibraryApi.Validators.Tests
     internal class LibraryFilterRequestValidatorTests
     {
         private LibraryFilterRequestValidator validator;
-        private PaginationConfiguration paginationConfiguration;
+        private PaginationOptions paginationConfiguration;
 
         [SetUp]
         public void SetUp()
         {
-            paginationConfiguration = new PaginationConfiguration(100);
+            paginationConfiguration = new PaginationOptions(100);
             validator = new LibraryFilterRequestValidator(paginationConfiguration);
         }
 

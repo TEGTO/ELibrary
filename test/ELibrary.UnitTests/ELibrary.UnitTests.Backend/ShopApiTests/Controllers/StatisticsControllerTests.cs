@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Helpers;
-using Shared.Services;
 using ShopApi.Features.StatisticsFeature.Domain.Dtos;
 using ShopApi.Features.StatisticsFeature.Domain.Models;
 using ShopApi.Features.StatisticsFeature.Services;

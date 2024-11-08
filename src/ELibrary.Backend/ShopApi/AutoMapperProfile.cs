@@ -4,7 +4,7 @@ using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
-using Shared.Domain.Dtos;
+using Pagination;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.ClientFeature.Dtos;

@@ -1,10 +1,10 @@
-﻿using LibraryShopEntities.Domain.Dtos.Library;
+﻿using Caching.Services;
+using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Services;
 using ShopApi.Features.CartFeature.Command.AddBookToCart;
 using ShopApi.Features.CartFeature.Command.DeleteBooksFromCart;
 using ShopApi.Features.CartFeature.Command.GetCart;

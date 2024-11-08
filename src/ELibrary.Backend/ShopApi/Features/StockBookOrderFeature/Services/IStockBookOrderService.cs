@@ -1,5 +1,5 @@
 ﻿using LibraryShopEntities.Domain.Entities.Shop;
-using Shared.Domain.Dtos;
+using Pagination;
 
 namespace ShopApi.Features.StockBookOrderFeature.Services
 {

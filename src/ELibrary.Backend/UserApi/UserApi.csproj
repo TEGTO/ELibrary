@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authentication\Authentication.csproj" />
+    <ProjectReference Include="..\DatabaseControl\DatabaseControl.csproj" />
+    <ProjectReference Include="..\Pagination\Pagination.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
     <ProjectReference Include="..\UserEntities\UserEntities.csproj" />
   </ItemGroup>

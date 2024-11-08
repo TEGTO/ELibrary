@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dtos.Book;
 using LibraryApi.Services;
@@ -7,8 +9,6 @@ using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Helpers;
-using Shared.Services;
 
 namespace LibraryApi.Controllers
 {

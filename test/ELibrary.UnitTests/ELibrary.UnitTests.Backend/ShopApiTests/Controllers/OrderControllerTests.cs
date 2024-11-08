@@ -1,10 +1,10 @@
-﻿using LibraryShopEntities.Domain.Dtos.Shop;
+﻿using Caching.Services;
+using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Services;
 using ShopApi.Features.OrderFeature.Command.CreateOrder;
 using ShopApi.Features.OrderFeature.Command.GetOrderAmount;
 using ShopApi.Features.OrderFeature.Command.GetOrders;

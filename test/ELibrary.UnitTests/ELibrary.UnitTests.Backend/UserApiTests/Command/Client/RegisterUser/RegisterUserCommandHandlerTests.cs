@@ -1,8 +1,8 @@
 ﻿using Authentication.Models;
 using AutoMapper;
+using ExceptionHandling;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using Shared.Exceptions;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
 using UserApi.Services;

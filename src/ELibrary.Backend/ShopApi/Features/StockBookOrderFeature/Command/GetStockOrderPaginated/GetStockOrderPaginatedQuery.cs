@@ -1,6 +1,6 @@
 ﻿using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
-using Shared.Domain.Dtos;
+using Pagination;
 
 namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderPaginated
 {

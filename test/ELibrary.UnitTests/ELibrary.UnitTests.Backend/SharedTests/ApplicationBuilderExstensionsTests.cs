@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Serilog;
-using Shared.Repositories;
 
 namespace Shared.Tests
 {
@@ -17,7 +15,6 @@ namespace Shared.Tests
         private Mock<IServiceScopeFactory> serviceScopeFactoryMock;
         private Mock<IConfiguration> configurationMock;
         private Mock<ILogger> loggerMock;
-        private Mock<IDatabaseRepository<DbContext>> repositoryMock;
         private CancellationToken cancellationToken;
 
         [SetUp]
@@ -29,7 +26,6 @@ namespace Shared.Tests
             serviceScopeFactoryMock = new Mock<IServiceScopeFactory>();
             configurationMock = new Mock<IConfiguration>();
             loggerMock = new Mock<ILogger>();
-            repositoryMock = new Mock<IDatabaseRepository<DbContext>>();
 
             serviceScopeFactoryMock.Setup(factory => factory.CreateScope()).Returns(serviceScopeMock.Object);
             serviceScopeMock.Setup(scope => scope.ServiceProvider).Returns(serviceProviderMock.Object);
@@ -37,20 +33,10 @@ namespace Shared.Tests
             serviceProviderMock.Setup(provider => provider.GetService(typeof(IServiceScopeFactory))).Returns(serviceScopeFactoryMock.Object);
             serviceProviderMock.Setup(provider => provider.GetService(typeof(IConfiguration))).Returns(configurationMock.Object);
             serviceProviderMock.Setup(provider => provider.GetService(typeof(ILogger))).Returns(loggerMock.Object);
-            serviceProviderMock.Setup(provider => provider.GetService(typeof(IDatabaseRepository<DbContext>))).Returns(repositoryMock.Object);
 
             appBuilderMock.Setup(app => app.ApplicationServices).Returns(serviceProviderMock.Object);
 
             cancellationToken = new CancellationToken();
-        }
-
-        [Test]
-        public async Task ConfigureDatabaseAsyncShouldApplyMigrationsWhenEFCreateDatabaseIsTrue()
-        {
-            // Act
-            await appBuilderMock.Object.ConfigureDatabaseAsync<DbContext>(cancellationToken);
-            // Assert
-            repositoryMock.Verify(repo => repo.MigrateDatabaseAsync(cancellationToken), Times.Once);
         }
     }
 }

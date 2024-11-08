@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using LibraryApi.Domain.Dto.Genre;
 using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
@@ -8,8 +10,6 @@ using LibraryShopEntities.Domain.Entities.Library;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Helpers;
-using Shared.Services;
 using System.Security.Claims;
 
 namespace LibraryApi.Controllers.Tests

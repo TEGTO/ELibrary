@@ -1,11 +1,11 @@
 ﻿using Authentication.Token;
 using AutoMapper;
+using Caching.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using Shared.Helpers;
 using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.IntegrationTests.IntegrationTests;
 using ShopApi.Services;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shared.Configurations;
+using Pagination;
 using Testcontainers.PostgreSql;
 using UserEntities.Data;
 
@@ -80,7 +80,7 @@ namespace UserApi.IntegrationTests
                 { JwtConfiguration.JWT_SETTINGS_ISSUER, "https://token.issuer.example.com" },
                 { JwtConfiguration.JWT_SETTINGS_EXPIRY_IN_MINUTES, "30" },
                 { JwtConfiguration.JWT_SETTINGS_AUDIENCE, "https://api.example.com" },
-                { SharedConfiguration.MAX_PAGINATION_PAGE_SIZE, "99" },
+                { PaginationConfiguration.MAX_PAGINATION_PAGE_SIZE, "99" },
             });
             return configurationBuilder.Build();
         }

@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using LibraryShopEntities.Domain.Dtos.SharedRequests;
-using Shared.Configurations;
+using Pagination;
 
 namespace LibraryApi.Validators
 {
     public class GetByIdsRequestValidator : AbstractValidator<GetByIdsRequest>
     {
-        public GetByIdsRequestValidator(PaginationConfiguration paginationConfiguration)
+        public GetByIdsRequestValidator(PaginationOptions paginationConfiguration)
         {
             RuleFor(x => x.Ids).NotNull().Must(x => x != null && x.Count <= paginationConfiguration.MaxPaginationPageSize);
         }

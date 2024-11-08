@@ -1,9 +1,9 @@
 ﻿using Authentication.Identity;
+using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Services;
 using ShopApi.Features.ClientFeature.Command.CreateClient;
 using ShopApi.Features.ClientFeature.Command.GetClient;
 using ShopApi.Features.ClientFeature.Command.UpdateClient;

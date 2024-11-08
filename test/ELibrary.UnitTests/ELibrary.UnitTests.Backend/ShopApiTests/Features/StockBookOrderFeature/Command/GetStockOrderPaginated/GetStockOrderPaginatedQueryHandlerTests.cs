@@ -3,7 +3,7 @@ using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Moq;
-using Shared.Domain.Dtos;
+using Pagination;
 using ShopApi.Features.StockBookOrderFeature.Services;
 using ShopApi.Services;
 

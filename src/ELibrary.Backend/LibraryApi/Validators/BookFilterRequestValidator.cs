@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
 using LibraryApi.Domain.Dtos.Book;
-using Shared.Configurations;
-using Shared.Validators;
+using Pagination;
 
 namespace LibraryApi.Validators
 {
     public class BookFilterRequestValidator : AbstractValidator<BookFilterRequest>
     {
-        public BookFilterRequestValidator(PaginationConfiguration paginationConfiguration)
+        public BookFilterRequestValidator(PaginationOptions paginationConfiguration)
         {
             Include(new PaginationRequestValidator(paginationConfiguration));
             RuleFor(x => x.ContainsName).NotNull().MaximumLength(256);

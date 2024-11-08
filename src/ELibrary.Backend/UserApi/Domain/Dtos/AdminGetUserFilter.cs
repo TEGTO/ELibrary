@@ -1,4 +1,4 @@
-﻿using Shared.Domain.Dtos;
+﻿using Pagination;
 
 namespace UserApi.Domain.Dtos
 {

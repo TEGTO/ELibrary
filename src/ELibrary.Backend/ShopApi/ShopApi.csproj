@@ -31,8 +31,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Authentication\Authentication.csproj" />
+		<ProjectReference Include="..\Caching\Caching.csproj" />
+		<ProjectReference Include="..\DatabaseControl\DatabaseControl.csproj" />
 		<ProjectReference Include="..\EventSourcing\EventSourcing.csproj" />
 		<ProjectReference Include="..\LibraryShopEntities\LibraryShopEntities.csproj" />
+		<ProjectReference Include="..\Pagination\Pagination.csproj" />
 		<ProjectReference Include="..\Shared\Shared.csproj" />
 	</ItemGroup>
 
