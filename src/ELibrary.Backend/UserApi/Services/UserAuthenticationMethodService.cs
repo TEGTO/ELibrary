@@ -17,8 +17,7 @@ namespace UserApi.Services
         public async Task<List<AuthenticationMethod>> GetUserAuthenticationMethodsAsync(User user, CancellationToken cancellationToken)
         {
             var queryable = await databaseRepository.GetQueryableAsync<UserAuthenticationMethod>(cancellationToken);
-            return await queryable.Where(x => x.UserId == user.Id)
-                .Select(x => x.AuthenticationMethod).ToListAsync();
+            return await queryable.Where(x => x.UserId == user.Id).Select(x => x.AuthenticationMethod).ToListAsync();
         }
         public async Task SetUserAuthenticationMethodAsync(User user, AuthenticationMethod method, CancellationToken cancellationToken)
         {

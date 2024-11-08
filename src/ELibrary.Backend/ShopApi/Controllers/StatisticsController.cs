@@ -45,7 +45,7 @@ namespace ShopApi.Controllers
 
             if (cachedResponse == null)
             {
-                var getStatistics = mapper.Map<GetShopStatistics>(request);
+                var getStatistics = mapper.Map<GetShopStatisticsFilter>(request);
                 var response = await statisticsService.GetStatisticsAsync(getStatistics, cancellationToken);
                 cachedResponse = mapper.Map<ShopStatisticsResponse>(response);
 

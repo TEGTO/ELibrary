@@ -19,14 +19,10 @@ namespace ShopApi.Features.ClientFeature.Command.UpdateClient
 
         public async Task<ClientResponse> Handle(UpdateClientForUserCommand command, CancellationToken cancellationToken)
         {
-            var client = await clientService.GetClientByUserIdAsync(command.UserId, cancellationToken);
+            var client = mapper.Map<Client>(command.Request);
 
-            if (client == null)
-            {
-                throw new InvalidOperationException("Client doesn't exist!");
-            }
+            client.UserId = command.UserId;
 
-            client.Copy(mapper.Map<Client>(command.Request));
             var updatedClient = await clientService.UpdateClientAsync(client, cancellationToken);
             return mapper.Map<ClientResponse>(updatedClient);
         }

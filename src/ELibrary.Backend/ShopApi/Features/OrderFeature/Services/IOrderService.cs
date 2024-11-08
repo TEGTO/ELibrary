@@ -1,5 +1,5 @@
 ﻿using LibraryShopEntities.Domain.Entities.Shop;
-using ShopApi.Features.OrderFeature.Dtos;
+using LibraryShopEntities.Filters;
 
 namespace ShopApi.Features.OrderFeature.Services
 {

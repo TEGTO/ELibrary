@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using LibraryApi.Domain.Dtos;
+using LibraryShopEntities.Filters;
 using Pagination;
 
 namespace LibraryApi.Validators.Tests

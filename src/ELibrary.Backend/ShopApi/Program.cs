@@ -5,6 +5,7 @@ using DatabaseControl;
 using EventSourcing;
 using ExceptionHandling;
 using LibraryShopEntities.Data;
+using LibraryShopEntities.Repositories.Shop;
 using Logging;
 using Microsoft.EntityFrameworkCore;
 using Pagination;
@@ -15,6 +16,7 @@ using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Services;
+using ShopApi.Features.StatisticsFeature.Repository;
 using ShopApi.Features.StatisticsFeature.Services;
 using ShopApi.Features.StockBookOrderFeature.Models;
 using ShopApi.Features.StockBookOrderFeature.Services;
@@ -45,9 +47,15 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 #region Project Services 
 
-builder.Services.AddSingleton<IClientService, ClientService>();
+builder.Services.AddSingleton<ICartRepository, CartRepository>();
+builder.Services.AddSingleton<IClientRepository, ClientRepository>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddSingleton<IStatisticsRepository, StatisticsRepository>();
+builder.Services.AddSingleton<IStockBookOrderRepository, StockBookOrderRepository>();
+
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddSingleton<IClientService, ClientService>();
 builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();

@@ -1,16 +1,15 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Repositories.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
 
 namespace ShopApi.Features.CartFeature.Services
 {
     public class CartService : ICartService
     {
-        private readonly IDatabaseRepository<ShopDbContext> repository;
+        private readonly ICartRepository repository;
         private readonly int maxBookAmount;
 
-        public CartService(IDatabaseRepository<ShopDbContext> repository, IConfiguration configuration)
+        public CartService(ICartRepository repository, IConfiguration configuration)
         {
             this.repository = repository;
             maxBookAmount = int.Parse(configuration[Configuration.SHOP_MAX_ORDER_AMOUNT]!);
@@ -20,116 +19,68 @@ namespace ShopApi.Features.CartFeature.Services
 
         public async Task<Cart?> GetCartByUserIdAsync(string userId, bool includeBooks, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            if (includeBooks)
-            {
-                return await GetQueryableCartWithBook(queryable).FirstOrDefaultAsync(x => x.UserId == userId);
-            }
-            else
-            {
-                return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
-            }
+            return await repository.GetCartByUserIdAsync(userId, includeBooks, cancellationToken);
         }
         public async Task<int> GetInCartAmountAsync(Cart cart, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            return await queryable.Where(x => x.Id == cart.Id).SumAsync(x => x.Books.Sum(y => y.BookAmount));
+            var cartInDb = await repository.GetCartByUserIdAsync(cart.UserId, includeBooks: true, cancellationToken);
+            return cartInDb?.Books.Sum(b => b.BookAmount) ?? 0;
         }
         public async Task<Cart> CreateCartAsync(string userId, CancellationToken cancellationToken)
         {
-            var cart = new Cart() { UserId = userId };
-            return await repository.AddAsync(cart, cancellationToken);
+            var cart = new Cart { UserId = userId };
+            return await repository.AddCartAsync(cart, cancellationToken);
         }
         public async Task<CartBook> AddCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            var cartInDb = await queryable
-                        .Include(x => x.Books)
-                        .FirstOrDefaultAsync(x => x.Id == cart.Id);
-
-            if (cartInDb == null)
-            {
-                throw new InvalidOperationException("Cart is not found.");
-            }
+            var cartInDb = await repository.GetCartByUserIdAsync(cart.UserId, includeBooks: true, cancellationToken);
+            if (cartInDb == null) throw new InvalidOperationException("Cart is not found.");
 
             var existingCartBook = cartInDb.Books.Find(cb => cb.BookId == cartBook.BookId);
 
             if (existingCartBook == null)
             {
                 cartInDb.Books.Add(cartBook);
-                await repository.UpdateAsync(cartInDb, cancellationToken);
+                await repository.UpdateCartAsync(cartInDb, cancellationToken);
             }
             else if (existingCartBook.BookAmount + cartBook.BookAmount <= maxBookAmount)
             {
                 existingCartBook.BookAmount += cartBook.BookAmount;
-                await repository.UpdateAsync(existingCartBook, cancellationToken);
+                await repository.UpdateCartBookAsync(existingCartBook, cancellationToken);
             }
 
-            // Refetch the new CartBook including the related entities
-            var newCartBook = await GetQueryableCartWithBook(queryable)
-                .SelectMany(x => x.Books)
-                .FirstOrDefaultAsync(cb => cb.BookId == cartBook.BookId && cb.CartId == cart.Id, cancellationToken);
-
-            return newCartBook!;
+            return await repository.GetCartBookByBookIdAsync(cart.Id, cartBook.BookId, cancellationToken)
+            ?? throw new InvalidOperationException("Failed to add or update cart book.");
         }
         public async Task<CartBook> UpdateCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<CartBook>(cancellationToken);
-            var cartBookInDb = await queryable
-                .AsSplitQuery()
-                .FirstOrDefaultAsync(x => x.Id == cartBook.Id && x.CartId == cart.Id, cancellationToken);
-
-            if (cartBookInDb == null)
-            {
-                throw new InvalidOperationException("CartBook is not found or does not belong to the specified cart.");
-            }
+            var cartBookInDb = await repository.GetCartBookByIdAsync(cart.Id, cartBook.Id, cancellationToken);
+            if (cartBookInDb == null) throw new InvalidOperationException("CartBook is not found or does not belong to the specified cart.");
 
             cartBookInDb.Copy(cartBook);
-            await repository.UpdateAsync(cartBookInDb, cancellationToken);
-            return cartBookInDb;
+            return await repository.UpdateCartBookAsync(cartBookInDb, cancellationToken);
         }
         public async Task<Cart> DeleteBooksFromCartAsync(Cart cart, int[] bookIds, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            var cartInDb = await GetQueryableCartWithBook(queryable)
-                                          .FirstOrDefaultAsync(x => x.Id == cart.Id, cancellationToken);
+            var cartInDb = await repository.GetCartByUserIdAsync(cart.UserId, includeBooks: true, cancellationToken);
+            if (cartInDb == null || cartInDb.Books == null || !cartInDb.Books.Any()) return cartInDb;
 
-            if (cartInDb == null || cartInDb.Books == null || !cartInDb.Books.Any())
+            var cartBooksToDelete = cartInDb.Books.Where(b => bookIds.Contains(b.BookId)).ToList();
+            if (cartBooksToDelete.Any())
             {
-                return cartInDb;
-            }
-
-            var cartBooksInDB = cartInDb.Books.Where(x => bookIds.Contains(x.BookId)).ToList();
-
-            if (cartBooksInDB.Any())
-            {
-                foreach (var cartBook in cartBooksInDB)
+                foreach (var cartBook in cartBooksToDelete)
                 {
-                    await repository.DeleteAsync(cartBook, cancellationToken);
+                    await repository.DeleteCartBookAsync(cartBook, cancellationToken);
                     cartInDb.Books.Remove(cartBook);
                 }
-
-                await repository.UpdateAsync(cartInDb, cancellationToken);
             }
 
+            await repository.UpdateCartAsync(cartInDb, cancellationToken);
             return cartInDb;
         }
         public async Task<bool> CheckBookCartAsync(Cart cart, string id, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
-            return await queryable.AnyAsync(x => x.Id == cart.Id && x.Books.Any(y => y.Id == id));
-        }
-
-        #endregion
-
-        #region Private Helpers
-
-        private IQueryable<Cart> GetQueryableCartWithBook(IQueryable<Cart> queryable)
-        {
-            return queryable
-                 .AsNoTracking()
-                 .AsSplitQuery()
-                     .Include(x => x.Books);
+            return await repository.CheckBookInCartAsync(cart.Id, id, cancellationToken);
         }
 
         #endregion

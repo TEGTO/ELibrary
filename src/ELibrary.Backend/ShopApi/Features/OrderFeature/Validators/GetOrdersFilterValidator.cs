@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using LibraryShopEntities.Filters;
 using Pagination;
-using ShopApi.Features.OrderFeature.Dtos;
 
 namespace ShopApi.Features.OrderFeature.Validators
 {

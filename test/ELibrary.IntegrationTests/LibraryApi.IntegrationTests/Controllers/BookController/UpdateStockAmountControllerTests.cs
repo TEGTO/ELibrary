@@ -2,11 +2,11 @@
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dto.Genre;
 using LibraryApi.Domain.Dto.Publisher;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using System.Net;
 using System.Text;
 using System.Text.Json;

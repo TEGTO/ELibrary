@@ -1,6 +1,6 @@
 ﻿using Pagination;
 
-namespace LibraryApi.Domain.Dtos
+namespace LibraryShopEntities.Filters
 {
     public class LibraryFilterRequest : PaginationRequest
     {

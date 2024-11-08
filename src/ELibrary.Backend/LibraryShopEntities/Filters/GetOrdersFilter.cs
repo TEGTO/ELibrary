@@ -1,6 +1,6 @@
 ﻿using Pagination;
 
-namespace ShopApi.Features.OrderFeature.Dtos
+namespace LibraryShopEntities.Filters
 {
     public class GetOrdersFilter : PaginationRequest
     {

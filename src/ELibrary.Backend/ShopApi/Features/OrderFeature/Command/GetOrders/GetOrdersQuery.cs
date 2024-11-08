@@ -1,6 +1,6 @@
 ﻿using LibraryShopEntities.Domain.Dtos.Shop;
+using LibraryShopEntities.Filters;
 using MediatR;
-using ShopApi.Features.OrderFeature.Dtos;
 
 namespace ShopApi.Features.OrderFeature.Command.GetOrders
 {

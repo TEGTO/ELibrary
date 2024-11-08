@@ -1,6 +1,6 @@
 ﻿using LibraryShopEntities.Domain.Entities.Library;
 
-namespace LibraryApi.Domain.Dtos.Book
+namespace LibraryShopEntities.Filters
 {
     public enum BookSorting
     {

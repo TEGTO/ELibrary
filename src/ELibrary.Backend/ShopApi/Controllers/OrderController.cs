@@ -1,6 +1,7 @@
 ﻿using Authentication.Identity;
 using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
+using LibraryShopEntities.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

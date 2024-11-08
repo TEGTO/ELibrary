@@ -4,6 +4,7 @@ using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Filters;
 using Pagination;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.CartFeature.Dtos;
@@ -50,7 +51,7 @@ namespace ShopApi
             CreateMap<StockBookChange, StockBookChangeResponse>();
 
             CreateMap<StatisticsBookRequest, StatisticsBook>();
-            CreateMap<GetShopStatisticsRequest, GetShopStatistics>();
+            CreateMap<GetShopStatisticsRequest, GetShopStatisticsFilter>();
             CreateMap<ShopStatistics, ShopStatisticsResponse>();
 
             CreateMap<PaginationRequest, GetOrdersFilter>();

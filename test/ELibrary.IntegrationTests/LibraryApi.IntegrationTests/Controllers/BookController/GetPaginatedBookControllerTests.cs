@@ -2,10 +2,10 @@
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Domain.Dto.Genre;
 using LibraryApi.Domain.Dto.Publisher;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 
 namespace LibraryApi.IntegrationTests.Controllers.BookController
 {

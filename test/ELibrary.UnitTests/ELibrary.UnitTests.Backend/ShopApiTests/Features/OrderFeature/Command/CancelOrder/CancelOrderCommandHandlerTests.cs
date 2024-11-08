@@ -7,8 +7,8 @@ using ShopApi.Features.StockBookOrderFeature.Services;
 
 namespace ShopApi.Features.OrderFeature.Command.CancelOrder.Tests
 {
-    [TestFixture()]
-    public class CancelOrderCommandHandlerTests
+    [TestFixture]
+    internal class CancelOrderCommandHandlerTests
     {
         private Mock<IOrderService> mockOrderService;
         private Mock<IClientService> mockClientService;
@@ -64,20 +64,7 @@ namespace ShopApi.Features.OrderFeature.Command.CancelOrder.Tests
                 .ReturnsAsync((Order)null);
             // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("Order not found."));
-        }
-        [Test]
-        public void Handle_OrderNotInProcessingStatus_ThrowsInvalidOperationException()
-        {
-            // Arrange
-            var command = new CancelOrderCommand("user123", 1);
-            var client = new Client { Id = "client123", UserId = "user123" };
-            var order = new Order { Id = 1, ClientId = "client123", OrderStatus = OrderStatus.Completed };
-            mockClientService.Setup(s => s.GetClientByUserIdAsync(command.UserId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
-            mockOrderService.Setup(s => s.GetOrderByIdAsync(command.OrderId, It.IsAny<CancellationToken>())).ReturnsAsync(order);
-            // Act & Assert
-            var ex = Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("It is not possible to client to cancel an order with this order status."));
+            Assert.That(ex.Message, Is.EqualTo("Order is not found."));
         }
     }
 }

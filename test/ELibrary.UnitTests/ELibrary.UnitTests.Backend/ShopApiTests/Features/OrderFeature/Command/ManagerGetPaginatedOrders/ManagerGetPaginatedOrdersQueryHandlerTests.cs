@@ -2,8 +2,8 @@
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Filters;
 using Moq;
-using ShopApi.Features.OrderFeature.Dtos;
 using ShopApi.Features.OrderFeature.Services;
 using ShopApi.Services;
 

@@ -1,5 +1,5 @@
-﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Domain.Entities.Library;
+﻿using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using System.Net;
 using System.Text;
 using System.Text.Json;

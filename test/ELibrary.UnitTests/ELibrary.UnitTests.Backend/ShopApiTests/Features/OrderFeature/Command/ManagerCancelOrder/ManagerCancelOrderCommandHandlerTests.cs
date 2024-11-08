@@ -46,7 +46,7 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerCancelOrder.Tests
                 .ReturnsAsync((Order)null);
             // Act & Assert
             var ex = Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None));
-            Assert.That(ex.Message, Is.EqualTo("Order not found."));
+            Assert.That(ex.Message, Is.EqualTo("Order is not found."));
             orderServiceMock.Verify(x => x.UpdateOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()), Times.Never);
             stockBookOrderServiceMock.Verify(x => x.AddStockBookOrderAsyncFromCanceledOrderAsync(It.IsAny<Order>(), It.IsAny<StockBookOrderType>(), It.IsAny<CancellationToken>()), Times.Never);
         }

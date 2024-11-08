@@ -1,5 +1,5 @@
-﻿using MediatR;
-using ShopApi.Features.OrderFeature.Dtos;
+﻿using LibraryShopEntities.Filters;
+using MediatR;
 
 namespace ShopApi.Features.OrderFeature.Command.GetOrderAmount
 {

@@ -1,187 +1,113 @@
-﻿using EventSourcing;
-using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Shop;
-using MockQueryable.Moq;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Repositories.Shop;
 using Moq;
-using Pagination;
-using Shared.Repositories;
-using ShopApi.Features.StockBookOrderFeature.Models;
+using ShopApi.Features.ClientFeature.Services;
 
 namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
 {
     [TestFixture]
-    public class StockBookOrderServiceTests
+    internal class StockBookOrderServiceTests
     {
-        private Mock<IDatabaseRepository<ShopDbContext>> repositoryMock;
-        private Mock<IEventDispatcher> eventDispatcherMock;
-        private StockBookOrderService stockBookOrderService;
+        private Mock<IClientRepository> repositoryMock;
+        private ClientService service;
         private CancellationToken cancellationToken;
 
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<ShopDbContext>>();
-            eventDispatcherMock = new Mock<IEventDispatcher>();
-            stockBookOrderService = new StockBookOrderService(repositoryMock.Object, eventDispatcherMock.Object);
-            cancellationToken = CancellationToken.None;
-        }
-        private IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class
-        {
-            return data.AsQueryable().BuildMock();
+            repositoryMock = new Mock<IClientRepository>();
+            service = new ClientService(repositoryMock.Object);
+            cancellationToken = new CancellationToken();
         }
 
         [Test]
-        public async Task AddStockBookOrderAsync_AddsStockBookOrderAndDispatchesEvent()
+        public async Task GetClientByUserIdAsync_ValidUserId_ReturnsClient()
         {
             // Arrange
-            var stockBookOrder = new StockBookOrder();
-            var newStockBookOrder = new StockBookOrder();
-            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
-            repositoryMock.Setup(r => r.AddAsync(stockBookOrder, cancellationToken)).ReturnsAsync(newStockBookOrder);
-            eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
+            var userId = "user123";
+            var client = new Client { Id = "client1", UserId = userId };
+            repositoryMock.Setup(repo => repo.GetClientByUserIdAsync(userId, cancellationToken)).ReturnsAsync(client);
             // Act
-            var result = await stockBookOrderService.AddStockBookOrderAsync(stockBookOrder, cancellationToken);
+            var result = await service.GetClientByUserIdAsync(userId, cancellationToken);
             // Assert
-            Assert.That(result.Id, Is.EqualTo(newStockBookOrder.Id));
-            repositoryMock.Verify(r => r.AddAsync(stockBookOrder, cancellationToken), Times.Once);
-            eventDispatcherMock.Verify(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.That(result!.Id, Is.EqualTo(client.Id));
+            repositoryMock.Verify(repo => repo.GetClientByUserIdAsync(userId, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task AddStockBookOrderAsyncFromOrderAsync_CreatesStockBookOrderWithNegativeChangeAmount()
+        public async Task GetClientByUserIdAsync_InvalidUserId_ReturnsNull()
         {
             // Arrange
-            var order = CreateOrder();
-            var stockBookOrder = new StockBookOrder();
-            repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(stockBookOrder);
-            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
-            eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
+            var userId = "nonexistent_user";
+            repositoryMock.Setup(repo => repo.GetClientByUserIdAsync(userId, cancellationToken)).ReturnsAsync((Client?)null);
             // Act
-            await stockBookOrderService.AddStockBookOrderAsyncFromOrderAsync(order, StockBookOrderType.ClientOrder, cancellationToken);
+            var result = await service.GetClientByUserIdAsync(userId, cancellationToken);
             // Assert
-            repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.StockBookChanges[0].ChangeAmount == -order.OrderAmount), cancellationToken), Times.Once);
-            repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.Type == StockBookOrderType.ClientOrder), cancellationToken), Times.Once);
+            Assert.IsNull(result);
+            repositoryMock.Verify(repo => repo.GetClientByUserIdAsync(userId, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task AddStockBookOrderAsyncFromCanceledOrderAsync_CreatesStockBookOrderWithPositiveChangeAmount()
+        public async Task CreateClientAsync_ValidClient_CreatesClient()
         {
             // Arrange
-            var order = CreateOrder();
-            var stockBookOrder = new StockBookOrder();
-            repositoryMock.Setup(r => r.AddAsync(It.IsAny<StockBookOrder>(), cancellationToken)).ReturnsAsync(stockBookOrder);
-            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
-            eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
+            var client = new Client { Id = "client1", UserId = "user123" };
+            repositoryMock.Setup(repo => repo.CreateClientAsync(client, cancellationToken)).ReturnsAsync(client);
             // Act
-            await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(order, StockBookOrderType.ClientOrderCancel, cancellationToken);
+            var result = await service.CreateClientAsync(client, cancellationToken);
             // Assert
-            repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.StockBookChanges[0].ChangeAmount == order.OrderAmount), cancellationToken), Times.Once);
-            repositoryMock.Verify(r => r.AddAsync(It.Is<StockBookOrder>(s => s.Type == StockBookOrderType.ClientOrderCancel), cancellationToken), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.That(result.Id, Is.EqualTo(client.Id));
+            repositoryMock.Verify(repo => repo.CreateClientAsync(client, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task AddStockBookOrderAsync_CalculatesTotalChangeAmount()
+        public async Task UpdateClientAsync_ExistingClient_UpdatesClient()
         {
             // Arrange
-            var stockBookOrder = new StockBookOrder
-            {
-                StockBookChanges = new List<StockBookChange>
-                {
-                    new StockBookChange { ChangeAmount = 5 },
-                    new StockBookChange { ChangeAmount = 10 }
-                }
-            };
-            var queryable = new List<StockBookOrder>() { stockBookOrder }.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
-            repositoryMock.Setup(r => r.AddAsync(stockBookOrder, cancellationToken)).ReturnsAsync(stockBookOrder);
-            eventDispatcherMock.Setup(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken)).Returns(Task.CompletedTask);
+            var client = new Client { Id = "client1", UserId = "user123", Name = "Updated Name" };
+            var clientInDb = new Client { Id = "client1", UserId = "user123", Name = "Original Name" };
+            repositoryMock.Setup(repo => repo.GetClientByUserIdAsync(client.UserId, cancellationToken)).ReturnsAsync(clientInDb);
+            repositoryMock.Setup(repo => repo.UpdateClientAsync(clientInDb, cancellationToken)).ReturnsAsync(clientInDb);
             // Act
-            var result = await stockBookOrderService.AddStockBookOrderAsync(stockBookOrder, cancellationToken);
+            var result = await service.UpdateClientAsync(client, cancellationToken);
             // Assert
-            Assert.That(result.TotalChangeAmount, Is.EqualTo(15));
-            repositoryMock.Verify(r => r.AddAsync(stockBookOrder, cancellationToken), Times.Once);
-            eventDispatcherMock.Verify(e => e.DispatchAsync(It.IsAny<BookStockAmountUpdatedEvent>(), cancellationToken), Times.Once);
+            Assert.That(clientInDb.Name, Is.EqualTo(client.Name));
+            repositoryMock.Verify(repo => repo.GetClientByUserIdAsync(client.UserId, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.UpdateClientAsync(clientInDb, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetStockBookOrderByIdAsync_WhenOrderExists_ReturnsOrder()
+        public void UpdateClientAsync_NonexistentClient_ThrowsInvalidOperationException()
         {
             // Arrange
-            var stockBookOrder = new StockBookOrder
-            {
-                Id = 1,
-                ClientId = "test-client",
-                StockBookChanges = new List<StockBookChange> { new StockBookChange { BookId = 1, ChangeAmount = 5 } }
-            };
-            var queryable = new List<StockBookOrder> { stockBookOrder }.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
-            // Act
-            var result = await stockBookOrderService.GetStockBookOrderByIdAsync(1, cancellationToken);
-            // Assert
-            Assert.That(result, Is.EqualTo(stockBookOrder));
-            Assert.That(result?.ClientId, Is.EqualTo("test-client"));
-            repositoryMock.Verify(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken), Times.Once);
+            var client = new Client { Id = "nonexistent_client", UserId = "user123" };
+            repositoryMock.Setup(repo => repo.GetClientByUserIdAsync(client.UserId, cancellationToken)).ReturnsAsync((Client?)null);
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await service.UpdateClientAsync(client, cancellationToken));
+            repositoryMock.Verify(repo => repo.GetClientByUserIdAsync(client.UserId, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.UpdateClientAsync(It.IsAny<Client>(), It.IsAny<CancellationToken>()), Times.Never);
         }
         [Test]
-        public async Task GetStockBookAmountAsync_WhenCalled_ReturnsCorrectCount()
+        public async Task DeleteClientAsync_ExistingClient_DeletesClient()
         {
             // Arrange
-            var stockBookOrders = new List<StockBookOrder>
-            {
-                new StockBookOrder { Id = 1 },
-                new StockBookOrder { Id = 2 }
-            };
-            var queryable = stockBookOrders.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
+            var client = new Client { Id = "client1", UserId = "user123" };
+            repositoryMock.Setup(repo => repo.GetClientByUserIdAsync(client.Id, cancellationToken)).ReturnsAsync(client);
             // Act
-            var result = await stockBookOrderService.GetStockBookAmountAsync(cancellationToken);
+            await service.DeleteClientAsync(client.Id, cancellationToken);
             // Assert
-            Assert.That(result, Is.EqualTo(2));
-            repositoryMock.Verify(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.GetClientByUserIdAsync(client.Id, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.DeleteClientAsync(client, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetStockBookAmountAsync_WhenNoOrders_ReturnsZero()
+        public async Task DeleteClientAsync_NonexistentClient_DoesNothing()
         {
             // Arrange
-            var stockBookOrders = new List<StockBookOrder>();
-            var queryable = stockBookOrders.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
+            var clientId = "nonexistent_client";
+            repositoryMock.Setup(repo => repo.GetClientByUserIdAsync(clientId, cancellationToken)).ReturnsAsync((Client?)null);
             // Act
-            var result = await stockBookOrderService.GetStockBookAmountAsync(cancellationToken);
+            await service.DeleteClientAsync(clientId, cancellationToken);
             // Assert
-            Assert.That(result, Is.EqualTo(0));
-            repositoryMock.Verify(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken), Times.Once);
-        }
-        [Test]
-        public async Task GetPaginatedStockBookOrdersAsync_ReturnsPaginatedOrders()
-        {
-            // Arrange
-            var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 2 };
-            var stockBookOrders = new List<StockBookOrder>
-            {
-                new StockBookOrder { Id = 1 },
-                new StockBookOrder { Id = 2 },
-                new StockBookOrder { Id = 3 }
-            };
-            var queryable = stockBookOrders.AsQueryable().BuildMock();
-            repositoryMock.Setup(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken)).ReturnsAsync(queryable);
-            // Act
-            var result = await stockBookOrderService.GetPaginatedStockBookOrdersAsync(paginationRequest, cancellationToken);
-            // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            repositoryMock.Verify(r => r.GetQueryableAsync<StockBookOrder>(cancellationToken), Times.Once);
-        }
-
-        private Order CreateOrder()
-        {
-            return new Order
-            {
-                OrderAmount = 5,
-                ClientId = "test-client",
-                OrderBooks = new List<OrderBook>
-                {
-                    new OrderBook { BookId = 1, BookAmount = 5 }
-                }
-            };
+            repositoryMock.Verify(repo => repo.GetClientByUserIdAsync(clientId, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.DeleteClientAsync(It.IsAny<Client>(), cancellationToken), Times.Never);
         }
     }
 }

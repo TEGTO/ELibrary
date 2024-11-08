@@ -1,68 +1,51 @@
-﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Data;
-using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
+﻿using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
+using LibraryShopEntities.Repositories.Library;
 
 namespace LibraryApi.Services
 {
     public class LibraryEntityService<TEntity> : ILibraryEntityService<TEntity> where TEntity : BaseLibraryEntity
     {
-        protected readonly IDatabaseRepository<LibraryDbContext> repository;
+        protected readonly ILibraryEntityRepository<TEntity> repository;
 
-        public LibraryEntityService(IDatabaseRepository<LibraryDbContext> repository)
+        public LibraryEntityService(ILibraryEntityRepository<TEntity> repository)
         {
             this.repository = repository;
         }
 
         public virtual async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
-
-            return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return await repository.GetByIdAsync(id, cancellationToken);
         }
         public virtual async Task<IEnumerable<TEntity>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
-
-            return await queryable.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+            return await repository.GetByIdsAsync(ids, cancellationToken);
         }
         public virtual async Task<IEnumerable<TEntity>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
-            var list = new List<TEntity>();
-            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
-
-            list.AddRange(await queryable
-                                     .AsNoTracking()
-                                     .Where(x => x.Name.Contains(req.ContainsName))
-                                     .OrderByDescending(b => b.Id)
-                                     .Skip((req.PageNumber - 1) * req.PageSize)
-                                     .Take(req.PageSize)
-                                     .ToListAsync(cancellationToken));
-
-            return list;
+            return await repository.GetPaginatedAsync(req, cancellationToken);
         }
         public virtual async Task<int> GetItemTotalAmountAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
-
-            return await queryable.AsNoTracking().Where(x => x.Name.Contains(req.ContainsName)).CountAsync(cancellationToken);
+            return await repository.GetItemTotalAmountAsync(req, cancellationToken);
         }
         public virtual async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            return await repository.AddAsync(entity, cancellationToken);
+            return await repository.CreateAsync(entity, cancellationToken);
         }
         public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
-            var entityInDb = await queryable.FirstAsync(x => x.Id == entity.Id, cancellationToken);
+            var entityInDb = await repository.GetByIdAsync(entity.Id, cancellationToken);
+
+            if (entityInDb == null) throw new InvalidOperationException($"{typeof(TEntity).Name} is not found.");
+
             entityInDb.Copy(entity);
+
             return await repository.UpdateAsync(entityInDb, cancellationToken);
         }
-        public virtual async Task DeleteByIdAsync(int id, CancellationToken cancellationToken)
+        public virtual async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
-            var entityInDb = await queryable.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            var entityInDb = await repository.GetByIdAsync(id, cancellationToken);
             if (entityInDb != null)
             {
                 await repository.DeleteAsync(entityInDb, cancellationToken);

@@ -1,176 +1,150 @@
-﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
-using Microsoft.EntityFrameworkCore;
-using MockQueryable.Moq;
+﻿using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
+using LibraryShopEntities.Repositories.Library;
 using Moq;
-using Shared.Repositories;
 
 namespace LibraryApi.Services.Tests
 {
     [TestFixture]
     internal class LibraryEntityServiceTests
     {
-        private Mock<IDatabaseRepository<LibraryDbContext>> repositoryMock;
-        private CancellationToken cancellationToken;
+        private Mock<ILibraryEntityRepository<TestEntity>> repositoryMock;
         private LibraryEntityService<TestEntity> service;
+        private CancellationToken cancellationToken;
 
         [SetUp]
         public void SetUp()
         {
-            repositoryMock = new Mock<IDatabaseRepository<LibraryDbContext>>();
+            repositoryMock = new Mock<ILibraryEntityRepository<TestEntity>>();
             service = new LibraryEntityService<TestEntity>(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }
-        private static Mock<DbSet<T>> GetDbSetMock<T>(List<T> data) where T : class
-        {
-            return data.AsQueryable().BuildMockDbSet();
-        }
 
         [Test]
-        public async Task GetByIdAsync_ValidId_ReturnsEntity()
+        public async Task GetByIdAsync_ValidId_CallsRepositoryAndReturnsEntity()
         {
             // Arrange
-            var entities = new List<TestEntity> { new TestEntity { Id = 1, Name = "Entity1" } };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
+            var entity = new TestEntity { Id = 1, Name = "Entity1" };
+            repositoryMock.Setup(repo => repo.GetByIdAsync(1, cancellationToken)).ReturnsAsync(entity);
             // Act
-            var result = await service.GetByIdAsync(1, CancellationToken.None);
+            var result = await service.GetByIdAsync(1, cancellationToken);
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result!.Id, Is.EqualTo(entities[0].Id));
-            Assert.That(result.Name, Is.EqualTo(entities[0].Name));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+            Assert.That(result!.Id, Is.EqualTo(entity.Id));
+            repositoryMock.Verify(repo => repo.GetByIdAsync(1, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetByIdAsync_InvalidId_ReturnsNull()
+        public async Task GetByIdAsync_InvalidId_CallsRepositoryAndReturnsNull()
         {
             // Arrange
-            var entities = new List<TestEntity> { new TestEntity { Id = 1, Name = "Entity1" } };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
+            repositoryMock.Setup(repo => repo.GetByIdAsync(99, cancellationToken)).ReturnsAsync((TestEntity?)null);
             // Act
-            var result = await service.GetByIdAsync(99, CancellationToken.None);
+            var result = await service.GetByIdAsync(99, cancellationToken);
             // Assert
             Assert.IsNull(result);
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.GetByIdAsync(99, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetByIds_ValidIds_ReturnsEntities()
+        public async Task GetByIdsAsync_ValidIds_CallsRepositoryAndReturnsEntities()
         {
             // Arrange
-            var entities = new List<TestEntity> { new TestEntity { Id = 1, Name = "Entity1" }, new TestEntity { Id = 2, Name = "Entity2" } };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            var ids = new List<int> { 1, 2, 3 };
+            var entities = new List<TestEntity> { new TestEntity { Id = 1 }, new TestEntity { Id = 2 } };
+            var ids = new List<int> { 1, 2 };
+            repositoryMock.Setup(repo => repo.GetByIdsAsync(ids, cancellationToken)).ReturnsAsync(entities);
             // Act
-            var result = await service.GetByIdsAsync(ids, CancellationToken.None);
+            var result = await service.GetByIdsAsync(ids, cancellationToken);
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Name, Is.EqualTo("Entity1"));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+            Assert.That(result.Count(), Is.EqualTo(entities.Count));
+            repositoryMock.Verify(repo => repo.GetByIdsAsync(ids, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetPaginatedAsync_ValidPage_ReturnsEntities()
+        public async Task GetPaginatedAsync_ValidRequest_CallsRepositoryAndReturnsEntities()
         {
             // Arrange
-            var entities = new List<TestEntity> { new TestEntity { Id = 1, Name = "Entity1" }, new TestEntity { Id = 2, Name = "Entity2" } };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            var paginationRequest = new LibraryFilterRequest() { PageNumber = 1, PageSize = 10 };
+            var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 10 };
+            var entities = new List<TestEntity> { new TestEntity { Id = 1 }, new TestEntity { Id = 2 } };
+            repositoryMock.Setup(repo => repo.GetPaginatedAsync(request, cancellationToken)).ReturnsAsync(entities);
             // Act
-            var result = await service.GetPaginatedAsync(paginationRequest, CancellationToken.None);
+            var result = await service.GetPaginatedAsync(request, cancellationToken);
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Name, Is.EqualTo("Entity2"));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+            Assert.That(result.Count(), Is.EqualTo(entities.Count));
+            repositoryMock.Verify(repo => repo.GetPaginatedAsync(request, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task GetItemTotalAmountAsync_ReturnsCorrectCount()
+        public async Task GetItemTotalAmountAsync_ValidRequest_CallsRepositoryAndReturnsCount()
         {
             // Arrange
-            var entities = new List<TestEntity>
-            {
-                new TestEntity { Id = 1, Name = "Entity1" },
-                new TestEntity { Id = 2, Name = "Entity2" },
-                new TestEntity { Id = 3, Name = "Entity3" }
-            };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
+            var request = new LibraryFilterRequest { ContainsName = "Entity" };
+            repositoryMock.Setup(repo => repo.GetItemTotalAmountAsync(request, cancellationToken)).ReturnsAsync(5);
             // Act
-            var result = await service.GetItemTotalAmountAsync(new LibraryFilterRequest() { ContainsName = "" }, CancellationToken.None);
+            var result = await service.GetItemTotalAmountAsync(request, cancellationToken);
             // Assert
-            Assert.That(result, Is.EqualTo(entities.Count));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+            Assert.That(result, Is.EqualTo(5));
+            repositoryMock.Verify(repo => repo.GetItemTotalAmountAsync(request, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task CreateAsync_ValidEntity_AddsEntity()
+        public async Task CreateAsync_ValidEntity_CallsRepositoryAndReturnsCreatedEntity()
         {
             // Arrange
-            var entity = new TestEntity { Id = 1, Name = "Entity2" };
-            repositoryMock.Setup(repo => repo.AddAsync(entity, cancellationToken)).ReturnsAsync(entity);
+            var entity = new TestEntity { Id = 1, Name = "NewEntity" };
+            repositoryMock.Setup(repo => repo.CreateAsync(entity, cancellationToken)).ReturnsAsync(entity);
             // Act
-            var result = await service.CreateAsync(entity, CancellationToken.None);
+            var result = await service.CreateAsync(entity, cancellationToken);
             // Assert
-            Assert.That(result, Is.EqualTo(entity));
-            repositoryMock.Verify(d => d.AddAsync(entity, It.IsAny<CancellationToken>()), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.That(result.Id, Is.EqualTo(entity.Id));
+            repositoryMock.Verify(repo => repo.CreateAsync(entity, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task UpdateAsync_ValidEntity_UpdatesEntity()
+        public async Task UpdateAsync_ValidEntity_CallsRepositoryAndReturnsUpdatedEntity()
         {
             // Arrange
-            var entityInDb = new TestEntity { Id = 1, Name = "Entity1" };
-            var entity = new TestEntity { Id = 1, Name = "UpdatedEntity1" };
-            var entities = new List<TestEntity> { entityInDb };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            repositoryMock.Setup(repo => repo.UpdateAsync(entityInDb, cancellationToken))
-               .ReturnsAsync(entityInDb);
+            var entity = new TestEntity { Id = 1, Name = "UpdatedEntity" };
+            var entityInDb = new TestEntity { Id = 1, Name = "OldEntity" };
+            repositoryMock.Setup(repo => repo.GetByIdAsync(entity.Id, cancellationToken)).ReturnsAsync(entityInDb);
+            repositoryMock.Setup(repo => repo.UpdateAsync(entityInDb, cancellationToken)).ReturnsAsync(entityInDb);
             // Act
-            await service.UpdateAsync(entity, CancellationToken.None);
+            var result = await service.UpdateAsync(entity, cancellationToken);
             // Assert
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.That(result.Id, Is.EqualTo(entityInDb.Id));
+            Assert.That(result.Name, Is.EqualTo(entity.Name)); // Ensure Copy was called
+            repositoryMock.Verify(repo => repo.GetByIdAsync(entity.Id, cancellationToken), Times.Once);
             repositoryMock.Verify(repo => repo.UpdateAsync(entityInDb, cancellationToken), Times.Once);
         }
         [Test]
-        public async Task DeleteByIdAsync_ValidId_DeletesEntity()
+        public void UpdateAsync_InvalidEntity_ThrowsInvalidOperationException()
         {
             // Arrange
-            var entity = new TestEntity { Id = 1, Name = "Entity1" };
-            var entities = new List<TestEntity> { entity };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-                .ReturnsAsync(dbSetMock.Object);
-            repositoryMock.Setup(repo => repo.DeleteAsync(entities, cancellationToken))
-                .Returns(Task.CompletedTask);
-            // Act
-            await service.DeleteByIdAsync(1, CancellationToken.None);
-            // Assert
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
-            repositoryMock.Verify(repo => repo.DeleteAsync(entity, cancellationToken), Times.Once);
+            var entity = new TestEntity { Id = 1, Name = "UpdatedEntity" };
+            repositoryMock.Setup(repo => repo.GetByIdAsync(entity.Id, cancellationToken)).ReturnsAsync((TestEntity?)null);
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await service.UpdateAsync(entity, cancellationToken));
+            repositoryMock.Verify(repo => repo.GetByIdAsync(entity.Id, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<TestEntity>(), cancellationToken), Times.Never);
         }
         [Test]
-        public async Task DeleteByIdAsync_InvalidId_DoesNothing()
+        public async Task DeleteByIdAsync_ValidId_CallsRepositoryToDeleteEntity()
         {
             // Arrange
-            var entity = new TestEntity { Id = 1, Name = "Entity1" };
-            var entities = new List<TestEntity> { entity };
-            var dbSetMock = GetDbSetMock(entities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken))
-                .ReturnsAsync(dbSetMock.Object);
-            repositoryMock.Setup(repo => repo.DeleteAsync(entities, cancellationToken))
-                .Returns(Task.CompletedTask);
+            var entityInDb = new TestEntity { Id = 1, Name = "Entity1" };
+            repositoryMock.Setup(repo => repo.GetByIdAsync(entityInDb.Id, cancellationToken)).ReturnsAsync(entityInDb);
             // Act
-            await service.DeleteByIdAsync(99, CancellationToken.None);
+            await service.DeleteAsync(entityInDb.Id, cancellationToken);
             // Assert
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<TestEntity>(cancellationToken), Times.Once);
-            repositoryMock.Verify(repo => repo.DeleteAsync(entity, cancellationToken), Times.Never);
+            repositoryMock.Verify(repo => repo.GetByIdAsync(entityInDb.Id, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.DeleteAsync(entityInDb, cancellationToken), Times.Once);
+        }
+        [Test]
+        public async Task DeleteByIdAsync_InvalidId_DoesNotCallDelete()
+        {
+            // Arrange
+            repositoryMock.Setup(repo => repo.GetByIdAsync(99, cancellationToken)).ReturnsAsync((TestEntity?)null);
+            // Act
+            await service.DeleteAsync(99, cancellationToken);
+            // Assert
+            repositoryMock.Verify(repo => repo.GetByIdAsync(99, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.DeleteAsync(It.IsAny<TestEntity>(), cancellationToken), Times.Never);
         }
     }
 
@@ -184,5 +158,4 @@ namespace LibraryApi.Services.Tests
             }
         }
     }
-
 }

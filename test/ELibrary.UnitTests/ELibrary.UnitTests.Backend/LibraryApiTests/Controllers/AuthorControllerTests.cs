@@ -2,11 +2,11 @@
 using Caching.Helpers;
 using Caching.Services;
 using LibraryApi.Domain.Dto.Author;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -179,7 +179,7 @@ namespace LibraryApi.Controllers.Tests
         {
             // Arrange
             var authorId = 1;
-            mockEntityService.Setup(s => s.DeleteByIdAsync(authorId, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.DeleteAsync(authorId, It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
             // Act
             var result = await controller.DeleteById(authorId, CancellationToken.None);

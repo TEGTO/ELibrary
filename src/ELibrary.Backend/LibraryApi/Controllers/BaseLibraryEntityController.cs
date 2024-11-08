@@ -2,10 +2,10 @@
 using AutoMapper;
 using Caching.Helpers;
 using Caching.Services;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -139,7 +139,7 @@ namespace LibraryApi.Controllers
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
         {
-            await entityService.DeleteByIdAsync(id, cancellationToken);
+            await entityService.DeleteAsync(id, cancellationToken);
             return Ok();
         }
 

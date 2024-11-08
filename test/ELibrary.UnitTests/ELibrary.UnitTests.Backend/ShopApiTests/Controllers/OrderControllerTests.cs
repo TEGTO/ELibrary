@@ -1,6 +1,7 @@
 ﻿using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

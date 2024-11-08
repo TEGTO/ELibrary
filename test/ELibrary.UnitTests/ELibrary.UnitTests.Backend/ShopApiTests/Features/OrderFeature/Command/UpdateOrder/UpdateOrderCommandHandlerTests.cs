@@ -14,7 +14,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
     internal class UpdateOrderCommandHandlerTests
     {
         private Mock<IOrderService> orderServiceMock;
-        private Mock<IClientService> clientServiceMock;
+        private Mock<IClientService> mockClientService;
         private Mock<ILibraryService> libraryServiceMock;
         private Mock<IMapper> mapperMock;
         private UpdateOrderCommandHandler handler;
@@ -23,10 +23,10 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
         public void SetUp()
         {
             orderServiceMock = new Mock<IOrderService>();
-            clientServiceMock = new Mock<IClientService>();
+            mockClientService = new Mock<IClientService>();
             libraryServiceMock = new Mock<ILibraryService>();
             mapperMock = new Mock<IMapper>();
-            handler = new UpdateOrderCommandHandler(orderServiceMock.Object, clientServiceMock.Object, libraryServiceMock.Object, mapperMock.Object);
+            handler = new UpdateOrderCommandHandler(orderServiceMock.Object, mockClientService.Object, libraryServiceMock.Object, mapperMock.Object);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
             var updatedOrder = existingOrder;
             var bookResponse = new BookResponse { Id = 1, Name = "Sample Book" };
             var expectedResponse = new OrderResponse { Id = 1, OrderBooks = new List<OrderBookResponse> { new OrderBookResponse { BookId = bookResponse.Id, Book = bookResponse } } };
-            clientServiceMock.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
+            mockClientService.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
             orderServiceMock.Setup(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>())).ReturnsAsync(existingOrder);
             libraryServiceMock.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<BookResponse> { bookResponse });
             mapperMock.Setup(m => m.Map(command.Request, existingOrder)).Callback<ClientUpdateOrderRequest, Order>((src, dest) =>
@@ -63,7 +63,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
             Assert.NotNull(result);
             Assert.That(result.Id, Is.EqualTo(expectedResponse.Id));
             Assert.That("Sample Book", Is.EqualTo(expectedResponse.OrderBooks.First().Book.Name));
-            clientServiceMock.Verify(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
+            mockClientService.Verify(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
             orderServiceMock.Verify(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>()), Times.Once);
             orderServiceMock.Verify(s => s.UpdateOrderAsync(existingOrder, It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -73,10 +73,10 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
             // Arrange
             var userId = "test-user-id";
             var command = new UpdateOrderCommand(userId, new ClientUpdateOrderRequest { Id = 1 });
-            clientServiceMock.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync((Client)null);
+            mockClientService.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync((Client)null);
             // Act & Assert
             Assert.ThrowsAsync<InvalidDataException>(() => handler.Handle(command, CancellationToken.None));
-            clientServiceMock.Verify(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
+            mockClientService.Verify(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
         public void Handle_OrderNotFoundOrInvalidClientId_ThrowsInvalidOperationException()
@@ -86,7 +86,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
             var client = new Client { Id = "client-id" };
             var command = new UpdateOrderCommand(userId, new ClientUpdateOrderRequest { Id = 1 });
             var existingOrder = new Order { Id = 1, ClientId = "different-client-id" };
-            clientServiceMock.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
+            mockClientService.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
             orderServiceMock.Setup(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>())).ReturnsAsync(existingOrder);
             // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None));
@@ -102,7 +102,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
             var updatedOrder = existingOrder;
             var bookResponse = new BookResponse { Id = 1, Name = "Sample Book" };
             var expectedResponse = new OrderResponse { Id = 1, OrderBooks = new List<OrderBookResponse> { new OrderBookResponse { BookId = bookResponse.Id, Book = bookResponse } } };
-            clientServiceMock.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
+            mockClientService.Setup(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(client);
             orderServiceMock.Setup(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>())).ReturnsAsync(existingOrder);
             libraryServiceMock.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<BookResponse> { bookResponse });
             mapperMock.Setup(m => m.Map(command.Request, existingOrder));
@@ -114,7 +114,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder.Tests
             Assert.NotNull(result);
             Assert.That(result.Id, Is.EqualTo(expectedResponse.Id));
             Assert.That("Sample Book", Is.EqualTo(expectedResponse.OrderBooks.First().Book.Name));
-            clientServiceMock.Verify(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
+            mockClientService.Verify(s => s.GetClientByUserIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
             orderServiceMock.Verify(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>()), Times.Once);
             orderServiceMock.Verify(s => s.UpdateOrderAsync(existingOrder, It.IsAny<CancellationToken>()), Times.Once);
         }

@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseControl", "Database
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseControlTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\DatabaseControlTests\DatabaseControlTests.csproj", "{80D7B133-D382-4AFE-9DA8-25300141C71E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryShopEntitiesTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\LibraryShopEntitiesTests\LibraryShopEntitiesTests.csproj", "{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,10 @@ Global
 		{80D7B133-D382-4AFE-9DA8-25300141C71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80D7B133-D382-4AFE-9DA8-25300141C71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80D7B133-D382-4AFE-9DA8-25300141C71E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +227,7 @@ Global
 		{5E6E227A-386F-4F37-B21E-45FB292F340B} = {F6EC37C3-7BC7-4096-9D71-89EA73C68532}
 		{FEC3C112-3C38-4DE4-83EB-570E1A1600B0} = {F6EC37C3-7BC7-4096-9D71-89EA73C68532}
 		{80D7B133-D382-4AFE-9DA8-25300141C71E} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
+		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46CD49B7-9462-4D60-AD15-25B9C962F44B}

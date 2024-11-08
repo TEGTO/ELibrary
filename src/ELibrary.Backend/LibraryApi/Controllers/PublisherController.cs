@@ -2,10 +2,10 @@
 using Caching.Helpers;
 using Caching.Services;
 using LibraryApi.Domain.Dto.Publisher;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

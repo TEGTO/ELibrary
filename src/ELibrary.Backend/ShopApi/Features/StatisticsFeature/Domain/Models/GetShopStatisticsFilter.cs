@@ -1,6 +1,6 @@
 ﻿namespace ShopApi.Features.StatisticsFeature.Domain.Models
 {
-    public class GetShopStatistics
+    public class GetShopStatisticsFilter
     {
         public DateTime? FromUTC { get; set; }
         public DateTime? ToUTC { get; set; }

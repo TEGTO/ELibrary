@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Caching.Helpers;
 using Caching.Services;
+using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ShopApi.Features.StatisticsFeature.Domain.Dtos;
@@ -40,10 +41,10 @@ namespace ShopApi.Controllers.Tests
             {
                 // Arrange
                 var request = new GetShopStatisticsRequest();
-                var getStatistics = new GetShopStatistics();
+                var getStatistics = new GetShopStatisticsFilter();
                 var statistics = new ShopStatistics();
                 var response = new ShopStatisticsResponse();
-                mapperMock.Setup(m => m.Map<GetShopStatistics>(request)).Returns(getStatistics);
+                mapperMock.Setup(m => m.Map<GetShopStatisticsFilter>(request)).Returns(getStatistics);
                 statisticsServiceMock.Setup(s => s.GetStatisticsAsync(getStatistics, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(statistics);
                 mapperMock.Setup(m => m.Map<ShopStatisticsResponse>(statistics)).Returns(response);

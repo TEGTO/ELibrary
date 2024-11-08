@@ -35,15 +35,11 @@ namespace ShopApi.Features.OrderFeature.Command.CancelOrder
 
             if (order == null || order.ClientId != client.Id)
             {
-                throw new InvalidOperationException("Order not found.");
-            }
-
-            if (order.OrderStatus != OrderStatus.InProcessing)
-            {
-                throw new InvalidOperationException("It is not possible to client to cancel an order with this order status.");
+                throw new InvalidOperationException("Order is not found.");
             }
 
             order.OrderStatus = OrderStatus.Canceled;
+
             var canceledOrder = await orderService.UpdateOrderAsync(order, cancellationToken);
 
             await stockBookOrderService.AddStockBookOrderAsyncFromCanceledOrderAsync(canceledOrder, StockBookOrderType.ClientOrderCancel, cancellationToken);

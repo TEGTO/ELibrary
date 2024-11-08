@@ -1,5 +1,5 @@
-﻿using Moq;
-using ShopApi.Features.OrderFeature.Dtos;
+﻿using LibraryShopEntities.Filters;
+using Moq;
 using ShopApi.Features.OrderFeature.Services;
 
 namespace ShopApi.Features.OrderFeature.Command.ManagerGetOrderAmount.Tests

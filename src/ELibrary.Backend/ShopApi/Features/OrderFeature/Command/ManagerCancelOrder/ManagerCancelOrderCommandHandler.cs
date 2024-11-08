@@ -24,7 +24,7 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerCancelOrder
 
             if (order == null)
             {
-                throw new InvalidOperationException("Order not found.");
+                throw new InvalidOperationException("Order is not found.");
             }
 
             order.OrderStatus = OrderStatus.Canceled;
