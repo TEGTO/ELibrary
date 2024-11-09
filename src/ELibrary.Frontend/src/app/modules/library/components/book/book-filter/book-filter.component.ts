@@ -90,7 +90,6 @@ export class BookFilterComponent implements OnInit, OnDestroy {
         publisherId: formValues.publisher?.id ?? null,
         sorting: formValues.sorting,
       };
-      console.log(req);
       this.filterChange.emit(req);
     }
   }

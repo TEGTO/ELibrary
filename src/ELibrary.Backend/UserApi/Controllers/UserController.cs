@@ -35,6 +35,7 @@ namespace UserApi.Controllers
             await mediator.Send(new UpdateUserCommand(request, User), cancellationToken);
             return Ok();
         }
+        [Authorize(Policy = Policy.REQUIRE_CLIENT_ROLE)]
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(CancellationToken cancellationToken)
         {
@@ -51,6 +52,12 @@ namespace UserApi.Controllers
         public async Task<ActionResult<AdminUserResponse>> AdminGetUser(string info, CancellationToken cancellationToken)
         {
             var response = await mediator.Send(new GetUserByInfoQuery(info), cancellationToken);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
             return Ok(response);
         }
         [Authorize(Policy = Policy.REQUIRE_ADMIN_ROLE)]

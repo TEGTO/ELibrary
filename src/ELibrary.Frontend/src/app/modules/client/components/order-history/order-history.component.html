@@ -180,7 +180,7 @@
                 </a>
             </div>
             <div class="text-gray-700 truncate text-lg">
-                {{ applyCurrencyPipe(orderBook.book.price) }} x {{orderBook.bookAmount}}
+                {{ applyCurrencyPipe(orderBook.bookPrice) }} x {{orderBook.bookAmount}}
             </div>
             <div class="text-red-500 truncate font-bold text-lg">
                 {{ applyCurrencyPipe(getOrderBookPrice(orderBook)) }}

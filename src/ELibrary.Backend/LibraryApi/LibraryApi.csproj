@@ -10,7 +10,6 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
@@ -24,7 +23,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Authentication\Authentication.csproj" />
+		<ProjectReference Include="..\Caching\Caching.csproj" />
+		<ProjectReference Include="..\DatabaseControl\DatabaseControl.csproj" />
 		<ProjectReference Include="..\LibraryShopEntities\LibraryShopEntities.csproj" />
+		<ProjectReference Include="..\Pagination\Pagination.csproj" />
 		<ProjectReference Include="..\Shared\Shared.csproj" />
 	</ItemGroup>
 

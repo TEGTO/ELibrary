@@ -1,5 +1,7 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopApi.Features.StatisticsFeature.Domain.Dtos;
@@ -15,24 +17,42 @@ namespace ShopApi.Controllers
     {
         private readonly IMapper mapper;
         private readonly IStatisticsService statisticsService;
+        private readonly ICacheService cacheService;
+        private readonly ICachingHelper cachingHelper;
 
-        public StatisticsController(IMapper mapper, IStatisticsService statisticsService)
+        public StatisticsController(
+            IMapper mapper,
+            IStatisticsService statisticsService,
+            ICacheService cacheService,
+            ICachingHelper cachingHelper
+            )
         {
             this.mapper = mapper;
             this.statisticsService = statisticsService;
+            this.cacheService = cacheService;
+            this.cachingHelper = cachingHelper;
         }
 
         #region EndPoints
 
-        [ResponseCache(Duration = 10)]
         [HttpPost]
-        public async Task<ActionResult<BookStatisticsResponse>> GetBookStatistics(GetBookStatisticsRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ShopStatisticsResponse>> GetShopStatistics(GetShopStatisticsRequest request, CancellationToken cancellationToken)
         {
-            var getStatistics = mapper.Map<GetBookStatistics>(request);
+            var cacheKey = cachingHelper.GetCacheKey(
+                $"GetShopStatistics_{request?.FromUTC ?? DateTime.MinValue}_{request?.ToUTC ?? DateTime.MinValue}_{request.IncludeBooks?.Count() ?? 0}",
+                HttpContext);
+            var cachedResponse = cacheService.Get<ShopStatisticsResponse>(cacheKey);
 
-            var statistics = await statisticsService.GetStatisticsAsync(getStatistics, cancellationToken);
+            if (cachedResponse == null)
+            {
+                var getStatistics = mapper.Map<GetShopStatisticsFilter>(request);
+                var response = await statisticsService.GetStatisticsAsync(getStatistics, cancellationToken);
+                cachedResponse = mapper.Map<ShopStatisticsResponse>(response);
 
-            return Ok(mapper.Map<BookStatisticsResponse>(statistics));
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
 
         #endregion

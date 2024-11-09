@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using ExceptionHandling;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using Shared.Exceptions;
 using System.Security.Claims;
 using UserApi.Domain.Dtos.Requests;
 using UserApi.Domain.Models;

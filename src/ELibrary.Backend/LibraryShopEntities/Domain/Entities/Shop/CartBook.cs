@@ -1,5 +1,4 @@
-﻿using LibraryShopEntities.Domain.Entities.Library;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryShopEntities.Domain.Entities.Shop
@@ -16,8 +15,6 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public int BookId { get; set; } = default!;
         [Required]
         public string CartId { get; set; } = default!;
-        [ForeignKey("BookId")]
-        public Book Book { get; set; } = default!;
         [ForeignKey("CartId")]
         public Cart Cart { get; set; } = default!;
 

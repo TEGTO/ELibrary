@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using ExceptionHandling;
 using MediatR;
-using Shared.Exceptions;
 using UserApi.Domain.Dtos.Responses;
 using UserApi.Domain.Models;
 using UserApi.Services;

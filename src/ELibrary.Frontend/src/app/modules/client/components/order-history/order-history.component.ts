@@ -154,7 +154,7 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   getOrderBookPrice(orderBook: OrderBook): number {
-    return orderBook.book.price * orderBook.bookAmount;
+    return orderBook.bookPrice * orderBook.bookAmount;
   }
   getOrderStatusString(order: Order): string {
     return getOrderStatusString(order.orderStatus);

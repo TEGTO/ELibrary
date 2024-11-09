@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using LibraryApi.Domain.Dto.Author;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Security.Claims;
 
 namespace LibraryApi.Controllers.Tests
 {
@@ -13,6 +18,8 @@ namespace LibraryApi.Controllers.Tests
     internal class AuthorControllerTests
     {
         private Mock<ILibraryEntityService<Author>> mockEntityService;
+        private Mock<ICacheService> mockCacheService;
+        private Mock<ICachingHelper> mockCachingHelper;
         private Mock<IMapper> mockMapper;
         private AuthorController controller;
 
@@ -20,8 +27,23 @@ namespace LibraryApi.Controllers.Tests
         public void Setup()
         {
             mockEntityService = new Mock<ILibraryEntityService<Author>>();
+            mockCacheService = new Mock<ICacheService>();
+
+            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
+
+            mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();
-            controller = new AuthorController(mockEntityService.Object, mockMapper.Object);
+            controller = new AuthorController(mockEntityService.Object, mockCacheService.Object, mockCachingHelper.Object, mockMapper.Object);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
         }
 
         [Test]
@@ -56,6 +78,31 @@ namespace LibraryApi.Controllers.Tests
             Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
         [Test]
+        public async Task GetByIds_ValidRequest_ReturnsOkWithItems()
+        {
+            // Arrange
+            var authors = new List<Author>
+            {
+                new Author { Id = 1, Name = "John", LastName = "Doe" },
+                new Author { Id = 2, Name = "Jane", LastName = "Doe" }
+            };
+            var request = new GetByIdsRequest
+            {
+                Ids = new List<int> { 1, 2, 3 }
+            };
+            mockEntityService.Setup(s => s.GetByIdsAsync(request.Ids, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(authors);
+            mockMapper.Setup(m => m.Map<AuthorResponse>(It.IsAny<Author>()))
+                .Returns((Author a) => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName });
+            // Act
+            var result = await controller.GetByIds(request, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That((okResult.Value as IEnumerable<AuthorResponse>).Count(), Is.EqualTo(2));
+        }
+        [Test]
         public async Task GetPaginated_ValidRequest_ReturnsOkWithPaginatedResults()
         {
             // Arrange
@@ -65,7 +112,6 @@ namespace LibraryApi.Controllers.Tests
                 new Author { Id = 2, Name = "Jane", LastName = "Doe" }
             };
             var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 2 };
-            var responses = authors.Select(a => new AuthorResponse { Id = a.Id, Name = a.Name, LastName = a.LastName }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authors);
             mockMapper.Setup(m => m.Map<AuthorResponse>(It.IsAny<Author>()))
@@ -133,7 +179,7 @@ namespace LibraryApi.Controllers.Tests
         {
             // Arrange
             var authorId = 1;
-            mockEntityService.Setup(s => s.DeleteByIdAsync(authorId, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.DeleteAsync(authorId, It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
             // Act
             var result = await controller.DeleteById(authorId, CancellationToken.None);

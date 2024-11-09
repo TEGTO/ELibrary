@@ -1,11 +1,11 @@
-import { BookListingResponse, Cart, mapBookListingResponseToCartBook } from "../../../..";
+import { Cart, CartBookResponse, mapCartBookResponseToCartBook } from "../../../..";
 
 export interface CartResponse {
-    books: BookListingResponse[]
+    books: CartBookResponse[]
 }
 
 export function mapCartResponseToCart(response: CartResponse): Cart {
     return {
-        books: response.books.map(x => mapBookListingResponseToCartBook(x))
+        books: response.books.map(x => mapCartBookResponseToCartBook(x))
     }
 }

@@ -10,7 +10,7 @@
                 </div>
             </ng-container>
             <div class="w-full p-6">
-                <app-book-statistics-filter (filterChange)="getBookStatistics($event)"></app-book-statistics-filter>
+                <app-book-statistics-filter (filterChange)="getShopStatistics($event)"></app-book-statistics-filter>
             </div>
         </div>
     </div>
@@ -46,11 +46,7 @@
                         <span class="detail-header__dots">⠀</span>
                     </div>
                     <div class="statistics__detail-header text-gray-400">
-                        <span class="font-semibold">Average Price (At The Moment)</span>
-                        <span class="detail-header__dots">⠀</span>
-                    </div>
-                    <div class="statistics__detail-header text-gray-400">
-                        <span class="font-semibold">Stock Amount (At The Moment)</span>
+                        <span class="font-semibold">Average Order Price</span>
                         <span class="detail-header__dots">⠀</span>
                     </div>
                     <div class="statistics__detail-header text-gray-400">
@@ -79,9 +75,6 @@
                     </div>
                     <div class="statistics__detail-value text-gray-400">
                         <span>{{ applyCurrencyPipe(statistics.averagePrice) }}</span>
-                    </div>
-                    <div class="statistics__detail-value text-gray-400">
-                        <span>{{ statistics.stockAmount }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
                         <span>{{ applyCurrencyPipe(statistics.earnedMoney) }}</span>

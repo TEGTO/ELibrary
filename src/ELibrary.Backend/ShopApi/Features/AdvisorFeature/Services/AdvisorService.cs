@@ -24,17 +24,21 @@ namespace ShopApi.Features.AdvisorFeature.Services
             this.httpHelper = httpHelper;
         }
 
-        public async Task<AdvisorResponse?> SendQueryAsync(AdvisorQueryRequest req, CancellationToken cancellationToken)
-        {
-            return await AskChatAsync(req, cancellationToken);
-        }
-
-        private async Task<AdvisorResponse?> AskChatAsync(AdvisorQueryRequest query, CancellationToken cancellationToken)
+        public async Task<ChatAdvisorResponse?> SendQueryAsync(ChatAdvisorQueryRequest req, CancellationToken cancellationToken)
         {
             return await resiliencePipeline.ExecuteAsync(async (ct) =>
             {
-                return (await httpHelper.SendPostRequestAsync<AdvisorResponse>(chatConfig.BotUrl + CHAT_ADVISOR_ENDPOINT, JsonSerializer.Serialize(query), cancellationToken: cancellationToken));
+                return await AskChatAsync(req, cancellationToken);
             }, cancellationToken);
+        }
+
+        private async Task<ChatAdvisorResponse?> AskChatAsync(ChatAdvisorQueryRequest query, CancellationToken cancellationToken)
+        {
+            return await httpHelper.SendPostRequestAsync<ChatAdvisorResponse>(
+                chatConfig.BotUrl + CHAT_ADVISOR_ENDPOINT,
+                JsonSerializer.Serialize(query),
+                cancellationToken: cancellationToken
+            );
         }
     }
 }

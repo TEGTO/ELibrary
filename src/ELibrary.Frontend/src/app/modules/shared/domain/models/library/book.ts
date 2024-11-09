@@ -12,6 +12,7 @@ export interface Book {
     pageAmount: number;
     stockAmount: number;
     coverImgUrl: string,
+    description: string | null,
     author: Author;
     genre: Genre;
     publisher: Publisher;
@@ -26,6 +27,7 @@ export function getDefaultBook(): Book {
         pageAmount: 0,
         stockAmount: 0,
         coverImgUrl: "",
+        description: null,
         author: getDefaultAuthor(),
         genre: getDefaultGenre(),
         publisher: getDefaultPublisher()

@@ -1,17 +1,15 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Filters;
+using LibraryShopEntities.Repositories.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
-using ShopApi.Features.OrderFeature.Dtos;
 
 namespace ShopApi.Features.OrderFeature.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IOrderRepository repository;
 
-        public OrderService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public OrderService(IOrderRepository repository)
         {
             this.repository = repository;
         }
@@ -20,57 +18,31 @@ namespace ShopApi.Features.OrderFeature.Services
 
         public async Task<Order?> GetOrderByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            return
-                await GetQueryableOrder(queryable)
-                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return await repository.GetOrderByIdAsync(id, cancellationToken);
         }
         public async Task<int> GetOrderAmountAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            return
-                await ApplyFilter(GetQueryableOrder(queryable), filter)
-                        .CountAsync();
+            return await repository.GetOrderCountAsync(filter, cancellationToken);
         }
         public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
-            List<Order> orders = new List<Order>();
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-
-            orders.AddRange(await ApplyFilter(GetQueryableOrder(queryable), filter)
-                                     .OrderByDescending(b => b.CreatedAt)
-                                     .Skip((filter.PageNumber - 1) * filter.PageSize)
-                                     .Take(filter.PageSize)
-                                     .ToListAsync(cancellationToken));
-            return orders;
+            return await repository.GetPaginatedOrdersAsync(filter, cancellationToken);
         }
         public async Task<Order> CreateOrderAsync(Order order, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
-
             order.OrderAmount = order.OrderBooks.Sum(x => x.BookAmount);
 
-            var bookIds = order.OrderBooks.Select(ob => ob.BookId).ToList();
-            var booksInOrder = await queryable
-                .Where(book => bookIds.Contains(book.Id))
-                .ToListAsync(cancellationToken);
-
             order.TotalPrice = order.OrderBooks
-                .Sum(orderBook =>
-                {
-                    var book = booksInOrder.First(b => b.Id == orderBook.BookId);
-                    return book != null ? orderBook.BookAmount * book.Price : 0;
-                });
+                .Sum(orderBook => orderBook.BookAmount * orderBook.BookPrice);
 
-            var newOrder = await repository.AddAsync(order, cancellationToken);
-            var orderQueryable = await repository.GetQueryableAsync<Order>(cancellationToken);
+            var newOrder = await repository.AddOrderAsync(order, cancellationToken);
 
-            return await GetQueryableOrder(orderQueryable).FirstAsync(x => x.Id == newOrder.Id, cancellationToken);
+            return await repository.GetOrderByIdAsync(newOrder.Id, cancellationToken)
+                ?? throw new InvalidOperationException("Failed to retrieve the created order.");
         }
         public async Task<Order> UpdateOrderAsync(Order order, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            var orderInDb = await queryable.FirstOrDefaultAsync(x => x.Id == order.Id);
+            var orderInDb = await repository.GetOrderByIdAsync(order.Id, cancellationToken);
 
             if (orderInDb == null)
             {
@@ -79,43 +51,22 @@ namespace ShopApi.Features.OrderFeature.Services
 
             if (orderInDb.OrderStatus != OrderStatus.InProcessing)
             {
-                throw new InvalidOperationException("Orders that are not in processing cannot be changed!");
+                throw new InvalidOperationException("Only orders that are in processing can be updated.");
             }
 
             orderInDb.Copy(order);
-            await repository.UpdateAsync(orderInDb, cancellationToken);
+            await repository.UpdateOrderAsync(orderInDb, cancellationToken);
 
-            return await GetQueryableOrder(queryable).FirstAsync(x => x.Id == orderInDb.Id, cancellationToken);
+            return await repository.GetOrderByIdAsync(orderInDb.Id, cancellationToken)
+                ?? throw new InvalidOperationException("Failed to retrieve the updated order.");
         }
         public async Task DeleteOrderAsync(int id, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            var entityInDb = await queryable.FirstAsync(x => x.Id == id, cancellationToken);
-            await repository.DeleteAsync(entityInDb, cancellationToken);
-        }
-
-        #endregion
-
-        #region Private Helpers
-
-        private IQueryable<Order> GetQueryableOrder(IQueryable<Order> queryable)
-        {
-            return
-                queryable
-                .AsSplitQuery()
-                .AsNoTracking()
-                .Include(x => x.OrderBooks)
-                    .ThenInclude(book => book.Book)
-                .Include(x => x.Client);
-        }
-        private IQueryable<Order> ApplyFilter(IQueryable<Order> queryable, GetOrdersFilter filter)
-        {
-            if (filter.ClientId != null)
+            var order = await repository.GetOrderByIdAsync(id, cancellationToken);
+            if (order != null)
             {
-                queryable = queryable.Where(t => t.ClientId == filter.ClientId);
+                await repository.DeleteOrderAsync(order, cancellationToken);
             }
-
-            return queryable;
         }
 
         #endregion

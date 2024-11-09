@@ -1,34 +1,43 @@
 using Authentication;
+using Caching;
+using Caching.Services;
+using DatabaseControl;
 using EventSourcing;
+using ExceptionHandling;
 using LibraryShopEntities.Data;
+using LibraryShopEntities.Repositories.Shop;
+using Logging;
 using Microsoft.EntityFrameworkCore;
+using Pagination;
+using Resilience;
 using Shared;
-using Shared.Middlewares;
 using ShopApi;
 using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Services;
+using ShopApi.Features.StatisticsFeature.Repository;
 using ShopApi.Features.StatisticsFeature.Services;
 using ShopApi.Features.StockBookOrderFeature.Models;
 using ShopApi.Features.StockBookOrderFeature.Services;
+using ShopApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region Cors
 
 bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 if (useCors)
 {
-    builder.Services.AddApplicationCors(builder.Configuration, MyAllowSpecificOrigins, builder.Environment.IsDevelopment());
+    builder.Services.AddApplicationCors(builder.Configuration, myAllowSpecificOrigins, builder.Environment.IsDevelopment());
 }
 
 #endregion
 
-builder.Services.AddDbContextFactory<LibraryShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!);
-
+builder.Services.AddDbContextFactory<ShopDbContext>(builder.Configuration.GetConnectionString(Configuration.SHOP_DATABASE_CONNECTION_STRING)!, "ShopApi");
+builder.Host.AddLogging();
 
 #region Identity & Authentication
 
@@ -38,45 +47,66 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 #region Project Services 
 
-builder.Services.AddSingleton<IClientService, ClientService>();
+builder.Services.AddSingleton<ICartRepository, CartRepository>();
+builder.Services.AddSingleton<IClientRepository, ClientRepository>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddSingleton<IStatisticsRepository, StatisticsRepository>();
+builder.Services.AddSingleton<IStockBookOrderRepository, StockBookOrderRepository>();
+
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICartService, CartService>();
-builder.Services.AddSingleton<IOrderManager, OrderManager>();
-builder.Services.AddSingleton<IClientManager, ClientManager>();
+builder.Services.AddSingleton<IClientService, ClientService>();
 builder.Services.AddSingleton<IStockBookOrderService, StockBookOrderService>();
 builder.Services.AddSingleton<IEventHandler<BookStockAmountUpdatedEvent>, BookStockAmountUpdatedEventHandler>();
 builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
+builder.Services.AddSingleton<ILibraryService, LibraryService>();
+builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
-builder.Services.AddPaginationConfiguration(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<LibraryShopDbContext>(builder.Configuration);
-builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
-builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 #endregion
 
+builder.Services.AddPagination(builder.Configuration);
+builder.Services.AddRepositoryPatternWithResilience<ShopDbContext>(builder.Configuration);
+builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
+builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
+builder.Services.AddSharedFluentValidation(typeof(Program));
+builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
+builder.Services.AddCachingHelper();
+
+builder.Services.AddMediatR(conf =>
+{
+    conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+
 builder.Services.AddMemoryCache();
+builder.Services.AddResponseCaching();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddSharedFluentValidation(typeof(Program));
-
-builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-
 var app = builder.Build();
+
+if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
+{
+    await app.ConfigureDatabaseAsync<ShopDbContext>(CancellationToken.None);
+}
 
 if (useCors)
 {
-    app.UseCors(MyAllowSpecificOrigins);
+    app.UseCors(myAllowSpecificOrigins);
 }
 
-app.UseExceptionMiddleware();
+app.UseSharedMiddlewares();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseIdentity();
 
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

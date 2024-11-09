@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using LibraryApi.Domain.Dto.Book;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Security.Claims;
 
 namespace LibraryApi.Controllers.Tests
 {
@@ -13,15 +18,34 @@ namespace LibraryApi.Controllers.Tests
     internal class BookControllerTests
     {
         private Mock<ILibraryEntityService<Book>> mockEntityService;
+        private Mock<ICacheService> mockCacheService;
+        private Mock<ICachingHelper> mockCachingHelper;
         private Mock<IMapper> mockMapper;
+        private Mock<IBookService> mockBookService;
         private BookController controller;
 
         [SetUp]
         public void Setup()
         {
             mockEntityService = new Mock<ILibraryEntityService<Book>>();
+            mockCacheService = new Mock<ICacheService>();
+
+            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
+
+            mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();
-            controller = new BookController(mockEntityService.Object, mockMapper.Object);
+            mockBookService = new Mock<IBookService>();
+            controller = new BookController(mockEntityService.Object, mockCacheService.Object, mockCachingHelper.Object, mockMapper.Object, mockBookService.Object);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            }, "mock"));
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
         }
 
         [Test]
@@ -56,6 +80,70 @@ namespace LibraryApi.Controllers.Tests
             Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
         [Test]
+        public async Task GetByIds_ValidRequest_ReturnsOkWithItems()
+        {
+            // Arrange
+            var books = new List<Book>
+            {
+                new Book { Id = 1, Name = "Dune" },
+                new Book { Id = 2, Name = "1984" }
+            };
+            var request = new GetByIdsRequest
+            {
+                Ids = new List<int> { 1, 2, 3 }
+            };
+            mockEntityService.Setup(s => s.GetByIdsAsync(request.Ids, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(books);
+            mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))
+                .Returns((Book b) => new BookResponse { Id = b.Id, Name = b.Name });
+            // Act
+            var result = await controller.GetByIds(request, CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That((okResult.Value as IEnumerable<BookResponse>).Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public async Task RaisePopularity_ValidIds_ReturnsOk()
+        {
+            // Arrange
+            var bookIds = new List<int> { 1, 2, 3 };
+            var request = new RaiseBookPopularityRequest { Ids = bookIds };
+            mockBookService.Setup(s => s.RaisePopularityAsync(bookIds, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await controller.RaisePopularity(request, CancellationToken.None);
+
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+            mockBookService.Verify(s => s.RaisePopularityAsync(bookIds, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateStockAmount_ValidRequests_ReturnsOk()
+        {
+            // Arrange
+            var requests = new List<UpdateBookStockAmountRequest>
+        {
+            new UpdateBookStockAmountRequest { BookId = 1, ChangeAmount = 5 },
+            new UpdateBookStockAmountRequest { BookId = 2, ChangeAmount = -2 }
+        };
+            var requestDict = requests.ToDictionary(r => r.BookId, r => r.ChangeAmount);
+
+            mockBookService.Setup(s => s.ChangeBookStockAmount(requestDict, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await controller.UpdateStockAmount(requests, CancellationToken.None);
+
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+            mockBookService.Verify(s => s.ChangeBookStockAmount(requestDict, It.IsAny<CancellationToken>()), Times.Once);
+        }
+        [Test]
         public async Task GetPaginated_ValidRequest_ReturnsOkWithPaginatedResults()
         {
             // Arrange
@@ -65,7 +153,6 @@ namespace LibraryApi.Controllers.Tests
                 new Book { Id = 2, Name = "1984" }
             };
             var request = new BookFilterRequest { PageNumber = 1, PageSize = 2 };
-            var responses = books.Select(b => new BookResponse { Id = b.Id, Name = b.Name }).ToList();
             mockEntityService.Setup(s => s.GetPaginatedAsync(request, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(books);
             mockMapper.Setup(m => m.Map<BookResponse>(It.IsAny<Book>()))
@@ -133,7 +220,7 @@ namespace LibraryApi.Controllers.Tests
         {
             // Arrange
             var bookId = 1;
-            mockEntityService.Setup(s => s.DeleteByIdAsync(bookId, It.IsAny<CancellationToken>()))
+            mockEntityService.Setup(s => s.DeleteAsync(bookId, It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
             // Act
             var result = await controller.DeleteById(bookId, CancellationToken.None);

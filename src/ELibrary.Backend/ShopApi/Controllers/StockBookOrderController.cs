@@ -1,12 +1,16 @@
 ﻿using Authentication.Identity;
-using AutoMapper;
+using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
-using LibraryShopEntities.Domain.Entities.Shop;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Domain.Dtos;
+using Pagination;
+using ShopApi.Features.StockBookOrderFeature.Command.CreateStockBookOrder;
+using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderAmount;
+using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById;
+using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderPaginated;
 using ShopApi.Features.StockBookOrderFeature.Dtos;
-using ShopApi.Features.StockBookOrderFeature.Services;
+using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
@@ -15,45 +19,66 @@ namespace ShopApi.Controllers
     [ApiController]
     public class StockBookOrderController : ControllerBase
     {
-        private readonly IMapper mapper;
-        private readonly IStockBookOrderService stockBookOrderService;
+        private readonly IMediator mediator;
+        private readonly ICacheService cacheService;
 
-        public StockBookOrderController(IMapper mapper, IStockBookOrderService stockBookOrderService)
+        public StockBookOrderController(IMediator mediator, ICacheService cacheService)
         {
-            this.mapper = mapper;
-            this.stockBookOrderService = stockBookOrderService;
+            this.mediator = mediator;
+            this.cacheService = cacheService;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<StockBookOrderResponse>> GetStockOrderById(int id, CancellationToken cancellationToken)
         {
-            var order = await stockBookOrderService.GetStockBookOrderByIdAsync(id, cancellationToken);
+            var response = await mediator.Send(new GetStockOrderByIdQuery(id), cancellationToken);
 
-            if (order == null)
+            if (response == null)
             {
-                return NotFound("Stock order is not found!");
+                return NotFound();
             }
 
-            return Ok(mapper.Map<StockBookOrderResponse>(order));
+            return Ok(response);
         }
-        [ResponseCache(Duration = 10)]
         [HttpGet("amount")]
         public async Task<ActionResult<int>> GetStockOrderAmount(CancellationToken cancellationToken)
         {
-            return Ok(await stockBookOrderService.GetStockBookAmountAsync(cancellationToken));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetStockOrderAmount_{userId}";
+            var cachedResponse = cacheService.Get<int?>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetStockOrderAmountQuery(), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
-        [ResponseCache(Duration = 10)]
         [HttpPost("pagination")]
         public async Task<ActionResult<IEnumerable<StockBookOrderResponse>>> GetStockOrderPaginated(PaginationRequest paginationRequest, CancellationToken cancellationToken)
         {
-            var orders = await stockBookOrderService.GetPaginatedStockBookOrdersAsync(paginationRequest, cancellationToken);
-            return Ok(orders.Select((mapper.Map<StockBookOrderResponse>)));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetStockOrderPaginated_{userId}";
+            var cachedResponse = cacheService.Get<List<StockBookOrderResponse>>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetStockOrderPaginatedQuery(paginationRequest), cancellationToken);
+                cachedResponse = response.ToList();
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
         [HttpPost]
         public async Task<ActionResult<StockBookOrderResponse>> CreateStockBookOrder(CreateStockBookOrderRequest request, CancellationToken cancellationToken)
         {
-            var order = mapper.Map<StockBookOrder>(request);
-            return Created("", mapper.Map<StockBookOrderResponse>(await stockBookOrderService.AddStockBookOrderAsync(order, cancellationToken)));
+            var response = await mediator.Send(new CreateStockBookOrderCommand(request), cancellationToken);
+            return Ok(response);
         }
     }
 }

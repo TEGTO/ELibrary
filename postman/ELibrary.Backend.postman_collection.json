@@ -3642,7 +3642,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"query\":\"Give me five interesting books\"\r\n}",
+							"raw": "{\r\n    \"query\":\"Give me any books\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

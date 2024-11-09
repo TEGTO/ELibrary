@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Ou
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
-import { Book, CurrencyPipeApplier, dateRangeWithTimeValidatorFrom, dateRangeWithTimeValidatorTo, GetBookStatistics, getDateOrNull, getDefaultGetBookStatistics, getProductInfoPath, inputSelectValidator, ValidationMessage } from '../../../../shared';
+import { Book, CurrencyPipeApplier, dateRangeWithTimeValidatorFrom, dateRangeWithTimeValidatorTo, getDateOrNull, getDefaultGetShopStatistics, getProductInfoPath, GetShopStatistics, inputSelectValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-book-statistics-filter',
@@ -11,7 +11,7 @@ import { Book, CurrencyPipeApplier, dateRangeWithTimeValidatorFrom, dateRangeWit
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
-  @Output() filterChange = new EventEmitter<GetBookStatistics>();
+  @Output() filterChange = new EventEmitter<GetShopStatistics>();
 
   readonly itemHeight = 200;
   readonly scollSize = 420;
@@ -60,11 +60,14 @@ export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
         }
       });
 
+    const oneDayAgo = new Date();
+    oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+
     this.formGroup = new FormGroup({
-      fromUTC: new FormControl(null, [dateRangeWithTimeValidatorFrom('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
-      fromTime: new FormControl(null, [dateRangeWithTimeValidatorFrom('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
-      toUTC: new FormControl(null, [dateRangeWithTimeValidatorTo('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
-      toTime: new FormControl(null, [dateRangeWithTimeValidatorTo('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      fromUTC: new FormControl(oneDayAgo, [dateRangeWithTimeValidatorFrom('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      fromTime: new FormControl(oneDayAgo, [dateRangeWithTimeValidatorFrom('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      toUTC: new FormControl(new Date(), [dateRangeWithTimeValidatorTo('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
+      toTime: new FormControl(new Date(), [dateRangeWithTimeValidatorTo('fromUTC', 'fromTime', 'toUTC', 'toTime')]),
       book: this.bookFormControl,
     });
   }
@@ -72,8 +75,8 @@ export class BookStatisticsFilterComponent implements OnInit, OnDestroy {
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
 
-      const req: GetBookStatistics = {
-        ...getDefaultGetBookStatistics(),
+      const req: GetShopStatistics = {
+        ...getDefaultGetShopStatistics(),
         fromUTC: getDateOrNull(formValues.fromUTC, formValues.fromTime),
         toUTC: getDateOrNull(formValues.toUTC, formValues.toTime),
         includeBooks: this.includeBooks

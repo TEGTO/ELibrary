@@ -1,8 +1,11 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
-using LibraryApi.Domain.Dtos;
+using Caching.Helpers;
+using Caching.Services;
 using LibraryApi.Services;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +24,26 @@ namespace LibraryApi.Controllers
      where TEntity : BaseLibraryEntity where TFilterRequest : LibraryFilterRequest
     {
         protected readonly ILibraryEntityService<TEntity> entityService;
+        protected readonly ICacheService cacheService;
+        protected readonly ICachingHelper cachingHelper;
         protected readonly IMapper mapper;
 
-        protected BaseLibraryEntityController(ILibraryEntityService<TEntity> entityService, IMapper mapper)
+        protected BaseLibraryEntityController(
+            ILibraryEntityService<TEntity> entityService,
+            ICacheService cacheService,
+            ICachingHelper cachingHelper,
+            IMapper mapper
+            )
         {
             this.entityService = entityService;
+            this.cacheService = cacheService;
+            this.cachingHelper = cachingHelper;
             this.mapper = mapper;
         }
 
         #region Endpoints
 
+        [ResponseCache(Duration = 1)]
         [HttpGet("{id}")]
         [AllowAnonymous]
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
@@ -44,21 +57,56 @@ namespace LibraryApi.Controllers
 
             return Ok(mapper.Map<TGetResponse>(entity));
         }
-        [ResponseCache(Duration = 10)]
+        [HttpPost("ids")]
+        [AllowAnonymous]
+        public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)
+        {
+            var cacheKey = cachingHelper.GetCacheKey($"GetByIds_{typeof(TGetResponse).Name}", HttpContext);
+            var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var entities = await entityService.GetByIdsAsync(request.Ids, cancellationToken);
+                cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
+            }
+
+            return Ok(cachedResponse);
+        }
         [AllowAnonymous]
         [HttpPost("pagination")]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
-            return Ok(entities.Select(mapper.Map<TGetResponse>));
+            var cacheKey = cachingHelper.GetCacheKey($"GetPaginated_{typeof(TGetResponse).Name}", HttpContext);
+            var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
+                cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
-        [ResponseCache(Duration = 10)]
         [AllowAnonymous]
         [HttpPost("amount")]
         public virtual async Task<ActionResult<int>> GetItemTotalAmount(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var amount = await entityService.GetItemTotalAmountAsync(request, cancellationToken);
-            return Ok(amount);
+            var cacheKey = cachingHelper.GetCacheKey($"GetItemTotalAmount_{typeof(TGetResponse).Name}", HttpContext);
+            var cachedResponse = cacheService.Get<int?>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var amount = await entityService.GetItemTotalAmountAsync(request, cancellationToken);
+                cachedResponse = amount;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+            }
+
+            return Ok(cachedResponse);
         }
 
         #endregion
@@ -91,7 +139,7 @@ namespace LibraryApi.Controllers
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> DeleteById(int id, CancellationToken cancellationToken)
         {
-            await entityService.DeleteByIdAsync(id, cancellationToken);
+            await entityService.DeleteAsync(id, cancellationToken);
             return Ok();
         }
 

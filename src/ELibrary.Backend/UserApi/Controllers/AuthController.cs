@@ -68,7 +68,7 @@ namespace UserApi.Controllers
         public async Task<ActionResult<AdminUserResponse>> AdminRegister(AdminUserRegistrationRequest request, CancellationToken cancellationToken)
         {
             var response = await mediator.Send(new AdminRegisterUserCommand(request), cancellationToken);
-            return Ok(response);
+            return CreatedAtAction(nameof(Register), new { id = response.Email }, response);
         }
 
         #endregion

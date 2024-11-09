@@ -1,5 +1,5 @@
-﻿using MediatR;
-using Shared.Exceptions;
+﻿using ExceptionHandling;
+using MediatR;
 using UserApi.Services;
 
 namespace UserApi.Command.Admin.AdminDeleteUser

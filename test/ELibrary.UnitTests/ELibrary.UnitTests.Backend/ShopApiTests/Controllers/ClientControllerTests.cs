@@ -1,9 +1,13 @@
-﻿using LibraryShopEntities.Domain.Dtos.Shop;
+﻿using Caching.Services;
+using LibraryShopEntities.Domain.Dtos.Shop;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using ShopApi.Features.ClientFeature.Command.CreateClient;
+using ShopApi.Features.ClientFeature.Command.GetClient;
+using ShopApi.Features.ClientFeature.Command.UpdateClient;
 using ShopApi.Features.ClientFeature.Dtos;
-using ShopApi.Features.ClientFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers.Tests
@@ -11,15 +15,17 @@ namespace ShopApi.Controllers.Tests
     [TestFixture]
     internal class ClientControllerTests
     {
-        private Mock<IClientManager> mockClientManager;
+        private Mock<IMediator> mockMediator;
+        private Mock<ICacheService> mockCacheService;
         private ClientController clientController;
 
         [SetUp]
         public void SetUp()
         {
-            mockClientManager = new Mock<IClientManager>();
+            mockMediator = new Mock<IMediator>();
+            mockCacheService = new Mock<ICacheService>();
 
-            clientController = new ClientController(mockClientManager.Object);
+            clientController = new ClientController(mockMediator.Object, mockCacheService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -36,16 +42,16 @@ namespace ShopApi.Controllers.Tests
         public async Task GetClient_ReturnsOkWithClientResponse()
         {
             // Arrange
-            var clientResponse = new ClientResponse { Id = "test-client-id" };
-            var getClientResponse = new GetClientResponse { Client = clientResponse };
-            mockClientManager.Setup(cf => cf.GetClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getClientResponse);
+            var clientResponse = new GetClientResponse { Client = new ClientResponse { Id = "test-client-id" } };
+            mockMediator
+                .Setup(m => m.Send(It.IsAny<GetClientForUserQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.GetClient(CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult.Value, Is.EqualTo(getClientResponse));
+            Assert.That(okResult?.Value, Is.EqualTo(clientResponse));
         }
         [Test]
         public async Task CreateClient_ReturnsCreatedWithClientResponse()
@@ -53,14 +59,15 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var createRequest = new CreateClientRequest { Name = "John" };
             var clientResponse = new ClientResponse { Id = "test-client-id" };
-            mockClientManager.Setup(cf => cf.CreateClientForUserAsync(It.IsAny<string>(), createRequest, It.IsAny<CancellationToken>()))
+            mockMediator
+                .Setup(m => m.Send(It.IsAny<CreateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.CreateClient(createRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<CreatedResult>(result.Result);
             var createdResult = result.Result as CreatedResult;
-            Assert.That(createdResult.Value, Is.EqualTo(clientResponse));
+            Assert.That(createdResult?.Value, Is.EqualTo(clientResponse));
         }
         [Test]
         public async Task UpdateClient_ReturnsOkWithUpdatedClientResponse()
@@ -68,29 +75,30 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var updateRequest = new UpdateClientRequest { Name = "Updated Name" };
             var updatedClientResponse = new ClientResponse { Id = "test-client-id" };
-            mockClientManager.Setup(cf => cf.UpdateClientForUserAsync(It.IsAny<string>(), updateRequest, It.IsAny<CancellationToken>()))
+            mockMediator
+                .Setup(m => m.Send(It.IsAny<UpdateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClientResponse);
             // Act
             var result = await clientController.UpdateClient(updateRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult.Value, Is.EqualTo(updatedClientResponse));
+            Assert.That(okResult?.Value, Is.EqualTo(updatedClientResponse));
         }
         [Test]
         public async Task AdminGetClient_ReturnsOkWithClientResponse()
         {
             // Arrange
-            var clientResponse = new ClientResponse { Id = "admin-client-id" };
-            var getClientResponse = new GetClientResponse { Client = clientResponse };
-            mockClientManager.Setup(acf => acf.GetClientForUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(getClientResponse);
+            var clientResponse = new GetClientResponse { Client = new ClientResponse { Id = "admin-client-id" } };
+            mockMediator
+                .Setup(m => m.Send(It.IsAny<GetClientForUserQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.AdminGetClient("admin-user-id", CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult.Value, Is.EqualTo(getClientResponse));
+            Assert.That(okResult?.Value, Is.EqualTo(clientResponse));
         }
         [Test]
         public async Task AdminCreateClient_ReturnsCreatedWithClientResponse()
@@ -98,14 +106,15 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var createRequest = new CreateClientRequest { Name = "Admin Client" };
             var clientResponse = new ClientResponse { Id = "admin-client-id" };
-            mockClientManager.Setup(acf => acf.CreateClientForUserAsync(It.IsAny<string>(), createRequest, It.IsAny<CancellationToken>()))
+            mockMediator
+                .Setup(m => m.Send(It.IsAny<CreateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             // Act
             var result = await clientController.AdminCreateClient("admin-user-id", createRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<CreatedResult>(result.Result);
             var createdResult = result.Result as CreatedResult;
-            Assert.That(createdResult.Value, Is.EqualTo(clientResponse));
+            Assert.That(createdResult?.Value, Is.EqualTo(clientResponse));
         }
         [Test]
         public async Task AdminUpdateClient_ReturnsOkWithUpdatedClientResponse()
@@ -113,14 +122,15 @@ namespace ShopApi.Controllers.Tests
             // Arrange
             var updateRequest = new UpdateClientRequest { Name = "Updated Admin Client" };
             var updatedClientResponse = new ClientResponse { Id = "admin-client-id" };
-            mockClientManager.Setup(acf => acf.UpdateClientForUserAsync(It.IsAny<string>(), updateRequest, It.IsAny<CancellationToken>()))
+            mockMediator
+                .Setup(m => m.Send(It.IsAny<UpdateClientForUserCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClientResponse);
             // Act
             var result = await clientController.AdminUpdateClient("admin-user-id", updateRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult.Value, Is.EqualTo(updatedClientResponse));
+            Assert.That(okResult?.Value, Is.EqualTo(updatedClientResponse));
         }
     }
 }

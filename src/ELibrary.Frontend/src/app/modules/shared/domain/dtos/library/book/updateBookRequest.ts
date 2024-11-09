@@ -8,6 +8,7 @@ export interface UpdateBookRequest {
     coverType: CoverType;
     pageAmount: number;
     coverImgUrl: string,
+    description: string | null,
     authorId: number;
     genreId: number;
     publisherId: number;
@@ -21,6 +22,7 @@ export function mapBookToUpdateBookRequest(book: Book): UpdateBookRequest {
         coverType: book.coverType,
         pageAmount: book.pageAmount,
         coverImgUrl: book.coverImgUrl,
+        description: book.description,
         authorId: book.author.id,
         genreId: book.genre.id,
         publisherId: book.publisher.id

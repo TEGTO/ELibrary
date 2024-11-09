@@ -40,18 +40,18 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
         }
 
         [Test]
-        public async Task SendQueryAsync_ReturnsAdvisorResponse()
+        public async Task SendQueryAsync_ReturnsChatAdvisorResponse()
         {
             // Arrange
-            var queryRequest = new AdvisorQueryRequest
+            var queryRequest = new ChatAdvisorQueryRequest
             {
                 Query = "What are the latest trends in AI?"
             };
-            var expectedResponse = new AdvisorResponse
+            var expectedResponse = new ChatAdvisorResponse
             {
                 Message = "The latest trends in AI include advancements in deep learning and natural language processing."
             };
-            mockHttpHelper.Setup(h => h.SendPostRequestAsync<AdvisorResponse>(
+            mockHttpHelper.Setup(h => h.SendPostRequestAsync<ChatAdvisorResponse>(
                     $"{BotUrl}{ChatEndpoint}",
                     It.IsAny<string>(),
                     It.IsAny<string>(),
@@ -63,7 +63,7 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Message, Is.EqualTo(expectedResponse.Message));
-            mockHttpHelper.Verify(h => h.SendPostRequestAsync<AdvisorResponse>(
+            mockHttpHelper.Verify(h => h.SendPostRequestAsync<ChatAdvisorResponse>(
                 $"{BotUrl}{ChatEndpoint}",
                 It.IsAny<string>(),
                 It.IsAny<string>(),
@@ -73,11 +73,11 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
         public async Task SendQueryAsync_HandlesErrorGracefully()
         {
             // Arrange
-            var queryRequest = new AdvisorQueryRequest
+            var queryRequest = new ChatAdvisorQueryRequest
             {
                 Query = "What is the best way to learn programming?"
             };
-            mockHttpHelper.Setup(h => h.SendPostRequestAsync<AdvisorResponse>(
+            mockHttpHelper.Setup(h => h.SendPostRequestAsync<ChatAdvisorResponse>(
                     $"{BotUrl}{ChatEndpoint}",
                     It.IsAny<string>(),
                     It.IsAny<string>(),
@@ -94,7 +94,7 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
             {
                 Assert.That(ex.Message, Is.EqualTo("Network Error"));
             }
-            mockHttpHelper.Verify(h => h.SendPostRequestAsync<AdvisorResponse>(
+            mockHttpHelper.Verify(h => h.SendPostRequestAsync<ChatAdvisorResponse>(
                 $"{BotUrl}{ChatEndpoint}",
                 It.IsAny<string>(),
                 It.IsAny<string>(),

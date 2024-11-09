@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Caching.Helpers;
+using Caching.Services;
 using LibraryApi.Domain.Dto.Publisher;
-using LibraryApi.Domain.Dtos;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +23,12 @@ namespace LibraryApi.Controllers
         PublisherResponse,
         LibraryFilterRequest>
     {
-        public PublisherController(ILibraryEntityService<Publisher> entityService, IMapper mapper) : base(entityService, mapper)
+        public PublisherController(
+            ILibraryEntityService<Publisher> entityService,
+            ICacheService cacheService,
+            ICachingHelper cachingHelper,
+            IMapper mapper
+            ) : base(entityService, cacheService, cachingHelper, mapper)
         {
         }
     }

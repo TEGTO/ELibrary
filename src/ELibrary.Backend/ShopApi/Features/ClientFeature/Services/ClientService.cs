@@ -1,15 +1,13 @@
-﻿using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Shop;
-using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
+using LibraryShopEntities.Repositories.Shop;
 
 namespace ShopApi.Features.ClientFeature.Services
 {
     public class ClientService : IClientService
     {
-        private readonly IDatabaseRepository<LibraryShopDbContext> repository;
+        private readonly IClientRepository repository;
 
-        public ClientService(IDatabaseRepository<LibraryShopDbContext> repository)
+        public ClientService(IClientRepository repository)
         {
             this.repository = repository;
         }
@@ -18,30 +16,32 @@ namespace ShopApi.Features.ClientFeature.Services
 
         public async Task<Client?> GetClientByUserIdAsync(string userId, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Client>(cancellationToken);
-
-            var client = await queryable.AsNoTracking().FirstOrDefaultAsync(t =>
-            t.UserId == userId,
-            cancellationToken);
-
-            return client;
+            return await repository.GetClientByUserIdAsync(userId, cancellationToken);
         }
         public async Task<Client> CreateClientAsync(Client client, CancellationToken cancellationToken)
         {
-            return await repository.AddAsync(client, cancellationToken);
+            return await repository.CreateClientAsync(client, cancellationToken);
         }
         public async Task<Client> UpdateClientAsync(Client client, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Client>(cancellationToken);
-            var entityInDb = await queryable.FirstAsync(x => x.Id == client.Id, cancellationToken);
-            entityInDb.Copy(client);
-            return await repository.UpdateAsync(client, cancellationToken);
+            var clientInDb = await repository.GetClientByUserIdAsync(client.UserId, cancellationToken);
+
+            if (clientInDb == null)
+            {
+                throw new InvalidOperationException("Update failed. Client is null!");
+            }
+
+            clientInDb.Copy(client);
+            return await repository.UpdateClientAsync(clientInDb, cancellationToken);
         }
-        public async Task DeleteClientAsync(string id, CancellationToken cancellationToken)
+        public async Task DeleteClientAsync(string userId, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Client>(cancellationToken);
-            var entityInDb = await queryable.FirstAsync(x => x.Id == id, cancellationToken);
-            await repository.DeleteAsync(entityInDb, cancellationToken);
+            var client = await repository.GetClientByUserIdAsync(userId, cancellationToken);
+
+            if (client != null)
+            {
+                await repository.DeleteClientAsync(client, cancellationToken);
+            }
         }
 
         #endregion

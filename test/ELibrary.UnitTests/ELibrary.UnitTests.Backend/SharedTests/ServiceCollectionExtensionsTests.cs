@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Shared.Tests
 {
@@ -16,22 +13,7 @@ namespace Shared.Tests
         public void SetUp()
         {
             services = new ServiceCollection();
-            services.ConfigureCustomInvalidModelStateResponseControllers();
             serviceProvider = services.BuildServiceProvider();
-        }
-        [Test]
-        public void ConfigureCustomInvalidModelStateResponseControllers_InvalidModelState_ShouldThrowValidationException()
-        {
-            // Arrange
-            var context = new ActionContext();
-            var modelState = new ModelStateDictionary();
-            modelState.AddModelError("TestField", "Test error message");
-            context.ModelState.Merge(modelState);
-            var apiBehaviorOptions = serviceProvider.GetService<IConfigureOptions<ApiBehaviorOptions>>();
-            var options = new ApiBehaviorOptions();
-            apiBehaviorOptions.Configure(options);
-            // Act & Assert
-            Assert.Throws<ValidationException>(() => options.InvalidModelStateResponseFactory(context));
         }
         [Test]
         public void AddSharedFluentValidation_ShouldRegisterFluentValidationServices()

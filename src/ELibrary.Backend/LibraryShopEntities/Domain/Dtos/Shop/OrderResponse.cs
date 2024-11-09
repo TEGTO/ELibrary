@@ -15,6 +15,6 @@ namespace LibraryShopEntities.Domain.Dtos.Shop
         public PaymentMethod PaymentMethod { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; }
         public ClientResponse Client { get; set; }
-        public List<BookListingResponse> OrderBooks { get; set; }
+        public List<OrderBookResponse> OrderBooks { get; set; }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using Authentication.Identity;
-using AutoMapper;
+using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
-using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShopApi.Features.CartFeature.Command.AddBookToCart;
+using ShopApi.Features.CartFeature.Command.DeleteBooksFromCart;
+using ShopApi.Features.CartFeature.Command.GetCart;
+using ShopApi.Features.CartFeature.Command.GetInCartAmount;
+using ShopApi.Features.CartFeature.Command.UpdateCartBookInCart;
 using ShopApi.Features.CartFeature.Dtos;
-using ShopApi.Features.CartFeature.Services;
 using System.Security.Claims;
 
 namespace ShopApi.Controllers
@@ -16,78 +19,74 @@ namespace ShopApi.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly IMapper mapper;
-        private readonly ICartService cartService;
+        private readonly IMediator mediator;
+        private readonly ICacheService cacheService;
 
-        public CartController(IMapper mapper, ICartService cartService)
+        public CartController(IMediator mediator, ICacheService cacheService)
         {
-            this.mapper = mapper;
-            this.cartService = cartService;
+            this.mediator = mediator;
+            this.cacheService = cacheService;
         }
 
         #region EndPoints
 
-        [ResponseCache(Duration = 1)]
         [HttpGet]
         public async Task<ActionResult<CartResponse>> GetCart(CancellationToken cancellationToken)
         {
-            var cart = await GetCartAsync(true, cancellationToken);
-            return Ok(mapper.Map<CartResponse>(cart));
-        }
-        [ResponseCache(Duration = 1)]
-        [HttpGet("amount")]
-        public async Task<ActionResult<CartResponse>> GetInCartAmount(CancellationToken cancellationToken)
-        {
-            var cart = await GetCartAsync(true, cancellationToken);
-            int amount = await cartService.GetInCartAmountAsync(cart, cancellationToken);
-            return Ok(amount);
-        }
-        [HttpPost("cartbook")]
-        public async Task<ActionResult<BookListingResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)
-        {
-            var cart = await GetCartAsync(false, cancellationToken);
-            var cartBook = mapper.Map<CartBook>(request);
-            var response = await cartService.AddCartBookAsync(cart, cartBook, cancellationToken);
-            return Ok(mapper.Map<BookListingResponse>(response));
-        }
-        [HttpPut("cartbook")]
-        public async Task<ActionResult<BookListingResponse>> UpdateCartBookInCart(UpdateCartBookRequest request, CancellationToken cancellationToken)
-        {
-            var cart = await GetCartAsync(false, cancellationToken);
-            var cartBook = mapper.Map<CartBook>(request);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetCart_{userId}";
+            var cachedResponse = cacheService.Get<CartResponse>(cacheKey);
 
-            if (!await cartService.CheckBookCartAsync(cart, cartBook.Id, cancellationToken))
+            if (cachedResponse == null)
             {
-                return BadRequest("Cart book is not found in the cart!");
+                var response = await mediator.Send(new GetCartQuery(userId), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }
 
-            var response = await cartService.UpdateCartBookAsync(cart, cartBook, cancellationToken);
-            return Ok(mapper.Map<BookListingResponse>(response));
+            return Ok(cachedResponse);
+        }
+        [HttpGet("amount")]
+        public async Task<ActionResult<int>> GetInCartAmount(CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cacheKey = $"GetInCartAmount_{userId}";
+            var cachedResponse = cacheService.Get<int?>(cacheKey);
+
+            if (cachedResponse == null)
+            {
+                var response = await mediator.Send(new GetInCartAmountQuery(userId), cancellationToken);
+                cachedResponse = response;
+
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+            }
+
+            return Ok(cachedResponse);
+        }
+        [HttpPost("cartbook")]
+        public async Task<ActionResult<CartBookResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new AddBookToCartCommand(userId, request), cancellationToken);
+
+            return Ok(response);
+        }
+        [HttpPut("cartbook")]
+        public async Task<ActionResult<CartBookResponse>> UpdateCartBookInCart(UpdateCartBookRequest request, CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new UpdateCartBookInCartCommand(userId, request), cancellationToken);
+
+            return Ok(response);
         }
         [HttpPut]
         public async Task<ActionResult<CartResponse>> DeleteBooksFromCart(DeleteCartBookFromCartRequest[] requests, CancellationToken cancellationToken)
         {
-            var books = requests.Select(mapper.Map<Book>);
-            var cart = await GetCartAsync(false, cancellationToken);
-            var response = await cartService.DeleteBooksFromCartAsync(cart, books.ToArray(), cancellationToken);
-            return Ok(mapper.Map<CartResponse>(response));
-        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new DeleteBooksFromCartCommand(userId, requests), cancellationToken);
 
-        #endregion
-
-        #region Private Helpers
-
-        private async Task<Cart> GetCartAsync(bool includeProducts, CancellationToken cancellationToken)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cart = await cartService.GetCartByUserIdAsync(userId, includeProducts, cancellationToken);
-
-            if (cart == null)
-            {
-                cart = await cartService.CreateCartAsync(userId, cancellationToken);
-            }
-
-            return cart;
+            return Ok(response);
         }
 
         #endregion

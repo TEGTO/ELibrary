@@ -1,201 +1,59 @@
-﻿using LibraryApi.Domain.Dtos;
-using LibraryShopEntities.Data;
-using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
-using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
+﻿using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Repositories.Library;
 
 namespace LibraryApi.Services
 {
-    public class BookService : LibraryEntityService<Book>
+    public class BookService : LibraryEntityService<Book>, IBookService
     {
-        public BookService(IDatabaseRepository<LibraryShopDbContext> repository) : base(repository)
+        public BookService(IBookRepository repository) : base(repository)
         {
         }
 
-        public override async Task<Book?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task RaisePopularityAsync(List<int> ids, CancellationToken cancellationToken)
         {
-            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
-
-            return await queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
-        }
-        public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
-        {
-            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
-            List<Book> paginatedBooks = new List<Book>();
-
-            var query = queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .AsNoTracking();
-
-            query = ApplyFilter(query, req);
-
-            var sortedBooks = await ApplySortingAsync(query, req, cancellationToken);
-
-            paginatedBooks.AddRange(sortedBooks
-                  .Skip((req.PageNumber - 1) * req.PageSize)
-                  .Take(req.PageSize));
-
-            return paginatedBooks;
-        }
-        public override async Task<int> GetItemTotalAmountAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
-        {
-            var query = (await repository.GetQueryableAsync<Book>(cancellationToken)).AsNoTracking();
-
-            query = ApplyFilter(query, req);
-
-            return await query.CountAsync(cancellationToken);
-        }
-        public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
-        {
-            book = await repository.AddAsync(book, cancellationToken);
-
-            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
-
-            var entityInDb = await queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .FirstAsync(b => b.Id == book.Id, cancellationToken);
-            return entityInDb;
-        }
-        public override async Task<Book> UpdateAsync(Book entity, CancellationToken cancellationToken)
-        {
-            var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
-
-            var entityInDb = await queryable.FirstAsync(b => b.Id == entity.Id, cancellationToken);
-
-            entityInDb.Copy(entity);
-
-            await repository.UpdateAsync(entityInDb, cancellationToken);
-
-            entityInDb = await queryable
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .Include(b => b.Publisher)
-                .FirstAsync(b => b.Id == entityInDb.Id, cancellationToken);
-            return entityInDb;
-        }
-
-        private IQueryable<Book> ApplyFilter(IQueryable<Book> query, LibraryFilterRequest req)
-        {
-            if (req is BookFilterRequest bookFilter)
+            if (ids.Any())
             {
-                if (bookFilter.OnlyInStock.HasValue && bookFilter.OnlyInStock.Value)
-                {
-                    query = query.Where(b => b.StockAmount > 0);
-                }
-                if (!string.IsNullOrEmpty(bookFilter.ContainsName))
-                {
-                    query = query.Where(b => b.Name.Contains(bookFilter.ContainsName));
-                }
-                if (bookFilter.AuthorId.HasValue)
-                {
-                    query = query.Where(b => b.AuthorId == bookFilter.AuthorId.Value);
-                }
-                if (bookFilter.GenreId.HasValue)
-                {
-                    query = query.Where(b => b.GenreId == bookFilter.GenreId.Value);
-                }
-                if (bookFilter.PublisherId.HasValue)
-                {
-                    query = query.Where(b => b.PublisherId == bookFilter.PublisherId.Value);
-                }
-                if (bookFilter.CoverType.HasValue && bookFilter.CoverType != CoverType.Any)
-                {
-                    query = query.Where(b => b.CoverType == bookFilter.CoverType);
-                }
-                if (bookFilter.PublicationFrom.HasValue)
-                {
-                    query = query.Where(b => b.PublicationDate >= bookFilter.PublicationFrom);
-                }
-                if (bookFilter.PublicationTo.HasValue)
-                {
-                    query = query.Where(b => b.PublicationDate <= bookFilter.PublicationTo);
-                }
-                if (bookFilter.MinPrice.HasValue)
-                {
-                    query = query.Where(b => b.Price >= bookFilter.MinPrice);
-                }
-                if (bookFilter.MaxPrice.HasValue)
-                {
-                    query = query.Where(b => b.Price <= bookFilter.MaxPrice);
-                }
-                if (bookFilter.MinPageAmount.HasValue)
-                {
-                    query = query.Where(b => b.PageAmount >= bookFilter.MinPageAmount);
-                }
-                if (bookFilter.MaxPageAmount.HasValue)
-                {
-                    query = query.Where(b => b.PageAmount <= bookFilter.MaxPageAmount);
-                }
-                return query;
-            }
-            return query
-                .Where(b => b.Name.Contains(req.ContainsName));
-        }
+                var existingPopularities = (await ((IBookRepository)repository)
+                    .GetPopularitiesByIdsAsync(ids, cancellationToken))
+                    .ToDictionary(bp => bp.BookId);
 
-        private async Task<IEnumerable<Book>> ApplySortingAsync(IQueryable<Book> query, LibraryFilterRequest req, CancellationToken cancellationToken)
-        {
-            if (req is BookFilterRequest bookFilter)
-            {
-                if (!bookFilter.Sorting.HasValue)
+                var popularitiesToUpdate = new List<BookPopularity>();
+
+                foreach (var id in ids)
                 {
-                    bookFilter.Sorting = BookSorting.MostPopular;
-                }
-                var books = await query
-                    .AsNoTracking()
-                    .ToListAsync(cancellationToken);
-
-                var bookIds = books.Select(x => x.Id);
-
-                var orderBooksCountQuery = await (await repository.GetQueryableAsync<Order>(cancellationToken))
-                    .SelectMany(o => o.OrderBooks)
-                    .Where(ob => bookIds.Contains(ob.BookId))
-                    .GroupBy(ob => ob.BookId)
-                    .Select(g => new { BookId = g.Key, OrderCount = g.Count() })
-                    .AsNoTracking()
-                    .ToListAsync(cancellationToken);
-
-                var orderCountDict = orderBooksCountQuery.ToDictionary(x => x.BookId, x => x.OrderCount);
-
-                var bookToSort = books
-                    .Select(book => new
+                    if (existingPopularities.TryGetValue(id, out var popularity))
                     {
-                        Book = book,
-                        OrderCount = orderCountDict.ContainsKey(book.Id) ? orderCountDict[book.Id] : 0
-                    });
-
-                switch (bookFilter.Sorting.Value)
-                {
-                    case BookSorting.MostPopular:
-                        return bookToSort
-                              .OrderByDescending(b => b.Book.StockAmount > 0)
-                              .ThenByDescending(b => b.OrderCount)
-                              .Select(b => b.Book)
-                              .ToList();
-                    case BookSorting.LeastPopular:
-                        return bookToSort
-                              .OrderByDescending(b => b.Book.StockAmount > 0)
-                              .ThenBy(b => b.OrderCount)
-                              .Select(b => b.Book)
-                              .ToList();
-                    default:
-                        break;
+                        popularity.Popularity += 1;
+                    }
+                    else
+                    {
+                        popularitiesToUpdate.Add(new BookPopularity { BookId = id, Popularity = 1 });
+                    }
                 }
-            }
 
-            return query
-                .Where(b => b.Name.Contains(req.ContainsName))
-                .OrderByDescending(b => b.Id)
-                .OrderByDescending(b => b.StockAmount > 0);
+                popularitiesToUpdate.AddRange(existingPopularities.Values);
+
+                await ((IBookRepository)repository).UpdatePopularityRangeAsync(popularitiesToUpdate, cancellationToken);
+            }
+        }
+        public async Task ChangeBookStockAmount(Dictionary<int, int> changeRequests, CancellationToken cancellationToken)
+        {
+            if (changeRequests.Any())
+            {
+                var bookIds = changeRequests.Keys.ToList();
+
+                var books = await repository.GetByIdsAsync(bookIds, cancellationToken);
+
+                foreach (var book in books)
+                {
+                    if (changeRequests.TryGetValue(book.Id, out var changeAmount))
+                    {
+                        book.StockAmount += changeAmount;
+                    }
+                }
+
+                await repository.UpdateRangeAsync(books.ToArray(), cancellationToken);
+            }
         }
     }
 }

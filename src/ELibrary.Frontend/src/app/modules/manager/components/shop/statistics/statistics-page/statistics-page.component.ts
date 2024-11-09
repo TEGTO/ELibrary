@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { BookStatistics, CurrencyPipeApplier, GetBookStatistics, getDefaultGetBookStatistics } from '../../../../../shared';
+import { CurrencyPipeApplier, getDefaultGetShopStatistics, GetShopStatistics, ShopStatistics } from '../../../../../shared';
 import { StatisticsService } from '../../../../../shop';
 
 @Component({
@@ -10,7 +10,7 @@ import { StatisticsService } from '../../../../../shop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsPageComponent implements OnInit {
-  statistics$!: Observable<BookStatistics>;
+  statistics$!: Observable<ShopStatistics>;
 
   constructor(
     private readonly currenctyApplier: CurrencyPipeApplier,
@@ -18,11 +18,11 @@ export class StatisticsPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getBookStatistics(getDefaultGetBookStatistics())
+    this.getShopStatistics(getDefaultGetShopStatistics())
   }
 
-  getBookStatistics(getStats: GetBookStatistics) {
-    this.statistics$ = this.statisticsService.getBookStatistics(getStats);
+  getShopStatistics(getStats: GetShopStatistics) {
+    this.statistics$ = this.statisticsService.getShopStatistics(getStats);
     this.statistics$.pipe(
       tap(x => {
         console.log(x.orderAmountInDays);

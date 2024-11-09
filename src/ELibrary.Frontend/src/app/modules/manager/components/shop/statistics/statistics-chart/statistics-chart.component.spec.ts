@@ -111,13 +111,13 @@ describe('StatisticsChartComponent', () => {
   describe('labelFormatter', () => {
     it('should format labels correctly for daily data', () => {
       component.multiMonth = false;
-      const result = component.labelFormatter('', new Date('2024-09-28').getTime());
+      const result = component['labelFormatter']('', new Date('2024-09-28').getTime());
       expect(result).toBe('28 Sep');
     });
 
     it('should format labels correctly for multi-month data', () => {
       component.multiMonth = true;
-      const result = component.labelFormatter('', new Date('2024-09-28').getTime());
+      const result = component['labelFormatter']('', new Date('2024-09-28').getTime());
       expect(result).toBe('Sep 2024');
     });
   });
@@ -125,13 +125,13 @@ describe('StatisticsChartComponent', () => {
   describe('tooltipformatter', () => {
     it('should format tooltips correctly for daily data', () => {
       component.multiMonth = false;
-      const result = component.tooltipformatter(new Date('2024-09-28').getTime());
+      const result = component['tooltipformatter'](new Date('2024-09-28').getTime());
       expect(result).toBe('28 Sep');
     });
 
     it('should format tooltips correctly for multi-month data', () => {
       component.multiMonth = true;
-      const result = component.tooltipformatter(new Date('2024-09-28').getTime());
+      const result = component['tooltipformatter'](new Date('2024-09-28').getTime());
       expect(result).toBe('Sep 2024');
     });
   });

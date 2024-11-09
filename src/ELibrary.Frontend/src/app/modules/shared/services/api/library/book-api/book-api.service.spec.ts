@@ -44,6 +44,7 @@ describe('BookApiService', () => {
       pageAmount: 100,
       coverImgUrl: "",
       stockAmount: 100,
+      description: null,
       publicationDate: new Date('1949-06-08'),
       author: getDefaultAuthor(),
       genre: getDefaultGenre(),
@@ -128,17 +129,20 @@ describe('BookApiService', () => {
   it('should create a new book', () => {
     const expectedReq = `/api/book`;
     const request: CreateBookRequest = {
+      ...getDefaultBook(),
       name: '1984',
       publicationDate: new Date('1949-06-08'),
       price: 100,
       coverType: 0,
       pageAmount: 100,
       coverImgUrl: "",
+      description: null,
       publisherId: 1,
       authorId: 1,
       genreId: 1,
     };
     const response: Book = {
+      ...getDefaultBook(),
       id: 1,
       name: '1984',
       price: 100,
@@ -146,6 +150,7 @@ describe('BookApiService', () => {
       pageAmount: 100,
       coverImgUrl: "",
       stockAmount: 100,
+      description: null,
       publicationDate: new Date('1949-06-08'),
       author: getDefaultAuthor(),
       genre: getDefaultGenre(),
@@ -172,11 +177,13 @@ describe('BookApiService', () => {
       coverType: 0,
       pageAmount: 100,
       coverImgUrl: "",
+      description: null,
       publisherId: 1,
       authorId: 1,
       genreId: 1,
     };
     const response: Book = {
+      ...getDefaultBook(),
       id: 1,
       name: '1984',
       price: 100,
@@ -185,6 +192,7 @@ describe('BookApiService', () => {
       coverImgUrl: "",
       stockAmount: 100,
       publicationDate: new Date('1949-06-08'),
+      description: null,
       author: getDefaultAuthor(),
       genre: getDefaultGenre(),
       publisher: getDefaultPublisher(),

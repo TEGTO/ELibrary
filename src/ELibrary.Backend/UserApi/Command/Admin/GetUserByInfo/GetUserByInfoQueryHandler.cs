@@ -5,7 +5,7 @@ using UserApi.Services;
 
 namespace UserApi.Command.Admin.GetUserByInfo
 {
-    public class GetUserByInfoQueryHandler : IRequestHandler<GetUserByInfoQuery, AdminUserResponse>
+    public class GetUserByInfoQueryHandler : IRequestHandler<GetUserByInfoQuery, AdminUserResponse?>
     {
         private readonly IUserService userService;
         private readonly IUserAuthenticationMethodService authMethodService;
@@ -18,13 +18,13 @@ namespace UserApi.Command.Admin.GetUserByInfo
             this.mapper = mapper;
         }
 
-        public async Task<AdminUserResponse> Handle(GetUserByInfoQuery command, CancellationToken cancellationToken)
+        public async Task<AdminUserResponse?> Handle(GetUserByInfoQuery command, CancellationToken cancellationToken)
         {
             var user = await userService.GetUserByUserInfoAsync(command.Info, cancellationToken);
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User is not found!");
+                return null;
             }
 
             var response = mapper.Map<AdminUserResponse>(user);

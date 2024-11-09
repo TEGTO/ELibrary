@@ -14,6 +14,7 @@ namespace LibraryApi.Validators.Book
             RuleFor(x => x.PageAmount).NotNull().GreaterThan(0);
             RuleFor(x => x.CoverType).NotNull().NotEqual(CoverType.Any);
             RuleFor(x => x.CoverImgUrl).NotNull().NotEmpty().MaximumLength(1024);
+            RuleFor(x => x.Description).MaximumLength(4096).When(x => x.Description != null);
             RuleFor(x => x.AuthorId).NotNull().NotNull().GreaterThan(0);
             RuleFor(x => x.GenreId).NotNull().NotNull().GreaterThan(0);
             RuleFor(x => x.PublisherId).NotNull().GreaterThan(0);

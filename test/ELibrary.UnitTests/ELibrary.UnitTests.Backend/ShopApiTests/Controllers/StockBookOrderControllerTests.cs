@@ -1,45 +1,57 @@
-﻿using AutoMapper;
+﻿using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
-using LibraryShopEntities.Domain.Entities.Shop;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Domain.Dtos;
+using Pagination;
+using ShopApi.Features.StockBookOrderFeature.Command.CreateStockBookOrder;
+using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderAmount;
+using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById;
+using ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderPaginated;
 using ShopApi.Features.StockBookOrderFeature.Dtos;
-using ShopApi.Features.StockBookOrderFeature.Services;
+using System.Security.Claims;
 
 namespace ShopApi.Controllers.Tests
 {
     [TestFixture]
-    public class StockBookOrderControllerTests
+    internal class StockBookOrderControllerTests
     {
-        private Mock<IMapper> mapperMock;
-        private Mock<IStockBookOrderService> stockBookOrderServiceMock;
+        private Mock<IMediator> mediatorMock;
+        private Mock<ICacheService> mockCacheService;
         private StockBookOrderController stockBookOrderController;
-        private CancellationToken cancellationToken;
 
         [SetUp]
         public void SetUp()
         {
-            mapperMock = new Mock<IMapper>();
-            stockBookOrderServiceMock = new Mock<IStockBookOrderService>();
-            stockBookOrderController = new StockBookOrderController(mapperMock.Object, stockBookOrderServiceMock.Object);
-            cancellationToken = CancellationToken.None;
+            mediatorMock = new Mock<IMediator>();
+            mockCacheService = new Mock<ICacheService>();
+
+            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
+
+            stockBookOrderController = new StockBookOrderController(mediatorMock.Object, mockCacheService.Object);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            }, "mock"));
+
+            stockBookOrderController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
         }
 
         [Test]
-        public async Task GetStockOrderById_WhenOrderExists_ReturnsMappedOrder()
+        public async Task GetStockOrderById_WhenOrderExists_ReturnsOrder()
         {
             // Arrange
-            var stockBookOrder = new StockBookOrder { Id = 1, ClientId = "client-1" };
             var stockBookOrderResponse = new StockBookOrderResponse { Id = 1 };
-            stockBookOrderServiceMock
-                .Setup(s => s.GetStockBookOrderByIdAsync(1, cancellationToken))
-                .ReturnsAsync(stockBookOrder);
-            mapperMock
-                .Setup(m => m.Map<StockBookOrderResponse>(stockBookOrder))
-                .Returns(stockBookOrderResponse);
+            mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetStockOrderByIdQuery>(), CancellationToken.None))
+                .ReturnsAsync(stockBookOrderResponse);
             // Act
-            var result = await stockBookOrderController.GetStockOrderById(1, cancellationToken);
+            var result = await stockBookOrderController.GetStockOrderById(1, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -49,38 +61,45 @@ namespace ShopApi.Controllers.Tests
         public async Task GetStockOrderById_WhenOrderDoesNotExist_ReturnsNotFound()
         {
             // Arrange
-            stockBookOrderServiceMock
-                .Setup(s => s.GetStockBookOrderByIdAsync(1, cancellationToken))
-                .ReturnsAsync((StockBookOrder)null);
-            var result = await stockBookOrderController.GetStockOrderById(1, cancellationToken);
+            mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetStockOrderByIdQuery>(), CancellationToken.None))
+                .ReturnsAsync((StockBookOrderResponse)null);
+            // Act
+            var result = await stockBookOrderController.GetStockOrderById(1, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
+            Assert.IsInstanceOf<NotFoundResult>(result.Result);
         }
         [Test]
-        public async Task GetStockOrderPaginated_WithPagination_ReturnsMappedOrders()
+        public async Task GetStockOrderAmount_WhenCalled_ReturnsOkWithAmount()
+        {
+            // Arrange
+            var expectedAmount = 5;
+            mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetStockOrderAmountQuery>(), CancellationToken.None))
+                .ReturnsAsync(expectedAmount);
+            // Act
+            var result = await stockBookOrderController.GetStockOrderAmount(CancellationToken.None);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.That(okResult?.Value, Is.EqualTo(expectedAmount));
+            mediatorMock.Verify(m => m.Send(It.IsAny<GetStockOrderAmountQuery>(), CancellationToken.None), Times.Once);
+        }
+        [Test]
+        public async Task GetStockOrderPaginated_WithPagination_ReturnsPaginatedOrders()
         {
             // Arrange
             var paginationRequest = new PaginationRequest { PageNumber = 1, PageSize = 2 };
-            var stockBookOrders = new List<StockBookOrder>
-            {
-                new StockBookOrder { Id = 1 },
-                new StockBookOrder { Id = 2 }
-            };
             var stockBookOrderResponses = new List<StockBookOrderResponse>
             {
                 new StockBookOrderResponse { Id = 1 },
                 new StockBookOrderResponse { Id = 2 }
             };
-
-            stockBookOrderServiceMock
-                .Setup(s => s.GetPaginatedStockBookOrdersAsync(paginationRequest, cancellationToken))
-                .ReturnsAsync(stockBookOrders);
-            mapperMock
-                .Setup(m => m.Map<StockBookOrderResponse>(stockBookOrders[0])).Returns(stockBookOrderResponses[0]);
-            mapperMock
-                .Setup(m => m.Map<StockBookOrderResponse>(stockBookOrders[1])).Returns(stockBookOrderResponses[1]);
+            mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetStockOrderPaginatedQuery>(), CancellationToken.None))
+                .ReturnsAsync(stockBookOrderResponses);
             // Act
-            var result = await stockBookOrderController.GetStockOrderPaginated(paginationRequest, cancellationToken);
+            var result = await stockBookOrderController.GetStockOrderPaginated(paginationRequest, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
@@ -90,42 +109,19 @@ namespace ShopApi.Controllers.Tests
             Assert.That(returnedOrders.ElementAt(1).Id, Is.EqualTo(2));
         }
         [Test]
-        public async Task GetStockOrderAmount_WhenCalled_ReturnsOkWithAmount()
-        {
-            // Arrange
-            var expectedAmount = 5;
-            stockBookOrderServiceMock
-                .Setup(s => s.GetStockBookAmountAsync(cancellationToken))
-                .ReturnsAsync(expectedAmount);
-            // Act
-            var result = await stockBookOrderController.GetStockOrderAmount(cancellationToken);
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(expectedAmount));
-            stockBookOrderServiceMock.Verify(s => s.GetStockBookAmountAsync(cancellationToken), Times.Once);
-        }
-        [Test]
         public async Task CreateStockBookOrder_ValidRequest_ReturnsCreatedOrder()
         {
             // Arrange
             var createRequest = new CreateStockBookOrderRequest();
-            var stockBookOrder = new StockBookOrder { Id = 1 };
             var stockBookOrderResponse = new StockBookOrderResponse { Id = 1 };
-            mapperMock
-                .Setup(m => m.Map<StockBookOrder>(createRequest))
-                .Returns(stockBookOrder);
-            stockBookOrderServiceMock
-                .Setup(s => s.AddStockBookOrderAsync(stockBookOrder, cancellationToken))
-                .ReturnsAsync(stockBookOrder);
-            mapperMock
-                .Setup(m => m.Map<StockBookOrderResponse>(stockBookOrder))
-                .Returns(stockBookOrderResponse);
+            mediatorMock
+                .Setup(m => m.Send(It.IsAny<CreateStockBookOrderCommand>(), CancellationToken.None))
+                .ReturnsAsync(stockBookOrderResponse);
             // Act
-            var result = await stockBookOrderController.CreateStockBookOrder(createRequest, cancellationToken);
+            var result = await stockBookOrderController.CreateStockBookOrder(createRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<CreatedResult>(result.Result);
-            var okResult = result.Result as CreatedResult;
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
             Assert.That(okResult?.Value, Is.EqualTo(stockBookOrderResponse));
         }
     }

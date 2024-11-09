@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ExceptionHandling;
+using Microsoft.AspNetCore.Identity;
 using Moq;
-using Shared.Exceptions;
 using UserApi.Services;
 using UserEntities.Domain.Entities;
 

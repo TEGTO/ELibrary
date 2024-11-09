@@ -1,8 +1,8 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
+using ExceptionHandling;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Shared.Exceptions;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Responses;
 using UserApi.Services;

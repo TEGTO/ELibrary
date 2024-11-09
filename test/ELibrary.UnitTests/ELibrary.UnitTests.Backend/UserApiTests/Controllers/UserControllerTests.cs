@@ -1,7 +1,7 @@
-﻿using MediatR;
+﻿using ExceptionHandling;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Shared.Exceptions;
 using UserApi.Command.Admin.AdminDeleteUser;
 using UserApi.Command.Admin.AdminUpdateUser;
 using UserApi.Command.Admin.GetPaginatedUsers;

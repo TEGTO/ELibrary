@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BookStatistics, GetBookStatistics, mapGetBookStatisticsToGetBookStatisticsRequest, StatisticsApiService } from '../../../shared';
+import { GetShopStatistics, mapGetShopStatisticsToGetShopStatisticsRequest, ShopStatistics, StatisticsApiService } from '../../../shared';
 import { StatisticsService } from './statistics-service';
 
 @Injectable({
@@ -10,8 +10,8 @@ export class StatisticsControllerService implements StatisticsService {
 
   constructor(private readonly apiService: StatisticsApiService) { }
 
-  getBookStatistics(getStats: GetBookStatistics): Observable<BookStatistics> {
-    const request = mapGetBookStatisticsToGetBookStatisticsRequest(getStats);
-    return this.apiService.getBookStatistics(request);
+  getShopStatistics(getStats: GetShopStatistics): Observable<ShopStatistics> {
+    const request = mapGetShopStatisticsToGetShopStatisticsRequest(getStats);
+    return this.apiService.getShopStatistics(request);
   }
 }

@@ -19,6 +19,7 @@ export class BookChangeDialogComponent implements OnInit {
   get pageAmountInput() { return this.formGroup.get('pageAmount')! as FormControl; }
   get stockAmountInput() { return this.formGroup.get('stockAmount')! as FormControl; }
   get coverImgUrlInput() { return this.formGroup.get('coverImgUrl')! as FormControl; }
+  get descriptionInput() { return this.formGroup.get('description')! as FormControl; }
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private readonly book: Book | null,
@@ -43,6 +44,7 @@ export class BookChangeDialogComponent implements OnInit {
       pageAmount: new FormControl(this.book?.pageAmount, [Validators.required, Validators.min(1)]),
       stockAmount: (new FormControl(this.book?.stockAmount ?? 0, [Validators.required, Validators.min(0)])),
       coverImgUrl: new FormControl(this.book?.coverImgUrl, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(1024)]),
+      description: new FormControl(this.book?.description, [notEmptyString, Validators.maxLength(4096)]),
       author: new FormControl(this.book?.author, [Validators.required]),
       genre: new FormControl(this.book?.genre, [Validators.required]),
       publisher: new FormControl(this.book?.publisher, [Validators.required]),
@@ -65,6 +67,7 @@ export class BookChangeDialogComponent implements OnInit {
         pageAmount: formValues.pageAmount,
         stockAmount: formValues.stockAmount,
         coverImgUrl: formValues.coverImgUrl,
+        description: formValues.description,
         author: formValues.author,
         genre: formValues.genre,
         publisher: formValues.genre,

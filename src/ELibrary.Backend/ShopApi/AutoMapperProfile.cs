@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Library;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Domain.Entities.Shop;
-using Shared.Domain.Dtos;
+using LibraryShopEntities.Filters;
+using Pagination;
+using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.ClientFeature.Dtos;
 using ShopApi.Features.OrderFeature.Dtos;
@@ -28,8 +31,8 @@ namespace ShopApi
 
             CreateMap<Cart, CartResponse>();
 
-            CreateMap<CartBook, BookListingResponse>();
-            CreateMap<OrderBook, BookListingResponse>();
+            CreateMap<CartBook, CartBookResponse>();
+            CreateMap<OrderBook, OrderBookResponse>();
             CreateMap<OrderBookRequest, OrderBook>();
 
             CreateMap<AddBookToCartRequest, CartBook>();
@@ -47,11 +50,16 @@ namespace ShopApi
             CreateMap<StockBookChangeRequest, StockBookChange>();
             CreateMap<StockBookChange, StockBookChangeResponse>();
 
-            CreateMap<StatisticsBook, Book>();
-            CreateMap<GetBookStatisticsRequest, GetBookStatistics>();
-            CreateMap<BookStatistics, BookStatisticsResponse>();
+            CreateMap<StatisticsBookRequest, StatisticsBook>();
+            CreateMap<GetShopStatisticsRequest, GetShopStatisticsFilter>();
+            CreateMap<ShopStatistics, ShopStatisticsResponse>();
 
             CreateMap<PaginationRequest, GetOrdersFilter>();
+
+            CreateMap<StockBookChange, UpdateBookStockAmountRequest>();
+
+            CreateMap<ChatAdvisorResponse, AdvisorResponse>();
+            CreateMap<AdvisorQueryRequest, ChatAdvisorQueryRequest>();
         }
     }
 }

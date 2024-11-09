@@ -3,6 +3,7 @@ using Authentication.OAuth;
 using Authentication.OAuth.Google;
 using Authentication.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +13,7 @@ namespace Authentication
 {
     public static class CustomAuthExtension
     {
-        public static void ConfigureIdentityServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = new JwtSettings()
             {
@@ -43,8 +44,9 @@ namespace Authentication
                     policy => policy.RequireRole(Roles.ADMINISTRATOR));
             });
             services.AddCustomAuthentication(jwtSettings);
+            return services;
         }
-        public static void AddCustomAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
+        public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
         {
             services.AddAuthentication(options =>
             {
@@ -64,6 +66,13 @@ namespace Authentication
                     ValidateIssuerSigningKey = true
                 };
             });
+            return services;
+        }
+        public static IApplicationBuilder UseIdentity(this IApplicationBuilder app)
+        {
+            app.UseAuthentication();
+            app.UseAuthorization();
+            return app;
         }
     }
 }

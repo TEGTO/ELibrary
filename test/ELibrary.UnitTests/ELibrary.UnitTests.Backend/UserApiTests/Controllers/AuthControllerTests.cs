@@ -112,8 +112,8 @@ namespace UserApi.Controllers.Tests
             // Act
             var result = await authController.AdminRegister(adminRequest, CancellationToken.None);
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-            var okResult = result.Result as OkObjectResult;
+            Assert.IsInstanceOf<CreatedAtActionResult>(result.Result);
+            var okResult = result.Result as CreatedAtActionResult;
             Assert.That(okResult?.Value, Is.EqualTo(adminResponse));
         }
     }
