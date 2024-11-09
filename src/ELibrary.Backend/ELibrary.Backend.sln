@@ -49,27 +49,31 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserApi.IntegrationTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopApi.IntegrationTests", "..\..\test\ELibrary.IntegrationTests\ShopApi.IntegrationTests\ShopApi.IntegrationTests.csproj", "{029E3125-001D-4F01-AF9B-CF2F881CA635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagination", "Pagination\Pagination.csproj", "{06CCA545-0223-4919-B4B4-9078290D4AC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pagination", "Pagination\Pagination.csproj", "{06CCA545-0223-4919-B4B4-9078290D4AC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaginationTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\PaginationTests\PaginationTests.csproj", "{C86C0F42-DB57-4F37-8FB3-E30A70C26F04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaginationTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\PaginationTests\PaginationTests.csproj", "{C86C0F42-DB57-4F37-8FB3-E30A70C26F04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionHandling", "ExceptionHandling\ExceptionHandling.csproj", "{590CDD1A-2FB6-4AB0-B682-8AB014BBAFD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionHandling", "ExceptionHandling\ExceptionHandling.csproj", "{590CDD1A-2FB6-4AB0-B682-8AB014BBAFD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionHandlingTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\ExceptionHandlingTests\ExceptionHandlingTests.csproj", "{097D6DE6-51B4-4F6C-8A7E-3CD4EE17DF45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionHandlingTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\ExceptionHandlingTests\ExceptionHandlingTests.csproj", "{097D6DE6-51B4-4F6C-8A7E-3CD4EE17DF45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caching", "Caching\Caching.csproj", "{1D74782D-C4B5-4D0D-B705-E79960F44EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caching", "Caching\Caching.csproj", "{1D74782D-C4B5-4D0D-B705-E79960F44EAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingTestss", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\CachingTestss\CachingTestss.csproj", "{C9959405-8A2E-4DF3-BC52-36951D3D1EFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingTestss", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\CachingTestss\CachingTestss.csproj", "{C9959405-8A2E-4DF3-BC52-36951D3D1EFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resilience", "Resilience\Resilience.csproj", "{F41CF65F-EDE0-4F51-8A0D-B6A07A63C144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resilience", "Resilience\Resilience.csproj", "{F41CF65F-EDE0-4F51-8A0D-B6A07A63C144}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "Logging\Logging.csproj", "{5E6E227A-386F-4F37-B21E-45FB292F340B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logging", "Logging\Logging.csproj", "{5E6E227A-386F-4F37-B21E-45FB292F340B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseControl", "DatabaseControl\DatabaseControl.csproj", "{FEC3C112-3C38-4DE4-83EB-570E1A1600B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseControl", "DatabaseControl\DatabaseControl.csproj", "{FEC3C112-3C38-4DE4-83EB-570E1A1600B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseControlTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\DatabaseControlTests\DatabaseControlTests.csproj", "{80D7B133-D382-4AFE-9DA8-25300141C71E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseControlTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\DatabaseControlTests\DatabaseControlTests.csproj", "{80D7B133-D382-4AFE-9DA8-25300141C71E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryShopEntitiesTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\LibraryShopEntitiesTests\LibraryShopEntitiesTests.csproj", "{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryShopEntitiesTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\LibraryShopEntitiesTests\LibraryShopEntitiesTests.csproj", "{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{F4A10BF4-637B-4525-BBC5-F2AF75C2A002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{154C4F5C-C362-4A17-9C36-FE73641A9B08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -193,6 +197,10 @@ Global
 		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -228,6 +236,7 @@ Global
 		{FEC3C112-3C38-4DE4-83EB-570E1A1600B0} = {F6EC37C3-7BC7-4096-9D71-89EA73C68532}
 		{80D7B133-D382-4AFE-9DA8-25300141C71E} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
 		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
+		{154C4F5C-C362-4A17-9C36-FE73641A9B08} = {F4A10BF4-637B-4525-BBC5-F2AF75C2A002}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46CD49B7-9462-4D60-AD15-25B9C962F44B}

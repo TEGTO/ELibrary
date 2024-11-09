@@ -6,7 +6,8 @@
       "serviceActions": {
         "userapi": "StartDebugging",
         "libraryapi": "StartDebugging",
-        "shopapi": "StartDebugging"
+        "shopapi": "StartDebugging",
+        "apigateway": "StartDebugging"
       }
     }
   }

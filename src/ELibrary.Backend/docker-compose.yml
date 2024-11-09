@@ -34,5 +34,21 @@ services:
     networks:
       - backend-net
 
+  apigateway:
+    container_name: elibrary-apigateway
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports: 
+      - 7129:8081
+    networks:
+      - backend-net
+    depends_on:
+    - userapi
+    - libraryapi
+    - shopapi
+
 networks:
   backend-net:
+
