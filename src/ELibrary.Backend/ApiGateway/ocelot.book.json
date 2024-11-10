@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/book/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/book/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -25,11 +25,11 @@
       "UpstreamPathTemplate": "/book/ids",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/ids",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -45,11 +45,11 @@
       "UpstreamPathTemplate": "/book/pagination",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/pagination",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -65,11 +65,11 @@
       "UpstreamPathTemplate": "/book/amount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/amount",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -85,11 +85,11 @@
       "UpstreamPathTemplate": "/book",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -114,11 +114,11 @@
       "UpstreamPathTemplate": "/book",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/book",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -143,11 +143,11 @@
       "UpstreamPathTemplate": "/book/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/book/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -172,11 +172,11 @@
       "UpstreamPathTemplate": "/book/popularity",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/popularity",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -192,11 +192,11 @@
       "UpstreamPathTemplate": "/book/stockamount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/stockamount",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {

@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/genre/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/genre/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -25,11 +25,11 @@
       "UpstreamPathTemplate": "/genre/ids",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/genre/ids",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -45,11 +45,11 @@
       "UpstreamPathTemplate": "/genre/pagination",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/genre/pagination",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -65,11 +65,11 @@
       "UpstreamPathTemplate": "/genre/amount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/genre/amount",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -85,11 +85,11 @@
       "UpstreamPathTemplate": "/genre",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/genre",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -114,11 +114,11 @@
       "UpstreamPathTemplate": "/genre",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/genre",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -143,11 +143,11 @@
       "UpstreamPathTemplate": "/genre/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/genre/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "libraryapi",
-          "Port": 8080
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {

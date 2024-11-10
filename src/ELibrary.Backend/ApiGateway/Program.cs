@@ -42,12 +42,33 @@ builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 #region Ocelot
 
+var mergedPath = "merged.json";
+
 if (builder.Environment.IsDevelopment())
 {
-    var mergedPath = "merged.json";
     Utility.MergeJsonFiles(
         [
-        "ocelot.json",
+        "dev.ocelot.json",
+        "dev.ocelot.authentication.json",
+        "dev.ocelot.user.json",
+        "dev.ocelot.author.json",
+        "dev.ocelot.book.json",
+        "dev.ocelot.genre.json",
+        "dev.ocelot.publisher.json",
+        "dev.ocelot.advisor.json",
+        "dev.ocelot.cart.json",
+        "dev.ocelot.client.json",
+        "dev.ocelot.order.json",
+        "dev.ocelot.statistics.json",
+        "dev.ocelot.stockbook.json",
+        "dev.ocelot.chatbot.json",
+    ], mergedPath);
+}
+else
+{
+    Utility.MergeJsonFiles(
+       [
+       "ocelot.json",
         "ocelot.authentication.json",
         "ocelot.user.json",
         "ocelot.author.json",
@@ -62,13 +83,12 @@ if (builder.Environment.IsDevelopment())
         "ocelot.stockbook.json",
         "ocelot.chatbot.json",
     ], mergedPath);
+}
 
-    builder.Configuration
+builder.Configuration
         .SetBasePath(builder.Environment.ContentRootPath)
         .AddJsonFile(mergedPath, optional: false, reloadOnChange: true)
         .AddEnvironmentVariables();
-}
-
 
 builder.Services.AddOcelot(builder.Configuration).AddPolly();
 
@@ -90,5 +110,3 @@ app.MapHealthChecks("/health");
 
 await app.UseOcelot();
 app.Run();
-
-

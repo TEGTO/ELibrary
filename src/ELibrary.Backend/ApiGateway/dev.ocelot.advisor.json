@@ -1,15 +1,15 @@
 {
   "Routes": [
     {
-      "Key": "Chat_SendQuery",
-      "UpstreamPathTemplate": "/chat",
+      "Key": "Advisor_SendQuery",
+      "UpstreamPathTemplate": "/advisor",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/chat",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/advisor",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "chatbot",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {

@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/user/update",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/user/update",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -34,11 +34,11 @@
       "UpstreamPathTemplate": "/user",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/user",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -63,11 +63,11 @@
       "UpstreamPathTemplate": "/user/admin/users/{info}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/user/admin/users/{info}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -91,11 +91,11 @@
       "UpstreamPathTemplate": "/user/admin/users",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/user/admin/users",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -119,11 +119,11 @@
       "UpstreamPathTemplate": "/user/admin/users/amount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/user/admin/users/amount",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -147,11 +147,11 @@
       "UpstreamPathTemplate": "/user/admin/update",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/user/admin/update",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -175,11 +175,11 @@
       "UpstreamPathTemplate": "/user/admin/delete/{info}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/user/admin/delete/{info}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "userapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {

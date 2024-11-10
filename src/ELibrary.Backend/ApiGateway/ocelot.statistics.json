@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/statistics",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/statistics",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {

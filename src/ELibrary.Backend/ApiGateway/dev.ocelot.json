@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://elibrary-apigateway-germanywestcentral-002.azurewebsites.net",
+    "BaseUrl": "https://localhost:7129",
     "RateLimitOptions": {
       "DisableRateLimitHeaders": false,
       "ClientIdHeader": "X-Forwarded-For"

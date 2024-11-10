@@ -1,15 +1,15 @@
 {
   "Routes": [
     {
-      "Key": "Author_GetById",
-      "UpstreamPathTemplate": "/author/{id}",
+      "Key": "Book_GetById",
+      "UpstreamPathTemplate": "/book/{id}",
       "UpstreamHttpMethod": [ "GET" ],
-      "DownstreamPathTemplate": "/author/{id}",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book/{id}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -21,15 +21,15 @@
       }
     },
     {
-      "Key": "Author_GetByIds",
-      "UpstreamPathTemplate": "/author/ids",
+      "Key": "Book_GetByIds",
+      "UpstreamPathTemplate": "/book/ids",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author/ids",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book/ids",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -41,15 +41,15 @@
       }
     },
     {
-      "Key": "Author_GetPaginated",
-      "UpstreamPathTemplate": "/author/pagination",
+      "Key": "Book_GetPaginated",
+      "UpstreamPathTemplate": "/book/pagination",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author/pagination",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book/pagination",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -61,15 +61,15 @@
       }
     },
     {
-      "Key": "Author_GetItemTotalAmount",
-      "UpstreamPathTemplate": "/author/amount",
+      "Key": "Book_GetItemTotalAmount",
+      "UpstreamPathTemplate": "/book/amount",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author/amount",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book/amount",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -81,15 +81,15 @@
       }
     },
     {
-      "Key": "Author_Create",
-      "UpstreamPathTemplate": "/author",
+      "Key": "Book_Create",
+      "UpstreamPathTemplate": "/book",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -103,22 +103,22 @@
         "AuthenticationProviderKey": "Bearer"
       },
       "AddHeadersToRequest": {
-        "Authorization": "Bearer {token}"
+        "Bookization": "Bearer {token}"
       },
       "RouteClaimsRequirement": {
         "Role": "Manager"
       }
     },
     {
-      "Key": "Author_Update",
-      "UpstreamPathTemplate": "/author",
+      "Key": "Book_Update",
+      "UpstreamPathTemplate": "/book",
       "UpstreamHttpMethod": [ "PUT" ],
-      "DownstreamPathTemplate": "/author",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -132,22 +132,22 @@
         "AuthenticationProviderKey": "Bearer"
       },
       "AddHeadersToRequest": {
-        "Authorization": "Bearer {token}"
+        "Bookization": "Bearer {token}"
       },
       "RouteClaimsRequirement": {
         "Role": "Manager"
       }
     },
     {
-      "Key": "Author_DeleteById",
-      "UpstreamPathTemplate": "/author/{id}",
+      "Key": "Book_DeleteById",
+      "UpstreamPathTemplate": "/book/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
-      "DownstreamPathTemplate": "/author/{id}",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/book/{id}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -161,10 +161,50 @@
         "AuthenticationProviderKey": "Bearer"
       },
       "AddHeadersToRequest": {
-        "Authorization": "Bearer {token}"
+        "Bookization": "Bearer {token}"
       },
       "RouteClaimsRequirement": {
         "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Book_RaisePopularity",
+      "UpstreamPathTemplate": "/book/popularity",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/popularity",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "libraryapi",
+          "Port": 8080
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 0
+      }
+    },
+    {
+      "Key": "Book_UpdateStockAmount",
+      "UpstreamPathTemplate": "/book/stockamount",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/stockamount",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "libraryapi",
+          "Port": 8080
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 0
       }
     }
   ]

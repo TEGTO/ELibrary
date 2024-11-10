@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/client",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/client",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -33,11 +33,11 @@
       "UpstreamPathTemplate": "/client",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/client",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -61,11 +61,11 @@
       "UpstreamPathTemplate": "/client",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/client",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -89,11 +89,11 @@
       "UpstreamPathTemplate": "/client/admin/{userId}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/client/admin/{userId}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -117,11 +117,11 @@
       "UpstreamPathTemplate": "/client/admin/{userId}",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/client/admin/{userId}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {
@@ -145,11 +145,11 @@
       "UpstreamPathTemplate": "/client/admin/{userId}",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/client/admin/{userId}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "shopapi",
-          "Port": 8080
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
         }
       ],
       "RateLimitOptions": {

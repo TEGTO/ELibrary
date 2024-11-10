@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/cart",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/cart",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -34,11 +34,11 @@
       "UpstreamPathTemplate": "/cart/amount",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/cart/amount",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -63,11 +63,11 @@
       "UpstreamPathTemplate": "/cart/cartbook",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/cart/cartbook",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -92,11 +92,11 @@
       "UpstreamPathTemplate": "/cart/cartbook",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/cart/cartbook",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -121,11 +121,11 @@
       "UpstreamPathTemplate": "/cart",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/cart",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {

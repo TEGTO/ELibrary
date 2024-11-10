@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/chat",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/chat",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "chatbot",
-          "Port": 443
+          "Port": 8000
         }
       ],
       "RateLimitOptions": {

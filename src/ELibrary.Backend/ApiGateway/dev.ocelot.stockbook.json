@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/stockbook/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/stockbook/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -33,11 +33,11 @@
       "UpstreamPathTemplate": "/stockbook/amount",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/stockbook/amount",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -61,11 +61,11 @@
       "UpstreamPathTemplate": "/stockbook/pagination",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/stockbook/pagination",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -89,11 +89,11 @@
       "UpstreamPathTemplate": "/stockbook",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/stockbook",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {

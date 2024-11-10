@@ -1,15 +1,15 @@
 {
   "Routes": [
     {
-      "Key": "Author_GetById",
-      "UpstreamPathTemplate": "/author/{id}",
+      "Key": "Publisher_GetById",
+      "UpstreamPathTemplate": "/publisher/{id}",
       "UpstreamHttpMethod": [ "GET" ],
-      "DownstreamPathTemplate": "/author/{id}",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher/{id}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -21,15 +21,15 @@
       }
     },
     {
-      "Key": "Author_GetByIds",
-      "UpstreamPathTemplate": "/author/ids",
+      "Key": "Publisher_GetByIds",
+      "UpstreamPathTemplate": "/publisher/ids",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author/ids",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher/ids",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -41,15 +41,15 @@
       }
     },
     {
-      "Key": "Author_GetPaginated",
-      "UpstreamPathTemplate": "/author/pagination",
+      "Key": "Publisher_GetPaginated",
+      "UpstreamPathTemplate": "/publisher/pagination",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author/pagination",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher/pagination",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -61,15 +61,15 @@
       }
     },
     {
-      "Key": "Author_GetItemTotalAmount",
-      "UpstreamPathTemplate": "/author/amount",
+      "Key": "Publisher_GetItemTotalAmount",
+      "UpstreamPathTemplate": "/publisher/amount",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author/amount",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher/amount",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -81,15 +81,15 @@
       }
     },
     {
-      "Key": "Author_Create",
-      "UpstreamPathTemplate": "/author",
+      "Key": "Publisher_Create",
+      "UpstreamPathTemplate": "/publisher",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/author",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -110,15 +110,15 @@
       }
     },
     {
-      "Key": "Author_Update",
-      "UpstreamPathTemplate": "/author",
+      "Key": "Publisher_Update",
+      "UpstreamPathTemplate": "/publisher",
       "UpstreamHttpMethod": [ "PUT" ],
-      "DownstreamPathTemplate": "/author",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -139,15 +139,15 @@
       }
     },
     {
-      "Key": "Author_DeleteById",
-      "UpstreamPathTemplate": "/author/{id}",
+      "Key": "Publisher_DeleteById",
+      "UpstreamPathTemplate": "/publisher/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
-      "DownstreamPathTemplate": "/author/{id}",
-      "DownstreamScheme": "httpss",
+      "DownstreamPathTemplate": "/publisher/{id}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "libraryapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {

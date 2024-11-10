@@ -5,11 +5,11 @@
       "UpstreamPathTemplate": "/order/pagination",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/order/pagination",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -33,11 +33,11 @@
       "UpstreamPathTemplate": "/order/amount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/order/amount",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -61,11 +61,11 @@
       "UpstreamPathTemplate": "/order",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/order",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -89,11 +89,11 @@
       "UpstreamPathTemplate": "/order",
       "UpstreamHttpMethod": [ "PATCH" ],
       "DownstreamPathTemplate": "/order",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -117,11 +117,11 @@
       "UpstreamPathTemplate": "/order/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/order/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -145,11 +145,11 @@
       "UpstreamPathTemplate": "/order/manager/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/order/manager/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -173,11 +173,11 @@
       "UpstreamPathTemplate": "/order/manager/pagination",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/order/manager/pagination",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -201,11 +201,11 @@
       "UpstreamPathTemplate": "/order/manager/amount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/order/manager/amount",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -229,11 +229,11 @@
       "UpstreamPathTemplate": "/order/manager",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/order/manager",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
@@ -257,11 +257,11 @@
       "UpstreamPathTemplate": "/order/manager/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/order/manager/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
-          "Port": 443
+          "Host": "shopapi",
+          "Port": 8080
         }
       ],
       "RateLimitOptions": {
