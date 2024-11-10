@@ -5,7 +5,7 @@
       "UpstreamPathTemplate": "/book/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/book/{id}",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -25,7 +25,7 @@
       "UpstreamPathTemplate": "/book/ids",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/ids",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -45,7 +45,7 @@
       "UpstreamPathTemplate": "/book/pagination",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/pagination",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -65,7 +65,7 @@
       "UpstreamPathTemplate": "/book/amount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/amount",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -85,7 +85,7 @@
       "UpstreamPathTemplate": "/book",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -114,7 +114,7 @@
       "UpstreamPathTemplate": "/book",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/book",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -143,7 +143,7 @@
       "UpstreamPathTemplate": "/book/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "DownstreamPathTemplate": "/book/{id}",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -172,7 +172,7 @@
       "UpstreamPathTemplate": "/book/popularity",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/popularity",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
@@ -192,7 +192,7 @@
       "UpstreamPathTemplate": "/book/stockamount",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/book/stockamount",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",

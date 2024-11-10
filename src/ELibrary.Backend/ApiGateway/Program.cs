@@ -37,58 +37,36 @@ builder.Services.AddCors(options =>
 
 #endregion
 
-
 builder.Services.ConfigureIdentityServices(builder.Configuration);
 
 #region Ocelot
 
-var mergedPath = "merged.json";
+var env = builder.Environment.EnvironmentName;
 
-if (builder.Environment.IsDevelopment())
-{
-    Utility.MergeJsonFiles(
-        [
-        "dev.ocelot.json",
-        "dev.ocelot.authentication.json",
-        "dev.ocelot.user.json",
-        "dev.ocelot.author.json",
-        "dev.ocelot.book.json",
-        "dev.ocelot.genre.json",
-        "dev.ocelot.publisher.json",
-        "dev.ocelot.advisor.json",
-        "dev.ocelot.cart.json",
-        "dev.ocelot.client.json",
-        "dev.ocelot.order.json",
-        "dev.ocelot.statistics.json",
-        "dev.ocelot.stockbook.json",
-        "dev.ocelot.chatbot.json",
+var mergedPath = $"merged.{env}.json";
+
+Utility.MergeJsonFiles(
+    [
+        $"ocelot.{env}.json",
+        $"ocelot.{env}.authentication.json",
+        $"ocelot.{env}.user.json",
+        $"ocelot.{env}.author.json",
+        $"ocelot.{env}.book.json",
+        $"ocelot.{env}.genre.json",
+        $"ocelot.{env}.publisher.json",
+        $"ocelot.{env}.advisor.json",
+        $"ocelot.{env}.cart.json",
+        $"ocelot.{env}.client.json",
+        $"ocelot.{env}.order.json",
+        $"ocelot.{env}.statistics.json",
+        $"ocelot.{env}.stockbook.json",
+        $"ocelot.{env}.chatbot.json",
     ], mergedPath);
-}
-else
-{
-    Utility.MergeJsonFiles(
-       [
-       "ocelot.json",
-        "ocelot.authentication.json",
-        "ocelot.user.json",
-        "ocelot.author.json",
-        "ocelot.book.json",
-        "ocelot.genre.json",
-        "ocelot.publisher.json",
-        "ocelot.advisor.json",
-        "ocelot.cart.json",
-        "ocelot.client.json",
-        "ocelot.order.json",
-        "ocelot.statistics.json",
-        "ocelot.stockbook.json",
-        "ocelot.chatbot.json",
-    ], mergedPath);
-}
 
 builder.Configuration
-        .SetBasePath(builder.Environment.ContentRootPath)
-        .AddJsonFile(mergedPath, optional: false, reloadOnChange: true)
-        .AddEnvironmentVariables();
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile(mergedPath, optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 builder.Services.AddOcelot(builder.Configuration).AddPolly();
 

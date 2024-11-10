@@ -5,7 +5,7 @@
       "UpstreamPathTemplate": "/advisor",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/advisor",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",

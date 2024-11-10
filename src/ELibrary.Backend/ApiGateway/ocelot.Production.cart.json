@@ -5,7 +5,7 @@
       "UpstreamPathTemplate": "/cart",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/cart",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
@@ -34,7 +34,7 @@
       "UpstreamPathTemplate": "/cart/amount",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/cart/amount",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
@@ -63,7 +63,7 @@
       "UpstreamPathTemplate": "/cart/cartbook",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/cart/cartbook",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
@@ -92,7 +92,7 @@
       "UpstreamPathTemplate": "/cart/cartbook",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/cart/cartbook",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
@@ -121,7 +121,7 @@
       "UpstreamPathTemplate": "/cart",
       "UpstreamHttpMethod": [ "PUT" ],
       "DownstreamPathTemplate": "/cart",
-      "DownstreamScheme": "httpss",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
