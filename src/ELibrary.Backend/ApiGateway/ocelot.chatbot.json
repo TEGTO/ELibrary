@@ -1,0 +1,24 @@
+{
+  "Routes": [
+    {
+      "Key": "Chat_SendQuery",
+      "UpstreamPathTemplate": "/chat",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/chat",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "chatbot",
+          "Port": 8000
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    }
+  ]
+}

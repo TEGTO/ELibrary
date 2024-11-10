@@ -49,6 +49,18 @@ if (builder.Environment.IsDevelopment())
         [
         "ocelot.json",
         "ocelot.authentication.json",
+        "ocelot.user.json",
+        "ocelot.author.json",
+        "ocelot.book.json",
+        "ocelot.genre.json",
+        "ocelot.publisher.json",
+        "ocelot.advisor.json",
+        "ocelot.cart.json",
+        "ocelot.client.json",
+        "ocelot.order.json",
+        "ocelot.statistics.json",
+        "ocelot.stockbook.json",
+        "ocelot.chatbot.json",
     ], mergedPath);
 
     builder.Configuration
@@ -78,3 +90,5 @@ app.MapHealthChecks("/health");
 
 await app.UseOcelot();
 app.Run();
+
+

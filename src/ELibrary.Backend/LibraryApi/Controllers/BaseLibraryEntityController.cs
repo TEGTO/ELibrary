@@ -43,25 +43,33 @@ namespace LibraryApi.Controllers
 
         #region Endpoints
 
-        [ResponseCache(Duration = 1)]
         [HttpGet("{id}")]
         [AllowAnonymous]
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
-            var entity = await entityService.GetByIdAsync(id, cancellationToken);
+            var cacheKey = cachingHelper.GetCacheKey($"GetById_{typeof(TGetResponse).Name}_{id}", HttpContext);
+            var cachedResponse = cacheService.Get<TGetResponse>(cacheKey);
 
-            if (entity == null)
+            if (object.Equals(cachedResponse, default(TGetResponse)))
             {
-                return NotFound();
+                var entity = await entityService.GetByIdAsync(id, cancellationToken);
+
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+
+                cachedResponse = mapper.Map<TGetResponse>(entity);
+                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
             }
 
-            return Ok(mapper.Map<TGetResponse>(entity));
+            return Ok(cachedResponse);
         }
         [HttpPost("ids")]
         [AllowAnonymous]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = cachingHelper.GetCacheKey($"GetByIds_{typeof(TGetResponse).Name}", HttpContext);
+            var cacheKey = $"GetByIds_{typeof(TGetResponse).Name}_{request.ToString()}";
             var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
 
             if (cachedResponse == null)
@@ -78,7 +86,7 @@ namespace LibraryApi.Controllers
         [HttpPost("pagination")]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = cachingHelper.GetCacheKey($"GetPaginated_{typeof(TGetResponse).Name}", HttpContext);
+            var cacheKey = $"GetPaginated_{typeof(TGetResponse).Name}_{request.ToString()}";
             var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
 
             if (cachedResponse == null)
@@ -95,7 +103,7 @@ namespace LibraryApi.Controllers
         [HttpPost("amount")]
         public virtual async Task<ActionResult<int>> GetItemTotalAmount(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = cachingHelper.GetCacheKey($"GetItemTotalAmount_{typeof(TGetResponse).Name}", HttpContext);
+            var cacheKey = $"GetItemTotalAmount_{typeof(TGetResponse).Name}_{request.ToString()}";
             var cachedResponse = cacheService.Get<int?>(cacheKey);
 
             if (cachedResponse == null)

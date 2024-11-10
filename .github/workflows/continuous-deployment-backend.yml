@@ -30,6 +30,10 @@ jobs:
             path: "LibraryApi"
             azure_app_name: "elibrary-library-api-germanywestcentral-002"
             publish_secret: LIBRARY_API_PUBLISH_SECRET
+          - name: "API Gateway"
+            path: "ApiGateway"
+            azure_app_name: "elibrary-apigateway-germanywestcentral-002"
+            publish_secret: APIGATEWAY_PUBLISH_SECRET
 
     steps:
       - name: Checkout code

@@ -73,7 +73,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryShopEntitiesTests", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{F4A10BF4-637B-4525-BBC5-F2AF75C2A002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{154C4F5C-C362-4A17-9C36-FE73641A9B08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{154C4F5C-C362-4A17-9C36-FE73641A9B08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGatewayTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\ApiGatewayTests\ApiGatewayTests.csproj", "{48093C39-6340-436D-8CC5-E86C95C13FD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +203,10 @@ Global
 		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{154C4F5C-C362-4A17-9C36-FE73641A9B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48093C39-6340-436D-8CC5-E86C95C13FD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48093C39-6340-436D-8CC5-E86C95C13FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48093C39-6340-436D-8CC5-E86C95C13FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48093C39-6340-436D-8CC5-E86C95C13FD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -237,6 +243,7 @@ Global
 		{80D7B133-D382-4AFE-9DA8-25300141C71E} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
 		{8DFCCD7B-8EE6-4BE9-BDD3-E187BFCE817F} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
 		{154C4F5C-C362-4A17-9C36-FE73641A9B08} = {F4A10BF4-637B-4525-BBC5-F2AF75C2A002}
+		{48093C39-6340-436D-8CC5-E86C95C13FD1} = {BC39F68B-BF22-4DF8-97DD-821A9052F233}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46CD49B7-9462-4D60-AD15-25B9C962F44B}

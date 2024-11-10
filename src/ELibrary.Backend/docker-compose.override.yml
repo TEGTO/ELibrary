@@ -4,11 +4,8 @@ services:
   userapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=http://+:8080;https://+:8081;
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=http://+:8080;
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CertificatePassword}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
       - EFCreateDatabase=${EFCreateDatabase}
       - ConnectionStrings__AuthenticationDb=${ConnectionStrings__AuthenticationDb}
       - AuthSettings__Key=${AuthSettings__Key}
@@ -16,9 +13,7 @@ services:
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
       - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
-      - AllowedCORSOrigins=${AllowedCORSOrigins}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
-      - UseCORS=${UseCORS}
       - Auth__GoogleOAuth__ClientId=${Auth__GoogleOAuth__ClientId}
       - Auth__GoogleOAuth__ClientSecret=${Auth__GoogleOAuth__ClientSecret}
       - Auth__GoogleOAuth__Scope=${Auth__GoogleOAuth__Scope}
@@ -29,11 +24,8 @@ services:
   libraryapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=http://+:8080;https://+:8081;
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=http://+:8080;
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CertificatePassword}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
       - EFCreateDatabase=${EFCreateDatabase}
       - ConnectionStrings__LibraryDb=${ConnectionStrings__LibraryShopDb}
       - AuthSettings__Key=${AuthSettings__Key}
@@ -41,9 +33,7 @@ services:
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
       - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
-      - AllowedCORSOrigins=${AllowedCORSOrigins}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
-      - UseCORS=${UseCORS}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -51,11 +41,8 @@ services:
   shopapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=http://+:8080;https://+:8081;
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=http://+:8080;
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CertificatePassword}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
       - EFCreateDatabase=${EFCreateDatabase}
       - ConnectionStrings__ShopDb=${ConnectionStrings__LibraryShopDb}
       - AuthSettings__Key=${AuthSettings__Key}
@@ -63,12 +50,10 @@ services:
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
       - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
-      - AllowedCORSOrigins=${AllowedCORSOrigins}
       - Shop__MaxOrderAmount=${Shop__MaxOrderAmount}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
-      - UseCORS=${UseCORS}
-      - Chat__BotUrl=${Chat__BotUrl}
-      - LibraryApiUrl=${LibraryApiUrl}
+      - Chat__BotUrl=${ApiGateway}
+      - LibraryApiUrl=${ApiGateway}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

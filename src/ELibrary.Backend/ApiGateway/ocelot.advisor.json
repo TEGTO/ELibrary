@@ -1,0 +1,24 @@
+{
+  "Routes": [
+    {
+      "Key": "Advisor_SendQuery",
+      "UpstreamPathTemplate": "/advisor",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/advisor",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "shopapi",
+          "Port": 8080
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    }
+  ]
+}

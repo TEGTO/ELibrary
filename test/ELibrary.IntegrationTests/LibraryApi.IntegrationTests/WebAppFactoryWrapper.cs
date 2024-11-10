@@ -74,7 +74,6 @@ namespace LibraryApi.IntegrationTests
             {
                 { "ConnectionStrings:" + Configuration.LIBRARY_DATABASE_CONNECTION_STRING, dbContainer.GetConnectionString() },
                 { Configuration.EF_CREATE_DATABASE, "true" },
-                { Configuration.USE_CORS, "true" },
                 { JwtConfiguration.JWT_SETTINGS_KEY, "q57+LXDr4HtynNQaYVs7t50HwzvTNrWM2E/OepoI/D4=" },
                 { JwtConfiguration.JWT_SETTINGS_ISSUER, "https://token.issuer.example.com" },
                 { JwtConfiguration.JWT_SETTINGS_EXPIRY_IN_MINUTES, "30" },

@@ -46,6 +46,7 @@ export const chatReducer = createReducer(
     on(sendAdvisorQueryFailure, (state, { error }) => ({
         ...state,
         isResponseLoading: false,
+        messages: [...state.messages, { isSent: false, text: "Sorry, I had some trouble processing your message.😔" }],
         error: error
     })),
 );

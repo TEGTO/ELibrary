@@ -7,8 +7,6 @@ services:
     build:
       context: .
       dockerfile: UserApi/Dockerfile
-    ports: 
-      - 7130:8081
     networks:
     - backend-net
 
@@ -18,8 +16,6 @@ services:
     build:
       context: .
       dockerfile: LibraryApi/Dockerfile
-    ports: 
-      - 7131:8081
     networks:
     - backend-net
 
@@ -29,8 +25,6 @@ services:
     build:
       context: .
       dockerfile: ShopApi/Dockerfile
-    ports: 
-      - 7132:8081
     networks:
       - backend-net
 

@@ -1,54 +1,14 @@
 {
   "Routes": [
     {
-      "Key": "Authentication_Login",
-      "UpstreamPathTemplate": "/auth/login",
-      "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/auth/login",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userapi",
-          "Port": 8080
-        }
-      ],
-      "RateLimitOptions": {
-        "ClientWhitelist": [],
-        "EnableRateLimiting": true,
-        "Period": "1s",
-        "PeriodTimespan": 1,
-        "Limit": 5
-      }
-    },
-    {
-      "Key": "Authentication_Register",
-      "UpstreamPathTemplate": "/auth/register",
-      "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/auth/register",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userapi",
-          "Port": 8080
-        }
-      ],
-      "RateLimitOptions": {
-        "ClientWhitelist": [],
-        "EnableRateLimiting": true,
-        "Period": "1s",
-        "PeriodTimespan": 1,
-        "Limit": 5
-      }
-    },
-    {
-      "Key": "Authentication_GetOAuthUrl",
-      "UpstreamPathTemplate": "/auth/oauth",
+      "Key": "Author_GetById",
+      "UpstreamPathTemplate": "/author/{id}",
       "UpstreamHttpMethod": [ "GET" ],
-      "DownstreamPathTemplate": "/auth/oauth",
+      "DownstreamPathTemplate": "/author/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userapi",
+          "Host": "libraryapi",
           "Port": 8080
         }
       ],
@@ -61,14 +21,14 @@
       }
     },
     {
-      "Key": "Authentication_LoginOAuth",
-      "UpstreamPathTemplate": "/auth/oauth",
+      "Key": "Author_GetByIds",
+      "UpstreamPathTemplate": "/author/ids",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/auth/oauth",
+      "DownstreamPathTemplate": "/author/ids",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userapi",
+          "Host": "libraryapi",
           "Port": 8080
         }
       ],
@@ -81,14 +41,14 @@
       }
     },
     {
-      "Key": "Authentication_Refresh",
-      "UpstreamPathTemplate": "/auth/refresh",
+      "Key": "Author_GetPaginated",
+      "UpstreamPathTemplate": "/author/pagination",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/auth/refresh",
+      "DownstreamPathTemplate": "/author/pagination",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userapi",
+          "Host": "libraryapi",
           "Port": 8080
         }
       ],
@@ -101,17 +61,44 @@
       }
     },
     {
-      "Key": "Authentication_AdminRegister",
-      "UpstreamPathTemplate": "/auth/admin/registe",
+      "Key": "Author_GetItemTotalAmount",
+      "UpstreamPathTemplate": "/author/amount",
       "UpstreamHttpMethod": [ "POST" ],
-      "DownstreamPathTemplate": "/auth/admin/registe",
+      "DownstreamPathTemplate": "/author/amount",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userapi",
+          "Host": "libraryapi",
           "Port": 8080
         }
       ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Author_Create",
+      "UpstreamPathTemplate": "/author",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/author",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "libraryapi",
+          "Port": 8080
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -119,14 +106,65 @@
         "Authorization": "Bearer {token}"
       },
       "RouteClaimsRequirement": {
-        "Role": "Administrator"
-      },
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Author_Update",
+      "UpstreamPathTemplate": "/author",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/author",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "libraryapi",
+          "Port": 8080
+        }
+      ],
       "RateLimitOptions": {
         "ClientWhitelist": [],
         "EnableRateLimiting": true,
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Author_DeleteById",
+      "UpstreamPathTemplate": "/author/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/author/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "libraryapi",
+          "Port": 8080
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
       }
     }
   ]
