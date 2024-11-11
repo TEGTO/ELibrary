@@ -127,9 +127,7 @@ Or to run the ELibrary project locally, follow these steps:
 
 ![image](https://github.com/user-attachments/assets/c4855a4c-3b6c-4269-be33-4d45eace932e)
 
-![image](https://github.com/user-attachments/assets/48996146-d43f-4ed7-9454-b6c67e664937)
-
-![image](https://github.com/user-attachments/assets/bca80ee9-1982-485d-8d78-76f22cdf5a5f)
+![image](https://github.com/user-attachments/assets/c9a8d14f-3cfd-4956-a35a-5d3839d30a15)
 
 ![image](https://github.com/user-attachments/assets/b0c12186-bb05-44aa-8f35-cd3b64969ed1)
 
