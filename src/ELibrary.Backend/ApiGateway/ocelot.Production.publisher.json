@@ -3,7 +3,9 @@
     {
       "Key": "Publisher_GetById",
       "UpstreamPathTemplate": "/publisher/{id}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/publisher/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -23,7 +25,9 @@
     {
       "Key": "Publisher_GetByIds",
       "UpstreamPathTemplate": "/publisher/ids",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/publisher/ids",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -43,7 +47,9 @@
     {
       "Key": "Publisher_GetPaginated",
       "UpstreamPathTemplate": "/publisher/pagination",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/publisher/pagination",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -63,7 +69,9 @@
     {
       "Key": "Publisher_GetItemTotalAmount",
       "UpstreamPathTemplate": "/publisher/amount",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/publisher/amount",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -83,7 +91,9 @@
     {
       "Key": "Publisher_Create",
       "UpstreamPathTemplate": "/publisher",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/publisher",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -104,15 +114,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Publisher_Update",
       "UpstreamPathTemplate": "/publisher",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/publisher",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -133,15 +142,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Publisher_DeleteById",
       "UpstreamPathTemplate": "/publisher/{id}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
       "DownstreamPathTemplate": "/publisher/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -162,9 +170,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     }
   ]

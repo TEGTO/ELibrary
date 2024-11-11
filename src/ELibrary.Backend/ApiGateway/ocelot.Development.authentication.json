@@ -3,7 +3,9 @@
     {
       "Key": "Authentication_Login",
       "UpstreamPathTemplate": "/auth/login",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/auth/login",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -23,7 +25,9 @@
     {
       "Key": "Authentication_Register",
       "UpstreamPathTemplate": "/auth/register",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/auth/register",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -43,7 +47,9 @@
     {
       "Key": "Authentication_GetOAuthUrl",
       "UpstreamPathTemplate": "/auth/oauth",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/auth/oauth",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -63,7 +69,9 @@
     {
       "Key": "Authentication_LoginOAuth",
       "UpstreamPathTemplate": "/auth/oauth",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/auth/oauth",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -83,7 +91,9 @@
     {
       "Key": "Authentication_Refresh",
       "UpstreamPathTemplate": "/auth/refresh",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/auth/refresh",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -103,7 +113,9 @@
     {
       "Key": "Authentication_AdminRegister",
       "UpstreamPathTemplate": "/auth/admin/registe",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/auth/admin/registe",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -117,9 +129,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       },
       "RateLimitOptions": {
         "ClientWhitelist": [],

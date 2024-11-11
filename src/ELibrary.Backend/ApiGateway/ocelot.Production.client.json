@@ -3,7 +3,9 @@
     {
       "Key": "Client_GetClient",
       "UpstreamPathTemplate": "/client",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/client",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -23,15 +25,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Client_CreateClient",
       "UpstreamPathTemplate": "/client",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/client",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -51,15 +52,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Client_UpdateClient",
       "UpstreamPathTemplate": "/client",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/client",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -79,15 +79,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Admin_GetClient",
       "UpstreamPathTemplate": "/client/admin/{userId}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/client/admin/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -107,15 +106,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     },
     {
       "Key": "Admin_CreateClient",
       "UpstreamPathTemplate": "/client/admin/{userId}",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/client/admin/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -135,15 +133,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     },
     {
       "Key": "Admin_UpdateClient",
       "UpstreamPathTemplate": "/client/admin/{userId}",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/client/admin/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -163,9 +160,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     }
   ]

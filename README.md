@@ -96,7 +96,7 @@ Or to run the ELibrary project locally, follow these steps:
 - **.NET SDK** (for backend)
 - **PostgreSQL** (for database)
 
-### Installation
+### Installation (Legacy)
 
 1. **Clone the repository**:
     ```bash

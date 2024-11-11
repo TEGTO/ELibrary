@@ -3,7 +3,9 @@
     {
       "Key": "User_Update",
       "UpstreamPathTemplate": "/user/update",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/user/update",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -24,15 +26,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "User_Delete",
       "UpstreamPathTemplate": "/user",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
       "DownstreamPathTemplate": "/user",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -53,15 +54,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Admin_GetUser",
       "UpstreamPathTemplate": "/user/admin/users/{info}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/user/admin/users/{info}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -81,15 +81,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     },
     {
       "Key": "Admin_GetPaginatedUsers",
       "UpstreamPathTemplate": "/user/admin/users",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/user/admin/users",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -109,15 +108,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     },
     {
       "Key": "Admin_GetPaginatedUserAmount",
       "UpstreamPathTemplate": "/user/admin/users/amount",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/user/admin/users/amount",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -137,15 +135,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     },
     {
       "Key": "Admin_UpdateUser",
       "UpstreamPathTemplate": "/user/admin/update",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/user/admin/update",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -165,15 +162,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     },
     {
       "Key": "Admin_DeleteUser",
       "UpstreamPathTemplate": "/user/admin/delete/{info}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
       "DownstreamPathTemplate": "/user/admin/delete/{info}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -193,9 +189,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Administrator"
       }
     }
   ]

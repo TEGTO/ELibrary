@@ -3,7 +3,9 @@
     {
       "Key": "Client_GetOrders",
       "UpstreamPathTemplate": "/order/pagination",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/order/pagination",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -23,15 +25,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Client_GetOrderAmount",
       "UpstreamPathTemplate": "/order/amount",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/order/amount",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -51,15 +52,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Client_CreateOrder",
       "UpstreamPathTemplate": "/order",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/order",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -79,15 +79,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Client_UpdateOrder",
       "UpstreamPathTemplate": "/order",
-      "UpstreamHttpMethod": [ "PATCH" ],
+      "UpstreamHttpMethod": [
+        "PATCH"
+      ],
       "DownstreamPathTemplate": "/order",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -107,15 +106,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Client_CancelOrder",
       "UpstreamPathTemplate": "/order/{id}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
       "DownstreamPathTemplate": "/order/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -135,15 +133,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Manager_GetOrderById",
       "UpstreamPathTemplate": "/order/manager/{id}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/order/manager/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -163,15 +160,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_GetPaginatedOrders",
       "UpstreamPathTemplate": "/order/manager/pagination",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/order/manager/pagination",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -191,15 +187,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_GetOrderAmount",
       "UpstreamPathTemplate": "/order/manager/amount",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/order/manager/amount",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -219,15 +214,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_UpdateOrder",
       "UpstreamPathTemplate": "/order/manager",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/order/manager",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -247,15 +241,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_CancelOrder",
       "UpstreamPathTemplate": "/order/manager/{id}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
       "DownstreamPathTemplate": "/order/manager/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -275,9 +268,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     }
   ]
