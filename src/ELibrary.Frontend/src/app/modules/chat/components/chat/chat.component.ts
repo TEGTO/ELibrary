@@ -83,7 +83,8 @@ export class ChatComponent implements OnInit {
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => {
         if (this.viewport) {
-          this.viewport.scrollToIndex(this.viewport.getDataLength() + 1, 'smooth');
+          const lastIndex = this.viewport.getDataLength() - 1;
+          this.viewport.scrollToIndex(lastIndex, 'smooth');
         }
       }, 0);
     });

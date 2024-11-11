@@ -15,18 +15,6 @@ using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region Cors
-
-bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
-string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-if (useCors)
-{
-    builder.Services.AddApplicationCors(builder.Configuration, myAllowSpecificOrigins, builder.Environment.IsDevelopment());
-}
-
-#endregion
-
 builder.Services.AddDbContextFactory<LibraryDbContext>(builder.Configuration.GetConnectionString(Configuration.LIBRARY_DATABASE_CONNECTION_STRING)!, "LibraryApi");
 builder.Host.AddLogging();
 
@@ -68,11 +56,6 @@ var app = builder.Build();
 if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
 {
     await app.ConfigureDatabaseAsync<LibraryDbContext>(CancellationToken.None);
-}
-
-if (useCors)
-{
-    app.UseCors(myAllowSpecificOrigins);
 }
 
 app.UseSharedMiddlewares();

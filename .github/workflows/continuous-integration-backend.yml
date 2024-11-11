@@ -94,6 +94,7 @@ jobs:
           dotnet publish src/ELibrary.Backend/LibraryApi/LibraryApi.csproj --configuration Release --output ./output/libraryapi
           dotnet publish src/ELibrary.Backend/ShopApi/ShopApi.csproj --configuration Release --output ./output/shopapi
           dotnet publish src/ELibrary.Backend/UserApi/UserApi.csproj --configuration Release --output ./output/userapi
+          dotnet publish src/ELibrary.Backend/ApiGateway/ApiGateway.csproj --configuration Release --output ./output/apigateway
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3

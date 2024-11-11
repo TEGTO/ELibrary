@@ -17,7 +17,7 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
         private ResiliencePipeline mockPipeline;
         private IConfiguration configuration;
 
-        private const string ChatEndpoint = "/advisor";
+        private const string ChatEndpoint = "/chat";
         private const string BotUrl = "https://fake-bot-url.com";
 
         [SetUp]
@@ -70,7 +70,7 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
                 It.IsAny<CancellationToken>()), Times.Once);
         }
         [Test]
-        public async Task SendQueryAsync_HandlesErrorGracefully()
+        public void SendQueryAsync_HandlesErrorGracefully()
         {
             // Arrange
             var queryRequest = new ChatAdvisorQueryRequest
@@ -85,15 +85,7 @@ namespace ShopApi.Features.AdvisorFeature.Services.Tests
                 ))
                 .ThrowsAsync(new HttpRequestException("Network Error"));
             // Act & Assert
-            try
-            {
-                var result = await advisorService.SendQueryAsync(queryRequest, CancellationToken.None);
-                Assert.Fail("Expected an exception to be thrown.");
-            }
-            catch (HttpRequestException ex)
-            {
-                Assert.That(ex.Message, Is.EqualTo("Network Error"));
-            }
+            Assert.ThrowsAsync<HttpRequestException>(async () => await advisorService.SendQueryAsync(queryRequest, CancellationToken.None));
             mockHttpHelper.Verify(h => h.SendPostRequestAsync<ChatAdvisorResponse>(
                 $"{BotUrl}{ChatEndpoint}",
                 It.IsAny<string>(),

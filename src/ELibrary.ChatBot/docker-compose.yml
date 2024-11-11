@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  elibray-chatbot:
+  chatbot:
     build: .
     container_name: elibray-chatbot
     environment:
@@ -11,8 +11,8 @@ services:
       - RETRIEVER_DESCRIPTION=${RETRIEVER_DESCRIPTION}  
       - GROUND_PROMT=${GROUND_PROMT}  
       - REFRESH_DATA_IN_MINUTES=${REFRESH_DATA_IN_MINUTES}  
-    ports:
-      - "12000:8000"
+    # ports:
+    #   - "12000:8000"
     volumes:
       - .:/app
     networks:

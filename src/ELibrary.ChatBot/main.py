@@ -22,7 +22,7 @@ chat_config = ChatConfig(
        
 chatAgent = LangChainAgent(chat_config)
 
-@app.post("/advisor")
+@app.post("/chat")
 async def stream_chat(req: ChatRequest):
     try:
         answer = chatAgent.query(req.query)

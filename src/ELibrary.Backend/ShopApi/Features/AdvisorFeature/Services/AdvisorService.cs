@@ -8,7 +8,7 @@ namespace ShopApi.Features.AdvisorFeature.Services
 {
     public class AdvisorService : IAdvisorService
     {
-        private const string CHAT_ADVISOR_ENDPOINT = "/advisor";
+        private const string CHAT_ADVISOR_ENDPOINT = "/chat";
 
         private readonly ResiliencePipeline resiliencePipeline;
         private readonly IHttpHelper httpHelper;

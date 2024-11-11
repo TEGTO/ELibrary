@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const userApiUrl = process.env.USER_API || 'https://localhost:7130';
-const libraryApiUrl = process.env.LIBRARY_API || 'https://localhost:7131';
-const shopApiUrl = process.env.SHOP_API || 'https://localhost:7132';
+const userApiUrl = process.env.USER_API || 'https://localhost:7129';
+const libraryApiUrl = process.env.LIBRARY_API || 'https://localhost:7129';
+const shopApiUrl = process.env.SHOP_API || 'https://localhost:7129';
 
 const replaceInFile = (filePath, param, value) => {
     const fileContent = fs.readFileSync(filePath, 'utf8');

@@ -2,9 +2,9 @@ export const environment =
 {
   production: false,
   ecryptionSecretKey: 'encryption-secret-key',
-  userApi: 'https://localhost:7130',
-  libraryApi: 'https://localhost:7131',
-  shopApi: 'https://localhost:7132',
+  userApi: 'https://localhost:7129',
+  libraryApi: 'https://localhost:7129',
+  shopApi: 'https://localhost:7129',
   maxOrderAmount: 99,
   bookCoverPlaceholder: '../../../../../assets/book_cover_placeholder.png',
   botProfilePicture: '../../../../../assets/bot_avatar.png',

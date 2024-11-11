@@ -75,7 +75,6 @@ namespace ShopApi.IntegrationTests.IntegrationTests
             {
                 { "ConnectionStrings:" + Configuration.SHOP_DATABASE_CONNECTION_STRING, dbContainer.GetConnectionString() },
                 { Configuration.EF_CREATE_DATABASE, "true" },
-                { Configuration.USE_CORS, "true" },
                 { Configuration.SHOP_MAX_ORDER_AMOUNT, "99" },
                 { JwtConfiguration.JWT_SETTINGS_KEY, "q57+LXDr4HtynNQaYVs7t50HwzvTNrWM2E/OepoI/D4=" },
                 { JwtConfiguration.JWT_SETTINGS_ISSUER, "https://token.issuer.example.com" },
