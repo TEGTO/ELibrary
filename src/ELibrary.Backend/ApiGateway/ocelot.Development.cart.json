@@ -3,7 +3,9 @@
     {
       "Key": "Cart_GetCart",
       "UpstreamPathTemplate": "/cart",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/cart",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -24,15 +26,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Cart_GetInCartAmount",
       "UpstreamPathTemplate": "/cart/amount",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/cart/amount",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -53,15 +54,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Cart_AddBookToCart",
       "UpstreamPathTemplate": "/cart/cartbook",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/cart/cartbook",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -82,15 +82,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Cart_UpdateCartBookInCart",
       "UpstreamPathTemplate": "/cart/cartbook",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/cart/cartbook",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -111,15 +110,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     },
     {
       "Key": "Cart_DeleteBooksFromCart",
       "UpstreamPathTemplate": "/cart",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/cart",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -140,9 +138,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Client"
       }
     }
   ]

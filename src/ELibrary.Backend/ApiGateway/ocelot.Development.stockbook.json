@@ -3,7 +3,9 @@
     {
       "Key": "Manager_GetStockOrderById",
       "UpstreamPathTemplate": "/stockbook/{id}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/stockbook/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -23,15 +25,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_GetStockOrderAmount",
       "UpstreamPathTemplate": "/stockbook/amount",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/stockbook/amount",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -51,15 +52,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_GetStockOrderPaginated",
       "UpstreamPathTemplate": "/stockbook/pagination",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/stockbook/pagination",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -79,15 +79,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Manager_CreateStockBookOrder",
       "UpstreamPathTemplate": "/stockbook",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/stockbook",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -107,9 +106,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     }
   ]

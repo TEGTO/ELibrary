@@ -145,7 +145,7 @@ export class StatisticsChartComponent {
     if (this.multiMonth) {
       labelText = date.toLocaleString('en-EN', { year: 'numeric', month: 'short' });
     } else if (this.hourly) {
-      labelText = `${date.getHours()}:00`;
+      labelText = `${date.getHours()}:00 | ${date.getDate()} ${date.toLocaleString('en-EN', { month: 'short' })}`;
     } else {
       labelText = `${date.getDate()} ${date.toLocaleString('en-EN', { month: 'short' })}`;
     }

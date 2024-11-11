@@ -3,7 +3,9 @@
     {
       "Key": "Genre_GetById",
       "UpstreamPathTemplate": "/genre/{id}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "DownstreamPathTemplate": "/genre/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -23,7 +25,9 @@
     {
       "Key": "Genre_GetByIds",
       "UpstreamPathTemplate": "/genre/ids",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/genre/ids",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -43,7 +47,9 @@
     {
       "Key": "Genre_GetPaginated",
       "UpstreamPathTemplate": "/genre/pagination",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/genre/pagination",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -63,7 +69,9 @@
     {
       "Key": "Genre_GetItemTotalAmount",
       "UpstreamPathTemplate": "/genre/amount",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/genre/amount",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -83,7 +91,9 @@
     {
       "Key": "Genre_Create",
       "UpstreamPathTemplate": "/genre",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
       "DownstreamPathTemplate": "/genre",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -104,15 +114,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Genre_Update",
       "UpstreamPathTemplate": "/genre",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
       "DownstreamPathTemplate": "/genre",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -133,15 +142,14 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     },
     {
       "Key": "Genre_DeleteById",
       "UpstreamPathTemplate": "/genre/{id}",
-      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
       "DownstreamPathTemplate": "/genre/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -162,9 +170,6 @@
       },
       "AddHeadersToRequest": {
         "Authorization": "Bearer {token}"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Manager"
       }
     }
   ]
