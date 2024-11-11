@@ -75,7 +75,6 @@ namespace UserApi.IntegrationTests
                 { "ConnectionStrings:" + Configuration.AUTH_DATABASE_CONNECTION_STRING, dbContainer.GetConnectionString() },
                 { Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS, "7" },
                 { Configuration.EF_CREATE_DATABASE, "true" },
-                { Configuration.USE_CORS, "true" },
                 { JwtConfiguration.JWT_SETTINGS_KEY, "q57+LXDr4HtynNQaYVs7t50HwzvTNrWM2E/OepoI/D4=" },
                 { JwtConfiguration.JWT_SETTINGS_ISSUER, "https://token.issuer.example.com" },
                 { JwtConfiguration.JWT_SETTINGS_EXPIRY_IN_MINUTES, "30" },

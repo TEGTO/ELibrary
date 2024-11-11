@@ -1,0 +1,149 @@
+{
+  "Routes": [
+    {
+      "Key": "Cart_GetCart",
+      "UpstreamPathTemplate": "/cart",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/cart",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Cart_GetInCartAmount",
+      "UpstreamPathTemplate": "/cart/amount",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/cart/amount",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Cart_AddBookToCart",
+      "UpstreamPathTemplate": "/cart/cartbook",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/cart/cartbook",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Cart_UpdateCartBookInCart",
+      "UpstreamPathTemplate": "/cart/cartbook",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/cart/cartbook",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Cart_DeleteBooksFromCart",
+      "UpstreamPathTemplate": "/cart",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/cart",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "Routes": [
+    {
+      "Key": "Client_GetClient",
+      "UpstreamPathTemplate": "/client",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/client",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Client_CreateClient",
+      "UpstreamPathTemplate": "/client",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/client",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Client_UpdateClient",
+      "UpstreamPathTemplate": "/client",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/client",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Admin_GetClient",
+      "UpstreamPathTemplate": "/client/admin/{userId}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/client/admin/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    },
+    {
+      "Key": "Admin_CreateClient",
+      "UpstreamPathTemplate": "/client/admin/{userId}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/client/admin/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    },
+    {
+      "Key": "Admin_UpdateClient",
+      "UpstreamPathTemplate": "/client/admin/{userId}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/client/admin/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    }
+  ]
+}

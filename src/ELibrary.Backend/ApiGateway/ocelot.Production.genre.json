@@ -1,0 +1,171 @@
+{
+  "Routes": [
+    {
+      "Key": "Genre_GetById",
+      "UpstreamPathTemplate": "/genre/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/genre/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Genre_GetByIds",
+      "UpstreamPathTemplate": "/genre/ids",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/genre/ids",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Genre_GetPaginated",
+      "UpstreamPathTemplate": "/genre/pagination",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/genre/pagination",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Genre_GetItemTotalAmount",
+      "UpstreamPathTemplate": "/genre/amount",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/genre/amount",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Genre_Create",
+      "UpstreamPathTemplate": "/genre",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/genre",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Genre_Update",
+      "UpstreamPathTemplate": "/genre",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/genre",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Genre_DeleteById",
+      "UpstreamPathTemplate": "/genre/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/genre/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    }
+  ]
+}

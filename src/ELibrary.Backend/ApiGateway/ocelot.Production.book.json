@@ -1,0 +1,211 @@
+{
+  "Routes": [
+    {
+      "Key": "Book_GetById",
+      "UpstreamPathTemplate": "/book/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/book/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Book_GetByIds",
+      "UpstreamPathTemplate": "/book/ids",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/ids",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Book_GetPaginated",
+      "UpstreamPathTemplate": "/book/pagination",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/pagination",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Book_GetItemTotalAmount",
+      "UpstreamPathTemplate": "/book/amount",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/amount",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    },
+    {
+      "Key": "Book_Create",
+      "UpstreamPathTemplate": "/book",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Bookization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Book_Update",
+      "UpstreamPathTemplate": "/book",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/book",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Bookization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Book_DeleteById",
+      "UpstreamPathTemplate": "/book/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/book/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Bookization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Manager"
+      }
+    },
+    {
+      "Key": "Book_RaisePopularity",
+      "UpstreamPathTemplate": "/book/popularity",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/popularity",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 0
+      }
+    },
+    {
+      "Key": "Book_UpdateStockAmount",
+      "UpstreamPathTemplate": "/book/stockamount",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/book/stockamount",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 0
+      }
+    }
+  ]
+}

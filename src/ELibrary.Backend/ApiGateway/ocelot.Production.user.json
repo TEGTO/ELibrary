@@ -1,0 +1,202 @@
+{
+  "Routes": [
+    {
+      "Key": "User_Update",
+      "UpstreamPathTemplate": "/user/update",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/user/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "User_Delete",
+      "UpstreamPathTemplate": "/user",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/user",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Client"
+      }
+    },
+    {
+      "Key": "Admin_GetUser",
+      "UpstreamPathTemplate": "/user/admin/users/{info}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/user/admin/users/{info}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    },
+    {
+      "Key": "Admin_GetPaginatedUsers",
+      "UpstreamPathTemplate": "/user/admin/users",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/user/admin/users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    },
+    {
+      "Key": "Admin_GetPaginatedUserAmount",
+      "UpstreamPathTemplate": "/user/admin/users/amount",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/user/admin/users/amount",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    },
+    {
+      "Key": "Admin_UpdateUser",
+      "UpstreamPathTemplate": "/user/admin/update",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/user/admin/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    },
+    {
+      "Key": "Admin_DeleteUser",
+      "UpstreamPathTemplate": "/user/admin/delete/{info}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/user/admin/delete/{info}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "AddHeadersToRequest": {
+        "Authorization": "Bearer {token}"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Administrator"
+      }
+    }
+  ]
+}

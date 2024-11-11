@@ -1,0 +1,24 @@
+{
+  "Routes": [
+    {
+      "Key": "Statistics_SendQuery",
+      "UpstreamPathTemplate": "/statistics",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/statistics",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "elibrary-shop-api-germanywestcentral-002.azurewebsites.net",
+          "Port": 443
+        }
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      }
+    }
+  ]
+}
