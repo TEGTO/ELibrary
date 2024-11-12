@@ -32,7 +32,7 @@ namespace ShopApi.Controllers.Tests
             mockMediator = new Mock<IMediator>();
             mockCacheService = new Mock<ICacheService>();
 
-            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
+            mockCacheService.Setup(x => x.GetAsync<object>(It.IsAny<string>())).Returns(null);
 
             orderController = new OrderController(
                 mockMediator.Object,

@@ -1,4 +1,5 @@
 ﻿using Authentication.Identity;
+using Caching;
 using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
@@ -45,14 +46,14 @@ namespace ShopApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cacheKey = $"GetStockOrderAmount_{userId}";
-            var cachedResponse = cacheService.Get<int?>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<int?>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetStockOrderAmountQuery(), cancellationToken);
                 cachedResponse = response;
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }
 
             return Ok(cachedResponse);
@@ -62,14 +63,14 @@ namespace ShopApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cacheKey = $"GetStockOrderPaginated_{userId}";
-            var cachedResponse = cacheService.Get<List<StockBookOrderResponse>>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<List<StockBookOrderResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetStockOrderPaginatedQuery(paginationRequest), cancellationToken);
                 cachedResponse = response.ToList();
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }
 
             return Ok(cachedResponse);

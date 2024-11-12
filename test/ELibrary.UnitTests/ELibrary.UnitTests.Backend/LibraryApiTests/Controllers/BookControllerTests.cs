@@ -30,7 +30,7 @@ namespace LibraryApi.Controllers.Tests
             mockEntityService = new Mock<ILibraryEntityService<Book>>();
             mockCacheService = new Mock<ICacheService>();
 
-            mockCacheService.Setup(x => x.Get<object>(It.IsAny<string>())).Returns(null);
+            mockCacheService.Setup(x => x.GetAsync<object>(It.IsAny<string>())).Returns(null);
 
             mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();

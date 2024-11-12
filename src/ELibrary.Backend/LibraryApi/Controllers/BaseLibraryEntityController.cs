@@ -1,5 +1,6 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
+using Caching;
 using Caching.Helpers;
 using Caching.Services;
 using LibraryApi.Services;
@@ -48,9 +49,9 @@ namespace LibraryApi.Controllers
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
             var cacheKey = cachingHelper.GetCacheKey($"GetById_{typeof(TGetResponse).Name}_{id}", HttpContext);
-            var cachedResponse = cacheService.Get<TGetResponse>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<TGetResponse>(cacheKey);
 
-            if (object.Equals(cachedResponse, default(TGetResponse)))
+            if (Equals(cachedResponse, default(TGetResponse)))
             {
                 var entity = await entityService.GetByIdAsync(id, cancellationToken);
 
@@ -60,7 +61,7 @@ namespace LibraryApi.Controllers
                 }
 
                 cachedResponse = mapper.Map<TGetResponse>(entity);
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
             }
 
             return Ok(cachedResponse);
@@ -70,14 +71,14 @@ namespace LibraryApi.Controllers
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)
         {
             var cacheKey = $"GetByIds_{typeof(TGetResponse).Name}_{request.ToString()}";
-            var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<List<TGetResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var entities = await entityService.GetByIdsAsync(request.Ids, cancellationToken);
                 cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
             }
 
             return Ok(cachedResponse);
@@ -87,14 +88,14 @@ namespace LibraryApi.Controllers
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
         {
             var cacheKey = $"GetPaginated_{typeof(TGetResponse).Name}_{request.ToString()}";
-            var cachedResponse = cacheService.Get<List<TGetResponse>>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<List<TGetResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
                 cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }
 
             return Ok(cachedResponse);
@@ -104,14 +105,14 @@ namespace LibraryApi.Controllers
         public virtual async Task<ActionResult<int>> GetItemTotalAmount(TFilterRequest request, CancellationToken cancellationToken)
         {
             var cacheKey = $"GetItemTotalAmount_{typeof(TGetResponse).Name}_{request.ToString()}";
-            var cachedResponse = cacheService.Get<int?>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<int?>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var amount = await entityService.GetItemTotalAmountAsync(request, cancellationToken);
                 cachedResponse = amount;
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }
 
             return Ok(cachedResponse);

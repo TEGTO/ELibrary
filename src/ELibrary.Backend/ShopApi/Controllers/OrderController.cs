@@ -1,4 +1,5 @@
 ﻿using Authentication.Identity;
+using Caching;
 using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Filters;
@@ -42,14 +43,14 @@ namespace ShopApi.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var cacheKey = $"GetOrders_{userId}";
-            var cachedResponse = cacheService.Get<List<OrderResponse>>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<List<OrderResponse>>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
                 cachedResponse = response.ToList();
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }
 
             return Ok(cachedResponse);
@@ -60,14 +61,14 @@ namespace ShopApi.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var cacheKey = $"GetOrderAmount_{userId}";
-            var cachedResponse = cacheService.Get<int?>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<int?>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
                 cachedResponse = response;
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }
 
             return Ok(cachedResponse);

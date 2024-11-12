@@ -1,4 +1,5 @@
 ﻿using Authentication.Identity;
+using Caching;
 using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
@@ -35,14 +36,14 @@ namespace ShopApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cacheKey = $"GetCart_{userId}";
-            var cachedResponse = cacheService.Get<CartResponse>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<CartResponse>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetCartQuery(userId), cancellationToken);
                 cachedResponse = response;
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }
 
             return Ok(cachedResponse);
@@ -52,14 +53,14 @@ namespace ShopApi.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cacheKey = $"GetInCartAmount_{userId}";
-            var cachedResponse = cacheService.Get<int?>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<int?>(cacheKey);
 
             if (cachedResponse == null)
             {
                 var response = await mediator.Send(new GetInCartAmountQuery(userId), cancellationToken);
                 cachedResponse = response;
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }
 
             return Ok(cachedResponse);

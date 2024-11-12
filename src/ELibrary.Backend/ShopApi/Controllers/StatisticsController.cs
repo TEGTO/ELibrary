@@ -1,5 +1,6 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
+using Caching;
 using Caching.Helpers;
 using Caching.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -41,7 +42,7 @@ namespace ShopApi.Controllers
             var cacheKey = cachingHelper.GetCacheKey(
                 $"GetShopStatistics_{request?.FromUTC ?? DateTime.MinValue}_{request?.ToUTC ?? DateTime.MinValue}_{request.IncludeBooks?.Count() ?? 0}",
                 HttpContext);
-            var cachedResponse = cacheService.Get<ShopStatisticsResponse>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<ShopStatisticsResponse>(cacheKey);
 
             if (cachedResponse == null)
             {
@@ -49,7 +50,7 @@ namespace ShopApi.Controllers
                 var response = await statisticsService.GetStatisticsAsync(getStatistics, cancellationToken);
                 cachedResponse = mapper.Map<ShopStatisticsResponse>(response);
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
             }
 
             return Ok(cachedResponse);

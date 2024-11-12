@@ -1,5 +1,6 @@
 ﻿using Caching.Services;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Shared.Services.Tests
@@ -7,64 +8,66 @@ namespace Shared.Services.Tests
     [TestFixture]
     internal class InMemoryCacheServiceTests
     {
-        private Mock<IMemoryCache> memoryCacheMock;
+        private Mock<IMemoryCache> mockMemoryCache;
+        private Mock<ILogger<InMemoryCacheService>> mockLogger;
         private InMemoryCacheService cacheService;
 
         [SetUp]
         public void Setup()
         {
-            memoryCacheMock = new Mock<IMemoryCache>();
-            cacheService = new InMemoryCacheService(memoryCacheMock.Object);
+            mockMemoryCache = new Mock<IMemoryCache>();
+            mockLogger = new Mock<ILogger<InMemoryCacheService>>();
+            cacheService = new InMemoryCacheService(mockMemoryCache.Object, mockLogger.Object);
         }
 
         [Test]
-        public void Get_KeyExists_ReturnsCachedValue()
+        public async Task Get_KeyExists_ReturnsCachedValue()
         {
             // Arrange
             var key = "existingKey";
             var expectedValue = "cached value";
             object cacheEntry = expectedValue;
-            memoryCacheMock
+            mockMemoryCache
                 .Setup(m => m.TryGetValue(key, out cacheEntry))
                 .Returns(true);
             // Act
-            var result = cacheService.Get<string>(key);
+            var result = await cacheService.GetAsync<string>(key);
             // Assert
             Assert.That(result, Is.EqualTo(expectedValue));
-            memoryCacheMock.Verify(m => m.TryGetValue(key, out cacheEntry), Times.Once);
+            mockMemoryCache.Verify(m => m.TryGetValue(key, out cacheEntry), Times.Once);
         }
         [Test]
-        public void Get_KeyDoesNotExist_ReturnsNull()
+        public async Task Get_KeyDoesNotExist_ReturnsNull()
         {
             // Arrange
             var key = "nonExistingKey";
             string value = null;
             object cacheEntry = value;
-            memoryCacheMock
+            mockMemoryCache
                 .Setup(m => m.TryGetValue(key, out cacheEntry))
                 .Returns(true);
             // Act
-            var result = cacheService.Get<string>(key);
+            var result = await cacheService.GetAsync<string>(key);
             // Assert
             Assert.IsNull(result);
-            memoryCacheMock.Verify(m => m.TryGetValue(key, out cacheEntry), Times.Once);
+            mockMemoryCache.Verify(m => m.TryGetValue(key, out cacheEntry), Times.Once);
         }
         [Test]
-        public void Set_ValidKeyAndValue_SetsValueInCacheWithExpiration()
+        public async Task Set_ValidKeyAndValue_SetsValueInCacheWithExpiration()
         {
             // Arrange
             var key = "cacheKey";
             var value = "cache value";
             var duration = TimeSpan.FromMinutes(5);
             var cacheEntryMock = new Mock<ICacheEntry>();
-            memoryCacheMock
+            mockMemoryCache
                 .Setup(m => m.CreateEntry(It.IsAny<object>()))
                 .Returns(cacheEntryMock.Object);
             // Act
-            cacheService.Set(key, value, duration);
+            await cacheService.SetAsync(key, value, duration);
             // Assert
             cacheEntryMock.VerifySet(e => e.AbsoluteExpirationRelativeToNow = duration, Times.Once);
-            memoryCacheMock.Verify(m => m.CreateEntry(key), Times.Once);
+            mockMemoryCache.Verify(m => m.CreateEntry(key), Times.Once);
         }
     }
 }

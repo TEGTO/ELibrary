@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Caching;
 using Caching.Helpers;
 using Caching.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace ShopApi.Controllers
         public async Task<ActionResult<AdvisorResponse?>> SendQuery(AdvisorQueryRequest request, CancellationToken cancellationToken)
         {
             var cacheKey = cachingHelper.GetCacheKey("AdvisorResponse", HttpContext);
-            var cachedResponse = cacheService.Get<AdvisorResponse>(cacheKey);
+            var cachedResponse = await cacheService.GetDeserializedAsync<AdvisorResponse>(cacheKey);
 
             if (cachedResponse == null)
             {
@@ -36,7 +37,7 @@ namespace ShopApi.Controllers
                 var response = await advisorService.SendQueryAsync(chatRequest, cancellationToken);
                 cachedResponse = mapper.Map<AdvisorResponse>(response);
 
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
+                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
             }
 
             return Ok(cachedResponse);
