@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Caching.Helpers;
-using Caching.Services;
 using LibraryApi.Domain.Dto.Publisher;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
@@ -25,10 +23,8 @@ namespace LibraryApi.Controllers
     {
         public PublisherController(
             ILibraryEntityService<Publisher> entityService,
-            ICacheService cacheService,
-            ICachingHelper cachingHelper,
             IMapper mapper
-            ) : base(entityService, cacheService, cachingHelper, mapper)
+            ) : base(entityService, mapper)
         {
         }
     }

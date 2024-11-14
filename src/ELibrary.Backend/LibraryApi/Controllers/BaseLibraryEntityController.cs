@@ -1,14 +1,12 @@
 ﻿using Authentication.Identity;
 using AutoMapper;
-using Caching;
-using Caching.Helpers;
-using Caching.Services;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
 using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace LibraryApi.Controllers
 {
@@ -25,20 +23,14 @@ namespace LibraryApi.Controllers
      where TEntity : BaseLibraryEntity where TFilterRequest : LibraryFilterRequest
     {
         protected readonly ILibraryEntityService<TEntity> entityService;
-        protected readonly ICacheService cacheService;
-        protected readonly ICachingHelper cachingHelper;
         protected readonly IMapper mapper;
 
         protected BaseLibraryEntityController(
             ILibraryEntityService<TEntity> entityService,
-            ICacheService cacheService,
-            ICachingHelper cachingHelper,
             IMapper mapper
             )
         {
             this.entityService = entityService;
-            this.cacheService = cacheService;
-            this.cachingHelper = cachingHelper;
             this.mapper = mapper;
         }
 
@@ -46,76 +38,42 @@ namespace LibraryApi.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
+        [OutputCache(PolicyName = "BasePolicy", Duration = 10)]
         public virtual async Task<ActionResult<TGetResponse>> GetById(int id, CancellationToken cancellationToken)
         {
-            var cacheKey = cachingHelper.GetCacheKey($"GetById_{typeof(TGetResponse).Name}_{id}", HttpContext);
-            var cachedResponse = await cacheService.GetDeserializedAsync<TGetResponse>(cacheKey);
+            var entity = await entityService.GetByIdAsync(id, cancellationToken);
 
-            if (Equals(cachedResponse, default(TGetResponse)))
+            if (entity == null)
             {
-                var entity = await entityService.GetByIdAsync(id, cancellationToken);
-
-                if (entity == null)
-                {
-                    return NotFound();
-                }
-
-                cachedResponse = mapper.Map<TGetResponse>(entity);
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
+                return NotFound();
             }
 
-            return Ok(cachedResponse);
+            var response = mapper.Map<TGetResponse>(entity);
+            return Ok(response);
         }
         [HttpPost("ids")]
         [AllowAnonymous]
+        [OutputCache(PolicyName = "CacheByIds")]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetByIds(GetByIdsRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"GetByIds_{typeof(TGetResponse).Name}_{request.ToString()}";
-            var cachedResponse = await cacheService.GetDeserializedAsync<List<TGetResponse>>(cacheKey);
-
-            if (cachedResponse == null)
-            {
-                var entities = await entityService.GetByIdsAsync(request.Ids, cancellationToken);
-                cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(1));
-            }
-
-            return Ok(cachedResponse);
+            var entities = await entityService.GetByIdsAsync(request.Ids, cancellationToken);
+            return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
         [AllowAnonymous]
         [HttpPost("pagination")]
+        [OutputCache(PolicyName = "CacheByFilter")]
         public virtual async Task<ActionResult<IEnumerable<TGetResponse>>> GetPaginated(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"GetPaginated_{typeof(TGetResponse).Name}_{request.ToString()}";
-            var cachedResponse = await cacheService.GetDeserializedAsync<List<TGetResponse>>(cacheKey);
-
-            if (cachedResponse == null)
-            {
-                var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
-                cachedResponse = entities.Select(mapper.Map<TGetResponse>).ToList();
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
-            }
-
-            return Ok(cachedResponse);
+            var entities = await entityService.GetPaginatedAsync(request, cancellationToken);
+            return Ok(entities.Select(mapper.Map<TGetResponse>));
         }
         [AllowAnonymous]
         [HttpPost("amount")]
+        [OutputCache(PolicyName = "CacheByFilter")]
         public virtual async Task<ActionResult<int>> GetItemTotalAmount(TFilterRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"GetItemTotalAmount_{typeof(TGetResponse).Name}_{request.ToString()}";
-            var cachedResponse = await cacheService.GetDeserializedAsync<int?>(cacheKey);
-
-            if (cachedResponse == null)
-            {
-                var amount = await entityService.GetItemTotalAmountAsync(request, cancellationToken);
-                cachedResponse = amount;
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
-            }
-
-            return Ok(cachedResponse);
+            var amount = await entityService.GetItemTotalAmountAsync(request, cancellationToken);
+            return Ok(amount);
         }
 
         #endregion

@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using Caching.Helpers;
-using Caching.Services;
-using LibraryShopEntities.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ShopApi.Features.StatisticsFeature.Domain.Dtos;
@@ -17,8 +14,6 @@ namespace ShopApi.Controllers.Tests
         {
             private Mock<IMapper> mapperMock;
             private Mock<IStatisticsService> statisticsServiceMock;
-            private Mock<ICacheService> mockCacheService;
-            private Mock<ICachingHelper> mockCachingHelper;
             private StatisticsController controller;
 
             [SetUp]
@@ -26,13 +21,9 @@ namespace ShopApi.Controllers.Tests
             {
                 mapperMock = new Mock<IMapper>();
                 statisticsServiceMock = new Mock<IStatisticsService>();
-                mockCacheService = new Mock<ICacheService>();
-                mockCachingHelper = new Mock<ICachingHelper>();
                 controller = new StatisticsController(
                     mapperMock.Object,
-                    statisticsServiceMock.Object,
-                    mockCacheService.Object,
-                    mockCachingHelper.Object
+                    statisticsServiceMock.Object
                 );
             }
 

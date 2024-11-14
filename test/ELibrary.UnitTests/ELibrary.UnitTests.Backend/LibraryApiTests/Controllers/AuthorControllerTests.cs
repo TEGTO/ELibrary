@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Caching.Helpers;
-using Caching.Services;
 using LibraryApi.Domain.Dto.Author;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
@@ -18,8 +16,6 @@ namespace LibraryApi.Controllers.Tests
     internal class AuthorControllerTests
     {
         private Mock<ILibraryEntityService<Author>> mockEntityService;
-        private Mock<ICacheService> mockCacheService;
-        private Mock<ICachingHelper> mockCachingHelper;
         private Mock<IMapper> mockMapper;
         private AuthorController controller;
 
@@ -27,13 +23,9 @@ namespace LibraryApi.Controllers.Tests
         public void Setup()
         {
             mockEntityService = new Mock<ILibraryEntityService<Author>>();
-            mockCacheService = new Mock<ICacheService>();
 
-            mockCacheService.Setup(x => x.GetAsync<object>(It.IsAny<string>())).Returns(null);
-
-            mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();
-            controller = new AuthorController(mockEntityService.Object, mockCacheService.Object, mockCachingHelper.Object, mockMapper.Object);
+            controller = new AuthorController(mockEntityService.Object, mockMapper.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

@@ -2,8 +2,8 @@
 {
     public interface ICacheService
     {
-        public ValueTask<string?> GetAsync<T>(string key);
-        public Task SetAsync(string key, string value, TimeSpan duration);
-        public ValueTask<bool> RemoveKeyAsync(string key);
+        public ValueTask<string?> GetAsync(string key, CancellationToken cancellationToken);
+        public Task<bool> SetAsync(string key, string value, TimeSpan duration, CancellationToken cancellationToken);
+        public ValueTask<bool> RemoveKeyAsync(string key, CancellationToken cancellationToken);
     }
 }

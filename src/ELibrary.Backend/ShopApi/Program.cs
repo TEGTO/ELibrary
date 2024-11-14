@@ -1,10 +1,10 @@
 using Authentication;
 using Caching;
-using Caching.Services;
 using DatabaseControl;
 using EventSourcing;
 using ExceptionHandling;
 using LibraryShopEntities.Data;
+using LibraryShopEntities.Filters;
 using LibraryShopEntities.Repositories.Shop;
 using Logging;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +12,12 @@ using Pagination;
 using Resilience;
 using Shared;
 using ShopApi;
+using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.AdvisorFeature.Services;
 using ShopApi.Features.CartFeature.Services;
 using ShopApi.Features.ClientFeature.Services;
 using ShopApi.Features.OrderFeature.Services;
+using ShopApi.Features.StatisticsFeature.Domain.Dtos;
 using ShopApi.Features.StatisticsFeature.Repository;
 using ShopApi.Features.StatisticsFeature.Services;
 using ShopApi.Features.StockBookOrderFeature.Models;
@@ -50,7 +52,6 @@ builder.Services.AddSingleton<IEventDispatcher, EventDispatcher>();
 builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<IAdvisorService, AdvisorService>();
 builder.Services.AddSingleton<ILibraryService, LibraryService>();
-builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 
 #endregion
 
@@ -60,15 +61,32 @@ builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configurati
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-builder.Services.AddCachingHelper();
 
 builder.Services.AddMediatR(conf =>
 {
     conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddMemoryCache();
-builder.Services.AddResponseCaching();
+#region Caching
+
+builder.Services.AddOutputCache((options) =>
+{
+    options.AddPolicy("BasePolicy", new OutputCachePolicy());
+
+    options.SetOutputCachePolicy("AdvisorPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(AdvisorQueryRequest));
+
+    options.SetOutputCachePolicy("CartPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true);
+
+    options.SetOutputCachePolicy("ClientPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true);
+
+    options.SetOutputCachePolicy("OrderPaginationPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true, type: typeof(GetOrdersFilter));
+
+    options.SetOutputCachePolicy("StatisticsPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(GetShopStatisticsRequest));
+
+    options.SetOutputCachePolicy("StockBookOrderPaginationPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(PaginationRequest));
+});
+
+#endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -87,6 +105,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseIdentity();
+
+app.UseOutputCache();
 
 app.MapControllers();
 

@@ -1,10 +1,9 @@
 ﻿using Authentication.Identity;
-using Caching;
-using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using ShopApi.Features.ClientFeature.Command.CreateClient;
 using ShopApi.Features.ClientFeature.Command.GetClient;
 using ShopApi.Features.ClientFeature.Command.UpdateClient;
@@ -19,32 +18,22 @@ namespace ShopApi.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ICacheService cacheService;
 
-        public ClientController(IMediator mediator, ICacheService cacheService)
+        public ClientController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.cacheService = cacheService;
         }
 
         #region Endpoints
 
         [HttpGet]
+        [OutputCache(PolicyName = "ClientPolicy")]
         public async Task<ActionResult<GetClientResponse>> GetClient(CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cacheKey = $"GetClient_{userId}";
-            var cachedResponse = await cacheService.GetDeserializedAsync<GetClientResponse>(cacheKey);
+            var response = await mediator.Send(new GetClientForUserQuery(userId), cancellationToken);
 
-            if (cachedResponse == null)
-            {
-                var response = await mediator.Send(new GetClientForUserQuery(userId), cancellationToken);
-                cachedResponse = response;
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(10));
-            }
-
-            return Ok(cachedResponse);
+            return Ok(response);
         }
         [HttpPost]
         public async Task<ActionResult<ClientResponse>> CreateClient([FromBody] CreateClientRequest request, CancellationToken cancellationToken)

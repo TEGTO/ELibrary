@@ -1,10 +1,9 @@
 ﻿using Authentication.Identity;
-using Caching;
-using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using ShopApi.Features.CartFeature.Command.AddBookToCart;
 using ShopApi.Features.CartFeature.Command.DeleteBooksFromCart;
 using ShopApi.Features.CartFeature.Command.GetCart;
@@ -21,49 +20,31 @@ namespace ShopApi.Controllers
     public class CartController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ICacheService cacheService;
 
-        public CartController(IMediator mediator, ICacheService cacheService)
+        public CartController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.cacheService = cacheService;
         }
 
         #region EndPoints
 
         [HttpGet]
+        [OutputCache(PolicyName = "CartPolicy")]
         public async Task<ActionResult<CartResponse>> GetCart(CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cacheKey = $"GetCart_{userId}";
-            var cachedResponse = await cacheService.GetDeserializedAsync<CartResponse>(cacheKey);
+            var response = await mediator.Send(new GetCartQuery(userId), cancellationToken);
 
-            if (cachedResponse == null)
-            {
-                var response = await mediator.Send(new GetCartQuery(userId), cancellationToken);
-                cachedResponse = response;
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
-            }
-
-            return Ok(cachedResponse);
+            return Ok(response);
         }
         [HttpGet("amount")]
+        [OutputCache(PolicyName = "CartPolicy")]
         public async Task<ActionResult<int>> GetInCartAmount(CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cacheKey = $"GetInCartAmount_{userId}";
-            var cachedResponse = await cacheService.GetDeserializedAsync<int?>(cacheKey);
+            var response = await mediator.Send(new GetInCartAmountQuery(userId), cancellationToken);
 
-            if (cachedResponse == null)
-            {
-                var response = await mediator.Send(new GetInCartAmountQuery(userId), cancellationToken);
-                cachedResponse = response;
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
-            }
-
-            return Ok(cachedResponse);
+            return Ok(response);
         }
         [HttpPost("cartbook")]
         public async Task<ActionResult<CartBookResponse>> AddBookToCart(AddBookToCartRequest request, CancellationToken cancellationToken)

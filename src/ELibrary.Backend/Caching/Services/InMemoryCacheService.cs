@@ -14,21 +14,21 @@ namespace Caching.Services
             this.logger = logger;
         }
 
-        public ValueTask<string?> GetAsync<T>(string key)
+        public ValueTask<string?> GetAsync(string key, CancellationToken cancellationToken)
         {
             memoryCache.TryGetValue(key, out string? value);
             return ValueTask.FromResult(value);
         }
-        public Task SetAsync(string key, string value, TimeSpan duration)
+        public async Task<bool> SetAsync(string key, string value, TimeSpan duration, CancellationToken cancellationToken)
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = duration
             };
             memoryCache.Set(key, value, cacheEntryOptions);
-            return Task.CompletedTask;
+            return true;
         }
-        public ValueTask<bool> RemoveKeyAsync(string key)
+        public ValueTask<bool> RemoveKeyAsync(string key, CancellationToken cancellationToken)
         {
             try
             {

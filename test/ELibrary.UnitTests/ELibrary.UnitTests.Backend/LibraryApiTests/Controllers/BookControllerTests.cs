@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Caching.Helpers;
-using Caching.Services;
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
@@ -18,8 +16,6 @@ namespace LibraryApi.Controllers.Tests
     internal class BookControllerTests
     {
         private Mock<ILibraryEntityService<Book>> mockEntityService;
-        private Mock<ICacheService> mockCacheService;
-        private Mock<ICachingHelper> mockCachingHelper;
         private Mock<IMapper> mockMapper;
         private Mock<IBookService> mockBookService;
         private BookController controller;
@@ -28,14 +24,10 @@ namespace LibraryApi.Controllers.Tests
         public void Setup()
         {
             mockEntityService = new Mock<ILibraryEntityService<Book>>();
-            mockCacheService = new Mock<ICacheService>();
 
-            mockCacheService.Setup(x => x.GetAsync<object>(It.IsAny<string>())).Returns(null);
-
-            mockCachingHelper = new Mock<ICachingHelper>();
             mockMapper = new Mock<IMapper>();
             mockBookService = new Mock<IBookService>();
-            controller = new BookController(mockEntityService.Object, mockCacheService.Object, mockCachingHelper.Object, mockMapper.Object, mockBookService.Object);
+            controller = new BookController(mockEntityService.Object, mockMapper.Object, mockBookService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

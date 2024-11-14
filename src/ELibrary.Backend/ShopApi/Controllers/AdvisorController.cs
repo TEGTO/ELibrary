@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Caching;
-using Caching.Helpers;
-using Caching.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using ShopApi.Features.AdvisorFeature.Services;
 
@@ -13,34 +11,22 @@ namespace ShopApi.Controllers
     public class AdvisorController : ControllerBase
     {
         private readonly IAdvisorService advisorService;
-        private readonly ICacheService cacheService;
-        private readonly ICachingHelper cachingHelper;
         private readonly IMapper mapper;
 
-        public AdvisorController(IAdvisorService advisorService, ICacheService cacheService, ICachingHelper cachingHelper, IMapper mapper)
+        public AdvisorController(IAdvisorService advisorService, IMapper mapper)
         {
             this.advisorService = advisorService;
-            this.cacheService = cacheService;
-            this.cachingHelper = cachingHelper;
             this.mapper = mapper;
         }
 
         [HttpPost]
+        [OutputCache(PolicyName = "AdvisorPolicy")]
         public async Task<ActionResult<AdvisorResponse?>> SendQuery(AdvisorQueryRequest request, CancellationToken cancellationToken)
         {
-            var cacheKey = cachingHelper.GetCacheKey("AdvisorResponse", HttpContext);
-            var cachedResponse = await cacheService.GetDeserializedAsync<AdvisorResponse>(cacheKey);
+            var chatRequest = mapper.Map<ChatAdvisorQueryRequest>(request);
+            var response = await advisorService.SendQueryAsync(chatRequest, cancellationToken);
 
-            if (cachedResponse == null)
-            {
-                var chatRequest = mapper.Map<ChatAdvisorQueryRequest>(request);
-                var response = await advisorService.SendQueryAsync(chatRequest, cancellationToken);
-                cachedResponse = mapper.Map<AdvisorResponse>(response);
-
-                await cacheService.SetSerializedAsync(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
-            }
-
-            return Ok(cachedResponse);
+            return Ok(mapper.Map<AdvisorResponse>(response));
         }
     }
 }

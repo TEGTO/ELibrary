@@ -16,27 +16,57 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
         protected abstract TFilter GetFilter();
 
         [Test]
-        public async Task GetPaginatedEntities_ReturnsOkWithTwoItems()
+        public async Task GetPaginatedEntities_ReturnsOkWithCachedItems()
         {
             // Arrange
-            var list = await CreateSamplesAsync();
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
             var filter = GetFilter();
             filter.PageNumber = 1;
-            filter.PageSize = 10;
+            filter.PageSize = 5;
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
             request.Content = new StringContent(JsonSerializer.Serialize(filter), Encoding.UTF8, "application/json");
+
+            using var request2 = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
+            request2.Content = new StringContent(JsonSerializer.Serialize(filter), Encoding.UTF8, "application/json");
+
+            filter.PageNumber = 1;
+            filter.PageSize = 10;
+
+            using var request3 = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
+            request3.Content = new StringContent(JsonSerializer.Serialize(filter), Encoding.UTF8, "application/json");
             // Act 
             var response = await client.SendAsync(request);
+            var list = await CreateSamplesAsync();
+            var response2 = await client.SendAsync(request2);
+            var response3 = await client.SendAsync(request3);
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response2.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response3.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             var content = await response.Content.ReadAsStringAsync();
             var responseEntities = JsonSerializer.Deserialize<List<TEntityResponse>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+            var content2 = await response2.Content.ReadAsStringAsync();
+            var responseEntities2 = JsonSerializer.Deserialize<List<TEntityResponse>>(content2, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            var content3 = await response3.Content.ReadAsStringAsync();
+            var responseEntities3 = JsonSerializer.Deserialize<List<TEntityResponse>>(content3, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
             Assert.NotNull(responseEntities);
-            Assert.That(responseEntities.Count, Is.EqualTo(list.Count));
-            Assert.That(mapper.Map<TEntity>(responseEntities[0]).Name, Is.EqualTo(list[1].Name)); //Sorted by desc
+            Assert.NotNull(responseEntities2);
+            Assert.NotNull(responseEntities3);
+            Assert.That(responseEntities.Count, Is.Not.EqualTo(list.Count));
+            Assert.That(responseEntities2.Count, Is.Not.EqualTo(list.Count));
+            Assert.That(responseEntities3.Count, Is.EqualTo(list.Count));
+            Assert.That(responseEntities.Count, Is.EqualTo(responseEntities2.Count));
+            Assert.That(responseEntities3.Count, Is.Not.EqualTo(responseEntities2.Count));
         }
         [Test]
         public async Task GetPaginatedEntities_ReturnsOkWithEmptyList()

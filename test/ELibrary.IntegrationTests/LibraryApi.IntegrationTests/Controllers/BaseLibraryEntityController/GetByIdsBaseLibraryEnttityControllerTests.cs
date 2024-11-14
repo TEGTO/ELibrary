@@ -18,7 +18,8 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             // Arrange
             var list = await CreateSamplesAsync();
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/ids");
-            var idsRequest = new GetByIdsRequest() { Ids = new List<int> { 1, 2, 3 } };
+            var idsRequest = new GetByIdsRequest() { Ids = new List<int> { 1, 2 } };
+
             request.Content = new StringContent(JsonSerializer.Serialize(idsRequest), Encoding.UTF8, "application/json");
             // Act 
             var response = await client.SendAsync(request);
@@ -32,6 +33,43 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             Assert.NotNull(responseEntities);
             Assert.That(responseEntities.Count, Is.EqualTo(list.Count));
             Assert.That(list.Find(x => x.Name == mapper.Map<TEntity>(responseEntities[0]).Name) != null, Is.True);
+        }
+        [Test]
+        public async Task GetByIds_ReturnsOkWithCachedItem()
+        {
+            // Arrange
+            var idsRequest = new GetByIdsRequest() { Ids = new List<int> { 1 } };
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/ids");
+            request.Content = new StringContent(JsonSerializer.Serialize(idsRequest), Encoding.UTF8, "application/json");
+
+            using var request2 = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/ids");
+            request2.Content = new StringContent(JsonSerializer.Serialize(idsRequest), Encoding.UTF8, "application/json");
+            // Act 
+            var response = await client.SendAsync(request);
+            var list = await CreateSamplesAsync();
+            var response2 = await client.SendAsync(request2);
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response2.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            var content = await response.Content.ReadAsStringAsync();
+            var responseEntities = JsonSerializer.Deserialize<List<TEntityResponse>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            var content2 = await response2.Content.ReadAsStringAsync();
+            var responseEntities2 = JsonSerializer.Deserialize<List<TEntityResponse>>(content2, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            Assert.NotNull(responseEntities);
+            Assert.NotNull(responseEntities2);
+            Assert.That(responseEntities.Count, Is.Not.EqualTo(list.Count));
+            Assert.That(responseEntities2.Count, Is.Not.EqualTo(list.Count));
+            Assert.That(responseEntities.Count, Is.EqualTo(responseEntities2.Count));
         }
         [Test]
         public async Task GetByIds_ReturnsOkWithEmptyList()

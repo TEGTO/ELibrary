@@ -60,12 +60,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/register",
+							"raw": "https://localhost:7129/auth/register",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"auth",
 								"register"
@@ -125,12 +125,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/login",
+							"raw": "https://localhost:7129/auth/login",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"auth",
 								"login"
@@ -175,12 +175,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/refresh",
+							"raw": "https://localhost:7129/auth/refresh",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"auth",
 								"refresh"
@@ -236,12 +236,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/admin/register",
+							"raw": "https://localhost:7129/auth/admin/register",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"auth",
 								"admin",
@@ -308,12 +308,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/oauth?oauthloginprovider=0&redirecturl=http://localhost:4200&codeverifier=somecode",
+							"raw": "https://localhost:7129/auth/oauth?oauthloginprovider=0&redirecturl=http://localhost:4200&codeverifier=somecode",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"auth",
 								"oauth"
@@ -390,12 +390,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/auth/oauth",
+							"raw": "https://localhost:7129/auth/oauth",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"auth",
 								"oauth"
@@ -448,7 +448,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"oldPassword\": \"123456;QWERTY\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
+							"raw": "{\r\n  \"email\": \"example3@gmail.com\",\r\n  \"oldPassword\": \"123456;QWERTY\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,12 +456,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/update",
+							"raw": "https://localhost:7129/user/update",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user",
 								"update"
@@ -517,12 +517,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user",
+							"raw": "https://localhost:7129/user",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user"
 							]
@@ -587,12 +587,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/admin/users/example@gmail.com",
+							"raw": "https://localhost:7129/user/admin/users/example@gmail.com",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user",
 								"admin",
@@ -657,12 +657,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/admin/users",
+							"raw": "https://localhost:7129/user/admin/users",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user",
 								"admin",
@@ -726,12 +726,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/admin/users/amount",
+							"raw": "https://localhost:7129/user/admin/users/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user",
 								"admin",
@@ -789,12 +789,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/admin/update",
+							"raw": "https://localhost:7129/user/admin/update",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user",
 								"admin",
@@ -851,12 +851,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/user/admin/delete/example1@gmail.com",
+							"raw": "https://localhost:7129/user/admin/delete/example1@gmail.com",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7130",
+							"port": "7129",
 							"path": [
 								"user",
 								"admin",
@@ -879,6 +879,14 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"client_id\", jsonResponse.id);\r",
+									"}\r",
 									""
 								],
 								"type": "text/javascript",
@@ -909,12 +917,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/client",
+							"raw": "https://localhost:7129/client",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"client"
 							]
@@ -959,12 +967,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/client",
+							"raw": "https://localhost:7129/client",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"client"
 							]
@@ -1019,12 +1027,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/client",
+							"raw": "https://localhost:7129/client",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"client"
 							]
@@ -1076,12 +1084,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"raw": "https://localhost:7129/client/admin/{{user_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"client",
 								"admin",
@@ -1131,12 +1139,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"raw": "https://localhost:7129/client/admin/{{user_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"client",
 								"admin",
@@ -1183,12 +1191,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/client/admin/{{user_id}}",
+							"raw": "https://localhost:7129/client/admin/{{user_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"client",
 								"admin",
@@ -1240,12 +1248,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/pagination",
+							"raw": "https://localhost:7129/order/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"pagination"
@@ -1291,12 +1299,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/amount",
+							"raw": "https://localhost:7129/order/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"amount"
@@ -1349,12 +1357,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order",
+							"raw": "https://localhost:7129/order",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order"
 							]
@@ -1387,12 +1395,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order",
+							"raw": "https://localhost:7129/order",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order"
 							]
@@ -1425,12 +1433,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/{{order_id}}",
+							"raw": "https://localhost:7129/order/{{order_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"{{order_id}}"
@@ -1476,12 +1484,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/manager/pagination",
+							"raw": "https://localhost:7129/order/manager/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"manager",
@@ -1531,12 +1539,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/manager/{{order_id}}",
+							"raw": "https://localhost:7129/order/manager/{{order_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"manager",
@@ -1583,12 +1591,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/manager/amount",
+							"raw": "https://localhost:7129/order/manager/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"manager",
@@ -1623,12 +1631,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/manager",
+							"raw": "https://localhost:7129/order/manager",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"manager"
@@ -1662,12 +1670,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/order/manager/{{order_id}}",
+							"raw": "https://localhost:7129/order/manager/{{order_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"order",
 								"manager",
@@ -1705,15 +1713,64 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/author/{{author_id}}",
+							"raw": "https://localhost:7129/author/{{author_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"author",
 								"{{author_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "author-get-by-ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\": [\r\n        10,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7129/author/ids",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7129",
+							"path": [
+								"author",
+								"ids"
 							]
 						}
 					},
@@ -1756,12 +1813,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/author/amount",
+							"raw": "https://localhost:7129/author/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"author",
 								"amount"
@@ -1807,12 +1864,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/author/pagination",
+							"raw": "https://localhost:7129/author/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"author",
 								"pagination"
@@ -1865,12 +1922,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/author",
+							"raw": "https://localhost:7129/author",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"author"
 							]
@@ -1950,12 +2007,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/author",
+							"raw": "https://localhost:7129/author",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"author"
 							]
@@ -2029,12 +2086,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/author/{{author_id}}",
+							"raw": "https://localhost:7129/author/{{author_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"author",
 								"{{author_id}}"
@@ -2071,15 +2128,64 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/genre/{{genre_id}}",
+							"raw": "https://localhost:7129/genre/{{genre_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"genre",
 								"{{genre_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "genre-get-by-ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\": [\r\n        10,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7129/genre/ids",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7129",
+							"path": [
+								"genre",
+								"ids"
 							]
 						}
 					},
@@ -2122,12 +2228,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/genre/amount",
+							"raw": "https://localhost:7129/genre/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"genre",
 								"amount"
@@ -2173,12 +2279,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/genre/pagination",
+							"raw": "https://localhost:7129/genre/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"genre",
 								"pagination"
@@ -2231,12 +2337,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/genre",
+							"raw": "https://localhost:7129/genre",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"genre"
 							]
@@ -2314,12 +2420,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/genre",
+							"raw": "https://localhost:7129/genre",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"genre"
 							]
@@ -2391,12 +2497,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/genre/{{genre_id}}",
+							"raw": "https://localhost:7129/genre/{{genre_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"genre",
 								"{{genre_id}}"
@@ -2442,6 +2548,55 @@
 							"path": [
 								"publisher",
 								"{{publisher_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publisher-get-by-ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\": [\r\n        10,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7129/publisher/ids",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7129",
+							"path": [
+								"publisher",
+								"ids"
 							]
 						}
 					},
@@ -2795,15 +2950,64 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/book/{{book_id}}",
+							"raw": "https://localhost:7129/book/{{book_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"book",
 								"{{book_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-get-by-ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\": [\r\n        10,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7129/book/ids",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7129",
+							"path": [
+								"book",
+								"ids"
 							]
 						}
 					},
@@ -2846,12 +3050,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/book/amount",
+							"raw": "https://localhost:7129/book/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"book",
 								"amount"
@@ -2899,15 +3103,113 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/book/pagination",
+							"raw": "https://localhost:7129/book/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"book",
 								"pagination"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-raise-popularity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\": [\r\n        10,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7129/book/popularity",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7129",
+							"path": [
+								"book",
+								"popularity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "book-update-stock-amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Amount is above 0\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.length).to.be.above(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"bookId\": {{book_id}},\r\n        \"changeAmount\": 1\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7129/book/stockamount",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7129",
+							"path": [
+								"book",
+								"stockamount"
 							]
 						}
 					},
@@ -2949,7 +3251,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"title\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 1, //Hard\r\n    \"pageAmount\": 500,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
+							"raw": "{\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 1, //Hard, Ant - 0, Soft - 2 \r\n    \"pageAmount\": 500,\r\n    \"coverImgUrl\": \"https://drive.google.com/u/0/drive-viewer/AKGpihYb3wQDGQlwpJOQ5j48MmSAogvi0u5HywTuSxC3QBIcpb5QT9w5lrRtRr5bqdnhF6uIhcfUW6c96oNN3f2D-8wijL4iojHHH7c=s2560\",\r\n    \"description\": \"description\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2957,12 +3259,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/book",
+							"raw": "https://localhost:7129/book",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"book"
 							]
@@ -3043,7 +3345,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":{{book_id}},\r\n    \"name\": \"title1\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 2, //Soft\r\n    \"pageAmount\": 500,\r\n    \"coverImgUrl\":\"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
+							"raw": "{\r\n    \"id\": {{book_id}},\r\n    \"name\": \"title2\",\r\n    \"publicationDate\": \"2020-08-03T09:45:45.4656254Z\",\r\n    \"price\": 500,\r\n    \"coverType\": 2, //Soft\r\n    \"pageAmount\": 500,\r\n    \"coverImgUrl\": \"https://drive.google.com/drive-viewer/AKGpihbmwcKU8DxTMZEQ_pc5DTv5dunja7NacF-GmFiRRpjA7HOejLOj3POggmhaynn5tdiarjvHUQPI2qd6jzUuOdLzQ12Um6HIj4E=w1920-h953\",\r\n    \"description\": \"description\",\r\n    \"authorId\": {{author_id}},\r\n    \"genreId\": {{genre_id}},\r\n    \"publisherId\": {{publisher_id}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3051,12 +3353,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7131/book",
+							"raw": "https://localhost:7129/book",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"book"
 							]
@@ -3140,12 +3442,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7131/book/{{book_id}}",
+							"raw": "https://localhost:7129/book/{{book_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7131",
+							"port": "7129",
 							"path": [
 								"book",
 								"{{book_id}}"
@@ -3175,12 +3477,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7132/cart",
+							"raw": "https://localhost:7129/cart",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"cart"
 							]
@@ -3204,12 +3506,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7132/cart/amount",
+							"raw": "https://localhost:7129/cart/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"cart",
 								"amount"
@@ -3262,12 +3564,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/cart/cartbook",
+							"raw": "https://localhost:7129/cart/cartbook",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"cart",
 								"cartbook"
@@ -3313,12 +3615,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/cart/cartbook",
+							"raw": "https://localhost:7129/cart/cartbook",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"cart",
 								"cartbook"
@@ -3328,7 +3630,7 @@
 					"response": []
 				},
 				{
-					"name": "cart-deletecartbooks",
+					"name": "cart-delete-cart-books",
 					"event": [
 						{
 							"listen": "test",
@@ -3364,12 +3666,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/cart",
+							"raw": "https://localhost:7129/cart",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"cart"
 							]
@@ -3412,12 +3714,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7132/stockbook/{{stockorder_id}}",
+							"raw": "https://localhost:7129/stockbook/{{stockorder_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"stockbook",
 								"{{stockorder_id}}"
@@ -3456,12 +3758,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7132/stockbook/amount",
+							"raw": "https://localhost:7129/stockbook/amount",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"stockbook",
 								"amount"
@@ -3516,12 +3818,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/stockbook/pagination",
+							"raw": "https://localhost:7129/stockbook/pagination",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"stockbook",
 								"pagination"
@@ -3574,12 +3876,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/stockbook",
+							"raw": "https://localhost:7129/stockbook",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"stockbook"
 							]
@@ -3593,7 +3895,7 @@
 			"name": "statistics",
 			"item": [
 				{
-					"name": "statistics-get-book",
+					"name": "statistics-get",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -3617,12 +3919,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/statistics",
+							"raw": "https://localhost:7129/statistics",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"statistics"
 							]
@@ -3650,12 +3952,12 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7132/advisor",
+							"raw": "https://localhost:7129/advisor",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "7132",
+							"port": "7129",
 							"path": [
 								"advisor"
 							]

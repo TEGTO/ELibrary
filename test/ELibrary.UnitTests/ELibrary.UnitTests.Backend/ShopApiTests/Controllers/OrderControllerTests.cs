@@ -1,5 +1,4 @@
-﻿using Caching.Services;
-using LibraryShopEntities.Domain.Dtos.Shop;
+﻿using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Domain.Entities.Shop;
 using LibraryShopEntities.Filters;
 using MediatR;
@@ -23,20 +22,15 @@ namespace ShopApi.Controllers.Tests
     internal class OrderControllerTests
     {
         private Mock<IMediator> mockMediator;
-        private Mock<ICacheService> mockCacheService;
         private OrderController orderController;
 
         [SetUp]
         public void SetUp()
         {
             mockMediator = new Mock<IMediator>();
-            mockCacheService = new Mock<ICacheService>();
-
-            mockCacheService.Setup(x => x.GetAsync<object>(It.IsAny<string>())).Returns(null);
 
             orderController = new OrderController(
-                mockMediator.Object,
-                mockCacheService.Object
+                mockMediator.Object
             );
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]

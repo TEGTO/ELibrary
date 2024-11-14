@@ -1,9 +1,8 @@
-﻿using Caching.Services;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Shared.Services.Tests
+namespace Caching.Services.Tests
 {
     [TestFixture]
     internal class InMemoryCacheServiceTests
@@ -31,7 +30,7 @@ namespace Shared.Services.Tests
                 .Setup(m => m.TryGetValue(key, out cacheEntry))
                 .Returns(true);
             // Act
-            var result = await cacheService.GetAsync<string>(key);
+            var result = await cacheService.GetAsync(key, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(expectedValue));
             mockMemoryCache.Verify(m => m.TryGetValue(key, out cacheEntry), Times.Once);
@@ -47,7 +46,7 @@ namespace Shared.Services.Tests
                 .Setup(m => m.TryGetValue(key, out cacheEntry))
                 .Returns(true);
             // Act
-            var result = await cacheService.GetAsync<string>(key);
+            var result = await cacheService.GetAsync(key, CancellationToken.None);
             // Assert
             Assert.IsNull(result);
             mockMemoryCache.Verify(m => m.TryGetValue(key, out cacheEntry), Times.Once);
@@ -64,7 +63,7 @@ namespace Shared.Services.Tests
                 .Setup(m => m.CreateEntry(It.IsAny<object>()))
                 .Returns(cacheEntryMock.Object);
             // Act
-            await cacheService.SetAsync(key, value, duration);
+            await cacheService.SetAsync(key, value, duration, CancellationToken.None);
             // Assert
             cacheEntryMock.VerifySet(e => e.AbsoluteExpirationRelativeToNow = duration, Times.Once);
             mockMemoryCache.Verify(m => m.CreateEntry(key), Times.Once);
