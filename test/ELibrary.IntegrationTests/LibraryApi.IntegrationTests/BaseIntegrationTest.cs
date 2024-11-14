@@ -1,11 +1,8 @@
 ﻿using Authentication.Token;
 using AutoMapper;
 using Caching.Helpers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 
 namespace LibraryApi.IntegrationTests
@@ -26,20 +23,7 @@ namespace LibraryApi.IntegrationTests
         {
             wrapper = new WebAppFactoryWrapper();
 
-            factory = (await wrapper.GetFactoryAsync()).WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.RemoveAll(typeof(ICachingHelper));
-
-                    mockCachingHelper = new Mock<ICachingHelper>();
-
-                    services.AddSingleton(mockCachingHelper.Object);
-
-                    mockCachingHelper.Setup(x => x.GetCacheKey(It.IsAny<string>(), It.IsAny<HttpContext>()))
-                    .Returns(() => Guid.NewGuid().ToString());
-                });
-            });
+            factory = await wrapper.GetFactoryAsync();
 
             InitializeServices();
         }

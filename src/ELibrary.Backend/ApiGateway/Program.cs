@@ -6,38 +6,28 @@ using Logging;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Polly;
+using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.AddLogging();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHealthChecks();
-
 #region Cors
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-var allowedOrigins = builder.Configuration.GetSection(Configuration.ALLOWED_CORS_ORIGINS).Get<string[]>() ?? [];
+bool.TryParse(builder.Configuration[Configuration.USE_CORS], out bool useCors);
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-builder.Services.AddCors(options =>
+if (useCors)
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
-    {
-        policy.WithOrigins(allowedOrigins)
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .AllowAnyMethod();
-        if (builder.Environment.IsDevelopment())
-        {
-            policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
-        }
-    });
-});
+    builder.Services.AddApplicationCors(builder.Configuration, myAllowSpecificOrigins, builder.Environment.IsDevelopment());
+}
 
 #endregion
 
 builder.Services.ConfigureIdentityServices(builder.Configuration);
+builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHealthChecks();
 
 #region Ocelot
 
@@ -74,11 +64,20 @@ builder.Services.AddOcelot(builder.Configuration).AddPolly();
 
 var app = builder.Build();
 
-app.UseCors(MyAllowSpecificOrigins);
-app.UseExceptionMiddleware();
+if (useCors)
+{
+    app.UseCors(myAllowSpecificOrigins);
+}
+
+app.UseSharedMiddlewares();
 app.UseMiddleware<TokenFromQueryMiddleware>();
 
 app.UseRouting();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

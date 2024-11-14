@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Caching.Helpers;
-using Caching.Services;
 using LibraryApi.Domain.Dto.Book;
 using LibraryApi.Services;
 using LibraryShopEntities.Domain.Dtos.Library;
@@ -28,11 +26,9 @@ namespace LibraryApi.Controllers
 
         public BookController(
             ILibraryEntityService<Book> entityService,
-            ICacheService cacheService,
-            ICachingHelper cachingHelper,
             IMapper mapper,
             IBookService bookService
-            ) : base(entityService, cacheService, cachingHelper, mapper)
+            ) : base(entityService, mapper)
         {
             this.bookService = bookService;
         }

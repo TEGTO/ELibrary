@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Moq;
+﻿using Moq;
 using ShopApi.Features.AdvisorFeature.Domain.Dtos;
 using System.Net;
 using System.Text;
@@ -20,12 +19,6 @@ namespace ShopApi.IntegrationTests.Controllers.AdvisorController
             {
                 Message = $"Here some interesting books: 1984, ...{new Random().Next(int.MaxValue)}"
             });
-        }
-        [SetUp]
-        public void SetUp()
-        {
-            mockCachingHelper.Setup(x => x.GetCacheKey(It.IsAny<string>(), It.IsAny<HttpContext>()))
-            .Returns(Guid.NewGuid().ToString());
         }
 
         [Test]
@@ -54,12 +47,12 @@ namespace ShopApi.IntegrationTests.Controllers.AdvisorController
             // Arrange
             var advisorRequest = new AdvisorQueryRequest
             {
-                Query = "Give me something interesting...",
+                Query = "Give me something very interesting...",
             };
             // Act
             var response1 = await MakeRequest(advisorRequest);
             var response2 = await MakeRequest(advisorRequest);
-            await Task.Delay(3500);
+            await Task.Delay(10500);
             var response3 = await MakeRequest(advisorRequest);
             // Assert
             Assert.NotNull(response1);

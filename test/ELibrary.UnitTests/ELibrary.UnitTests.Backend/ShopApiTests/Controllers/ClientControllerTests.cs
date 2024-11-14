@@ -1,5 +1,4 @@
-﻿using Caching.Services;
-using LibraryShopEntities.Domain.Dtos.Shop;
+﻿using LibraryShopEntities.Domain.Dtos.Shop;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +15,14 @@ namespace ShopApi.Controllers.Tests
     internal class ClientControllerTests
     {
         private Mock<IMediator> mockMediator;
-        private Mock<ICacheService> mockCacheService;
         private ClientController clientController;
 
         [SetUp]
         public void SetUp()
         {
             mockMediator = new Mock<IMediator>();
-            mockCacheService = new Mock<ICacheService>();
 
-            clientController = new ClientController(mockMediator.Object, mockCacheService.Object);
+            clientController = new ClientController(mockMediator.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {

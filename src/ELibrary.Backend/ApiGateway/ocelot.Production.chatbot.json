@@ -8,7 +8,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "chatbot",
+          "Host": "elibrary-chatbot-api-polandcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],

@@ -1,10 +1,10 @@
 ﻿using Authentication.Identity;
-using Caching.Services;
 using LibraryShopEntities.Domain.Dtos.Shop;
 using LibraryShopEntities.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using ShopApi.Features.OrderFeature.Command.CancelOrder;
 using ShopApi.Features.OrderFeature.Command.CreateOrder;
 using ShopApi.Features.OrderFeature.Command.GetOrderAmount;
@@ -26,51 +26,31 @@ namespace ShopApi.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ICacheService cacheService;
 
-        public OrderController(IMediator mediator, ICacheService cacheService)
+        public OrderController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.cacheService = cacheService;
         }
 
         #region Endpoints
 
         [HttpPost("pagination")]
+        [OutputCache(PolicyName = "OrderPaginationPolicy")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
 
-            var cacheKey = $"GetOrders_{userId}";
-            var cachedResponse = cacheService.Get<List<OrderResponse>>(cacheKey);
-
-            if (cachedResponse == null)
-            {
-                var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
-                cachedResponse = response.ToList();
-
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
-            }
-
-            return Ok(cachedResponse);
+            return Ok(response);
         }
         [HttpPost("amount")]
+        [OutputCache(PolicyName = "OrderPaginationPolicy")]
         public async Task<ActionResult<int>> GetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
 
-            var cacheKey = $"GetOrderAmount_{userId}";
-            var cachedResponse = cacheService.Get<int?>(cacheKey);
-
-            if (cachedResponse == null)
-            {
-                var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
-                cachedResponse = response;
-
-                cacheService.Set(cacheKey, cachedResponse, TimeSpan.FromSeconds(3));
-            }
-
-            return Ok(cachedResponse);
+            return Ok(response);
         }
         [HttpPost]
         public async Task<ActionResult<OrderResponse>> CreateOrder(CreateOrderRequest request, CancellationToken cancellationToken)

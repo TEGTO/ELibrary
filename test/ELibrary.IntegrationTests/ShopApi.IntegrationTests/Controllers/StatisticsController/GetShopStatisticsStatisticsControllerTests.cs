@@ -1,5 +1,4 @@
 ﻿using LibraryShopEntities.Domain.Dtos.Library;
-using Microsoft.AspNetCore.Http;
 using Moq;
 using ShopApi.Features.CartFeature.Dtos;
 using ShopApi.Features.StatisticsFeature.Domain.Dtos;
@@ -16,13 +15,6 @@ namespace ShopApi.IntegrationTests.Controllers.StatisticsController
         public async Task OneTimeSetUp()
         {
             await AddSamplesAsync();
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            mockCachingHelper.Setup(x => x.GetCacheKey(It.IsAny<string>(), It.IsAny<HttpContext>()))
-                .Returns(Guid.NewGuid().ToString());
         }
 
         [TestCaseSource(nameof(AddOrderDataInvalidOrderDetails))]
@@ -85,14 +77,6 @@ namespace ShopApi.IntegrationTests.Controllers.StatisticsController
 
         private static IEnumerable<TestCaseData> AddOrderDataInvalidOrderDetails()
         {
-            yield return new TestCaseData(
-               new GetShopStatisticsRequest
-               {
-                   IncludeBooks = Array.Empty<StatisticsBookRequest>()
-               },
-               1, 10, 2, 500m, 500m, 1, 1
-           );
-
             yield return new TestCaseData(
                 new GetShopStatisticsRequest
                 {

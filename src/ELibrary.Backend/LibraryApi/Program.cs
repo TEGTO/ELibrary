@@ -1,12 +1,13 @@
 using Authentication;
 using Caching;
-using Caching.Services;
 using DatabaseControl;
 using ExceptionHandling;
 using LibraryApi;
 using LibraryApi.Services;
 using LibraryShopEntities.Data;
+using LibraryShopEntities.Domain.Dtos.SharedRequests;
 using LibraryShopEntities.Domain.Entities.Library;
+using LibraryShopEntities.Filters;
 using LibraryShopEntities.Repositories.Library;
 using Logging;
 using Microsoft.EntityFrameworkCore;
@@ -37,19 +38,28 @@ builder.Services.AddSingleton<ILibraryEntityService<Book>>(sp => sp.GetRequiredS
 builder.Services.AddSingleton<ILibraryEntityService<Author>, LibraryEntityService<Author>>();
 builder.Services.AddSingleton<ILibraryEntityService<Genre>, LibraryEntityService<Genre>>();
 builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntityService<Publisher>>();
-builder.Services.AddSingleton<ICacheService, InMemoryCacheService>();
 #endregion
 
 builder.Services.AddPagination(builder.Configuration);
 builder.Services.AddRepositoryPatternWithResilience<LibraryDbContext>(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
-builder.Services.AddCachingHelper();
+
+#region Caching
+
+builder.Services.AddOutputCache((options) =>
+{
+    options.AddPolicy("BasePolicy", new OutputCachePolicy());
+
+    options.SetOutputCachePolicy("CacheByIds", duration: TimeSpan.FromSeconds(10), type: typeof(GetByIdsRequest));
+
+    options.SetOutputCachePolicy("CacheByFilter", duration: TimeSpan.FromSeconds(10), type: typeof(BookFilterRequest));
+});
+
+#endregion
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-builder.Services.AddMemoryCache();
-builder.Services.AddResponseCaching();
 
 var app = builder.Build();
 
@@ -66,6 +76,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseIdentity();
+
+app.UseOutputCache();
 
 app.MapControllers();
 

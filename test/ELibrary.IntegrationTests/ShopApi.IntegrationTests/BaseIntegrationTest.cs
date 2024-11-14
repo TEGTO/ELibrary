@@ -1,6 +1,5 @@
 ﻿using Authentication.Token;
 using AutoMapper;
-using Caching.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +19,6 @@ namespace ShopApi.IntegrationTests
         protected JwtSettings settings;
         protected IMapper mapper;
         protected Mock<IAdvisorService> mockAdvisorService;
-        protected Mock<ICachingHelper> mockCachingHelper;
         protected Mock<ILibraryService> mockLibraryService;
         private WebAppFactoryWrapper wrapper;
         private WebApplicationFactory<Program> factory;
@@ -36,15 +34,12 @@ namespace ShopApi.IntegrationTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.RemoveAll(typeof(IAdvisorService));
-                    services.RemoveAll(typeof(ICachingHelper));
                     services.RemoveAll(typeof(ILibraryService));
 
                     mockAdvisorService = new Mock<IAdvisorService>();
-                    mockCachingHelper = new Mock<ICachingHelper>();
                     mockLibraryService = new Mock<ILibraryService>();
 
                     services.AddSingleton(mockAdvisorService.Object);
-                    services.AddSingleton(mockCachingHelper.Object);
                     services.AddSingleton(mockLibraryService.Object);
                 });
             });

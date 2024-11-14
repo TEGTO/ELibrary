@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExceptionHandlingTests", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caching", "Caching\Caching.csproj", "{1D74782D-C4B5-4D0D-B705-E79960F44EAF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingTestss", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\CachingTestss\CachingTestss.csproj", "{C9959405-8A2E-4DF3-BC52-36951D3D1EFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\CachingTestss\CachingTests.csproj", "{C9959405-8A2E-4DF3-BC52-36951D3D1EFC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resilience", "Resilience\Resilience.csproj", "{F41CF65F-EDE0-4F51-8A0D-B6A07A63C144}"
 EndProject
@@ -75,7 +75,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{154C4F5C-C362-4A17-9C36-FE73641A9B08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGatewayTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\ApiGatewayTests\ApiGatewayTests.csproj", "{48093C39-6340-436D-8CC5-E86C95C13FD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGatewayTests", "..\..\test\ELibrary.UnitTests\ELibrary.UnitTests.Backend\ApiGatewayTests\ApiGatewayTests.csproj", "{48093C39-6340-436D-8CC5-E86C95C13FD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

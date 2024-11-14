@@ -10,7 +10,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
@@ -32,7 +32,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
@@ -54,7 +54,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
@@ -76,7 +76,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
@@ -98,7 +98,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
@@ -126,7 +126,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
@@ -154,7 +154,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "elibrary-user-api-germanywestcentral-002.azurewebsites.net",
+          "Host": "elibrary-library-api-germanywestcentral-002.azurewebsites.net",
           "Port": 443
         }
       ],
