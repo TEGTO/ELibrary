@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../../../environment/environment';
-import { CartBook, Client, combineDateTime, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultOrder, getOrderCreateMinDate, getOrderDeliveryMethods, getPaymentMethods, getProductInfoPath, getProductsPath, mapCartBookToOrderBook, minDateValidator, noSpaces, notEmptyString, Order, PaymentMethod, ValidationMessage } from '../../../shared';
+import { CartBook, Client, combineDateTime, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultOrder, getOrderCreateMinDate, getOrderDeliveryMethods, getPaymentMethods, getProductInfoPath, getProductsPath, mapCartBookToOrderBook, minDateValidator, notEmptyString, Order, PaymentMethod, phoneValidator, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 
 @Component({
@@ -22,6 +22,8 @@ export class MakeOrderComponent implements OnInit {
   items$!: Observable<CartBook[]>;
   client$!: Observable<Client>;
 
+  get contactClientNameInput() { return this.formGroup.get('contactClientName')! as FormControl; }
+  get contactPhoneInput() { return this.formGroup.get('contactPhone')! as FormControl; }
   get deliveryAddressInput() { return this.formGroup.get('address')! as FormControl; }
   get paymentMethodInput() { return this.formGroup.get('payment')! as FormControl; }
   get deliveryMethodInput() { return this.formGroup.get('delivery')! as FormControl; }
@@ -55,13 +57,14 @@ export class MakeOrderComponent implements OnInit {
   }
 
   initializeForm(client: Client): void {
-
     this.formGroup = new FormGroup(
       {
         payment: new FormControl(PaymentMethod.Cash, [Validators.required]),
         deliveryDate: new FormControl(getOrderCreateMinDate(), [Validators.required, minDateValidator(getOrderCreateMinDate())]),
         deliveryTime: new FormControl(getOrderCreateMinDate(), [Validators.required]),
-        address: new FormControl(client.address, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
+        contactClientName: new FormControl(`${client.name} ${client.middleName} ${client.lastName}`, [Validators.required, notEmptyString, Validators.maxLength(256)]),
+        contactPhone: new FormControl(client.phone, [Validators.required, phoneValidator(10, 50)]),
+        address: new FormControl(client.address, [Validators.required, notEmptyString, Validators.maxLength(512)]),
         delivery: new FormControl(DeliveryMethod.SelfPickup, [Validators.required]),
       });
   }
@@ -85,22 +88,37 @@ export class MakeOrderComponent implements OnInit {
       return total + (cartBook.book.price * cartBook.bookAmount);
     }, 0);
   }
+  getDeliveryAddressFieldName(): string {
+    if (this.deliveryMethodInput.value === DeliveryMethod.AddressDelivery) {
+      return "Delivery Address";
+    }
+    else {
+      return "Shop Address";
+    }
+  }
 
   makeOrder(books: CartBook[]) {
-    const formValues = { ...this.formGroup.value };
-    const order: Order = {
-      ...getDefaultOrder(),
-      deliveryAddress: formValues.address,
-      deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
-      paymentMethod: formValues.payment,
-      deliveryMethod: formValues.delivery,
-      orderBooks: books.map(x => mapCartBookToOrderBook(x))
-    };
-    const command: ClientAddOrderCommand =
-    {
-      order: order,
+    if (this.formGroup.valid) {
+      const formValues = { ...this.formGroup.value };
+      const order: Order = {
+        ...getDefaultOrder(),
+        contactClientName: formValues.contactClientName,
+        contactPhone: formValues.contactPhone,
+        deliveryAddress: formValues.address,
+        deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
+        paymentMethod: formValues.payment,
+        deliveryMethod: formValues.delivery,
+        orderBooks: books.map(x => mapCartBookToOrderBook(x))
+      };
+      const command: ClientAddOrderCommand =
+      {
+        order: order,
+      }
+      this.addOrderHandler.dispatch(command);
     }
-    this.addOrderHandler.dispatch(command);
+    else {
+      this.formGroup.markAllAsTouched();
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

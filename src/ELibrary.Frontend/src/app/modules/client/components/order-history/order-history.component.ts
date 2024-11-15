@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
 import { environment } from '../../../../../environment/environment';
-import { Client, combineDateTime, CommandHandler, CurrencyPipeApplier, getCreatedOrderMinDate, getDefaultGetOrdersFilter, getOrderDeliveryMethods, GetOrdersFilter, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, noSpaces, notEmptyString, Order, OrderBook, OrderStatus, ValidationMessage } from '../../../shared';
+import { Client, combineDateTime, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getCreatedOrderMinDate, getDefaultGetOrdersFilter, getOrderDeliveryMethods, GetOrdersFilter, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, notEmptyString, Order, OrderBook, OrderStatus, phoneValidator, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
 @Component({
@@ -88,10 +88,12 @@ export class OrderHistoryComponent implements OnInit {
   initializeForm(order: Order): void {
     this.orderFormGroups.set(order.id, new FormGroup(
       {
+        contactClientName: new FormControl(order.contactClientName, [Validators.required, notEmptyString, Validators.maxLength(256)]),
+        contactPhone: new FormControl(order.contactPhone, [Validators.required, phoneValidator(10, 50)]),
         payment: new FormControl(order.paymentMethod, [Validators.required]),
         deliveryDate: new FormControl(order.deliveryTime, [Validators.required, minDateValidator(getCreatedOrderMinDate(order))]),
         deliveryTime: new FormControl(order.deliveryTime, [Validators.required]),
-        address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(512)]),
+        address: new FormControl(order.deliveryAddress, [Validators.required, notEmptyString, Validators.maxLength(512)]),
         delivery: new FormControl(order.deliveryMethod, [Validators.required]),
       })
     );
@@ -99,6 +101,12 @@ export class OrderHistoryComponent implements OnInit {
     if (!this.isOrderProcessing(order)) {
       this.orderFormGroups.get(order.id)!.disable();
     }
+  }
+  contactClientNameInput(order: Order) {
+    return this.orderFormGroups.get(order.id)!.get('contactClientName')! as FormControl;
+  }
+  contactPhoneInput(order: Order) {
+    return this.orderFormGroups.get(order.id)!.get('contactPhone')! as FormControl;
   }
   paymentInput(order: Order) {
     return this.orderFormGroups.get(order.id)!.get('payment')! as FormControl;
@@ -116,21 +124,40 @@ export class OrderHistoryComponent implements OnInit {
     return this.orderFormGroups.get(order.id)!.get('delivery')! as FormControl;
   }
 
-  updateOrder(order: Order) {
-    const formValues = { ... this.orderFormGroups.get(order.id)!.value };
-    const updatedOrder: Order =
-    {
-      ...order,
-      paymentMethod: formValues.payment,
-      deliveryAddress: formValues.address,
-      deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
-      deliveryMethod: formValues.delivery,
-    };
-    const command: ClientUpdateOrderCommand =
-    {
-      order: updatedOrder
+  getDeliveryAddressFieldName(order: Order): string {
+    const method = this.deliveryMethodInput(order);
+
+    if (method.value === DeliveryMethod.AddressDelivery) {
+      return "Delivery Address";
     }
-    this.updateOrderHandler.dispatch(command);
+    else {
+      return "Shop Address";
+    }
+  }
+
+  updateOrder(order: Order) {
+    const formGroup = this.orderFormGroups.get(order.id)!;
+    if (formGroup.valid) {
+      const formValues = { ...formGroup.value };
+      const updatedOrder: Order =
+      {
+        ...order,
+        contactClientName: formValues.contactClientName,
+        contactPhone: formValues.contactPhone,
+        paymentMethod: formValues.payment,
+        deliveryAddress: formValues.address,
+        deliveryTime: combineDateTime(formValues.deliveryDate, formValues.deliveryTime),
+        deliveryMethod: formValues.delivery,
+      };
+      const command: ClientUpdateOrderCommand =
+      {
+        order: updatedOrder
+      }
+      this.updateOrderHandler.dispatch(command);
+    }
+    else {
+      formGroup.markAllAsTouched();
+    }
   }
 
   cancelOrder(order: Order) {

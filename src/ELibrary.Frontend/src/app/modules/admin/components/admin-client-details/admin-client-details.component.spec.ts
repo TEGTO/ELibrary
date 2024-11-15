@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { ADMIN_CREATE_CLIENT_COMMAND_HANDLER, ADMIN_UPDATE_CLIENT_COMMAND_HANDLER, AdminCreateClientCommand, AdminService, AdminUpdateClientCommand } from '../..';
-import { Client, CommandHandler, getDefaultClient, RouteReader, ValidationMessage } from '../../../shared';
+import { Client, CommandHandler, getDefaultClient, PlaceholderPipe, RouteReader, ValidationMessage } from '../../../shared';
 import { AdminClientDetailsComponent } from './admin-client-details.component';
 
 describe('AdminClientDetailsComponent', () => {
@@ -46,7 +46,8 @@ describe('AdminClientDetailsComponent', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         MatInputModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        PlaceholderPipe
       ],
       declarations: [AdminClientDetailsComponent],
       providers: [

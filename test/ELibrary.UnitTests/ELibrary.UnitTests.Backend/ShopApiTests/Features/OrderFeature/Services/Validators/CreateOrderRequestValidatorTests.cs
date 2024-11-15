@@ -28,6 +28,8 @@ namespace ShopApiTests.Features.OrderFeature.Services.Validators
             // Arrange
             var request = new CreateOrderRequest
             {
+                ContactClientName = "Client Name",
+                ContactPhone = "0123456789",
                 DeliveryAddress = "Valid Address",
                 DeliveryTime = DateTime.UtcNow.AddDays(1),
                 OrderBooks = new List<OrderBookRequest> { new OrderBookRequest { BookId = 1, BookAmount = 1 } },

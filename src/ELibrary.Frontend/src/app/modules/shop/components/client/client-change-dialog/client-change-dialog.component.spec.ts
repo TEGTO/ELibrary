@@ -80,6 +80,7 @@ describe('ClientChangeDialogComponent', () => {
         component.nameInput.setValue(updatedClient.name);
         component.emailInput.setValue(updatedClient.email);
         component.lastNameInput.setValue(updatedClient.name);
+        component.phoneInput.setValue("0123456789");
         component.dateOfBirthInput.setValue(new Date(0));
         component.onSubmit();
 

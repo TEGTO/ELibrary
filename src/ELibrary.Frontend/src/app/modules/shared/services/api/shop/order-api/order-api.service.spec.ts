@@ -67,7 +67,7 @@ describe('OrderApiService', () => {
 
   it('should create an order', () => {
     const expectedReq = `/api/order`;
-    const request: CreateOrderRequest = { deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery, orderBooks: [] };
+    const request: CreateOrderRequest = { contactClientName: "", contactPhone: "", deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery, orderBooks: [] };
     const response: Order = getDefaultOrder();
 
     service.createOrder(request).subscribe(res => {
@@ -82,7 +82,7 @@ describe('OrderApiService', () => {
 
   it('should update an order', () => {
     const expectedReq = `/api/order`;
-    const request: ClientUpdateOrderRequest = { id: 1, deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery };;
+    const request: ClientUpdateOrderRequest = { id: 1, contactClientName: "", contactPhone: "", deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery };;
     const response: Order = getDefaultOrder();
 
     service.updateOrder(request).subscribe(res => {

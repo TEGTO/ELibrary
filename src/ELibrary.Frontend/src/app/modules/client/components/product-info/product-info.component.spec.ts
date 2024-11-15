@@ -4,7 +4,7 @@ import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { BookService } from "../../../library";
-import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook, RouteReader } from "../../../shared";
+import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook, PlaceholderPipe, RouteReader } from "../../../shared";
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from "../../../shop";
 import { ProductInfoComponent } from "./product-info.component";
 
@@ -34,6 +34,7 @@ describe('ProductInfoComponent', () => {
         routeReaderSpy.readIdInt.and.returnValue(of(mockBook));
 
         await TestBed.configureTestingModule({
+            imports: [PlaceholderPipe],
             declarations: [ProductInfoComponent],
             providers: [
                 { provide: BookService, useValue: mockBookService },

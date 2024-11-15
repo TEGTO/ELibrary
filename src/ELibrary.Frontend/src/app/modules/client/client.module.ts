@@ -14,7 +14,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { ClientViewComponent, CreateClientComponent, MakeOrderComponent, OrderHistoryComponent, ProductInfoComponent, ProductPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
-import { ClientGuard, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
+import { ClientGuard, LoadingComponent, pathes, PlaceholderPipe, PolicyType, RoleGuard } from '../shared';
 import { ShopModule } from '../shop/shop.module';
 
 const routes: Routes = [
@@ -75,6 +75,7 @@ const routes: Routes = [
     MatPaginator,
     MatExpansionModule,
     ReactiveFormsModule,
+    PlaceholderPipe
   ]
 })
 export class ClientModule { }

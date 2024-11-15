@@ -13,7 +13,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ADMIN_CREATE_CLIENT_COMMAND_HANDLER, ADMIN_DELETE_USER_COMMAND_HANDLER, ADMIN_REGISTER_USER_COMMAND_HANDLER, ADMIN_UPDATE_CLIENT_COMMAND_HANDLER, ADMIN_UPDATE_USER_COMMAND_HANDLER, AdminClientDetailsComponent, AdminControllerService, AdminCreateClientCommandHandlerService, AdminDeleteUserCommandHandlerService, AdminDialogManager, AdminDialogManagerService, AdminEffects, adminReducer, AdminRegisterUserCommandHandlerService, AdminRegisterUserDialogComponent, AdminService, AdminTableComponent, AdminUpdateClientCommandHandlerService, AdminUpdateUserCommandHandlerService, AdminUserDetailsComponent, AdminUserFilterComponent, AdminUserPageComponent, AdminUserTableComponent, START_ADMIN_REGISTER_USER_COMMAND_HANDLER, StartAdminRegisterUserCommandHandlerService } from '.';
 import { OrderTableComponent } from '../manager';
-import { GenericTableComponent, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
+import { GenericTableComponent, LoadingComponent, pathes, PlaceholderPipe, PolicyType, RoleGuard } from '../shared';
 
 const routes: Routes = [
   {
@@ -55,7 +55,8 @@ const routes: Routes = [
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    OrderTableComponent
+    OrderTableComponent,
+    PlaceholderPipe
   ],
   providers: [
     { provide: AdminService, useClass: AdminControllerService },

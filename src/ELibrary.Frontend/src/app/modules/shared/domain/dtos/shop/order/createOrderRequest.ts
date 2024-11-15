@@ -1,6 +1,8 @@
 import { DeliveryMethod, mapOrderBookToOrderBookRequest, Order, OrderBookRequest, PaymentMethod } from "../../../..";
 
 export interface CreateOrderRequest {
+    contactClientName: string,
+    contactPhone: string,
     deliveryAddress: string,
     deliveryTime: Date,
     paymentMethod: PaymentMethod,
@@ -10,6 +12,8 @@ export interface CreateOrderRequest {
 
 export function mapOrderToCreateOrderRequest(order: Order): CreateOrderRequest {
     return {
+        contactClientName: order.contactClientName,
+        contactPhone: order.contactPhone,
         deliveryAddress: order.deliveryAddress,
         deliveryTime: order.deliveryTime,
         paymentMethod: order.paymentMethod,
@@ -20,6 +24,8 @@ export function mapOrderToCreateOrderRequest(order: Order): CreateOrderRequest {
 
 export function getDefaultCreateOrderRequest(): CreateOrderRequest {
     return {
+        contactClientName: "",
+        contactPhone: "",
         deliveryAddress: "",
         deliveryTime: new Date(),
         paymentMethod: PaymentMethod.Cash,

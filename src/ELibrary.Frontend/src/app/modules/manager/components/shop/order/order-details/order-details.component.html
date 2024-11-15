@@ -39,6 +39,14 @@
                     <span class="detail-header__dots">⠀</span>
                 </div>
                 <div class="order__detail-header text-gray-400">
+                    <span class="font-semibold">Contact Name</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="order__detail-header text-gray-400">
+                    <span class="font-semibold">Contact Phone</span>
+                    <span class="detail-header__dots">⠀</span>
+                </div>
+                <div class="order__detail-header text-gray-400">
                     <span class="font-semibold">Delivery Address</span>
                     <span class="detail-header__dots">⠀</span>
                 </div>
@@ -92,40 +100,46 @@
                      'text-green-700':  isOrderCompleted(order),
                      'text-yellow-500': !isOrderCanceled(order) && !isOrderCompleted(order),
                       }">
-                    <span>{{ getOrderStatusString(order) }}</span>
+                    <span>{{ getOrderStatusString(order) | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.deliveryTime | date:'dd/MM/YYYY, HH:mm' }}</span>
+                    <span>{{ order.deliveryTime | placeholder | date:'dd/MM/YYYY, HH:mm' }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.deliveryAddress }}</span>
+                    <span>{{ order.contactClientName | placeholder }} </span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ getDeliveryMethodString(order) }}</span>
+                    <span>{{ order.contactPhone | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.orderAmount }}</span>
+                    <span>{{ order.deliveryAddress | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ applyCurrencyPipe(order.totalPrice) }}</span>
+                    <span>{{ getDeliveryMethodString(order) | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ getOrderPaymentMethodString(order) }}</span>
+                    <span>{{ order.orderAmount | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.client.userId }}</span>
+                    <span>{{ applyCurrencyPipe(order.totalPrice) | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.client.id }}</span>
+                    <span>{{ getOrderPaymentMethodString(order) | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ getClientName(order.client) }}</span>
+                    <span>{{ order.client.userId | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.client.email }}</span>
+                    <span>{{ order.client.id | placeholder }}</span>
                 </div>
                 <div class="order__detail-value text-gray-400">
-                    <span>{{ order.client.phone }}</span>
+                    <span>{{ getClientName(order.client) | placeholder }}</span>
+                </div>
+                <div class="order__detail-value text-gray-400">
+                    <span>{{ order.client.email | placeholder }}</span>
+                </div>
+                <div class="order__detail-value text-gray-400">
+                    <span>{{ order.client.phone | placeholder }}</span>
                 </div>
             </div>
         </div>

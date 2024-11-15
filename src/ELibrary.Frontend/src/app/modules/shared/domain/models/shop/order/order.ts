@@ -2,7 +2,7 @@ import { Client, getDefaultClient, OrderBook } from "../../../..";
 import { environment } from "../../../../../../../environment/environment";
 
 export enum OrderStatus {
-    Canceled = -1, InProcessing, Completed
+    Canceled = -1, InProcessing = 0, Completed = 1
 }
 export enum PaymentMethod {
     Cash
@@ -16,6 +16,8 @@ export interface Order {
     updatedAt: Date,
     orderAmount: number,
     totalPrice: number,
+    contactClientName: string,
+    contactPhone: string,
     deliveryAddress: string,
     deliveryTime: Date,
     orderStatus: OrderStatus,
@@ -32,6 +34,8 @@ export function getDefaultOrder(): Order {
         updatedAt: new Date(),
         orderAmount: 0,
         totalPrice: 0,
+        contactClientName: "",
+        contactPhone: "",
         deliveryAddress: "",
         deliveryTime: new Date(),
         orderStatus: OrderStatus.InProcessing,

@@ -10,7 +10,7 @@ namespace ShopApi.IntegrationTests
     {
         public static async Task<ClientResponse> CreateClientAsync(string managerAccessToken, HttpClient client)
         {
-            var createClientRequest = new CreateClientRequest() { Address = "Some address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "some@gmail.com", LastName = "lastname", Name = "name", MiddleName = "middlename", Phone = "05353" };
+            var createClientRequest = new CreateClientRequest() { Address = "Some address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "some@gmail.com", LastName = "lastname", Name = "name", MiddleName = "middlename", Phone = "0123456789" };
             using var request = new HttpRequestMessage(HttpMethod.Post, "/client");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", managerAccessToken);
             request.Content = new StringContent(JsonSerializer.Serialize(createClientRequest), Encoding.UTF8, "application/json");

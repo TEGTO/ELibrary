@@ -116,9 +116,12 @@ namespace Caching
 
                     foreach (var propName in propertyNamesToCacheBy)
                     {
-                        if (requestObject.TryGetProperty(propName, out var propertyValue))
+                        var property = requestObject.EnumerateObject()
+                               .FirstOrDefault(p => string.Equals(p.Name, propName, StringComparison.OrdinalIgnoreCase));
+
+                        if (property.Value.ValueKind != JsonValueKind.Undefined)
                         {
-                            context.CacheVaryByRules.VaryByValues.Add(propName, propertyValue.ToString());
+                            context.CacheVaryByRules.VaryByValues.Add(propName, property.Value.ToString());
                         }
                     }
                 }

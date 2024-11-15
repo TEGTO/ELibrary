@@ -54,7 +54,7 @@ describe('OrderControllerService', () => {
     });
 
     it('createOrder should dispatch createOrder action and return success status', () => {
-        const req: CreateOrderRequest = { deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery, orderBooks: [] };
+        const req: CreateOrderRequest = { contactClientName: "", contactPhone: "", deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery, orderBooks: [] };
         const mockSuccess = true;
         const mockError = null;
 
@@ -70,7 +70,7 @@ describe('OrderControllerService', () => {
     });
 
     it('clientUpdateOrder should dispatch updateOrder action', () => {
-        const req: ClientUpdateOrderRequest = { id: 1, deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery };
+        const req: ClientUpdateOrderRequest = { id: 1, contactClientName: "", contactPhone: "", deliveryAddress: "", deliveryTime: new Date(), paymentMethod: PaymentMethod.Cash, deliveryMethod: DeliveryMethod.AddressDelivery };
 
         spyOn(store, 'dispatch');
         service.clientUpdateOrder(req);

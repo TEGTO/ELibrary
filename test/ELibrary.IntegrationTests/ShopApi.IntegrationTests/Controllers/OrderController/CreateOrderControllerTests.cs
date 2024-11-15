@@ -16,6 +16,8 @@ namespace ShopApi.IntegrationTests.Controllers.OrderController
             // Arrange
             var request = new CreateOrderRequest
             {
+                ContactClientName = "Client Name",
+                ContactPhone = "0123456789",
                 DeliveryAddress = "123 Test Street",
                 DeliveryTime = DateTime.UtcNow.AddDays(1),
                 PaymentMethod = PaymentMethod.Cash,

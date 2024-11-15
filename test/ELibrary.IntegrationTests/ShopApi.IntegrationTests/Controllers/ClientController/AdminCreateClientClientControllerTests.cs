@@ -13,7 +13,7 @@ namespace ShopApi.IntegrationTests.Controllers.ClientController
         public async Task AdminCreateClient_ValidRequest_ReturnsCreateWithClient()
         {
             // Arrange
-            var request = new CreateClientRequest() { Address = "Some address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "some@gmail.com", LastName = "lastname", Name = "name", MiddleName = "middlename", Phone = "05353" };
+            var request = new CreateClientRequest() { Address = "Some address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "some@gmail.com", LastName = "lastname", Name = "name", MiddleName = "middlename", Phone = "0123456789" };
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"/client/admin/1");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AdminAccessToken);
             httpRequest.Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");

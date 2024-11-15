@@ -27,16 +27,16 @@
             </div>
             <div class="pl-2 flex flex-col gap-1">
                 <div class="user__detail-value text-gray-400 flex justify-between">
-                    <span>#{{ user.id }}</span>
+                    <span>#{{ user.id | placeholder }}</span>
                 </div>
                 <div class="user__detail-value text-gray-400 flex justify-between">
-                    <span>{{ user.userName }}</span>
+                    <span>{{ user.userName | placeholder }}</span>
                 </div>
                 <div class="user__detail-value text-gray-400 flex justify-between">
-                    <span>{{ user.registredAt | date:'dd/MM/YYYY, HH:mm'}}</span>
+                    <span>{{ user.registredAt | placeholder | date:'dd/MM/YYYY, HH:mm'}}</span>
                 </div>
                 <div class="user__detail-value text-gray-400 flex justify-between">
-                    <span>{{ user.updatedAt | date:'dd/MM/YYYY, HH:mm'}}</span>
+                    <span>{{ user.updatedAt | placeholder | date:'dd/MM/YYYY, HH:mm'}}</span>
                 </div>
             </div>
         </div>
