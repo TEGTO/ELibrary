@@ -2,6 +2,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from bot import LangChainAgent, ChatConfig
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -27,7 +28,9 @@ async def stream_chat(req: ChatRequest):
     try:
         answer = chatAgent.query(req.query)
         return ChatResponse(message=answer["agent"]["messages"][0].content)
-    
     except Exception as e:
         print(f"Error processing request: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        return JSONResponse(
+            status_code=503,  
+            content={"message": f"An error occurred: {e}"}
+        )

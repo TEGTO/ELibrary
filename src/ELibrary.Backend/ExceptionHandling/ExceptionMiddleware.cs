@@ -59,7 +59,7 @@ namespace ExceptionHandling
             }
             catch (Exception ex)
             {
-                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { "Internal server error occured." }).ConfigureAwait(false);
+                await SetError(httpContext, HttpStatusCode.InternalServerError, ex, new[] { "Internal server error occurred." }).ConfigureAwait(false);
             }
         }
         private async Task SetError(HttpContext httpContext, HttpStatusCode httpStatusCode, Exception ex, string[] messages)
