@@ -8,7 +8,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { By } from '@angular/platform-browser';
 import { MatNativeDateTimeModule, MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { of } from 'rxjs';
-import { CartBook, Client, CommandHandler, CurrencyPipeApplier, getDefaultBook, getDefaultClient, PaymentMethod, ValidationMessage } from '../../../shared';
+import { environment } from '../../../../../environment/environment';
+import { CartBook, Client, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultBook, getDefaultClient, PaymentMethod, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 import { MakeOrderComponent } from './make-order.component';
 
@@ -87,6 +88,21 @@ describe('MakeOrderComponent', () => {
 
     it('should call makeOrder with the correct order details', fakeAsync(() => {
         spyOn(component, 'makeOrder').and.callThrough();
+
+        const nextDay = new Date();
+        nextDay.setDate(nextDay.getDate() + 2);
+        nextDay.setHours(environment.minOrderTime.getHours(), environment.minOrderTime.getMinutes());
+
+        const form = component.formGroup;
+        form.patchValue({
+            contactClientName: "Name",
+            contactPhone: "0123456789",
+            payment: PaymentMethod.Cash,
+            deliveryDate: nextDay,
+            deliveryTime: new Date(),
+            address: '123 Main St',
+            delivery: DeliveryMethod.AddressDelivery
+        });
 
         const submitButton = fixture.debugElement.query(By.css('button#send-button')).nativeElement;
         submitButton.click();

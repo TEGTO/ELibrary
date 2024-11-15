@@ -9,7 +9,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { ADMIN_DELETE_USER_COMMAND_HANDLER, ADMIN_UPDATE_USER_COMMAND_HANDLER, AdminDeleteUserCommand, AdminService, AdminUpdateUserCommand, AdminUserDetailsComponent } from '../..';
-import { AdminUser, CommandHandler, RouteReader, ValidationMessage } from '../../../shared';
+import { AdminUser, CommandHandler, PlaceholderPipe, RouteReader, ValidationMessage } from '../../../shared';
 
 describe('AdminUserDetailsComponent', () => {
   let component: AdminUserDetailsComponent;
@@ -56,7 +56,8 @@ describe('AdminUserDetailsComponent', () => {
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        PlaceholderPipe
       ],
       providers: [
         { provide: AdminService, useValue: mockAdminService },

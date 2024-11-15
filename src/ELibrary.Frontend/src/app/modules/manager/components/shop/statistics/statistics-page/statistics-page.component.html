@@ -56,28 +56,28 @@
                 </div>
                 <div class="pl-2 flex flex-col gap-1">
                     <div class="statistics__detail-value text-gray-400 flex justify-between">
-                        <span>{{ statistics.inCartCopies}}</span>
+                        <span>{{ statistics.inCartCopies | placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400 flex justify-between">
-                        <span>{{ statistics.inOrderCopies }}</span>
+                        <span>{{ statistics.inOrderCopies | placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ statistics.soldCopies }}</span>
+                        <span>{{ statistics.soldCopies | placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ statistics.canceledCopies }}</span>
+                        <span>{{ statistics.canceledCopies | placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ statistics.orderAmount }}</span>
+                        <span>{{ statistics.orderAmount| placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ statistics.canceledOrderAmount }}</span>
+                        <span>{{ statistics.canceledOrderAmount| placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ applyCurrencyPipe(statistics.averagePrice) }}</span>
+                        <span>{{ applyCurrencyPipe(statistics.averagePrice) | placeholder }}</span>
                     </div>
                     <div class="statistics__detail-value text-gray-400">
-                        <span>{{ applyCurrencyPipe(statistics.earnedMoney) }}</span>
+                        <span>{{ applyCurrencyPipe(statistics.earnedMoney) | placeholder }}</span>
                     </div>
                 </div>
             </div>

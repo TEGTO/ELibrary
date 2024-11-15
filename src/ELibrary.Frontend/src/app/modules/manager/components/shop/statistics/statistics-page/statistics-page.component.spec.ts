@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
-import { CurrencyPipeApplier, getDefaultGetShopStatistics, getDefaultShopStatistics, GetShopStatistics, LocaleService, ShopStatistics } from '../../../../../shared';
+import { CurrencyPipeApplier, getDefaultGetShopStatistics, getDefaultShopStatistics, GetShopStatistics, LocaleService, PlaceholderPipe, ShopStatistics } from '../../../../../shared';
 import { StatisticsService } from '../../../../../shop';
 import { StatisticsPageComponent } from './statistics-page.component';
 
@@ -29,6 +29,7 @@ describe('StatisticsPageComponent', () => {
     mockLocaleService.getLocale.and.returnValue("uk-UA");
 
     await TestBed.configureTestingModule({
+      imports: [PlaceholderPipe],
       declarations: [StatisticsPageComponent],
       providers: [
         { provide: StatisticsService, useValue: mockStatisticsService },

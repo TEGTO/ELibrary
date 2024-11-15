@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UPDATE_CLIENT_COMMAND_HANDLER, UpdateClientCommand } from '../../..';
-import { Client, CommandHandler, getDefaultClient, ValidationMessage } from '../../../../shared';
+import { Client, CommandHandler, getDefaultClient, PlaceholderPipe, ValidationMessage } from '../../../../shared';
 import { ClientInfoComponent } from './client-info.component';
 
 describe('ClientInfoComponent', () => {
@@ -33,6 +33,7 @@ describe('ClientInfoComponent', () => {
                 MatInputModule,
                 BrowserAnimationsModule,
                 MatDatepickerModule,
+                PlaceholderPipe
             ],
             providers: [
                 provideNativeDateAdapter(),
@@ -69,7 +70,7 @@ describe('ClientInfoComponent', () => {
         component.lastNameInput.setValue('Doe');
         component.dateOfBirthInput.setValue(new Date('1990-01-01'));
         component.addressInput.setValue('123 Main St');
-        component.phoneInput.setValue('+3801234567');
+        component.phoneInput.setValue('3801234567');
         component.emailInput.setValue('jane.doe@example.com');
 
         component.formGroup.updateValueAndValidity();

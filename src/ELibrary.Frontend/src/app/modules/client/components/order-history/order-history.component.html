@@ -70,6 +70,7 @@
                         <form id="order" class="flex flex-col space-y-1" [formGroup]="getFormGroup(order)"
                             (ngSubmit)="updateOrder(order)">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
                                 <mat-form-field>
                                     <mat-label>Delivery Date</mat-label>
                                     <input matInput [matDatepicker]="picker" [formControl]="deliveryDateInput(order)">
@@ -78,6 +79,7 @@
                                     <mat-error
                                         *ngIf="validateInputField(deliveryDateInput(order)).hasError">{{validateInputField(deliveryDateInput(order)).message}}</mat-error>
                                 </mat-form-field>
+
                                 <mat-form-field>
                                     <mat-label>Delivery Time</mat-label>
                                     <input type="text" matInput [matTimepicker]="timepicker"
@@ -90,12 +92,27 @@
                                 </mat-form-field>
 
                                 <mat-form-field>
-                                    <mat-label>Delivery Address</mat-label>
-                                    <input matInput type="text" autocomplete="delivery-address"
-                                        [formControl]="deliveryAddressInput(order)" placeholder="123 Main St"
-                                        maxlength="256">
+                                    <mat-label>{{getDeliveryAddressFieldName(order)}}</mat-label>
+                                    <input matInput type="text" [formControl]="deliveryAddressInput(order)"
+                                        placeholder="123 Main St" maxlength="256">
                                     <mat-error
                                         *ngIf="validateInputField(deliveryAddressInput(order)).hasError">{{validateInputField(deliveryAddressInput(order)).message}}</mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <mat-label>Contact Name</mat-label>
+                                    <input matInput type="text" [formControl]="contactClientNameInput(order)"
+                                        placeholder="Jonh Doe" maxlength="256">
+                                    <mat-error
+                                        *ngIf="validateInputField(contactClientNameInput(order)).hasError">{{validateInputField(contactClientNameInput(order)).message}}</mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <mat-label>Contact Phone</mat-label>
+                                    <input matInput type="text" [formControl]="contactPhoneInput(order)"
+                                        placeholder="0123456789" maxlength="50">
+                                    <mat-error
+                                        *ngIf="validateInputField(contactPhoneInput(order)).hasError">{{validateInputField(contactPhoneInput(order)).message}}</mat-error>
                                 </mat-form-field>
                             </div>
                             <div class="flex justify-between items-center">
@@ -123,6 +140,7 @@
                                 </div>
                                 <div class="order-content__bottom-container flex-col">
                                     <div class="w-full flex justify-end gap-2">
+
                                         <button form="order" type="button" (click)="cancelOrder(order)"
                                             [disabled]="!isOrderProcessing(order)"
                                             class="flex items-center pl-4 gap-1 p-2 rounded-lg border
@@ -132,6 +150,7 @@
                                             <span>Cancel</span>
                                             <span class="!text-2xl text-red-600 material-icons">delete</span>
                                         </button>
+
                                         <button id="send-button" form="order" type="submit"
                                             [disabled]="!isOrderProcessing(order)"
                                             class="flex items-center pl-4 gap-1 p-2 rounded-lg border
@@ -141,11 +160,13 @@
                                             <span>Update</span>
                                             <span class="!text-2xl text-blue-600 material-icons">edit</span>
                                         </button>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+
                     <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="content__books"
                         [style.height.px]="calculateSelectionSize(order.orderBooks.length)">
                         <ng-container
@@ -155,6 +176,7 @@
                             </div>
                         </ng-container>
                     </cdk-virtual-scroll-viewport>
+
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
@@ -165,10 +187,12 @@
     <div class="book mr-2 h-72 w-11/12 p-6 border-t border-gray-200">
         <div class="w-full flex justify-between items-center">
             <div class=" flex flex gap-5">
+
                 <a class="book__cover hover:cursor-pointer" [routerLink]="getBookPage(orderBook)">
                     <img class="h-42 w-24" crossorigin='anonymous' [src]="orderBook.book.coverImgUrl" alt="Book cover"
                         (error)="onErrorImage($event)" />
                 </a>
+
                 <a class="h-full flex flex-col items-start pt-5">
                     <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"
                         [routerLink]="getBookPage(orderBook)">
@@ -178,13 +202,17 @@
                         {{ orderBook.book.author.name + ' '+ orderBook.book.author.lastName }}
                     </div>
                 </a>
+
             </div>
+
             <div class="text-gray-700 truncate text-lg">
                 {{ applyCurrencyPipe(orderBook.bookPrice) }} x {{orderBook.bookAmount}}
             </div>
+
             <div class="text-red-500 truncate font-bold text-lg">
                 {{ applyCurrencyPipe(getOrderBookPrice(orderBook)) }}
             </div>
+
         </div>
     </div>
 </ng-template>

@@ -31,6 +31,12 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
         [Required]
+        [MaxLength(256)]
+        public string ContactClientName { get; set; } = default!;
+        [Required]
+        [MinLength(10), MaxLength(50), Phone]
+        public string ContactPhone { get; set; } = default!;
+        [Required]
         [MaxLength(512)]
         public string DeliveryAddress { get; set; } = default!;
         [Required]
@@ -49,6 +55,8 @@ namespace LibraryShopEntities.Domain.Entities.Shop
 
         public void Copy(Order other)
         {
+            this.ContactClientName = other.ContactClientName;
+            this.ContactPhone = other.ContactPhone;
             this.DeliveryAddress = other.DeliveryAddress;
             this.DeliveryTime = other.DeliveryTime;
             this.OrderStatus = other.OrderStatus;

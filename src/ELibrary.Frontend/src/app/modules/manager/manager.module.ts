@@ -15,7 +15,7 @@ import { MatNativeDateTimeModule, MatTimepickerModule } from "@dhutaryan/ngx-mat
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AuthorTableComponent, BookStockDetailsComponent, BookStockTableComponent, BookTableComponent, GenreTableComponent, ManagerTableComponent, OrderDetailsComponent, OrderTableComponent, PublisherTableComponent, StatisticsChartComponent, StatisticsPageComponent } from '.';
 import { LibraryModule } from '../library/library.module';
-import { GenericTableComponent, LoadingComponent, pathes, PolicyType, RoleGuard } from '../shared';
+import { GenericTableComponent, LoadingComponent, pathes, PlaceholderPipe, PolicyType, RoleGuard } from '../shared';
 import { ShopModule } from '../shop/shop.module';
 
 const routes: Routes = [
@@ -73,6 +73,7 @@ const routes: Routes = [
     MatPaginatorModule,
     NgApexchartsModule,
     MatDatepickerModule,
+    PlaceholderPipe
   ],
 })
 export class ManagerModule { }

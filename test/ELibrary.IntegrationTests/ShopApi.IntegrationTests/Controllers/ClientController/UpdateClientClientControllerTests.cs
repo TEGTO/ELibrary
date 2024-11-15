@@ -21,7 +21,7 @@ namespace ShopApi.IntegrationTests.Controllers.ClientController
         public async Task UpdateClient_ValidRequest_ReturnsCreateWithClient()
         {
             // Arrange
-            var request = new UpdateClientRequest() { Address = "New address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "newsome@gmail.com", LastName = "newlastname", Name = "newname", MiddleName = "newmiddlename", Phone = "05353" };
+            var request = new UpdateClientRequest() { Address = "New address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "newsome@gmail.com", LastName = "newlastname", Name = "newname", MiddleName = "newmiddlename", Phone = "0123456789" };
             using var httpRequest = new HttpRequestMessage(HttpMethod.Put, $"/client");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
             httpRequest.Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
@@ -38,7 +38,7 @@ namespace ShopApi.IntegrationTests.Controllers.ClientController
         public async Task UpdateClient_ClientDoesntExist_ReturnsConflict()
         {
             // Arrange
-            var request = new UpdateClientRequest() { Address = "New address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "newsome@gmail.com", LastName = "newlastname", Name = "newname", MiddleName = "newmiddlename", Phone = "05353" };
+            var request = new UpdateClientRequest() { Address = "New address", DateOfBirth = new DateTime(1962, 10, 9, 0, 0, 0, 0, DateTimeKind.Utc), Email = "newsome@gmail.com", LastName = "newlastname", Name = "newname", MiddleName = "newmiddlename", Phone = "0123456789" };
             using var httpRequest = new HttpRequestMessage(HttpMethod.Put, $"/client");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessTokenWithoutClientData());
             httpRequest.Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");

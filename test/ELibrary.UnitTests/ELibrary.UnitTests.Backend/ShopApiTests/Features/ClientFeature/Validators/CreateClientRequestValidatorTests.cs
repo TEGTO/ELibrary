@@ -45,7 +45,7 @@ namespace ShopApiTests.Features.ClientFeature.Validators
                 LastName = "Doe",
                 DateOfBirth = new DateTime(1990, 5, 15),
                 Address = "123 Main St",
-                Phone = "555-1234",
+                Phone = "0123456789",
                 Email = "john.doe@example.com"
             };
             var result = validator.TestValidate(request);

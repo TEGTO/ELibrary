@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
-import { CurrencyPipeApplier, getDefaultStockBookOrder, RouteReader, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from "../../../../../shared";
+import { CurrencyPipeApplier, getDefaultStockBookOrder, PlaceholderPipe, RouteReader, StockBookOrder, StockBookOrderType, stockBookOrderTypeToString } from "../../../../../shared";
 import { BookstockOrderService } from "../../../../../shop";
 import { BookStockDetailsComponent } from "./book-stock-details.component";
 
@@ -26,6 +26,7 @@ describe('BookStockDetailsComponent', () => {
         routerReaderSpyObj.readIdInt.and.returnValue(of(mockStockBookOrder));
 
         await TestBed.configureTestingModule({
+            imports: [PlaceholderPipe],
             declarations: [BookStockDetailsComponent],
             providers: [
                 { provide: BookstockOrderService, useValue: stockOrderServiceSpyObj },

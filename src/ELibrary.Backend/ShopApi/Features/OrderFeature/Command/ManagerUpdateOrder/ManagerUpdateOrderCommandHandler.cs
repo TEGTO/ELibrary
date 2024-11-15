@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LibraryShopEntities.Domain.Dtos.Shop;
-using LibraryShopEntities.Domain.Entities.Shop;
 using MediatR;
 using ShopApi.Features.OrderFeature.Services;
 using ShopApi.Services;
@@ -25,9 +24,16 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder
 
         public async Task<OrderResponse> Handle(ManagerUpdateOrderCommand command, CancellationToken cancellationToken)
         {
-            var order = mapper.Map<Order>(command.Request);
+            var orderInDb = await orderService.GetOrderByIdAsync(command.Request.Id, cancellationToken);
 
-            var updatedOrder = await orderService.UpdateOrderAsync(order, cancellationToken);
+            if (orderInDb == null)
+            {
+                throw new InvalidDataException($"Order with ID {command.Request.Id} not found.");
+            }
+
+            var updatedOrderEntity = mapper.Map(command.Request, orderInDb);
+
+            var updatedOrder = await orderService.UpdateOrderAsync(updatedOrderEntity, cancellationToken);
 
             return (await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync([updatedOrder], libraryService, mapper, cancellationToken)).First();
         }

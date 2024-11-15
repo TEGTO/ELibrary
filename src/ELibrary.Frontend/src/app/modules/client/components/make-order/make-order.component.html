@@ -3,7 +3,6 @@
         <ng-container *ngIf="items$ | async as items; else loading">
             <ng-container *ngIf="items.length > 0; else emptyCart">
                 <div class="order__content w-full">
-                    <app-client-info [client]="client"></app-client-info>
                     <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="content__books"
                         [style.height.px]="calculateSelectionSize(items.length)">
                         <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
@@ -41,12 +40,27 @@
                                             *ngIf="validateInputField(deliveryTimeInput).hasError">{{validateInputField(deliveryTimeInput).message}}</mat-error>
                                     </mat-form-field>
                                     <mat-form-field>
-                                        <mat-label>Delivery Address</mat-label>
+                                        <mat-label>{{getDeliveryAddressFieldName()}}</mat-label>
                                         <input matInput type="text" autocomplete="delivery-address"
                                             [formControl]="deliveryAddressInput" placeholder="123 Main St"
                                             maxlength="256">
                                         <mat-error
                                             *ngIf="validateInputField(deliveryAddressInput).hasError">{{validateInputField(deliveryAddressInput).message}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <mat-label>Contact Name</mat-label>
+                                        <input matInput type="text" autocomplete="contact-name"
+                                            [formControl]="contactClientNameInput" placeholder="Jonh Doe"
+                                            maxlength="256">
+                                        <mat-error
+                                            *ngIf="validateInputField(contactClientNameInput).hasError">{{validateInputField(contactClientNameInput).message}}</mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <mat-label>Contact Phone</mat-label>
+                                        <input matInput type="text" autocomplete="contact-phone"
+                                            [formControl]="contactPhoneInput" placeholder="0123456789" maxlength="50">
+                                        <mat-error
+                                            *ngIf="validateInputField(contactPhoneInput).hasError">{{validateInputField(contactPhoneInput).message}}</mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div>
