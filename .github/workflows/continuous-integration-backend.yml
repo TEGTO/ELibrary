@@ -59,11 +59,8 @@ jobs:
         run: |
           dotnet-coverage collect dotnet test src/ELibrary.Backend/ELibrary.Backend.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults -f xml -o coverage.xml --settings coverage.runsettings
 
-      - name: Check results
-        run: |
-          echo "Tests have been executed."
-
       - name: Upload test results
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
