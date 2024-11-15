@@ -21,7 +21,8 @@ namespace LibraryShopEntities.Domain.Entities.Shop
         public DateTime DateOfBirth { get; set; }
         [MaxLength(512)]
         public string Address { get; set; } = string.Empty;
-        [MaxLength(256)]
+        [Required]
+        [MinLength(10), MaxLength(50), Phone]
         public string Phone { get; set; } = string.Empty;
         [Required]
         [MaxLength(256)]

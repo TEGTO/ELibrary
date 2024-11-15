@@ -9,7 +9,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatNativeDateTimeModule, MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { of } from 'rxjs';
-import { Client, CommandHandler, CurrencyPipeApplier, getDefaultClient, getDefaultOrder, getDefaultOrderBook, Order, OrderStatus, ValidationMessage } from '../../../shared';
+import { Client, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultClient, getDefaultOrder, getDefaultOrderBook, Order, OrderStatus, PaymentMethod, PlaceholderPipe, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 import { OrderHistoryComponent } from './order-history.component';
 
@@ -21,19 +21,21 @@ describe('OrderHistoryComponent', () => {
     let mockUpdateOrderHandler: jasmine.SpyObj<CommandHandler<ClientUpdateOrderCommand>>;
     let mockCancelOrderHandler: jasmine.SpyObj<CommandHandler<ClientCancelOrderCommand>>;
 
-    const mockOrders: Order[] = [
-        {
-            ...getDefaultOrder(),
-            id: 1,
-            orderBooks: [
-                { ...getDefaultOrderBook(), bookId: 1 }
-            ]
-        }
-
-    ];
+    let mockOrders: Order[] = []
     const mockClient: Client = getDefaultClient();
 
     beforeEach(async () => {
+
+        mockOrders = [
+            {
+                ...getDefaultOrder(),
+                id: 1,
+                orderBooks: [
+                    { ...getDefaultOrderBook(), bookId: 1 }
+                ]
+            }
+        ];
+
         const clientServiceSpy = jasmine.createSpyObj('ClientService', ['getClient']);
         const orderServiceSpy = jasmine.createSpyObj('OrderService', ['getOrderTotalAmount', 'getPaginatedOrders']);
         const updateOrderHandlerSpy = jasmine.createSpyObj<CommandHandler<ClientUpdateOrderCommand>>(['dispatch']);
@@ -53,7 +55,8 @@ describe('OrderHistoryComponent', () => {
                 MatTimepickerModule,
                 MatNativeDateTimeModule,
                 MatNativeDateModule,
-                MatDatepickerModule
+                MatDatepickerModule,
+                PlaceholderPipe
             ],
             providers: [
                 { provide: ClientService, useValue: clientServiceSpy },
@@ -132,7 +135,15 @@ describe('OrderHistoryComponent', () => {
         const order = mockOrders[0];
         component.initializeForm(order);
         const form = component.getFormGroup(order);
-        form.patchValue({ address: '456 New St', deliveryTime: new Date() });
+        form.patchValue({
+            contactClientName: "Name",
+            contactPhone: "0123456789",
+            payment: PaymentMethod.Cash,
+            deliveryDate: new Date(),
+            deliveryTime: new Date(),
+            address: '456 New St',
+            delivery: DeliveryMethod.AddressDelivery
+        });
 
         component.updateOrder(order);
         expect(mockUpdateOrderHandler.dispatch).toHaveBeenCalled();

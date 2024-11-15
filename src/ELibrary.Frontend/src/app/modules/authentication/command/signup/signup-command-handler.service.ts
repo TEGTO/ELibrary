@@ -1,17 +1,18 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { AuthenticationService, mapSignUpCommandToUserRegistrationRequest, SignUpCommand } from '../..';
-import { CommandHandler, SnackbarManager } from '../../../shared';
+import { CommandHandler, RedirectorService, SnackbarManager } from '../../../shared';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignUpCommandHandlerService extends CommandHandler<SignUpCommand> implements OnDestroy {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly authService: AuthenticationService,
     private readonly snackbarManager: SnackbarManager,
+    private readonly redirector: RedirectorService,
   ) {
     super();
   }
@@ -34,6 +35,7 @@ export class SignUpCommandHandlerService extends CommandHandler<SignUpCommand> i
         if (isSuccess) {
           this.snackbarManager.openInfoSnackbar('✔️ The registration is successful!', 5);
           command.matDialogRef.close();
+          this.redirector.redirectToHome();
           this.cleanUp();
         }
       }),

@@ -52,6 +52,7 @@ jobs:
         working-directory: src/ELibrary.Frontend
 
       - name: Upload code coverage
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report

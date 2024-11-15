@@ -17,6 +17,8 @@ namespace ShopApi.IntegrationTests.Controllers.OrderController
             var request = new ClientUpdateOrderRequest
             {
                 Id = 1,
+                ContactClientName = "ClientName",
+                ContactPhone = "0123456789",
                 DeliveryAddress = "NewDeliveryAddress",
                 DeliveryTime = DateTime.UtcNow.AddDays(1),
                 PaymentMethod = PaymentMethod.Cash,

@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { MatNativeDateTimeModule, MatTimepickerModule } from '@dhutaryan/ngx-mat-timepicker';
 import { of } from 'rxjs';
-import { CommandHandler, CurrencyPipeApplier, getDefaultOrder, Order, OrderStatus, RouteReader, ValidationMessage } from '../../../../../shared';
+import { CommandHandler, CurrencyPipeApplier, getDefaultOrder, Order, OrderStatus, PlaceholderPipe, RouteReader, ValidationMessage } from '../../../../../shared';
 import { MANAGER_CANCEL_ORDER_COMMAND_HANDLER, MANAGER_UPDATE_ORDER_COMMAND_HANDLER, ManagerCancelOrderCommand, ManagerUpdateOrderCommand, OrderService } from '../../../../../shop';
 import { OrderDetailsComponent } from './order-details.component';
 
@@ -56,7 +56,8 @@ describe('OrderDetailsComponent', () => {
         BrowserAnimationsModule,
         MatNativeDateTimeModule,
         MatNativeDateModule,
-        MatDatepickerModule
+        MatDatepickerModule,
+        PlaceholderPipe
       ],
       providers: [
         { provide: OrderService, useValue: mockOrderService },

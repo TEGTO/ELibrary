@@ -58,25 +58,25 @@
                 </div>
                 <div class="pl-2">
                     <div class="book__detail-value text-gray-400 flex justify-between">
-                        <span>{{ book.name }}</span>
+                        <span>{{ book.name | placeholder }}</span>
                     </div>
                     <div class="book__detail-value text-gray-400 flex justify-between">
-                        <span>{{ book.author.name + ' ' + book.author.lastName }}</span>
+                        <span>{{ (book.author.name + ' ' + book.author.lastName) | placeholder }}</span>
                     </div>
                     <div class="book__detail-value text-gray-400">
-                        <span>{{ book.genre.name }}</span>
+                        <span>{{ book.genre.name | placeholder}}</span>
                     </div>
                     <div class="book__detail-value text-gray-400">
-                        <span>{{ book.publisher.name }}</span>
+                        <span>{{ book.publisher.name | placeholder }}</span>
                     </div>
                     <div class="book__detail-value text-gray-400">
-                        <span>{{ book.publicationDate | date:'dd/MM/YYYY' }}</span>
+                        <span>{{ book.publicationDate | placeholder | date:'dd/MM/YYYY' }}</span>
                     </div>
                     <div class="book__detail-value text-gray-400">
-                        <span>{{ book.pageAmount }}</span>
+                        <span>{{ book.pageAmount | placeholder }}</span>
                     </div>
                     <div class="book__detail-value text-gray-400">
-                        <span>{{ getStringCoverType(book.coverType) }}</span>
+                        <span>{{ getStringCoverType(book.coverType) | placeholder }}</span>
                     </div>
                 </div>
             </div>

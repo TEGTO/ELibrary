@@ -1,6 +1,7 @@
 ﻿
 using FluentValidation;
 using ShopApi.Features.OrderFeature.Dtos;
+using System.Text.RegularExpressions;
 
 namespace ShopApi.Features.OrderFeature.Validators
 {
@@ -12,6 +13,9 @@ namespace ShopApi.Features.OrderFeature.Validators
             RuleFor(x => x.DeliveryAddress).NotNull().NotEmpty().MaximumLength(512);
             RuleFor(x => x.DeliveryTime).NotNull().GreaterThanOrEqualTo(DateTime.UtcNow);
             RuleFor(x => x.PaymentMethod).NotNull();
+            RuleFor(x => x.ContactClientName).NotNull().NotEmpty().MaximumLength(256);
+            RuleFor(p => p.ContactPhone).NotNull().NotEmpty().MinimumLength(10).MaximumLength(50)
+             .Matches(new Regex(@"^\d*$")).WithMessage("Phone number is not valid!");
             RuleFor(x => x.DeliveryMethod).NotNull();
             RuleFor(x => x.OrderBooks)
               .NotNull()

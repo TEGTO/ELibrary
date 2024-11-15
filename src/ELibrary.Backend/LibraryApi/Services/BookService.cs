@@ -23,7 +23,7 @@ namespace LibraryApi.Services
                 {
                     if (existingPopularities.TryGetValue(id, out var popularity))
                     {
-                        popularity.Popularity += 1;
+                        popularity.Popularity++;
                     }
                     else
                     {

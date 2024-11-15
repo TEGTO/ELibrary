@@ -37,7 +37,7 @@
 </p>
 
 
-# ELibrary 📚
+# [ELibrary 📚](https://gray-dune-04583d603.5.azurestaticapps.net/)
 
 This is a full-stack web store application built with modern technologies, featuring an ASP.NET Web API backend, Angular frontend, and PostgreSQL database, all deployed on Azure. The application integrates AI from OpenAI, hosted on Azure, to provide book recommendations. It implements secure authentication with JWT and OAuth 2.0 and manages state on the frontend using the NgRx (Redux) pattern. For resilience, it leverages the Polly library, and employs various design patterns, including the Mediator pattern with MediatR. The project is containerized with Docker Compose and uses GitHub Actions for CI/CD, along with Nunit and Test Containers for testing.
 

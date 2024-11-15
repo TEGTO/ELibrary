@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, s
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { UPDATE_CLIENT_COMMAND_HANDLER, UpdateClientCommand } from '../../..';
-import { Client, CommandHandler, dateInPastValidator, noSpaces, notEmptyString, ValidationMessage } from '../../../../shared';
+import { Client, CommandHandler, dateInPastValidator, noSpaces, notEmptyString, phoneValidator, ValidationMessage } from '../../../../shared';
 
 @Component({
   selector: 'app-client-info',
@@ -54,12 +54,11 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
         lastName: new FormControl(this.client.lastName, [Validators.required, notEmptyString, noSpaces, Validators.maxLength(256)]),
         dateOfBirth: new FormControl(this.client.dateOfBirth, [Validators.required, dateInPastValidator()]),
         address: new FormControl(this.client.address, [Validators.maxLength(512)]),
-        phone: new FormControl(this.client.phone, [Validators.maxLength(256)]),
+        phone: new FormControl(this.client.phone, [Validators.required, phoneValidator(10, 50)]),
         email: new FormControl(this.client.email, [Validators.required, notEmptyString, noSpaces, Validators.email, Validators.maxLength(256)]),
       });
   }
   updateClient() {
-    console.log(this.formGroup.valid);
     if (this.formGroup.valid) {
       const formValues = { ...this.formGroup.value };
       const client: Client = {
@@ -76,6 +75,9 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
         client: client
       }
       this.updateClientHandler.dispatch(command);
+    }
+    else {
+      this.formGroup.markAllAsTouched();
     }
   }
 

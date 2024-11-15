@@ -54,8 +54,8 @@
                 </mat-form-field>
                 <mat-form-field class="w-full sm:w-5/12">
                     <mat-label>Phone</mat-label>
-                    <input matInput type="phone" autocomplete="client-phone" formControlName="phone"
-                        placeholder="+3801234567" maxlength="256">
+                    <input matInput type="text" autocomplete="client-phone" formControlName="phone"
+                        placeholder="0123456789" maxlength="50">
                     <mat-error
                         *ngIf="validateInputField(phoneInput).hasError">{{validateInputField(phoneInput).message}}</mat-error>
                 </mat-form-field>

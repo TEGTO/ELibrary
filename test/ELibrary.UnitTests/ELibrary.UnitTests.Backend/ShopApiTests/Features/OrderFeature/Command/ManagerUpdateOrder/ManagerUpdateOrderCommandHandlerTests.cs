@@ -54,9 +54,11 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder.Tests
                 OrderStatus = updatedOrder.OrderStatus,
                 OrderBooks = new List<OrderBookResponse>()
             };
-            mapperMock.Setup(m => m.Map<Order>(request)).Returns(mappedOrder);
+            mapperMock.Setup(m => m.Map(command.Request, mappedOrder)).Returns(mappedOrder);
             orderServiceMock.Setup(s => s.UpdateOrderAsync(mappedOrder, It.IsAny<CancellationToken>()))
                             .ReturnsAsync(updatedOrder);
+            orderServiceMock.Setup(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>()))
+                            .ReturnsAsync(mappedOrder);
             libraryServiceMock.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                               .ReturnsAsync(new List<BookResponse>());
             mapperMock.Setup(m => m.Map<OrderResponse>(updatedOrder)).Returns(expectedResponse);
@@ -68,12 +70,12 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder.Tests
             Assert.That(result.DeliveryAddress, Is.EqualTo(expectedResponse.DeliveryAddress));
             Assert.That(result.DeliveryTime, Is.EqualTo(expectedResponse.DeliveryTime));
             Assert.That(result.OrderStatus, Is.EqualTo(expectedResponse.OrderStatus));
-            mapperMock.Verify(m => m.Map<Order>(request), Times.Once);
+            mapperMock.Verify(m => m.Map(command.Request, mappedOrder), Times.Once);
             orderServiceMock.Verify(s => s.UpdateOrderAsync(mappedOrder, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
-        public void Handle_OrderNotFound_ThrowsNullReferenceException()
+        public void Handle_OrderNotFound_ThrowsInvalidDataException()
         {
             // Arrange
             var request = new ManagerUpdateOrderRequest
@@ -84,12 +86,8 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder.Tests
                 OrderStatus = OrderStatus.InProcessing
             };
             var command = new ManagerUpdateOrderCommand(request);
-            var mappedOrder = new Order { Id = 99 };
-            mapperMock.Setup(m => m.Map<Order>(request)).Returns(mappedOrder);
-            orderServiceMock.Setup(s => s.UpdateOrderAsync(mappedOrder, It.IsAny<CancellationToken>()))
-                            .ReturnsAsync((Order)null);
             // Act & Assert
-            Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(command, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidDataException>(() => handler.Handle(command, CancellationToken.None));
         }
         [Test]
         public async Task Handle_BooksInOrder_MapsOrderWithBooks()
@@ -105,8 +103,11 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder.Tests
                 Id = updatedOrder.Id,
                 OrderBooks = new List<OrderBookResponse> { new OrderBookResponse { BookId = bookResponse.Id, Book = bookResponse } }
             };
-            mapperMock.Setup(m => m.Map<Order>(request)).Returns(mappedOrder);
-            orderServiceMock.Setup(s => s.UpdateOrderAsync(mappedOrder, It.IsAny<CancellationToken>())).ReturnsAsync(updatedOrder);
+            mapperMock.Setup(m => m.Map(command.Request, mappedOrder)).Returns(mappedOrder);
+            orderServiceMock.Setup(s => s.UpdateOrderAsync(mappedOrder, It.IsAny<CancellationToken>()))
+                            .ReturnsAsync(updatedOrder);
+            orderServiceMock.Setup(s => s.GetOrderByIdAsync(command.Request.Id, It.IsAny<CancellationToken>()))
+                            .ReturnsAsync(mappedOrder);
             libraryServiceMock.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                               .ReturnsAsync(new List<BookResponse> { bookResponse });
             mapperMock.Setup(m => m.Map<OrderResponse>(updatedOrder)).Returns(orderResponse);
@@ -116,7 +117,7 @@ namespace ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder.Tests
             Assert.NotNull(result);
             Assert.That(result.Id, Is.EqualTo(orderResponse.Id));
             Assert.That("Sample Book", Is.EqualTo(orderResponse.OrderBooks.First().Book.Name));
-            mapperMock.Verify(m => m.Map<Order>(request), Times.Once);
+            mapperMock.Verify(m => m.Map(command.Request, mappedOrder), Times.Once);
             orderServiceMock.Verify(s => s.UpdateOrderAsync(mappedOrder, It.IsAny<CancellationToken>()), Times.Once);
             libraryServiceMock.Verify(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
         }

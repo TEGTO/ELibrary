@@ -10,7 +10,9 @@ export class ValidationMessageService implements ValidationMessage {
   private readonly errorMessages: Record<string, string> = {
     required: "Field is required.",
     email: "Email must be valid.",
-    minlength: "Input must be at least 8 characters.",
+    invalidPhone: "Phone number must be valid.",
+    minlength: "Input must have more characters.",
+    maxlength: "Input must have less characters.",
     nonAlphanumeric: "Input must have non-alphanumeric characters.",
     digit: "Input must have digits.",
     uppercase: "Input must have upper case characters.",

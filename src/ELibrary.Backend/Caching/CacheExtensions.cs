@@ -51,7 +51,7 @@ namespace Caching
                     new OutputCachePolicy(
                         duration,
                         useAuthId,
-                        properties.SelectMany(p => new[] { p.Name, p.Name.ToLower() }).ToArray()
+                        properties.Select(x => x.Name).ToArray()
                         )
                     );
             }

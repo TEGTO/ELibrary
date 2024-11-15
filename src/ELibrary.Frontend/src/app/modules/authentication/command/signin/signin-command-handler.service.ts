@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { filter, Subject, takeUntil, tap } from 'rxjs';
 import { AuthenticationService, mapSignInCommandToUserAuthenticationRequest, SignInCommand } from '../..';
-import { CommandHandler, SnackbarManager } from '../../../shared';
+import { CommandHandler, RedirectorService } from '../../../shared';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class SignInCommandHandlerService extends CommandHandler<SignInCommand> i
 
   constructor(
     private readonly authService: AuthenticationService,
-    private readonly snackbarManager: SnackbarManager,
+    private readonly redirector: RedirectorService,
   ) {
     super();
   }
@@ -34,6 +34,7 @@ export class SignInCommandHandlerService extends CommandHandler<SignInCommand> i
       tap(authData => {
         if (authData.isAuthenticated) {
           command.matDialogRef.close();
+          this.redirector.redirectToHome();
           this.cleanUp();
         }
       }),
