@@ -115,16 +115,11 @@ jobs:
           name: frontend-docs
           path: docs/frontend
 
-      - name: Prepare deployment structure
-        run: |
-          mkdir -p deploy/docs
-          mv docs/frontend/* deploy/docs/
-
       - name: Deploy Frontend Documentation to External Repository
         # if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_DOCS_TOKEN }}
-          publish_dir: deploy
+          publish_dir: docs/frontend
           external_repository: TEGTO/ELibrary.Docs.Frontend
           branch: gh-pages

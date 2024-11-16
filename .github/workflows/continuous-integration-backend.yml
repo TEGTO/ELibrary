@@ -131,11 +131,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: backend-docs
-          path: docs/backend
+          path: docs/backend/output
 
-      # - name: Deploy Backend Documentation to GitHub Pages
-      #   # if: github.ref == 'refs/heads/main'
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: docs/backend
+      - name: Deploy Backend Documentation to External Repository
+        # if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PERSONAL_DOCS_TOKEN }}
+          publish_dir: docs/backend/output
+          external_repository: TEGTO/ELibrary.Docs.Backend
+          branch: gh-pages

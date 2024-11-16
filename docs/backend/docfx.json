@@ -19,7 +19,7 @@
           "**/*.{md,yml}"
         ],
         "exclude": [
-          "_site/**"
+          "output/docs/**"
         ]
       }
     ],
@@ -30,7 +30,7 @@
         ]
       }
     ],
-    "output": "_site",
+    "output": "output/docs",
     "template": [
       "default",
       "modern"
