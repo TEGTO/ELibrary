@@ -1,7 +1,6 @@
 <p align="center">
   <h1 align="center">
-  <img src="https://img001.prntscr.com/file/img001/iMnLdx_dQ06SQGXL3F9NNA.png" width="50%" alt="ELIBRARY-logo">
-	  
+  <img src="https://github.com/user-attachments/assets/b48ab128-2d79-49cd-94f5-deb5eec2889e" width="50%" alt="ELIBRARY-logo">
   </h1>
 </p>
 
@@ -36,20 +35,31 @@
 	<img src="https://img.shields.io/badge/YAML-CB171E.svg?style=flat&logo=YAML&logoColor=white" alt="YAML">
 </p>
 
+## Table of Contents
+- [Description](#description)
+- [Links](#links)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started (Legacy)](#getting-started-legacy)
+- [Contributors](#contributors)
+- [Screenshots](#screenshots)
 
-# [ELibrary 📚](https://gray-dune-04583d603.5.azurestaticapps.net/)
+## Description
 
 This is a full-stack web store application built with modern technologies, featuring an ASP.NET Web API backend, Angular frontend, and PostgreSQL database, all deployed on Azure. The application integrates AI from OpenAI, hosted on Azure, to provide book recommendations. It implements secure authentication with JWT and OAuth 2.0 and manages state on the frontend using the NgRx (Redux) pattern. For resilience, it leverages the Polly library, and employs various design patterns, including the Mediator pattern with MediatR. The project is containerized with Docker Compose and uses GitHub Actions for CI/CD, along with Nunit and Test Containers for testing.
 
+## Links
 
-## Table of Contents
-- [ELibrary](#elibrary)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Installation (Legacy)](#installation)
-- [Contributors](#contributors)
-- [Screenshots](#screenshots)
+Here are the main links for accessing the ELibrary project and its documentation:
+
+- **Web Application**: [ELibrary Application](https://gray-dune-04583d603.5.azurestaticapps.net/)  
+  Access the live version of the ELibrary application, deployed on Microsoft Azure.
+
+- **Backend Documentation**: [ELibrary Backend Docs](https://tegto.github.io/ELibrary.Docs.Backend/)  
+  Explore the backend's API documentation, generated with DocFX.
+
+- **Frontend Documentation**: [ELibrary Frontend Docs](https://tegto.github.io/ELibrary.Docs.Frontend/)  
+  View the frontend documentation, generated with Compodoc.
 
 ## Tech Stack
 - **Frontend**: Angular with NgRx for state management
@@ -84,19 +94,15 @@ This is a full-stack web store application built with modern technologies, featu
 
 - **Testing and Quality Assurance**: Implements NUnit and Test Containers for unit and integration tests, ensuring that all components are thoroughly tested in isolated environments.
 
-## Getting Started
+## Getting Started (Legacy)
 
- **[Try Out the Web App](https://gray-dune-04583d603.5.azurestaticapps.net/)**
-
-Or to run the ELibrary project locally, follow these steps:
-
-### Prerequisites (Legacy)
+### Prerequisites 
 
 - **Node.js** (for Angular CLI)
 - **.NET SDK** (for backend)
 - **PostgreSQL** (for database)
 
-### Installation (Legacy)
+### Installation
 
 1. **Clone the repository**:
     ```bash
