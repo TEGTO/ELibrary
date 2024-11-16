@@ -1,0 +1,710 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="ShopApi.Controllers.AdvisorController">
+    <Position X="13.5" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAQAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\AdvisorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Controllers.CartController">
+    <Position X="21.5" Y="4.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAQAAAAAgAAAAEAAAAACAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\CartController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Controllers.ClientController">
+    <Position X="0.5" Y="7.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQABIAAgBAAAAAABAAAQ=</HashCode>
+      <FileName>Controllers\ClientController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Controllers.OrderController">
+    <Position X="7.25" Y="23" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAQAAAAAQAAAAAUBAAAAAAAABAAgAAIIQAAAAAAA=</HashCode>
+      <FileName>Controllers\OrderController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Controllers.StatisticsController">
+    <Position X="5.75" Y="28.25" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAIAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\StatisticsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Controllers.StockBookOrderController">
+    <Position X="24.5" Y="28.25" Width="6" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAgAAAAAAQAAAAAAAAAAgAAAAAQAAAAAA=</HashCode>
+      <FileName>Controllers\StockBookOrderController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Domain.Dtos.AdvisorQueryRequest">
+    <Position X="11.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Domain\Dtos\AdvisorQueryRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Domain.Dtos.AdvisorResponse">
+    <Position X="22.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Domain\Dtos\AdvisorResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Domain.Dtos.ChatAdvisorQueryRequest">
+    <Position X="12.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Domain\Dtos\ChatAdvisorQueryRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Domain.Dtos.ChatAdvisorResponse">
+    <Position X="17.75" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Domain\Dtos\ChatAdvisorResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Domain.Validators.AdvisorQueryRequestValidator">
+    <Position X="17.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Domain\Validators\AdvisorQueryRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Domain.Validators.ChatAdvisorQueryRequestValidator">
+    <Position X="14.75" Y="4.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Domain\Validators\ChatAdvisorQueryRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Services.AdvisorService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAIAACAQAAACAACAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Services\AdvisorService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.Validators.AdvisorQueryRequestValidator">
+    <Position X="24.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Validators\AdvisorQueryRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.AdvisorFeature.ChatConfiguration">
+    <Position X="19.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\ChatConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Command.AddBookToCart.AddBookToCartCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAACAAAAAAAAAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Command\AddBookToCart\AddBookToCartCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Command.DeleteBooksFromCart.DeleteBooksFromCartCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="17.75" Y="12" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAACAAAAAAAAAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Command\DeleteBooksFromCart\DeleteBooksFromCartCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Command.GetCart.GetCartQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="26.75" Y="12" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAACAAAAAAAAAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Command\GetCart\GetCartQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Command.GetInCartAmount.GetInCartAmountQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="3" Y="15.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAACAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Command\GetInCartAmount\GetInCartAmountQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.143" />
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Command.UpdateCartBookInCart.UpdateCartBookInCartCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="16" Y="15.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAACAAAAAAAAAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Command\UpdateCartBookInCart\UpdateCartBookInCartCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Dtos.AddBookToCartRequest">
+    <Position X="3.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Dtos\AddBookToCartRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Dtos.DeleteCartBookFromCartRequest">
+    <Position X="21" Y="12" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Dtos\DeleteCartBookFromCartRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Dtos.UpdateCartBookRequest">
+    <Position X="0.75" Y="33" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Dtos\UpdateCartBookRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Services.CartService" BaseTypeListCollapsed="true">
+    <Position X="26.25" Y="4.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAYAACAAAAAAAAAAAAAAAAAIAAAABAAgQAABA=</HashCode>
+      <FileName>Features\CartFeature\Services\CartService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Validators.AddBookToCartRequestValidator">
+    <Position X="5.75" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Validators\AddBookToCartRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Validators.DeleteBookFromCartRequestValidator">
+    <Position X="14.5" Y="12" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Validators\DeleteBookFromCartRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.CartFeature.Validators.UpdateCartBookRequestValidator">
+    <Position X="3" Y="33" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\CartFeature\Validators\UpdateCartBookRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Command.CreateClient.CreateClientForUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="18.5" Y="7.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAQAAAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Command\CreateClient\CreateClientForUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Command.GetClient.GetClientForUserQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="30.25" Y="12" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAQAAAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Command\GetClient\GetClientForUserQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Command.UpdateClient.UpdateClientForUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="6" Y="33" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAQAAAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Command\UpdateClient\UpdateClientForUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Dtos.CreateClientRequest">
+    <Position X="21.75" Y="7.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAQAAQAAAAQAAACAAAAIAAAAAg=</HashCode>
+      <FileName>Features\ClientFeature\Dtos\CreateClientRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Dtos.GetClientResponse">
+    <Position X="0.5" Y="15.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Features\ClientFeature\Dtos\GetClientResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Dtos.UpdateClientRequest">
+    <Position X="9.25" Y="33" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAQAAQAAAAQAAACAAAAIAAAAAg=</HashCode>
+      <FileName>Features\ClientFeature\Dtos\UpdateClientRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Services.ClientService" BaseTypeListCollapsed="true">
+    <Position X="5" Y="7.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAICAAAAAAAAAAAACAAAAIAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Services\ClientService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Validators.CreateClientRequestValidator">
+    <Position X="24" Y="7.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Validators\CreateClientRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.ClientFeature.Validators.UpdateClientRequestValidator">
+    <Position X="11.75" Y="33" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Validators\UpdateClientRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.CancelOrder.CancelOrderCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="4.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAQAAAAAAAAQA=</HashCode>
+      <FileName>Features\OrderFeature\Command\CancelOrder\CancelOrderCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.CreateOrder.CreateOrderCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="26.75" Y="8" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAIAAAIAQBAAAAAAAQA=</HashCode>
+      <FileName>Features\OrderFeature\Command\CreateOrder\CreateOrderCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.GetOrderAmount.GetOrderAmountQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="15.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAQAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\GetOrderAmount\GetOrderAmountQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.GetOrders.GetOrdersQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="34.25" Y="15.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAIAAAIAQBAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\GetOrders\GetOrdersQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.ManagerCancelOrder.ManagerCancelOrderCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="18.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAQA=</HashCode>
+      <FileName>Features\OrderFeature\Command\ManagerCancelOrder\ManagerCancelOrderCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.ManagerGetOrderAmount.ManagerGetOrderAmountQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="19.75" Y="18.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\ManagerGetOrderAmount\ManagerGetOrderAmountQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.ManagerGetOrderById.ManagerGetOrderByIdQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="23.5" Y="18.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAIAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\ManagerGetOrderById\ManagerGetOrderByIdQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.ManagerGetPaginatedOrders.ManagerGetPaginatedOrdersQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="27.75" Y="18.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAIAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\ManagerGetPaginatedOrders\ManagerGetPaginatedOrdersQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder.ManagerUpdateOrderCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="33.5" Y="18.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAIAAAIAABAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\ManagerUpdateOrder\ManagerUpdateOrderCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Command.UpdateOrder.UpdateOrderCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="33" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAIAAAIAQBAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Command\UpdateOrder\UpdateOrderCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Dtos.ClientUpdateOrderRequest">
+    <Position X="8.5" Y="7.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAHAAAAAAAAAAAAACAQIAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Dtos\ClientUpdateOrderRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Dtos.CreateOrderRequest">
+    <Position X="30.5" Y="8" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAFACAAAAAAAAAAACAQIAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Dtos\CreateOrderRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Dtos.ManagerUpdateOrderRequest">
+    <Position X="36.75" Y="18.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAACAAAAACAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Dtos\ManagerUpdateOrderRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Dtos.OrderBookRequest">
+    <Position X="26.75" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Dtos\OrderBookRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Services.OrderService" BaseTypeListCollapsed="true">
+    <Position X="13" Y="23" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAQAAAAAAAAAgAAICAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Services\OrderService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Validators.ClientUpdateOrderRequestValidator">
+    <Position X="11.5" Y="7.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Validators\ClientUpdateOrderRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Validators.CreateOrderRequestValidator">
+    <Position X="0.5" Y="12" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Validators\CreateOrderRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Validators.GetOrdersFilterValidator">
+    <Position X="7.5" Y="15.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Validators\GetOrdersFilterValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Validators.ManagerUpdateOrderRequestValidator">
+    <Position X="1" Y="23" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Validators\ManagerUpdateOrderRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.OrderFeature.Validators.OrderBookRequestValidator">
+    <Position X="4.25" Y="23" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Validators\OrderBookRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Domain.Dtos.GetShopStatisticsRequest">
+    <Position X="22.25" Y="15.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAACAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Domain\Dtos\GetShopStatisticsRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Domain.Dtos.ShopStatisticsResponse">
+    <Position X="17.25" Y="23" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAQAQhAAAAAAAAAQAAACAAAAAAQAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Domain\Dtos\ShopStatisticsResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Domain.Dtos.StatisticsBookRequest">
+    <Position X="1" Y="28.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Domain\Dtos\StatisticsBookRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Domain.Models.GetShopStatisticsFilter">
+    <Position X="19.75" Y="15.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAACAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Domain\Models\GetShopStatisticsFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Domain.Models.ShopStatistics">
+    <Position X="21.25" Y="23" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAQAQhAAAAAAAAAQAAACAAAAAAQAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Domain\Models\ShopStatistics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Domain.Models.StatisticsBook">
+    <Position X="25" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Domain\Models\StatisticsBook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Repository.StatisticsRepository" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="28.25" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>ECAAAAAAACACAAAAIAgAAAAIAAACAEAAAAAAACIAAAE=</HashCode>
+      <FileName>Features\StatisticsFeature\Repository\StatisticsRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Services.StatisticsService" BaseTypeListCollapsed="true">
+    <Position X="15.75" Y="28.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAEA=</HashCode>
+      <FileName>Features\StatisticsFeature\Services\StatisticsService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Validators.GetBookStatisticsRequestValidator">
+    <Position X="23.75" Y="12" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Validators\GetBookStatisticsRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StatisticsFeature.Validators.StatisticsBookValidator">
+    <Position X="3.25" Y="28.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StatisticsFeature\Validators\StatisticsBookValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Command.CreateStockBookOrder.CreateStockBookOrderCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="12" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAABAAAAAAAQA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Command\CreateStockBookOrder\CreateStockBookOrderCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderAmount.GetStockOrderAmountQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="25.5" Y="15.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAQA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Command\GetStockOrderAmount\GetStockOrderAmountQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById.GetStockOrderByIdQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="29.25" Y="15.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAABAAAAAAAQA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Command\GetStockOrderById\GetStockOrderByIdQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderPaginated.GetStockOrderPaginatedQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="1" Y="18.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAABAAAAAAAQA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Command\GetStockOrderPaginated\GetStockOrderPaginatedQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Dtos.CreateStockBookOrderRequest">
+    <Position X="7" Y="12" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAABAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Dtos\CreateStockBookOrderRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Dtos.StockBookChangeRequest">
+    <Position X="19" Y="28.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Dtos\StockBookChangeRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Models.BookStockAmountUpdatedEvent">
+    <Position X="2.75" Y="4.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Models\BookStockAmountUpdatedEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Services.BookStockAmountUpdatedEventHandler" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="4.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Services\BookStockAmountUpdatedEventHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Services.StockBookOrderService" BaseTypeListCollapsed="true">
+    <Position X="31" Y="28.25" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAEAAAACAgAAAAAAAAAAAAAgAEAIACAAI=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Services\StockBookOrderService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Validators.CreateStockBookOrderRequestValidator">
+    <Position X="11.25" Y="12" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Validators\CreateStockBookOrderRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Features.StockBookOrderFeature.Validators.StockBookChangeRequestValidator">
+    <Position X="21.5" Y="28.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Validators\StockBookChangeRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Migrations.InitialMigration">
+    <Position X="5.25" Y="18.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241101190449_InitialMigration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Migrations.AddedContactClientInfoToOrder">
+    <Position X="8.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241115132745_AddedContactClientInfoToOrder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Migrations.ShopDbContextModelSnapshot">
+    <Position X="28.75" Y="23" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Migrations\ShopDbContextModelSnapshot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Services.LibraryService" BaseTypeListCollapsed="true">
+    <Position X="12" Y="18.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAIIAAAAAAAAAAAAAAYAAAAAAAIAIAAAAA=</HashCode>
+      <FileName>Services\LibraryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ShopApi.AutoMapperProfile">
+    <Position X="0.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AutoMapperProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.Configuration">
+    <Position X="14.5" Y="7.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAgAAAIAAAEAAAAQAACAAABAAAAAA=</HashCode>
+      <FileName>Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.GetLibraryEntityHelper">
+    <Position X="6" Y="15.5" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAgAAAAAAAgAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>GetLibraryEntityHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShopApi.LibraryConfiguration">
+    <Position X="7.75" Y="18.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAkAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LibraryConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Program">
+    <Position X="25" Y="24.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Mvc.ControllerBase" Collapsed="true">
+    <Position X="26.75" Y="27" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="FluentValidation.AbstractValidator&lt;T&gt;" Collapsed="true">
+    <Position X="22.25" Y="27" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="ShopApi.Features.AdvisorFeature.Services.IAdvisorService">
+    <Position X="0.75" Y="37.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Features\AdvisorFeature\Services\IAdvisorService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Features.CartFeature.Services.ICartService">
+    <Position X="4.5" Y="37.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAQAAAAAAAAAAAAAAAAAAAAIAAAABAAgQAABA=</HashCode>
+      <FileName>Features\CartFeature\Services\ICartService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Features.ClientFeature.Services.IClientService">
+    <Position X="7.75" Y="37.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAICAAAAAAAAAAAACAAAAIAAAAAAAA=</HashCode>
+      <FileName>Features\ClientFeature\Services\IClientService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Features.OrderFeature.Services.IOrderService">
+    <Position X="14.5" Y="37.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAQAAAAAAAAAgAAICAAAAA=</HashCode>
+      <FileName>Features\OrderFeature\Services\IOrderService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Features.StatisticsFeature.Repository.IStatisticsRepository">
+    <Position X="18.75" Y="37.25" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>ECAAAAAAACAAAAAAAAgAAAAAAAACAEAAAAAAACIAAAE=</HashCode>
+      <FileName>Features\StatisticsFeature\Repository\IStatisticsRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Features.StatisticsFeature.Services.IStatisticsService">
+    <Position X="23.75" Y="37.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Features\StatisticsFeature\Services\IStatisticsService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Features.StockBookOrderFeature.Services.IStockBookOrderService">
+    <Position X="27" Y="37.25" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAEAAAAAAgAAAAAAAAAAAAAAAEAAACAAI=</HashCode>
+      <FileName>Features\StockBookOrderFeature\Services\IStockBookOrderService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ShopApi.Services.ILibraryService">
+    <Position X="11" Y="37.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAIAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Services\ILibraryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MediatR.IRequestHandler&lt;TRequest, TResponse&gt;">
+    <Position X="5.25" Y="2.75" Width="3" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="EventSourcing.IEventHandler&lt;TEvent&gt;">
+    <Position X="33" Y="37.25" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

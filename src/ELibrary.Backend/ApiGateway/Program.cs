@@ -87,3 +87,5 @@ app.MapHealthChecks("/health");
 
 await app.UseOcelot();
 app.Run();
+
+public partial class Program { }
