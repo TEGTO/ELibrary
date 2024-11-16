@@ -1,16 +1,12 @@
-## Getting Started
+## Getting Started (Legacy)
 
- **[Try Out the Web App](https://gray-dune-04583d603.5.azurestaticapps.net/)**
-
-Or to run the ELibrary project locally, follow these steps:
-
-### Prerequisites (Legacy)
+### Prerequisites 
 
 - **Node.js** (for Angular CLI)
 - **.NET SDK** (for backend)
 - **PostgreSQL** (for database)
 
-### Installation (Legacy)
+### Installation
 
 1. **Clone the repository**:
     ```bash

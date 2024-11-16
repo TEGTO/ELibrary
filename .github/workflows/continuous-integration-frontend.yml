@@ -77,6 +77,7 @@ jobs:
             -d '{"ref": "${{ github.ref_name }}"}'
 
   docs:
+    if: ${{ github.ref == 'refs/heads/main' }}
     concurrency:
       group: "ci-frontend-docs"
       cancel-in-progress: false
@@ -116,7 +117,6 @@ jobs:
           path: docs/frontend
 
       - name: Deploy Frontend Documentation to External Repository
-        # if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_DOCS_TOKEN }}

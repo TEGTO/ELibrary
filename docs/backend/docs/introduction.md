@@ -1,8 +1,22 @@
 ## Table of Contents
-- [Features](#features)
+- [Links](#links)
 - [Tech Stack](#tech-stack)
+- [Features](#features)
 - [Contributors](#contributors)
 - [Screenshots](#screenshots)
+
+## Links
+
+Here are the main links for accessing the ELibrary project and its documentation:
+
+- **Web Application**: [ELibrary Application](https://gray-dune-04583d603.5.azurestaticapps.net/)  
+  Access the live version of the ELibrary application, deployed on Microsoft Azure.
+
+- **Backend Documentation**: [ELibrary Backend Docs](https://tegto.github.io/ELibrary.Docs.Backend/)  
+  Explore the backend's API documentation, generated with DocFX.
+
+- **Frontend Documentation**: [ELibrary Frontend Docs](https://tegto.github.io/ELibrary.Docs.Frontend/)  
+  View the frontend documentation, generated with Compodoc.
 
 ## Tech Stack
 - **Frontend**: Angular with NgRx for state management
@@ -56,6 +70,3 @@
 ![image](https://github.com/user-attachments/assets/b0c12186-bb05-44aa-8f35-cd3b64969ed1)
 
 ![image](https://github.com/user-attachments/assets/76890fd6-6b08-4001-b5f7-520e6b6b6b91)
-
-
-

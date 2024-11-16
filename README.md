@@ -38,8 +38,8 @@
 ## Table of Contents
 - [Description](#description)
 - [Links](#links)
-- [Features](#features)
 - [Tech Stack](#tech-stack)
+- [Features](#features)
 - [Getting Started (Legacy)](#getting-started-legacy)
 - [Contributors](#contributors)
 - [Screenshots](#screenshots)
