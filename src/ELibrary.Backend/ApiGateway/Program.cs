@@ -51,6 +51,7 @@ Utility.MergeJsonFiles(
         $"ocelot.{env}.statistics.json",
         $"ocelot.{env}.stockbook.json",
         $"ocelot.{env}.chatbot.json",
+        $"ocelot.{env}.swagger.json",
     ], mergedPath);
 
 builder.Configuration
@@ -62,6 +63,11 @@ builder.Services.AddOcelot(builder.Configuration).AddPolly();
 
 #endregion
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSwaggerForOcelot(builder.Configuration);
+}
+
 var app = builder.Build();
 
 if (useCors)
@@ -69,7 +75,7 @@ if (useCors)
     app.UseCors(myAllowSpecificOrigins);
 }
 
-app.UseSharedMiddlewares();
+app.UseSharedMiddleware();
 app.UseMiddleware<TokenFromQueryMiddleware>();
 
 app.UseRouting();
@@ -77,6 +83,17 @@ app.UseRouting();
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
+}
+else
+{
+    app.UseSwaggerForOcelotUI(opt =>
+    {
+        opt.PathToSwaggerGenerator = "/swagger/docs";
+        opt.DownstreamSwaggerHeaders = new[]
+         {
+              new KeyValuePair<string, string>("Authorization", "Bearer {token}")
+          };
+    });
 }
 
 app.UseAuthentication();
@@ -87,3 +104,5 @@ app.MapHealthChecks("/health");
 
 await app.UseOcelot();
 app.Run();
+
+public partial class Program { }

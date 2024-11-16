@@ -60,6 +60,10 @@ builder.Services.AddOutputCache((options) =>
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSwagger("Library API");
+}
 
 var app = builder.Build();
 
@@ -68,11 +72,15 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
     await app.ConfigureDatabaseAsync<LibraryDbContext>(CancellationToken.None);
 }
 
-app.UseSharedMiddlewares();
+app.UseSharedMiddleware();
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
+}
+else
+{
+    app.UseSwagger("Library API V1");
 }
 
 app.UseIdentity();

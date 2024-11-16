@@ -20,7 +20,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "user"
     },
     {
       "Key": "Authentication_Register",
@@ -42,7 +43,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "user"
     },
     {
       "Key": "Authentication_GetOAuthUrl",
@@ -64,7 +66,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "user"
     },
     {
       "Key": "Authentication_LoginOAuth",
@@ -86,7 +89,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "user"
     },
     {
       "Key": "Authentication_Refresh",
@@ -108,7 +112,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "user"
     },
     {
       "Key": "Authentication_AdminRegister",
@@ -136,7 +141,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "user"
     }
   ]
 }

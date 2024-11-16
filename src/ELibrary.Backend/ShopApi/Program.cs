@@ -88,6 +88,11 @@ builder.Services.AddOutputCache((options) =>
 
 #endregion
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSwagger("Shop API");
+}
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
@@ -97,11 +102,15 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
     await app.ConfigureDatabaseAsync<ShopDbContext>(CancellationToken.None);
 }
 
-app.UseSharedMiddlewares();
+app.UseSharedMiddleware();
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
+}
+else
+{
+    app.UseSwagger("Shop API V1");
 }
 
 app.UseIdentity();

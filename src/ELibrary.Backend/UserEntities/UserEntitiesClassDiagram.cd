@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="UserEntities.Data.UserIdentityDbContext">
+    <Position X="0.5" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Data\UserIdentityDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserEntities.Domain.Entities.User">
+    <Position X="0.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAQAAAQAAAAAAAAAAEAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Domain\Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserEntities.Domain.Entities.UserAuthenticationMethod">
+    <Position X="2.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\UserAuthenticationMethod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="UserEntities.Domain.Entities.AuthenticationMethod">
+    <Position X="0.5" Y="8.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\UserAuthenticationMethod.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

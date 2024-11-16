@@ -20,6 +20,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "shop",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -47,6 +48,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "shop",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -74,6 +76,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "shop",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -101,6 +104,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "shop",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },

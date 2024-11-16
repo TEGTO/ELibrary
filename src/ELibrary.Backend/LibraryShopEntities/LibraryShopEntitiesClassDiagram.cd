@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LibraryShopEntities.Data.LibraryDbContext">
+    <Position X="16.75" Y="8.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAEAAAAAAIAAAAAkABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\LibraryDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Data.ShopDbContext">
+    <Position X="21.75" Y="13" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAEAACAAAAAEAEAAACAACAAAEABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\ShopDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Library.AuthorResponse">
+    <Position X="13.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Domain\Dtos\Library\AuthorResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Library.BookResponse">
+    <Position X="16.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICCAAAAQAgAAAAiAIACAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Library\BookResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Library.GenreResponse">
+    <Position X="22.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Library\GenreResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Library.PublisherResponse">
+    <Position X="17.25" Y="13" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Library\PublisherResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.SharedRequests.GetByIdsRequest">
+    <Position X="13.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\SharedRequests\GetByIdsRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.SharedRequests.RaiseBookPopularityRequest">
+    <Position X="19.25" Y="13" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\SharedRequests\RaiseBookPopularityRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.SharedRequests.UpdateBookStockAmountRequest">
+    <Position X="23.25" Y="17.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\SharedRequests\UpdateBookStockAmountRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.CartBookResponse">
+    <Position X="22" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Shop\CartBookResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.CartResponse">
+    <Position X="15" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Shop\CartResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.ClientResponse">
+    <Position X="21" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAQAAwAAAAQAAACAAAAIAAAAAg=</HashCode>
+      <FileName>Domain\Dtos\Shop\ClientResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.OrderBookResponse">
+    <Position X="22.5" Y="8.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABAAAAAQAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Shop\OrderBookResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.OrderResponse">
+    <Position X="15.25" Y="13" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAHACAAAAACCAAABCAQIAAAAAAAQAAAAAAgAAAAAAQ=</HashCode>
+      <FileName>Domain\Dtos\Shop\OrderResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.StockBookChangeResponse">
+    <Position X="13" Y="17.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Shop\StockBookChangeResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Dtos.Shop.StockBookOrderResponse">
+    <Position X="20.75" Y="17.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAACAACACAAAAAAAABAAAAAAQAAAAAAAAQ=</HashCode>
+      <FileName>Domain\Dtos\Shop\StockBookOrderResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Library.Author">
+    <Position X="0.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAQAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Domain\Entities\Library\Author.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Library.BaseLibraryEntity">
+    <Position X="4" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Library\BaseLibraryEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Library.Book">
+    <Position X="3" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIACAAAAQAgIAAAiAIACAQAAwAIAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Library\Book.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Library.BookPopularity">
+    <Position X="15" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAEAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Library\BookPopularity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Library.Genre">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Library\Genre.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Library.Publisher">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Library\Publisher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.Cart">
+    <Position X="18.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAgAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Shop\Cart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.CartBook">
+    <Position X="20.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCEAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Domain\Entities\Shop\CartBook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.Client">
+    <Position X="16.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAACAAAAAAAAAQAAwAAgAQAAACAAAAIAAAAAg=</HashCode>
+      <FileName>Domain\Entities\Shop\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.Order" BaseTypeListCollapsed="true">
+    <Position X="18.75" Y="8.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAHACAAAAACCAAAhCAQIAAAAgAAQAAAAAAgAAAAAAQ=</HashCode>
+      <FileName>Domain\Entities\Shop\Order.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.OrderBook">
+    <Position X="20.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAECCAAAAAAAAAAAAAAAQAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Shop\OrderBook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.StockBookChange">
+    <Position X="23.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Shop\StockBookChange.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Domain.Entities.Shop.StockBookOrder" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="17.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAACAACgCAAAAAAAABAAAAAAQAAAAAAAAQ=</HashCode>
+      <FileName>Domain\Entities\Shop\StockBookOrder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Filters.BookFilterRequest">
+    <Position X="10.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAgIAAEAAAAAAQQAQICEAAAABAABAgAAAA=</HashCode>
+      <FileName>Filters\BookFilterRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Filters.GetOrdersFilter">
+    <Position X="15" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\GetOrdersFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Filters.LibraryFilterRequest">
+    <Position X="10.5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\LibraryFilterRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Library.AuthorRepository">
+    <Position X="8.5" Y="10.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Library\AuthorRepository.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Library.BookRepository">
+    <Position X="5.5" Y="10.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAIAAIAAAAAAAQAAAAAAAAAgQAAQAAIgAIAA=</HashCode>
+      <FileName>Repositories\Library\BookRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Library.LibraryEntityRepository&lt;TEntity&gt;">
+    <Position X="6.75" Y="6.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAACIAACABAAQAAAAAAAAAgAAAAAAIgAIIA=</HashCode>
+      <FileName>Repositories\Library\LibraryEntityRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Shop.CartRepository" BaseTypeListCollapsed="true">
+    <Position X="12.5" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAIAAAQCIAAAAAAAAAAAAAAABIAAIABAAAAIAAA=</HashCode>
+      <FileName>Repositories\Shop\CartRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Shop.ClientRepository" BaseTypeListCollapsed="true">
+    <Position X="18.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAICAAAAAAAAAAAACAAAAIAAAAAAAA=</HashCode>
+      <FileName>Repositories\Shop\ClientRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Shop.OrderRepository" BaseTypeListCollapsed="true">
+    <Position X="13" Y="13" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAACAEACAAAAQAAQEAAAAAAAAgAAICAAAAA=</HashCode>
+      <FileName>Repositories\Shop\OrderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryShopEntities.Repositories.Shop.StockBookOrderRepository" BaseTypeListCollapsed="true">
+    <Position X="17.75" Y="17.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAAAAAAAAAAAAAAAAAAAAAAEAAACAAI=</HashCode>
+      <FileName>Repositories\Shop\StockBookOrderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="LibraryShopEntities.Domain.Entities.ITrackable">
+    <Position X="24.5" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\ITrackable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryShopEntities.Repositories.Library.IBookRepository">
+    <Position X="0.5" Y="12.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAQAAAAAAAA=</HashCode>
+      <FileName>Repositories\Library\IBookRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryShopEntities.Repositories.Library.ILibraryEntityRepository&lt;TEntity&gt;">
+    <Position X="0.5" Y="9.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAIAAAAAAAQAAAAAAAAAgAAAAAAIgAIIA=</HashCode>
+      <FileName>Repositories\Library\ILibraryEntityRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryShopEntities.Repositories.Shop.ICartRepository">
+    <Position X="13.75" Y="20.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAIAAAQAAAAAAAAAAAAAAAAABIAAIABAAAAIAAA=</HashCode>
+      <FileName>Repositories\Shop\ICartRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryShopEntities.Repositories.Shop.IClientRepository">
+    <Position X="16.25" Y="20.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAICAAAAAAAAAAAACAAAAIAAAAAAAA=</HashCode>
+      <FileName>Repositories\Shop\IClientRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryShopEntities.Repositories.Shop.IOrderRepository">
+    <Position X="18.75" Y="20.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAQEAAAAAAAAgAAICAAAAA=</HashCode>
+      <FileName>Repositories\Shop\IOrderRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryShopEntities.Repositories.Shop.IStockBookOrderRepository">
+    <Position X="21.25" Y="20.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAEAAACAAI=</HashCode>
+      <FileName>Repositories\Shop\IStockBookOrderRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="LibraryShopEntities.Domain.Entities.Library.CoverType">
+    <Position X="15.75" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Library\Book.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LibraryShopEntities.Domain.Entities.Shop.OrderStatus">
+    <Position X="19.25" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAgAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Shop\Order.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LibraryShopEntities.Domain.Entities.Shop.PaymentMethod">
+    <Position X="21" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Shop\Order.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LibraryShopEntities.Domain.Entities.Shop.DeliveryMethod">
+    <Position X="17.5" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Entities\Shop\Order.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LibraryShopEntities.Domain.Entities.Shop.StockBookOrderType">
+    <Position X="22.75" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAAEAA=</HashCode>
+      <FileName>Domain\Entities\Shop\StockBookOrder.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LibraryShopEntities.Filters.BookSorting">
+    <Position X="14" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Filters\BookFilterRequest.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
