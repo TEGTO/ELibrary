@@ -18,7 +18,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "shop"
     }
   ]
 }

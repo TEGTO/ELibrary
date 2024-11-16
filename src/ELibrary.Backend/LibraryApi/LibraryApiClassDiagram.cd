@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="LibraryApi.Controllers.AuthorController">
+    <Position X="2" Y="9" Width="8.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AuthorController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Controllers.BaseLibraryEntityController&lt;TEntity, TGetResponse, TCreateRequest, TCreateResponse, TUpdateRequest, TUpdateResponse, TFilterRequest&gt;">
+    <Position X="15.5" Y="5" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AARBAAABAAAIAAAAAAAAAAAAACACAEAAAAAAAAAAAIA=</HashCode>
+      <FileName>Controllers\BaseLibraryEntityController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Controllers.BookController">
+    <Position X="29.5" Y="9" Width="7.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAABAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BookController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Controllers.GenreController">
+    <Position X="11" Y="9" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\GenreController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Controllers.PublisherController">
+    <Position X="19.75" Y="9" Width="9" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\PublisherController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Author.CreateAuthorRequest">
+    <Position X="55" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Domain\Dtos\Author\CreateAuthorRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Author.UpdateAuthorRequest">
+    <Position X="55.75" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Domain\Dtos\Author\UpdateAuthorRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Book.CreateBookRequest">
+    <Position X="57.75" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIACAAAAQAgIAAAAAAACAQAAQAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Book\CreateBookRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Book.UpdateBookRequest">
+    <Position X="58.25" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAICCAAAAQAgIAAAAAAACAQAAQAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Book\UpdateBookRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Genre.CreateGenreRequest">
+    <Position X="60.5" Y="0.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Genre\CreateGenreRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Genre.UpdateGenreRequest">
+    <Position X="51" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Genre\UpdateGenreRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Publisher.CreatePublisherRequest">
+    <Position X="51.25" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Publisher\CreatePublisherRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Domain.Dto.Publisher.UpdatePublisherRequest">
+    <Position X="53.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Publisher\UpdatePublisherRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Services.BookService">
+    <Position X="6" Y="14.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\BookService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryApi.Services.LibraryEntityService&lt;TEntity&gt;">
+    <Position X="5.5" Y="10.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACIAAAAAAAQAAAAAAAAAgAAAAAAIgAIIA=</HashCode>
+      <FileName>Services\LibraryEntityService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibraryApi.Validators.Author.CreateAuthorRequestValidator">
+    <Position X="35.75" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Author\CreateAuthorRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Author.UpdateAuthorRequestValidator">
+    <Position X="13.25" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Author\UpdateAuthorRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Book.CreateBookRequestValidator">
+    <Position X="16.5" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Book\CreateBookRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Book.RaiseBookPopularityRequestValidator">
+    <Position X="39" Y="2" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Book\RaiseBookPopularityRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Book.UpdateBookRequestValidator">
+    <Position X="29.25" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Book\UpdateBookRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Book.UpdateBookStockAmountRequestValidator">
+    <Position X="2.75" Y="2" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Book\UpdateBookStockAmountRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Book.UpdateBookStockAmountRequestCollectionValidator">
+    <Position X="42.75" Y="2" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Book\UpdateBookStockAmountRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Genre.CreateGenreRequestValidator">
+    <Position X="32.5" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Genre\CreateGenreRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Genre.UpdateGenreRequestValidator">
+    <Position X="22.75" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Genre\UpdateGenreRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Publisher.CreatePublisherRequestValidator">
+    <Position X="6.75" Y="2" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Publisher\CreatePublisherRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.Publisher.UpdatePublisherRequestValidator">
+    <Position X="47.25" Y="2" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\Publisher\UpdatePublisherRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.BookFilterRequestValidator">
+    <Position X="10.25" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\BookFilterRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.GetByIdsRequestValidator">
+    <Position X="19.75" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\GetByIdsRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Validators.LibraryFilterRequestValidator">
+    <Position X="26" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\LibraryFilterRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.AutoMapperProfile">
+    <Position X="0.5" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AutoMapperProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LibraryApi.Configuration">
+    <Position X="51" Y="0.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Program">
+    <Position X="53.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Mvc.ControllerBase" Collapsed="true">
+    <Position X="18.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="AutoMapper.Profile" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FluentValidation.AbstractValidator&lt;T&gt;" Collapsed="true">
+    <Position X="25.5" Y="0.75" Width="1.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="LibraryApi.Services.IBookService">
+    <Position X="1" Y="13.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\IBookService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LibraryApi.Services.ILibraryEntityService&lt;TEntity&gt;">
+    <Position X="0.5" Y="10.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAQAAAAAAAAAgAAAAAAIgAIIA=</HashCode>
+      <FileName>Services\ILibraryEntityService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

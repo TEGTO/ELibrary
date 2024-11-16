@@ -71,6 +71,11 @@ builder.Services.AddMediatR(conf =>
     conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSwagger("User API");
+}
+
 var app = builder.Build();
 
 if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
@@ -78,11 +83,15 @@ if (app.Configuration[Configuration.EF_CREATE_DATABASE] == "true")
     await app.ConfigureDatabaseAsync<UserIdentityDbContext>(CancellationToken.None);
 }
 
-app.UseSharedMiddlewares();
+app.UseSharedMiddleware();
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
+}
+else
+{
+    app.UseSwagger("User API V1");
 }
 
 app.UseIdentity();

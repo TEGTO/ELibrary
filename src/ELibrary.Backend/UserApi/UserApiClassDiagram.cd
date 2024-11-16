@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="UserApi.Command.Admin.AdminDeleteUser.AdminDeleteUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="3" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Admin\AdminDeleteUser\AdminDeleteUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Admin.AdminRegisterUser.AdminRegisterUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAIAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Admin\AdminRegisterUser\AdminRegisterUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Admin.AdminUpdateUser.AdminUpdateUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="15.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Admin\AdminUpdateUser\AdminUpdateUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Admin.GetPaginatedUsers.GetPaginatedUsersQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="16.25" Y="7.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Admin\GetPaginatedUsers\GetPaginatedUsersQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Admin.GetPaginatedUserTotalAmount.GetPaginatedUserTotalAmountQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="21.5" Y="7.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Admin\GetPaginatedUserTotalAmount\GetPaginatedUserTotalAmountQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Admin.GetUserByInfo.GetUserByInfoQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="25.5" Y="7.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAAAAAAQAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Admin\GetUserByInfo\GetUserByInfoQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.DeleteUser.DeleteUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="3.5" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Client\DeleteUser\DeleteUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.GetOAuthUrl.GetOAuthUrlQueryHandler" BaseTypeListCollapsed="true">
+    <Position X="6.5" Y="7.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Client\GetOAuthUrl\GetOAuthUrlQueryHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.LoginOAuth.LoginOAuthCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="11.75" Y="9.75" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAEAIAAAAAAAAAAIAAAAAAAIAAAA=</HashCode>
+      <FileName>Command\Client\LoginOAuth\LoginOAuthCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.LoginUser.LoginUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="22.25" Y="9.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAIAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Client\LoginUser\LoginUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.RefreshToken.RefreshTokenCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="13.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Client\RefreshToken\RefreshTokenCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.RegisterUser.RegisterUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="6" Y="13.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAIAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Client\RegisterUser\RegisterUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Command.Client.UpdateUser.UpdateUserCommandHandler" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="13.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAACAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Command\Client\UpdateUser\UpdateUserCommandHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Controllers.AuthController">
+    <Position X="7.25" Y="3.25" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAACAAAAAAAAAAABAFAAgAAAAQAAAAAAA=</HashCode>
+      <FileName>Controllers\AuthController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Controllers.UserController">
+    <Position X="3" Y="16.5" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAQEAAAAAAAAAAAEAAACAAAAAkAAAAgAAQAAAAAAAAA=</HashCode>
+      <FileName>Controllers\UserController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.AdminUserRegistrationRequest">
+    <Position X="18.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAgAAAAACAAAAAAAAIAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\AdminUserRegistrationRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.AdminUserUpdateDataRequest">
+    <Position X="4.5" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACACAAAAAAAAAAAAAAAgAAAAACAAAAAAAAIAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\AdminUserUpdateDataRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.GetOAuthUrlQueryParams">
+    <Position X="11" Y="7.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAQAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\GetOAuthUrlQueryParams.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.LoginOAuthRequest">
+    <Position X="16.25" Y="9.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAQAAAAAgAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\LoginOAuthRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.UserAuthenticationRequest">
+    <Position X="13.75" Y="13.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAQAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\UserAuthenticationRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.UserRegistrationRequest">
+    <Position X="9" Y="16.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAIAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\UserRegistrationRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Requests.UserUpdateDataRequest">
+    <Position X="0.5" Y="20.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAEAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Requests\UserUpdateDataRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Responses.AdminUserResponse">
+    <Position X="0.5" Y="3.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAACAAAAAAAAAAAAAEAgAAAAAAAQAAQAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Responses\AdminUserResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Responses.GetOAuthUrlResponse">
+    <Position X="14.25" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Responses\GetOAuthUrlResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.Responses.UserAuthenticationResponse">
+    <Position X="0.5" Y="16.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQACAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\Responses\UserAuthenticationResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.AdminGetUserFilter">
+    <Position X="6" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\AdminGetUserFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Dtos.AuthToken">
+    <Position X="19.5" Y="3.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAQAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Dtos\AuthToken.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Models.CreateUserFromOAuth">
+    <Position X="0.5" Y="7.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAACAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Domain\Models\CreateUserFromOAuth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Domain.Models.UserUpdateData">
+    <Position X="14.5" Y="16.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAEAAAAACAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\Models\UserUpdateData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Migrations.InitialMigration">
+    <Position X="9.5" Y="9.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241024130709_InitialMigration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Migrations.UserIdentityDbContextModelSnapshot">
+    <Position X="11.25" Y="16.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Migrations\UserIdentityDbContextModelSnapshot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Services.Auth.AuthService" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="3.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AIAAAgAAAAAIAAAgAAgAAAAAQAAAAAIAAAAAAAIAAAA=</HashCode>
+      <FileName>Services\Auth\AuthService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Services.OAuth.Google.GoogleOAuthHttpClient" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="9.75" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAQAAAAAkACAgAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\OAuth\Google\GoogleOAuthHttpClient.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Services.OAuth.Google.GoogleOAuthService" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="9.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACgAgAAAAAAAAAAACAAAAAAgAAAgAAAAAAAIEAAA=</HashCode>
+      <FileName>Services\OAuth\Google\GoogleOAuthService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Services.OAuth.UserOAuthCreationService" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="16.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAEAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\OAuth\UserOAuthCreationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Services.TokenService" BaseTypeListCollapsed="true">
+    <Position X="16.25" Y="13.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAIAAAAACAAAAAEAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\TokenService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Services.UserAuthenticationMethodService" BaseTypeListCollapsed="true">
+    <Position X="20.5" Y="13.5" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAgAAAAAAAAgAAA=</HashCode>
+      <FileName>Services\UserAuthenticationMethodService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Services.UserService" BaseTypeListCollapsed="true">
+    <Position X="24" Y="16.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AKAAAAAAAAAAAAAgAAAAQAAEgAABAQAAIAAAAQQEAAA=</HashCode>
+      <FileName>Services\UserService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="UserApi.Validators.AccessTokenDataValidator">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\AccessTokenDataValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.AdminGetUserFilterValidator">
+    <Position X="8" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\AdminGetUserFilterValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.AdminUserRegistrationRequestValidator">
+    <Position X="21.25" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\AdminUserRegistrationRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.AdminUserUpdateDataRequestValidator">
+    <Position X="16.25" Y="3.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\AdminUserUpdateDataRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.LoginOAuthRequestValidator">
+    <Position X="19.5" Y="9.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\LoginOAuthRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.OAuthGetUrlQueryParamsValidator">
+    <Position X="26.5" Y="9.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\OAuthGetUrlQueryParamsValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.UserAuthenticationRequestValidator">
+    <Position X="25.75" Y="13.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\UserAuthenticationRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.UserRegistrationRequestValidator">
+    <Position X="20.75" Y="16.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\UserRegistrationRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Validators.UserUpdateDataRequestValidator">
+    <Position X="3" Y="20.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Validators\UserUpdateDataRequestValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.AutoMapperProfile">
+    <Position X="22.75" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AutoMapperProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Configuration">
+    <Position X="24.75" Y="3.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgBAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserApi.Utilities">
+    <Position X="6.25" Y="20.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Utilities.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Program">
+    <Position X="0.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AutoMapper.Profile" Collapsed="true">
+    <Position X="26" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FluentValidation.AbstractValidator&lt;T&gt;" Collapsed="true">
+    <Position X="29" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Mvc.ControllerBase" Collapsed="true">
+    <Position X="31.75" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="UserApi.Services.Auth.IAuthService">
+    <Position X="0.5" Y="22" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAgAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Auth\IAuthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="UserApi.Services.OAuth.Google.IGoogleOAuthHttpClient">
+    <Position X="4" Y="22" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAEAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\OAuth\Google\IGoogleOAuthHttpClient.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="UserApi.Services.OAuth.IOAuthService">
+    <Position X="9" Y="22" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\OAuth\IOAuthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="UserApi.Services.OAuth.IUserOAuthCreationService">
+    <Position X="12.75" Y="22" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\OAuth\IUserOAuthCreationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="UserApi.Services.ITokenService">
+    <Position X="16" Y="22" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAACAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ITokenService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="UserApi.Services.IUserAuthenticationMethodService">
+    <Position X="20.25" Y="22" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAgAAA=</HashCode>
+      <FileName>Services\IUserAuthenticationMethodService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="UserApi.Services.IUserService">
+    <Position X="25.75" Y="22" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAEgAABAAAAIAAAAQQEAAA=</HashCode>
+      <FileName>Services\IUserService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MediatR.IRequestHandler&lt;TRequest, TResponse&gt;">
+    <Position X="30" Y="22" Width="3" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

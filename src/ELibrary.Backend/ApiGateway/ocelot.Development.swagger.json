@@ -1,0 +1,34 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "library",
+      "Config": [
+        {
+          "Name": "Library API",
+          "Version": "v1",
+          "Url": "http://libraryapi:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "user",
+      "Config": [
+        {
+          "Name": "User API",
+          "Version": "v1",
+          "Url": "http://userapi:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "shop",
+      "Config": [
+        {
+          "Name": "Shop API",
+          "Version": "v1",
+          "Url": "http://shopapi:8080/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
