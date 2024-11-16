@@ -21,6 +21,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -49,6 +50,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -76,6 +78,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -103,6 +106,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -130,6 +134,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -157,6 +162,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -184,6 +190,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "user",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },

@@ -75,3 +75,49 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/continuous-integration-sonarcloud.yml/dispatches \
             -d '{"ref": "${{ github.ref_name }}"}'
+
+  docs:
+    concurrency:
+      group: "ci-frontend-docs"
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install @compodoc/compodoc@1.1.26
+        working-directory: src/ELibrary.Frontend
+
+      - name: Generate Documentation with Compodoc
+        run: npm run compodoc:build
+        working-directory: src/ELibrary.Frontend
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-docs
+          path: docs/frontend
+
+      - name: Deploy Documentation to GitHub Pages
+        # if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/frontend

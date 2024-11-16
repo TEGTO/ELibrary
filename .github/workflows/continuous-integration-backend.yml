@@ -106,3 +106,36 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/continuous-integration-sonarcloud.yml/dispatches \
             -d '{"ref": "${{ github.ref_name }}"}'
+
+  docs:
+    concurrency:
+      group: "ci-backend-docs"
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Generate Backend Documentation with DocFX
+        run: |
+          dotnet tool update -g docfx
+          docfx docfx.json
+        working-directory: docs/backend
+
+      - name: Upload Backend Documentation Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-docs
+          path: docs/backend
+
+      - name: Deploy Backend Documentation to GitHub Pages
+        # if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/backend

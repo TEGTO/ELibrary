@@ -20,7 +20,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "library"
     },
     {
       "Key": "Publisher_GetByIds",
@@ -42,7 +43,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "library"
     },
     {
       "Key": "Publisher_GetPaginated",
@@ -64,7 +66,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "library"
     },
     {
       "Key": "Publisher_GetItemTotalAmount",
@@ -86,7 +89,8 @@
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
-      }
+      },
+      "SwaggerKey": "library"
     },
     {
       "Key": "Publisher_Create",
@@ -109,6 +113,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "library",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -137,6 +142,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "library",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
@@ -165,6 +171,7 @@
         "PeriodTimespan": 1,
         "Limit": 5
       },
+      "SwaggerKey": "library",
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
