@@ -18,7 +18,8 @@ namespace UserApi.Services.OAuth.Google.Tests
             mockOAuthSettings = new GoogleOAuthSettings
             {
                 ClientId = "test-client-id",
-                ClientSecret = "test-client-secret"
+                ClientSecret = "test-client-secret",
+                Scope = ""
             };
 
             googleOAuthHttpClient = new GoogleOAuthHttpClient(mockOAuthSettings, mockHttpHelper.Object);

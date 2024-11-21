@@ -1,0 +1,107 @@
+#User Api
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elibrary-user-api
+  labels:
+    app: elibrary-user-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elibrary-user-api
+  template:
+    metadata:
+      labels:
+        app: elibrary-user-api
+    spec:
+      containers:
+        - name: elibrary-user-api
+          image: userapi:dev
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ASPNETCORE_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: ASPNETCORE_URLS
+            - name: ASPNETCORE_HTTP_PORTS
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: ASPNETCORE_HTTP_PORTS
+            - name: EFCreateDatabase
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: EFCreateDatabase
+            - name: MaxPaginationPageSize
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: MaxPaginationPageSize
+            - name: ConnectionStrings__AuthenticationDb
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: ConnectionStrings__AuthenticationDb
+            - name: AuthSettings__Key
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__Key
+            - name: AuthSettings__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__Audience
+            - name: AuthSettings__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__Issuer
+            - name: AuthSettings__ExpiryInMinutes
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__ExpiryInMinutes
+            - name: AuthSettings__RefreshExpiryInDays
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__RefreshExpiryInDays
+            - name: Auth__GoogleOAuth__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: Auth__GoogleOAuth__ClientId
+            - name: Auth__GoogleOAuth__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: Auth__GoogleOAuth__ClientSecret
+            - name: Auth__GoogleOAuth__Scope
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: Auth__GoogleOAuth__Scope
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elibrary-user-api-service
+spec:
+  type: NodePort
+  selector:
+    app: elibrary-user-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30008

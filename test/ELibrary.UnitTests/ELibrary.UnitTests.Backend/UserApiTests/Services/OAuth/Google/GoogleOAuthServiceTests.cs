@@ -32,7 +32,8 @@ namespace UserApi.Services.OAuth.Google.Tests
             mockOAuthSettings = new GoogleOAuthSettings
             {
                 ClientId = "test-client-id",
-                Scope = "https://www.googleapis.com/auth/userinfo.email"
+                ClientSecret = "123",
+                Scope = "https://www.googleapis.com/auth/userinfo.email",
             };
 
             mockConfiguration = new Mock<IConfiguration>();

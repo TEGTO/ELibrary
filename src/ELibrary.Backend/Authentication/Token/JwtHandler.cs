@@ -32,13 +32,13 @@ namespace Authentication.Token
             var secretKey = new SymmetricSecurityKey(key);
             return new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
         }
-        private List<Claim> GetClaims<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
+        private static List<Claim> GetClaims<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.Email, user?.Email ?? ""),
+                new Claim(ClaimTypes.Name, user ?.UserName ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user ?.Id.ToString() ?? "")
             };
             foreach (var role in roles)
             {
@@ -57,7 +57,7 @@ namespace Authentication.Token
                 signingCredentials: signingCredentials);
             return tokenOptions;
         }
-        private string GenerateRefreshToken()
+        private static string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())

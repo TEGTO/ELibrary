@@ -15,11 +15,11 @@ describe('ValidationMessageService', () => {
 
   const testCases: { errorKey: string, expectedMessage: string }[] = [
     { errorKey: 'required', expectedMessage: "Field is required." },
-    { errorKey: 'email', expectedMessage: "Email must be valid." },
+    { errorKey: 'email', expectedMessage: "Email must be in the form: example@mail.com." },
     { errorKey: 'minlength', expectedMessage: "Input must have more characters." },
     { errorKey: 'maxlength', expectedMessage: "Input must have less characters." },
     { errorKey: 'nonAlphanumeric', expectedMessage: "Input must have non-alphanumeric characters." },
-    { errorKey: 'invalidPhone', expectedMessage: "Phone number must be valid." },
+    { errorKey: 'invalidPhone', expectedMessage: "Phone number must be the form: 0123456789." },
     { errorKey: 'digit', expectedMessage: "Input must have digits." },
     { errorKey: 'uppercase', expectedMessage: "Input must have upper case characters." },
     { errorKey: 'passwordNoMatch', expectedMessage: "Passwords don't match." },

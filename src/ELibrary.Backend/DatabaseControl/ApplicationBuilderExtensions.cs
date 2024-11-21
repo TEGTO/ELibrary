@@ -6,7 +6,7 @@ using Shared.Repositories;
 
 namespace DatabaseControl
 {
-    public static class ApplicationBuilderExstensions
+    public static class ApplicationBuilderExtensions
     {
         public static async Task<IApplicationBuilder> ConfigureDatabaseAsync<TContext>(this IApplicationBuilder builder, CancellationToken cancellationToken) where TContext : DbContext
         {
