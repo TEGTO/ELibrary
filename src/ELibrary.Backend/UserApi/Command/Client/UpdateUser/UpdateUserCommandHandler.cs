@@ -22,6 +22,11 @@ namespace UserApi.Command.Client.UpdateUser
             var updateData = mapper.Map<UserUpdateData>(command.Request);
             var user = await userService.GetUserAsync(command.UserPricipal, cancellationToken);
 
+            if (user == null)
+            {
+                throw new InvalidOperationException("User to update is not found!");
+            }
+
             var identityErrors = await userService.UpdateUserAsync(user, updateData, false, cancellationToken);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 

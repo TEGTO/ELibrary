@@ -19,14 +19,14 @@ namespace Caching.Services
             memoryCache.TryGetValue(key, out string? value);
             return ValueTask.FromResult(value);
         }
-        public async Task<bool> SetAsync(string key, string value, TimeSpan duration, CancellationToken cancellationToken)
+        public ValueTask<bool> SetAsync(string key, string value, TimeSpan duration, CancellationToken cancellationToken)
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = duration
             };
             memoryCache.Set(key, value, cacheEntryOptions);
-            return true;
+            return ValueTask.FromResult(true);
         }
         public ValueTask<bool> RemoveKeyAsync(string key, CancellationToken cancellationToken)
         {

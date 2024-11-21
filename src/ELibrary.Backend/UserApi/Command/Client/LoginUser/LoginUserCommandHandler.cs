@@ -22,11 +22,13 @@ namespace UserApi.Command.Client.LoginUser
 
         public async Task<UserAuthenticationResponse> Handle(LoginUserCommand command, CancellationToken cancellationToken)
         {
+            ValidateCommand(command);
+
             var request = command.Request;
-            var user = await userService.GetUserByUserInfoAsync(request.Login, cancellationToken);
+            var user = await userService.GetUserByLoginAsync(request.Login!, cancellationToken);
             if (user == null) throw new UnauthorizedAccessException("Invalid authentication! Wrong password or login!");
 
-            var loginParams = new LoginUserParams(request.Login, request.Password);
+            var loginParams = new LoginUserParams(user, request.Password!);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
@@ -38,6 +40,18 @@ namespace UserApi.Command.Client.LoginUser
                 Email = user.Email,
                 Roles = roles,
             };
+        }
+
+        private void ValidateCommand(LoginUserCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            var request = command.Request;
+
+            if (string.IsNullOrEmpty(request.Login))
+                throw new InvalidDataException("Login can't be null or empty!");
+
+            if (string.IsNullOrEmpty(request.Password))
+                throw new InvalidDataException("Passwordcan't be null or empty!");
         }
     }
 }

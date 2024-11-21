@@ -38,7 +38,7 @@ namespace UserApi.Services.OAuth.Google
 
             Payload payload = new();
 
-            payload = await googleTokenValidator.ValidateAsync(tokenResult?.IdToken, new ValidationSettings
+            payload = await googleTokenValidator.ValidateAsync(tokenResult?.IdToken ?? "", new ValidationSettings
             {
                 Audience = new[] { oAuthSettings.ClientId }
             });
@@ -53,6 +53,8 @@ namespace UserApi.Services.OAuth.Google
             var refreshTokenExpiryDate = DateTime.UtcNow.AddDays(expiryInDays);
 
             var user = await userOAuthCreation.CreateUserFromOAuthAsync(userToBeCreated, cancellationToken);
+
+            if (user == null) throw new InvalidOperationException("Failed to register user via oauth!");
 
             var tokenData = await tokenService.CreateNewTokenDataAsync(user, refreshTokenExpiryDate, cancellationToken);
             await tokenService.SetRefreshTokenAsync(user, tokenData, cancellationToken);

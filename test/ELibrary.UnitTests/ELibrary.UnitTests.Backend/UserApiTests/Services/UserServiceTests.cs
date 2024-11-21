@@ -58,7 +58,7 @@ namespace UserApi.Services.Tests
             var user = new User { Id = "test-user-id", UserName = "testuser", Email = "testuser@example.com" };
             userManagerMock.Setup(x => x.FindByEmailAsync(user.Email)).ReturnsAsync(user);
             // Act
-            var result = await userService.GetUserByUserInfoAsync(user.Email, CancellationToken.None);
+            var result = await userService.GetUserByLoginAsync(user.Email, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(user));
         }
@@ -71,7 +71,7 @@ namespace UserApi.Services.Tests
             userManagerMock.Setup(x => x.FindByNameAsync(info)).ReturnsAsync((User)null);
             userManagerMock.Setup(x => x.FindByIdAsync(info)).ReturnsAsync((User)null);
             // Act
-            var result = await userService.GetUserByUserInfoAsync(info, CancellationToken.None);
+            var result = await userService.GetUserByLoginAsync(info, CancellationToken.None);
             // Assert
             Assert.That(result, Is.Null);
         }

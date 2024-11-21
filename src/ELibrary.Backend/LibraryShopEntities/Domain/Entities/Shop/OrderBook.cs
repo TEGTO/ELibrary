@@ -7,7 +7,7 @@ namespace LibraryShopEntities.Domain.Entities.Shop
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+        public string Id { get; set; } = default!;
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Book amount must be greater than 0")]
         public int BookAmount { get; set; }

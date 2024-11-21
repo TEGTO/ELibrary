@@ -2,8 +2,8 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
-using Serilog;
 using System.Net;
 
 namespace ExceptionHandling.Tests
@@ -11,13 +11,13 @@ namespace ExceptionHandling.Tests
     [TestFixture]
     internal class ExceptionMiddlewareTests
     {
-        private Mock<ILogger> loggerMock;
+        private Mock<ILogger<ExceptionMiddleware>> loggerMock;
         private DefaultHttpContext httpContext;
 
         [SetUp]
         public void Setup()
         {
-            loggerMock = new Mock<ILogger>();
+            loggerMock = new Mock<ILogger<ExceptionMiddleware>>();
             httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
         }
@@ -36,10 +36,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.BadRequest));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_UniqueConstraintException_StatusCodeConflict()
@@ -52,10 +55,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Conflict));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_InvalidDataException_StatusBadRequest()
@@ -68,10 +74,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.BadRequest));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_AuthorizationException_StatusCodeConflict()
@@ -84,10 +93,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Conflict));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_SecurityTokenMalformedException_StatusCodeConflict()
@@ -100,10 +112,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Conflict));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_ValidationException_ResponseBodyContainsErrors()
@@ -120,10 +135,13 @@ namespace ExceptionHandling.Tests
             var expectedResponseBody = "400";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_GenericException_StatusCodeInternalServerError()
@@ -136,10 +154,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_GenericException_ResponseBodyContainsErrorMessage()
@@ -155,10 +176,13 @@ namespace ExceptionHandling.Tests
             var expectedResponseBody = "500";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_UnauthorizedAccessException_StatusCodeUnauthorized()
@@ -171,10 +195,13 @@ namespace ExceptionHandling.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             // Assert
             Assert.That(httpContext.Response.StatusCode, Is.EqualTo((int)HttpStatusCode.Unauthorized));
-            loggerMock.Verify(
-               x => x.Error(exception, It.IsAny<string>()),
-               Times.Once
-            );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
         [Test]
         public async Task InvokeAsync_InvalidDataException_ResponseBodyContainsErrorMessage()
@@ -190,10 +217,13 @@ namespace ExceptionHandling.Tests
             var expectedResponseBody = "500";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            loggerMock.Verify(
-                x => x.Error(exception, It.IsAny<string>()),
-                Times.Once
-             );
+            loggerMock.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                exception,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ), Times.Exactly(1));
         }
     }
 }

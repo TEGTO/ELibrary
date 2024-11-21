@@ -68,7 +68,7 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
             mockOAuthService.Setup(s => s.GetAccessOnCodeAsync(It.IsAny<GetAccessOnCodeParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenDto);
             mockTokenService.Setup(s => s.GetPrincipalFromToken(tokenDto.AccessToken))
                              .Returns(principal);
-            mockUserService.Setup(s => s.GetUserByUserInfoAsync(principal.Identity.Name, CancellationToken.None))
+            mockUserService.Setup(s => s.GetUserByLoginAsync(principal.Identity.Name, CancellationToken.None))
                             .ReturnsAsync(user);
             mockUserService.Setup(s => s.GetUserRolesAsync(user, CancellationToken.None))
                             .ReturnsAsync(roles);
@@ -105,7 +105,7 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
             mockOAuthService.Setup(s => s.GetAccessOnCodeAsync(It.IsAny<GetAccessOnCodeParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenDto);
             mockTokenService.Setup(s => s.GetPrincipalFromToken(tokenDto.AccessToken))
                              .Returns(principal);
-            mockUserService.Setup(s => s.GetUserByUserInfoAsync(principal.Identity.Name, CancellationToken.None))
+            mockUserService.Setup(s => s.GetUserByLoginAsync(principal.Identity.Name, CancellationToken.None))
                             .ReturnsAsync((User)null);
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await handler.Handle(command, CancellationToken.None));

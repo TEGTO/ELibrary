@@ -2,6 +2,6 @@
 {
     public class RaiseBookPopularityRequest
     {
-        public List<int> Ids { get; set; }
+        public List<int> Ids { get; set; } = [];
     }
 }

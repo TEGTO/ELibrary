@@ -2,8 +2,8 @@
 {
     public class UserAuthenticationResponse
     {
-        public AuthToken AuthToken { get; set; }
-        public string Email { get; set; }
-        public List<string> Roles { get; set; }
+        public AuthToken? AuthToken { get; set; }
+        public string? Email { get; set; }
+        public List<string> Roles { get; set; } = [];
     }
 }

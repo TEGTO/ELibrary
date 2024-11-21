@@ -2,19 +2,17 @@
 using Authentication.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Moq;
 
 namespace AuthenticationTests.Token
 {
     [TestFixture]
     internal class JwtHandlerTests
     {
-        private Mock<JwtSettings> mockJwtSettings;
+        private JwtHandler jwtHandler;
 
         [SetUp]
         public void Setup()
         {
-            // Mock JwtSettings
             var jwtSettings = new JwtSettings
             {
                 Key = "this is super secret key for authentication testing",
@@ -23,17 +21,7 @@ namespace AuthenticationTests.Token
                 ExpiryInMinutes = 30
             };
 
-            mockJwtSettings = new Mock<JwtSettings>();
-            mockJwtSettings.SetupGet(settings => settings.Key).Returns(jwtSettings.Key);
-            mockJwtSettings.SetupGet(settings => settings.Issuer).Returns(jwtSettings.Issuer);
-            mockJwtSettings.SetupGet(settings => settings.Audience).Returns(jwtSettings.Audience);
-            mockJwtSettings.SetupGet(settings => settings.ExpiryInMinutes).Returns(jwtSettings.ExpiryInMinutes);
-        }
-
-        private JwtHandler CreateJwtHandler()
-        {
-            return new JwtHandler(
-                mockJwtSettings.Object);
+            jwtHandler = new JwtHandler(jwtSettings);
         }
 
         [Test]
@@ -45,15 +33,11 @@ namespace AuthenticationTests.Token
                 Email = "test@example.com",
                 UserName = "testuser"
             };
-            var jwtHandler = CreateJwtHandler();
             // Act
-            var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
+            var accessTokenData = jwtHandler.CreateToken(user, [Roles.CLIENT]);
             // Assert
-            Assert.IsNotNull(accessTokenData.AccessToken);
-            Assert.IsNotNull(accessTokenData.RefreshToken);
-            Assert.IsNotEmpty(accessTokenData.AccessToken);
-            Assert.IsNotEmpty(accessTokenData.RefreshToken);
-            mockJwtSettings.VerifyAll();
+            Assert.IsFalse(string.IsNullOrEmpty(accessTokenData.AccessToken));
+            Assert.IsFalse(string.IsNullOrEmpty(accessTokenData.RefreshToken));
         }
         [Test]
         public void GetPrincipalFromExpiredToken_ValidData_ValidPrincipal()
@@ -64,7 +48,6 @@ namespace AuthenticationTests.Token
                 Email = "test@example.com",
                 UserName = "testuser"
             };
-            var jwtHandler = CreateJwtHandler();
             var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
             // Act
             var principal = jwtHandler.GetPrincipalFromExpiredToken(accessTokenData.AccessToken);
@@ -76,7 +59,6 @@ namespace AuthenticationTests.Token
         public void GetPrincipalFromExpiredToken_InvalidData_ThrowsException()
         {
             // Arrange
-            var jwtHandler = CreateJwtHandler();
             var invalidToken = "invalid_jwt_token";
             // Act & Assert
             Assert.Throws<SecurityTokenMalformedException>(() => jwtHandler.GetPrincipalFromExpiredToken(invalidToken));

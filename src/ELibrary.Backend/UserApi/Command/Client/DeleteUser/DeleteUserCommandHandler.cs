@@ -15,6 +15,9 @@ namespace UserApi.Command.Client.DeleteUser
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
             var user = await userService.GetUserAsync(request.ClaimsPrincipal, cancellationToken);
+
+            if (user == null) { throw new InvalidOperationException("User to delete is not found!"); }
+
             await userService.DeleteUserAsync(user, cancellationToken);
             return Unit.Value;
         }

@@ -39,7 +39,7 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
             authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
             userService.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles, CancellationToken.None)).ReturnsAsync(new List<IdentityError>());
-            userService.Setup(a => a.GetUserByUserInfoAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
+            userService.Setup(a => a.GetUserByLoginAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
             userService.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
             // Act

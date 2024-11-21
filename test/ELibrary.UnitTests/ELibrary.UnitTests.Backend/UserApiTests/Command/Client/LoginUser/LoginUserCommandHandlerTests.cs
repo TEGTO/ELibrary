@@ -36,7 +36,7 @@ namespace UserApi.Command.Client.LoginUser.Tests
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
             var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
             var roles = new List<string> { "User" };
-            userServiceMock.Setup(a => a.GetUserByUserInfoAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync(user);
+            userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync(user);
             authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
             userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
@@ -52,7 +52,7 @@ namespace UserApi.Command.Client.LoginUser.Tests
         {
             // Arrange
             var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
-            userServiceMock.Setup(a => a.GetUserByUserInfoAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync((User)null);
+            userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync((User)null);
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await loginUserCommandHandler.Handle(new LoginUserCommand(loginRequest), CancellationToken.None));
         }

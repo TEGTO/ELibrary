@@ -6,7 +6,7 @@ using Shared.Repositories;
 
 namespace LibraryShopEntities.Repositories.Library
 {
-    public class BookRepository : LibraryEntityRepository<Book>, IBookRepository
+    public sealed class BookRepository : LibraryEntityRepository<Book>, IBookRepository
     {
         public BookRepository(IDatabaseRepository<LibraryDbContext> repository) : base(repository)
         {
@@ -17,7 +17,7 @@ namespace LibraryShopEntities.Repositories.Library
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
             return await
-                IncludeBookEntities(queryable)
+                 IncludeBookEntities(queryable)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
@@ -26,7 +26,7 @@ namespace LibraryShopEntities.Repositories.Library
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
             return await
-                IncludeBookEntities(queryable)
+                 IncludeBookEntities(queryable)
                 .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(cancellationToken);
@@ -53,7 +53,7 @@ namespace LibraryShopEntities.Repositories.Library
 
             query = ApplyFilter(query, req);
 
-            var sortedBooks = await ApplySortingAsync(query, req, cancellationToken);
+            var sortedBooks = await ApplySorting(query, req, cancellationToken).ToListAsync();
 
             paginatedBooks.AddRange(sortedBooks
                   .Skip((req.PageNumber - 1) * req.PageSize)
@@ -72,14 +72,14 @@ namespace LibraryShopEntities.Repositories.Library
         public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
         {
             book = await repository.AddAsync(book, cancellationToken);
-            return await GetByIdAsync(book.Id, cancellationToken);
+            return await GetByIdAsync(book.Id, cancellationToken) ?? throw new InvalidOperationException("Can not get created book!");
         }
         public override async Task<Book> UpdateAsync(Book book, CancellationToken cancellationToken)
         {
             await repository.UpdateAsync(book, cancellationToken);
-            return await GetByIdAsync(book.Id, cancellationToken);
+            return await GetByIdAsync(book.Id, cancellationToken) ?? throw new InvalidOperationException("Can not get updated book!"); ;
         }
-        private IQueryable<Book> ApplyFilter(IQueryable<Book> query, LibraryFilterRequest req)
+        protected override IQueryable<Book> ApplyFilter(IQueryable<Book> query, LibraryFilterRequest req)
         {
             if (req is BookFilterRequest bookFilter)
             {
@@ -100,7 +100,7 @@ namespace LibraryShopEntities.Repositories.Library
             }
             return query.Where(b => b.Name.Contains(req.ContainsName));
         }
-        private async Task<IEnumerable<Book>> ApplySortingAsync(IQueryable<Book> query, LibraryFilterRequest req, CancellationToken cancellationToken)
+        private static IQueryable<Book> ApplySorting(IQueryable<Book> query, LibraryFilterRequest req, CancellationToken cancellationToken)
         {
             if (req is BookFilterRequest bookFilter)
             {

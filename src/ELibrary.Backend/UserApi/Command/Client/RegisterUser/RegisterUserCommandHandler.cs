@@ -26,20 +26,22 @@ namespace UserApi.Command.Client.RegisterUser
 
         public async Task<UserAuthenticationResponse> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
+            ValidateCommand(command);
+
             var request = command.Request;
 
             var user = mapper.Map<User>(request);
 
             var errors = new List<IdentityError>();
 
-            var registerParams = new RegisterUserParams(user, request.Password);
+            var registerParams = new RegisterUserParams(user, request.Password!);
             errors.AddRange((await authService.RegisterUserAsync(registerParams, cancellationToken)).Errors);
             if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
             errors.AddRange(await userService.SetUserRolesAsync(user, new() { Roles.CLIENT }, cancellationToken));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            var loginParams = new LoginUserParams(request.Email, request.Password);
+            var loginParams = new LoginUserParams(user, request.Password!);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
@@ -51,6 +53,15 @@ namespace UserApi.Command.Client.RegisterUser
                 Email = user.Email,
                 Roles = roles,
             };
+        }
+
+        private void ValidateCommand(RegisterUserCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            var request = command.Request;
+
+            if (string.IsNullOrEmpty(request.Password))
+                throw new InvalidDataException("Passwordcan't be null or empty!");
         }
     }
 }

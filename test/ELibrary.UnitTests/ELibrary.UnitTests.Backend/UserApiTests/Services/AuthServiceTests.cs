@@ -55,10 +55,8 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var loginParams = new LoginUserParams("testuser", "Password123");
+            var loginParams = new LoginUserParams(user, "Password123");
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
-            userManagerMock.Setup(x => x.FindByEmailAsync(loginParams.Login)).ReturnsAsync((User)null);
-            userManagerMock.Setup(x => x.FindByNameAsync(loginParams.Login)).ReturnsAsync(user);
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(true);
             tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
@@ -71,9 +69,8 @@ namespace UserApi.Services.Tests
         public void LoginUserAsync_InvalidLoginOrPassword_ThrowsUnauthorizedAccessException()
         {
             // Arrange
-            var loginParams = new LoginUserParams("testuser", "wrongPassword");
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            userManagerMock.Setup(x => x.FindByNameAsync(loginParams.Login)).ReturnsAsync(user);
+            var loginParams = new LoginUserParams(user, "wrongPassword");
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(false);
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.LoginUserAsync(loginParams, CancellationToken.None));
@@ -85,13 +82,14 @@ namespace UserApi.Services.Tests
             var user = new User { Id = "test-user-id", UserName = "testuser", RefreshToken = "valid-refresh-token", RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1) };
             var tokenData = new AccessTokenData { AccessToken = "old-access-token", RefreshToken = "valid-refresh-token" };
             var newTokenData = new AccessTokenData { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
+            var tokenParams = new RefreshTokenParams(user, tokenData);
 
             userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
             tokenServiceMock.Setup(x => x.GetPrincipalFromToken(tokenData.AccessToken)).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
             tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(newTokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
             // Act
-            var result = await authService.RefreshTokenAsync(tokenData, CancellationToken.None);
+            var result = await authService.RefreshTokenAsync(tokenParams, CancellationToken.None);
             // Assert
             Assert.That(result, Is.EqualTo(newTokenData));
         }
@@ -99,10 +97,12 @@ namespace UserApi.Services.Tests
         public void RefreshTokenAsync_InvalidToken_ThrowsUnauthorizedAccessException()
         {
             // Arrange
+            var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var tokenData = new AccessTokenData { AccessToken = "invalid-token", RefreshToken = "invalid-refresh-token" };
+            var tokenParams = new RefreshTokenParams(user, tokenData);
             tokenServiceMock.Setup(x => x.GetPrincipalFromToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
             // Act & Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenData, CancellationToken.None));
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenParams, CancellationToken.None));
         }
     }
 }
