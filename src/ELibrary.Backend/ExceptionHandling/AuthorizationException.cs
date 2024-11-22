@@ -4,6 +4,12 @@
     {
         public IEnumerable<string> Errors { get; }
 
+        public AuthorizationException(string error)
+            : base(error)
+        {
+            Errors = new List<string>() { error };
+        }
+
         public AuthorizationException(IEnumerable<string> errors)
             : base("Authorization error occurred.")
         {

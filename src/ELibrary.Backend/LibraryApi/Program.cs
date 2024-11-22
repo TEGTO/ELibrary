@@ -41,7 +41,7 @@ builder.Services.AddSingleton<ILibraryEntityService<Publisher>, LibraryEntitySer
 #endregion
 
 builder.Services.AddPagination(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<LibraryDbContext>(builder.Configuration);
+builder.Services.AddRepositoryWithResilience<LibraryDbContext>(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 

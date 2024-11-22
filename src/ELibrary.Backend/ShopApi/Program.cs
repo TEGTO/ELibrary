@@ -56,7 +56,7 @@ builder.Services.AddSingleton<ILibraryService, LibraryService>();
 #endregion
 
 builder.Services.AddPagination(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<ShopDbContext>(builder.Configuration);
+builder.Services.AddRepositoryWithResilience<ShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));

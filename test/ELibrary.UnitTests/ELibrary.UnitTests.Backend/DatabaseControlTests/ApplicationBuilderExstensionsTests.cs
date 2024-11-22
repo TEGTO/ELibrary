@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework.Internal;
 using Shared.Repositories;
 
 namespace DatabaseControl.Tests
@@ -41,12 +42,41 @@ namespace DatabaseControl.Tests
         }
 
         [Test]
-        public async Task ConfigureDatabaseAsyncShouldApplyMigrationsWhenEFCreateDatabaseIsTrue()
+        public async Task ConfigureDatabaseAsync_ShouldApplyMigrations()
         {
             // Act
             await appBuilderMock.Object.ConfigureDatabaseAsync<DbContext>(cancellationToken);
+
             // Assert
             repositoryMock.Verify(repo => repo.MigrateDatabaseAsync(cancellationToken), Times.Once);
+            loggerMock.Verify(x => x.Log(
+               LogLevel.Information,
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               It.IsAny<Exception>(),
+               It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+               ), Times.Exactly(2));
+        }
+        [Test]
+        public async Task ConfigureDatabaseAsync_ShouldCallLoggerOnException()
+        {
+            //Assert
+            var exception = new InvalidOperationException("Migration is failed!");
+            repositoryMock.Setup(x => x.MigrateDatabaseAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            // Act
+            await appBuilderMock.Object.ConfigureDatabaseAsync<DbContext>(cancellationToken);
+
+            // Assert
+            repositoryMock.Verify(repo => repo.MigrateDatabaseAsync(cancellationToken), Times.Once);
+            loggerMock.Verify(x => x.Log(
+               LogLevel.Error,
+               It.IsAny<EventId>(),
+               It.IsAny<It.IsAnyType>(),
+               exception,
+               It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+               ), Times.Once);
         }
     }
 }

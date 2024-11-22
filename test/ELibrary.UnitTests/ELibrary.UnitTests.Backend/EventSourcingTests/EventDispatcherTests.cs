@@ -14,6 +14,7 @@ namespace EventSourcing.Tests
         {
             serviceProviderMock = new Mock<IServiceProvider>();
             eventHandlerMock = new Mock<IEventHandler<TestEvent>>();
+
             eventDispatcher = new EventDispatcher(serviceProviderMock.Object);
         }
 
@@ -22,26 +23,31 @@ namespace EventSourcing.Tests
         {
             // Arrange
             var testEvent = new TestEvent();
-            var cancellationToken = CancellationToken.None;
+
             serviceProviderMock
                 .Setup(sp => sp.GetService(typeof(IEventHandler<TestEvent>)))
                 .Returns(eventHandlerMock.Object);
+
             // Act
-            await eventDispatcher.DispatchAsync(testEvent, cancellationToken);
+            await eventDispatcher.DispatchAsync(testEvent, CancellationToken.None);
+
             // Assert
-            eventHandlerMock.Verify(handler => handler.HandleAsync(testEvent, cancellationToken), Times.Once);
+            eventHandlerMock.Verify(handler => handler.HandleAsync(testEvent, CancellationToken.None), Times.Once);
         }
+
         [Test]
         public async Task DispatchAsync_WhenNoHandlerExists_DoesNotCallHandleAsync()
         {
             // Arrange
             var testEvent = new TestEvent();
-            var cancellationToken = CancellationToken.None;
+
             serviceProviderMock
                 .Setup(sp => sp.GetService(typeof(IEventHandler<TestEvent>)))
-                .Returns(null);
+                .Returns(null!);
+
             // Act
-            await eventDispatcher.DispatchAsync(testEvent, cancellationToken);
+            await eventDispatcher.DispatchAsync(testEvent, CancellationToken.None);
+
             // Assert
             eventHandlerMock.Verify(handler => handler.HandleAsync(It.IsAny<TestEvent>(), It.IsAny<CancellationToken>()), Times.Never);
         }
