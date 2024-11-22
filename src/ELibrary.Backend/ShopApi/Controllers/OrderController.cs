@@ -16,7 +16,6 @@ using ShopApi.Features.OrderFeature.Command.ManagerGetPaginatedOrders;
 using ShopApi.Features.OrderFeature.Command.ManagerUpdateOrder;
 using ShopApi.Features.OrderFeature.Command.UpdateOrder;
 using ShopApi.Features.OrderFeature.Dtos;
-using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
@@ -38,7 +37,7 @@ namespace ShopApi.Controllers
         [OutputCache(PolicyName = "OrderPaginationPolicy")]
         public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrders(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new GetOrdersQuery(userId, request), cancellationToken);
 
             return Ok(response);
@@ -47,7 +46,7 @@ namespace ShopApi.Controllers
         [OutputCache(PolicyName = "OrderPaginationPolicy")]
         public async Task<ActionResult<int>> GetOrderAmount(GetOrdersFilter request, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new GetOrderAmountQuery(userId, request), cancellationToken);
 
             return Ok(response);
@@ -55,7 +54,7 @@ namespace ShopApi.Controllers
         [HttpPost]
         public async Task<ActionResult<OrderResponse>> CreateOrder(CreateOrderRequest request, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new CreateOrderCommand(userId, request), cancellationToken);
 
             return Created($"", response);
@@ -63,7 +62,7 @@ namespace ShopApi.Controllers
         [HttpPatch]
         public async Task<ActionResult<OrderResponse>> UpdateOrder(ClientUpdateOrderRequest request, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new UpdateOrderCommand(userId, request), cancellationToken);
 
             return Ok(response);
@@ -71,8 +70,8 @@ namespace ShopApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelOrder(int id, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await mediator.Send(new CancelOrderCommand(userId, id), cancellationToken);
+            var userId = Utilities.GetUserId(User);
+            await mediator.Send(new CancelOrderCommand(userId, id), cancellationToken);
 
             return Ok();
         }

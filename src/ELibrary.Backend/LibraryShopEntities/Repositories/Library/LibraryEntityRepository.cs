@@ -20,7 +20,7 @@ namespace LibraryShopEntities.Repositories.Library
             var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
             return await queryable.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
-        public virtual async Task<IEnumerable<TEntity>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<TEntity>(cancellationToken);
             return await queryable.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
@@ -53,7 +53,7 @@ namespace LibraryShopEntities.Repositories.Library
         {
             return await repository.UpdateAsync(entity, cancellationToken);
         }
-        public virtual async Task UpdateRangeAsync(TEntity[] entities, CancellationToken cancellationToken)
+        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
         {
             await repository.UpdateRangeAsync(entities, cancellationToken);
         }

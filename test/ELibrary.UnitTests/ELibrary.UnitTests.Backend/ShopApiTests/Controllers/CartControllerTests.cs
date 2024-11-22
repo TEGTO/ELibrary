@@ -110,7 +110,7 @@ namespace ShopApi.Controllers.Tests
         public async Task DeleteBooksFromCart_ValidRequests_ReturnsUpdatedCartResponse()
         {
             // Arrange
-            var requests = new[]
+            var requests = new List<DeleteCartBookFromCartRequest>
             {
                 new DeleteCartBookFromCartRequest { Id = 1 },
                 new DeleteCartBookFromCartRequest { Id = 2 }

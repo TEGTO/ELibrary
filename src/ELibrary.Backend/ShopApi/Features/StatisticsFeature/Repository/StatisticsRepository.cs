@@ -15,6 +15,8 @@ namespace ShopApi.Features.StatisticsFeature.Repository
             this.repository = repository;
         }
 
+        #region IStatisticsRepository Members
+
         public async Task<long> GetInCartCopiesAsync(GetShopStatisticsFilter getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Cart>(cancellationToken);
@@ -72,6 +74,11 @@ namespace ShopApi.Features.StatisticsFeature.Repository
                 .Select(g => new { Date = g.Key, Count = g.Count() })
                 .ToDictionaryAsync(x => x.Date, x => (long)x.Count, cancellationToken);
         }
+
+        #endregion
+
+        #region Private Helpers
+
         private async Task<IQueryable<Order>> ApplyDateFilterToOrders(GetShopStatisticsFilter getBookStatistics, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
@@ -84,7 +91,7 @@ namespace ShopApi.Features.StatisticsFeature.Repository
 
             return queryable;
         }
-        private IQueryable<Order> GetQueryableWithIncludedBooks(IQueryable<Order> queryable, GetShopStatisticsFilter getBookStatistics)
+        private static IQueryable<Order> GetQueryableWithIncludedBooks(IQueryable<Order> queryable, GetShopStatisticsFilter getBookStatistics)
         {
             if (getBookStatistics.IncludeBooks != null && getBookStatistics.IncludeBooks.Any())
             {
@@ -95,7 +102,7 @@ namespace ShopApi.Features.StatisticsFeature.Repository
 
             return queryable.AsSplitQuery();
         }
-        private IQueryable<Cart> GetQueryableWithIncludedBooks(IQueryable<Cart> queryable, GetShopStatisticsFilter getBookStatistics)
+        private static IQueryable<Cart> GetQueryableWithIncludedBooks(IQueryable<Cart> queryable, GetShopStatisticsFilter getBookStatistics)
         {
             if (getBookStatistics.IncludeBooks != null && getBookStatistics.IncludeBooks.Any())
             {
@@ -106,5 +113,8 @@ namespace ShopApi.Features.StatisticsFeature.Repository
 
             return queryable.AsSplitQuery();
         }
+
+        #endregion
+
     }
 }

@@ -58,7 +58,7 @@ namespace Shared.Repositories
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task UpdateRangeAsync<T>(T[] obj, CancellationToken cancellationToken) where T : class
+        public async Task UpdateRangeAsync<T>(IEnumerable<T> obj, CancellationToken cancellationToken) where T : class
         {
             await resiliencePipeline.ExecuteAsync(async ct =>
             {

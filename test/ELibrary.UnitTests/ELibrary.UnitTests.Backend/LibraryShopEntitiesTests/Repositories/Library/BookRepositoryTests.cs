@@ -20,6 +20,7 @@ namespace LibraryShopEntities.Repositories.Library.Tests
         public void SetUp()
         {
             repositoryMock = new Mock<IDatabaseRepository<LibraryDbContext>>();
+
             repository = new BookRepository(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }
@@ -180,7 +181,7 @@ namespace LibraryShopEntities.Repositories.Library.Tests
             // Act
             await repository.UpdatePopularityRangeAsync(popularities, cancellationToken);
             // Assert
-            repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.Is<BookPopularity[]>(p =>
+            repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.Is<IEnumerable<BookPopularity>>(p =>
                 p.SequenceEqual(popularities)), cancellationToken), Times.Once);
         }
         [Test]

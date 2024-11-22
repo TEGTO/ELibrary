@@ -39,7 +39,7 @@ namespace ShopApi.Features.CartFeature.Command.AddBookToCart
             var response = await cartService.AddCartBookAsync(cart, cartBook, cancellationToken);
 
             var bookListingResponse = mapper.Map<CartBookResponse>(response);
-            bookListingResponse.Book = bookResponse[0];
+            bookListingResponse.Book = bookResponse.First();
 
             return bookListingResponse;
         }

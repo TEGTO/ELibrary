@@ -10,6 +10,6 @@
         public long CanceledOrderAmount { get; set; }
         public decimal AveragePrice { get; set; }
         public decimal EarnedMoney { get; set; }
-        public Dictionary<DateTime, long> OrderAmountInDays { get; set; } = default!;
+        public Dictionary<DateTime, long> OrderAmountInDays { get; set; } = new();
     }
 }

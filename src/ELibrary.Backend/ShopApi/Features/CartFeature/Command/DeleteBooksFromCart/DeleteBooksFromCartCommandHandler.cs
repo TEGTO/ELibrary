@@ -36,7 +36,7 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart
 
             var bookLookup = bookResponses.ToDictionary(book => book.Id);
             var cartResponse = mapper.Map<CartResponse>(response);
-            foreach (var listingBook in cartResponse.Books)
+            foreach (var listingBook in cartResponse.Books ?? [])
             {
                 if (bookLookup.TryGetValue(listingBook.BookId, out var book))
                 {

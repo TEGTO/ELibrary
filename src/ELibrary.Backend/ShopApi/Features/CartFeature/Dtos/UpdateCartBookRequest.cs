@@ -2,7 +2,7 @@
 {
     public class UpdateCartBookRequest
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public int BookAmount { get; set; }
     }
 }

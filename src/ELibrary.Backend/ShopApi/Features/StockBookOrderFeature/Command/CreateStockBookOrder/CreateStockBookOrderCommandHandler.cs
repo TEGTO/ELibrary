@@ -30,7 +30,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.CreateStockBookOrder
             var response = mapper.Map<StockBookOrderResponse>(await stockBookOrderService.AddStockBookOrderAsync(order, cancellationToken));
 
             var bookLookup = bookResponses.ToDictionary(book => book.Id);
-            foreach (var change in response.StockBookChanges)
+            foreach (var change in response.StockBookChanges ?? [])
             {
                 if (bookLookup.TryGetValue(change.BookId, out var book))
                 {

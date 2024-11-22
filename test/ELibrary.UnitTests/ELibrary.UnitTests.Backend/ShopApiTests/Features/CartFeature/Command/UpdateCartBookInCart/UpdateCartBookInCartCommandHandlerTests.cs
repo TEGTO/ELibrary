@@ -23,6 +23,7 @@ namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart.Tests
             mockCartService = new Mock<ICartService>();
             mockLibraryService = new Mock<ILibraryService>();
             mockMapper = new Mock<IMapper>();
+
             handler = new UpdateCartBookInCartCommandHandler(mockCartService.Object, mockLibraryService.Object, mockMapper.Object);
         }
 
@@ -33,24 +34,38 @@ namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart.Tests
             var command = new UpdateCartBookInCartCommand("user123", new UpdateCartBookRequest { Id = "book1", BookAmount = 2 });
             var cancellationToken = CancellationToken.None;
             var newCart = new Cart { Id = "newCartId" };
+
+            var cartBook = new CartBook();
+
+            var bookResponse = new BookResponse { Id = 1, Name = "Test Book" };
+
+            var updatedCartBook = new CartBook();
+
+            var mappedResponse = new CartBookResponse();
+
             mockCartService.Setup(cs => cs.GetCartByUserIdAsync(It.IsAny<string>(), false, cancellationToken))
                 .ReturnsAsync((Cart)null);
             mockCartService.Setup(cs => cs.CreateCartAsync(It.IsAny<string>(), cancellationToken))
                 .ReturnsAsync(newCart);
-            var cartBook = new CartBook();
-            mockMapper.Setup(m => m.Map<CartBook>(command.Request)).Returns(cartBook);
             mockCartService.Setup(cs => cs.CheckBookCartAsync(It.IsAny<Cart>(), It.IsAny<string>(), cancellationToken))
                 .ReturnsAsync(true);
-            var bookResponse = new BookResponse { Id = 1, Name = "Test Book" };
-            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), cancellationToken))
-             .ReturnsAsync(new List<BookResponse> { bookResponse });
-            var updatedCartBook = new CartBook();
             mockCartService.Setup(cs => cs.UpdateCartBookAsync(It.IsAny<Cart>(), It.IsAny<CartBook>(), cancellationToken))
                 .ReturnsAsync(updatedCartBook);
-            var mappedResponse = new CartBookResponse();
+
+            mockMapper.Setup(m => m.Map<CartBook>(command.Request)).Returns(cartBook);
             mockMapper.Setup(m => m.Map<CartBookResponse>(updatedCartBook)).Returns(mappedResponse);
+
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>
+            (
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<string>(),
+                cancellationToken
+            ))
+                .ReturnsAsync(new List<BookResponse> { bookResponse });
+
             // Act
             var result = await handler.Handle(command, cancellationToken);
+
             // Assert
             Assert.That(result, Is.EqualTo(mappedResponse));
         }
@@ -61,12 +76,16 @@ namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart.Tests
             var command = new UpdateCartBookInCartCommand("user123", new UpdateCartBookRequest { Id = "nonExistentBook", BookAmount = 2 });
             var cancellationToken = CancellationToken.None;
             var cart = new Cart { Id = "existingCartId" };
+
+            var cartBook = new CartBook();
+
             mockCartService.Setup(cs => cs.GetCartByUserIdAsync(It.IsAny<string>(), false, cancellationToken))
                 .ReturnsAsync(cart);
-            var cartBook = new CartBook();
-            mockMapper.Setup(m => m.Map<CartBook>(command.Request)).Returns(cartBook);
             mockCartService.Setup(cs => cs.CheckBookCartAsync(It.IsAny<Cart>(), It.IsAny<string>(), cancellationToken))
                 .ReturnsAsync(false);
+
+            mockMapper.Setup(m => m.Map<CartBook>(command.Request)).Returns(cartBook);
+
             // Act & Assert
             Assert.ThrowsAsync<InvalidDataException>(async () => await handler.Handle(command, cancellationToken));
         }
@@ -77,22 +96,34 @@ namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart.Tests
             var command = new UpdateCartBookInCartCommand("user123", new UpdateCartBookRequest { Id = "book1", BookAmount = 3 });
             var cancellationToken = CancellationToken.None;
             var existingCart = new Cart { Id = "existingCartId" };
+
+            var cartBook = new CartBook();
+
+            var bookResponse = new BookResponse { Id = 1, Name = "Test Book" };
+
+            var updatedCartBook = new CartBook();
+
+            var bookListingResponse = new CartBookResponse();
+
             mockCartService.Setup(cs => cs.GetCartByUserIdAsync(It.IsAny<string>(), false, cancellationToken))
                 .ReturnsAsync(existingCart);
-            var cartBook = new CartBook();
-            mockMapper.Setup(m => m.Map<CartBook>(command.Request)).Returns(cartBook);
             mockCartService.Setup(cs => cs.CheckBookCartAsync(It.IsAny<Cart>(), It.IsAny<string>(), cancellationToken))
                 .ReturnsAsync(true);
-            var bookResponse = new BookResponse { Id = 1, Name = "Test Book" };
-            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), cancellationToken))
-                .ReturnsAsync(new List<BookResponse> { bookResponse });
-            var updatedCartBook = new CartBook();
             mockCartService.Setup(cs => cs.UpdateCartBookAsync(It.IsAny<Cart>(), It.IsAny<CartBook>(), cancellationToken))
                 .ReturnsAsync(updatedCartBook);
-            var bookListingResponse = new CartBookResponse();
+
+            mockMapper.Setup(m => m.Map<CartBook>(command.Request)).Returns(cartBook);
             mockMapper.Setup(m => m.Map<CartBookResponse>(updatedCartBook)).Returns(bookListingResponse);
+
+            mockLibraryService.Setup(s => s.GetByIdsAsync<BookResponse>(
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<string>(),
+                cancellationToken))
+                .ReturnsAsync(new List<BookResponse> { bookResponse });
+
             // Act
             var result = await handler.Handle(command, cancellationToken);
+
             // Assert
             Assert.That(result.Book, Is.EqualTo(bookResponse));
             Assert.That(result, Is.EqualTo(bookListingResponse));

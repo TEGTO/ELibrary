@@ -61,7 +61,7 @@ namespace ShopApi.Features.OrderFeature.Command.CreateOrder
             var createdOrder = await orderService.CreateOrderAsync(order, cancellationToken);
 
             var response = mapper.Map<OrderResponse>(createdOrder);
-            foreach (var listingBook in response.OrderBooks)
+            foreach (var listingBook in response.OrderBooks ?? [])
             {
                 if (bookLookup.TryGetValue(listingBook.BookId, out var book))
                 {

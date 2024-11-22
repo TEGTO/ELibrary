@@ -17,7 +17,7 @@ namespace LibraryApi.Services
         {
             return await repository.GetByIdAsync(id, cancellationToken);
         }
-        public virtual async Task<IEnumerable<TEntity>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<TEntity>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             return await repository.GetByIdsAsync(ids, cancellationToken);
         }

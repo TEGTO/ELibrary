@@ -23,7 +23,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderPaginated
         {
             var orders = await stockBookOrderService.GetPaginatedStockBookOrdersAsync(command.PaginationRequest, cancellationToken);
 
-            return await GetLibraryEntityHelper.GetStockBookOrderResponseWiithBooksAsync(orders, libraryService, mapper, cancellationToken);
+            return await GetLibraryEntityHelper.GetStockBookOrderResponseWithBooksAsync(orders, libraryService, mapper, cancellationToken);
         }
     }
 }

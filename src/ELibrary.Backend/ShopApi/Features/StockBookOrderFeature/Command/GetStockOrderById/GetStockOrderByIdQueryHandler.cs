@@ -30,10 +30,12 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById
 
             var response = mapper.Map<StockBookOrderResponse>(order);
 
-            var bookIds = response.StockBookChanges.Select(x => x.BookId).Distinct().ToList();
-            var bookResponses = await GetLibraryEntityHelper.GetBookResponsesForIdsAsync(bookIds, libraryService, cancellationToken);
+            var bookIds = response.StockBookChanges?.Select(x => x.BookId).Distinct();
+
+            var bookResponses = await GetLibraryEntityHelper.GetBookResponsesForIdsAsync(bookIds ?? [], libraryService, cancellationToken);
+
             var bookLookup = bookResponses.ToDictionary(book => book.Id);
-            foreach (var change in response.StockBookChanges)
+            foreach (var change in response.StockBookChanges ?? [])
             {
                 if (bookLookup.TryGetValue(change.BookId, out var book))
                 {

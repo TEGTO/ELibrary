@@ -9,7 +9,7 @@ namespace LibraryApi.Services
         {
         }
 
-        public async Task RaisePopularityAsync(List<int> ids, CancellationToken cancellationToken)
+        public async Task RaisePopularityAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             if (ids.Any())
             {

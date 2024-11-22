@@ -2,14 +2,14 @@
 {
     public class ShopStatistics
     {
-        public long InCartCopies { get; set; }
-        public long InOrderCopies { get; set; }
-        public long SoldCopies { get; set; }
-        public long CanceledCopies { get; set; }
-        public long OrderAmount { get; set; }
-        public long CanceledOrderAmount { get; set; }
-        public decimal AveragePrice { get; set; }
-        public decimal EarnedMoney { get; set; }
-        public Dictionary<DateTime, long> OrderAmountInDays { get; set; } = new Dictionary<DateTime, long>();
+        public required long InCartCopies { get; set; }
+        public required long InOrderCopies { get; set; }
+        public required long SoldCopies { get; set; }
+        public required long CanceledCopies { get; set; }
+        public required long OrderAmount { get; set; }
+        public required long CanceledOrderAmount { get; set; }
+        public required decimal AveragePrice { get; set; }
+        public required decimal EarnedMoney { get; set; }
+        public Dictionary<DateTime, long> OrderAmountInDays { get; set; } = new();
     }
 }

@@ -15,7 +15,6 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById.Tests
         private Mock<ILibraryService> libraryServiceMock;
         private Mock<IMapper> mapperMock;
         private GetStockOrderByIdQueryHandler handler;
-        private CancellationToken cancellationToken;
 
         [SetUp]
         public void SetUp()
@@ -23,8 +22,8 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById.Tests
             stockBookOrderServiceMock = new Mock<IStockBookOrderService>();
             libraryServiceMock = new Mock<ILibraryService>();
             mapperMock = new Mock<IMapper>();
+
             handler = new GetStockOrderByIdQueryHandler(stockBookOrderServiceMock.Object, libraryServiceMock.Object, mapperMock.Object);
-            cancellationToken = new CancellationToken();
         }
 
         [Test]
@@ -41,6 +40,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById.Tests
                     new StockBookChange { BookId = 2, ChangeAmount = 3 }
                 }
             };
+
             var expectedResponse = new StockBookOrderResponse
             {
                 Id = stockOrderId,
@@ -48,18 +48,25 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById.Tests
                     .Select(change => new StockBookChangeResponse { BookId = change.BookId, ChangeAmount = change.ChangeAmount })
                     .ToList()
             };
+
             var bookResponses = new List<BookResponse>
             {
                 new BookResponse { Id = 1, Name = "Book1" },
                 new BookResponse { Id = 2, Name = "Book2" }
             };
-            stockBookOrderServiceMock.Setup(s => s.GetStockBookOrderByIdAsync(stockOrderId, cancellationToken))
+
+            stockBookOrderServiceMock.Setup(s => s.GetStockBookOrderByIdAsync(stockOrderId, CancellationToken.None))
                 .ReturnsAsync(stockBookOrder);
-            mapperMock.Setup(m => m.Map<StockBookOrderResponse>(stockBookOrder)).Returns(expectedResponse);
-            libraryServiceMock.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<List<int>>(), It.IsAny<string>(), cancellationToken))
+
+            mapperMock.Setup(m => m.Map<StockBookOrderResponse>(stockBookOrder))
+                .Returns(expectedResponse);
+
+            libraryServiceMock.Setup(s => s.GetByIdsAsync<BookResponse>(It.IsAny<IEnumerable<int>>(), It.IsAny<string>(), CancellationToken.None))
                 .ReturnsAsync(bookResponses);
+
             // Act
-            var result = await handler.Handle(new GetStockOrderByIdQuery(stockOrderId), cancellationToken);
+            var result = await handler.Handle(new GetStockOrderByIdQuery(stockOrderId), CancellationToken.None);
+
             // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Id, Is.EqualTo(stockOrderId));
@@ -72,13 +79,20 @@ namespace ShopApi.Features.StockBookOrderFeature.Command.GetStockOrderById.Tests
         {
             // Arrange
             var stockOrderId = 1;
+
             var stockBookOrder = new StockBookOrder { Id = stockOrderId, StockBookChanges = new List<StockBookChange>() };
+
             var expectedResponse = new StockBookOrderResponse { Id = stockOrderId, StockBookChanges = new List<StockBookChangeResponse>() };
-            stockBookOrderServiceMock.Setup(s => s.GetStockBookOrderByIdAsync(stockOrderId, cancellationToken))
+
+            stockBookOrderServiceMock.Setup(s => s.GetStockBookOrderByIdAsync(stockOrderId, CancellationToken.None))
                 .ReturnsAsync(stockBookOrder);
-            mapperMock.Setup(m => m.Map<StockBookOrderResponse>(stockBookOrder)).Returns(expectedResponse);
+
+            mapperMock.Setup(m => m.Map<StockBookOrderResponse>(stockBookOrder))
+                .Returns(expectedResponse);
+
             // Act
-            var result = await handler.Handle(new GetStockOrderByIdQuery(stockOrderId), cancellationToken);
+            var result = await handler.Handle(new GetStockOrderByIdQuery(stockOrderId), CancellationToken.None);
+
             // Assert
             Assert.IsNotNull(result);
             Assert.That(result.Id, Is.EqualTo(stockOrderId));

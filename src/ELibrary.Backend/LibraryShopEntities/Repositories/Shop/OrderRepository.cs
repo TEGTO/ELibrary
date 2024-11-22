@@ -15,6 +15,8 @@ namespace LibraryShopEntities.Repositories.Shop
             this.repository = repository;
         }
 
+        #region IOrderRepository Members
+
         public async Task<Order?> GetOrderByIdAsync(int id, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
@@ -46,7 +48,11 @@ namespace LibraryShopEntities.Repositories.Shop
             await repository.DeleteAsync(order, cancellationToken);
         }
 
-        private IQueryable<Order> GetQueryableOrder(IQueryable<Order> queryable)
+        #endregion
+
+        #region Private Helpers
+
+        private static IQueryable<Order> GetQueryableOrder(IQueryable<Order> queryable)
         {
             return queryable
                 .AsSplitQuery()
@@ -54,7 +60,7 @@ namespace LibraryShopEntities.Repositories.Shop
                 .Include(o => o.OrderBooks)
                 .Include(o => o.Client);
         }
-        private IQueryable<Order> ApplyFilter(IQueryable<Order> queryable, GetOrdersFilter filter)
+        private static IQueryable<Order> ApplyFilter(IQueryable<Order> queryable, GetOrdersFilter filter)
         {
             if (filter.ClientId != null)
             {
@@ -62,12 +68,14 @@ namespace LibraryShopEntities.Repositories.Shop
             }
             return queryable;
         }
-        private IQueryable<Order> ApplyPagination(IQueryable<Order> queryable, GetOrdersFilter filter)
+        private static IQueryable<Order> ApplyPagination(IQueryable<Order> queryable, GetOrdersFilter filter)
         {
             return queryable
                 .OrderByDescending(o => o.CreatedAt)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize);
         }
+
+        #endregion
     }
 }

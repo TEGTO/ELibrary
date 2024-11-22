@@ -2,11 +2,11 @@
 {
     public class AdvisorQueryRequest
     {
-        public string Query { get; set; }
+        public string? Query { get; set; }
 
         public override string ToString()
         {
-            return Query;
+            return Query ?? "";
         }
     }
 }
