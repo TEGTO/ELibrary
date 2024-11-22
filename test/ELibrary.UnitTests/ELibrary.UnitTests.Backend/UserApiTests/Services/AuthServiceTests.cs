@@ -15,7 +15,6 @@ namespace UserApi.Services.Tests
 
         private Mock<UserManager<User>> userManagerMock;
         private Mock<ITokenService> tokenServiceMock;
-        private Mock<IUserAuthenticationMethodService> authMethodService;
         private Mock<IConfiguration> configurationMock;
         private AuthService authService;
 
@@ -26,14 +25,13 @@ namespace UserApi.Services.Tests
 
             userManagerMock = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
             tokenServiceMock = new Mock<ITokenService>();
-            authMethodService = new Mock<IUserAuthenticationMethodService>();
 
             configurationMock = new Mock<IConfiguration>();
 
             configurationMock.Setup(c => c[It.Is<string>(s => s == Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS)])
                              .Returns("7");
 
-            authService = new AuthService(userManagerMock.Object, tokenServiceMock.Object, authMethodService.Object, configurationMock.Object);
+            authService = new AuthService(userManagerMock.Object, tokenServiceMock.Object, configurationMock.Object);
         }
 
         [Test]
@@ -44,9 +42,12 @@ namespace UserApi.Services.Tests
             var password = "Password123";
             var registerParams = new RegisterUserParams(user, password);
             var identityResult = IdentityResult.Success;
+
             userManagerMock.Setup(x => x.CreateAsync(user, password)).ReturnsAsync(identityResult);
+
             // Act
             var result = await authService.RegisterUserAsync(registerParams, CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(identityResult));
         }
@@ -57,11 +58,18 @@ namespace UserApi.Services.Tests
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var loginParams = new LoginUserParams(user, "Password123");
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
+
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(true);
-            tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+
+            tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user,
+                It.IsAny<DateTime>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tokenData);
+
             // Act
             var result = await authService.LoginUserAsync(loginParams, CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(tokenData));
         }
@@ -71,7 +79,9 @@ namespace UserApi.Services.Tests
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var loginParams = new LoginUserParams(user, "wrongPassword");
+
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(false);
+
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.LoginUserAsync(loginParams, CancellationToken.None));
         }
@@ -79,17 +89,27 @@ namespace UserApi.Services.Tests
         public async Task RefreshTokenAsync_ValidTokenData_ReturnsNewTokenData()
         {
             // Arrange
-            var user = new User { Id = "test-user-id", UserName = "testuser", RefreshToken = "valid-refresh-token", RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1) };
+            var user = new User
+            {
+                Id = "test-user-id",
+                UserName = "testuser",
+                RefreshToken = "valid-refresh-token",
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1)
+            };
             var tokenData = new AccessTokenData { AccessToken = "old-access-token", RefreshToken = "valid-refresh-token" };
             var newTokenData = new AccessTokenData { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
             var tokenParams = new RefreshTokenParams(user, tokenData);
 
             userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
-            tokenServiceMock.Setup(x => x.GetPrincipalFromToken(tokenData.AccessToken)).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
-            tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(newTokenData);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+
+            tokenServiceMock.Setup(x => x.GetPrincipalFromToken(tokenData.AccessToken))
+                .Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.UserName) })));
+            tokenServiceMock.Setup(x => x.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>())).ReturnsAsync(newTokenData);
+
             // Act
             var result = await authService.RefreshTokenAsync(tokenParams, CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(newTokenData));
         }
@@ -100,9 +120,12 @@ namespace UserApi.Services.Tests
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var tokenData = new AccessTokenData { AccessToken = "invalid-token", RefreshToken = "invalid-refresh-token" };
             var tokenParams = new RefreshTokenParams(user, tokenData);
+
             tokenServiceMock.Setup(x => x.GetPrincipalFromToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
+
             // Act & Assert
-            Assert.ThrowsAsync<UnauthorizedAccessException>(() => authService.RefreshTokenAsync(tokenParams, CancellationToken.None));
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
+            authService.RefreshTokenAsync(tokenParams, CancellationToken.None));
         }
     }
 }

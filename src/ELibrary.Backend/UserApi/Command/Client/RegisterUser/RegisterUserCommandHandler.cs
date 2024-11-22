@@ -15,12 +15,14 @@ namespace UserApi.Command.Client.RegisterUser
     {
         private readonly IAuthService authService;
         private readonly IUserService userService;
+        private readonly IUserAuthenticationMethodService authMethodService;
         private readonly IMapper mapper;
 
-        public RegisterUserCommandHandler(IAuthService authService, IUserService userService, IMapper mapper)
+        public RegisterUserCommandHandler(IAuthService authService, IUserService userService, IUserAuthenticationMethodService authMethodService, IMapper mapper)
         {
             this.authService = authService;
             this.userService = userService;
+            this.authMethodService = authMethodService;
             this.mapper = mapper;
         }
 
@@ -43,6 +45,8 @@ namespace UserApi.Command.Client.RegisterUser
 
             var loginParams = new LoginUserParams(user, request.Password!);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
+
+            await authMethodService.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.BaseAuthentication, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
             var roles = await userService.GetUserRolesAsync(user, cancellationToken);

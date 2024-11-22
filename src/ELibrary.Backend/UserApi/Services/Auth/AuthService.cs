@@ -8,14 +8,12 @@ namespace UserApi.Services.Auth
     {
         private readonly UserManager<User> userManager;
         private readonly ITokenService tokenService;
-        private readonly IUserAuthenticationMethodService authMethodService;
         private readonly double expiryInDays;
 
-        public AuthService(UserManager<User> userManager, ITokenService tokenService, IUserAuthenticationMethodService authMethodService, IConfiguration configuration)
+        public AuthService(UserManager<User> userManager, ITokenService tokenService, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
-            this.authMethodService = authMethodService;
             expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
         }
 
@@ -33,8 +31,6 @@ namespace UserApi.Services.Auth
             {
                 throw new UnauthorizedAccessException("Invalid authentication. Check Login or password.");
             }
-
-            await authMethodService.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.BaseAuthentication, cancellationToken);
 
             var refreshTokenExpiryDate = DateTime.UtcNow.AddDays(expiryInDays);
 

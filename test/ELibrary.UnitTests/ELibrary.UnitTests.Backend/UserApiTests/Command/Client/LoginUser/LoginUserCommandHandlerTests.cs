@@ -12,9 +12,10 @@ namespace UserApi.Command.Client.LoginUser.Tests
     [TestFixture]
     internal class LoginUserCommandHandlerTests
     {
-        private Mock<IMapper> mapperMock;
         private Mock<IAuthService> authServiceMock;
         private Mock<IUserService> userServiceMock;
+        private Mock<IUserAuthenticationMethodService> authMethodServiceMock;
+        private Mock<IMapper> mapperMock;
         private LoginUserCommandHandler loginUserCommandHandler;
 
         [SetUp]
@@ -23,8 +24,9 @@ namespace UserApi.Command.Client.LoginUser.Tests
             mapperMock = new Mock<IMapper>();
             authServiceMock = new Mock<IAuthService>();
             userServiceMock = new Mock<IUserService>();
+            authMethodServiceMock = new Mock<IUserAuthenticationMethodService>();
 
-            loginUserCommandHandler = new LoginUserCommandHandler(authServiceMock.Object, userServiceMock.Object, mapperMock.Object);
+            loginUserCommandHandler = new LoginUserCommandHandler(authServiceMock.Object, userServiceMock.Object, authMethodServiceMock.Object, mapperMock.Object);
         }
 
         [Test]
@@ -36,12 +38,17 @@ namespace UserApi.Command.Client.LoginUser.Tests
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
             var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
             var roles = new List<string> { "User" };
+
             userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync(user);
-            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
-            mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
             userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
+
+            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
+
+            mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
+
             // Act
             var result = await loginUserCommandHandler.Handle(new LoginUserCommand(loginRequest), CancellationToken.None);
+
             // Assert
             Assert.That(result.Email, Is.EqualTo("testuser@example.com"));
             Assert.That(result.AuthToken.AccessToken, Is.EqualTo("token"));
@@ -52,7 +59,9 @@ namespace UserApi.Command.Client.LoginUser.Tests
         {
             // Arrange
             var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
+
             userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync((User)null);
+
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await loginUserCommandHandler.Handle(new LoginUserCommand(loginRequest), CancellationToken.None));
         }

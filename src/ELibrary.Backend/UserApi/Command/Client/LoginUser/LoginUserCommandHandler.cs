@@ -4,6 +4,7 @@ using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Responses;
 using UserApi.Services;
 using UserApi.Services.Auth;
+using UserEntities.Domain.Entities;
 
 namespace UserApi.Command.Client.LoginUser
 {
@@ -11,12 +12,14 @@ namespace UserApi.Command.Client.LoginUser
     {
         private readonly IAuthService authService;
         private readonly IUserService userService;
+        private readonly IUserAuthenticationMethodService authMethodService;
         private readonly IMapper mapper;
 
-        public LoginUserCommandHandler(IAuthService authService, IUserService userService, IMapper mapper)
+        public LoginUserCommandHandler(IAuthService authService, IUserService userService, IUserAuthenticationMethodService authMethodService, IMapper mapper)
         {
             this.authService = authService;
             this.userService = userService;
+            this.authMethodService = authMethodService;
             this.mapper = mapper;
         }
 
@@ -30,6 +33,8 @@ namespace UserApi.Command.Client.LoginUser
 
             var loginParams = new LoginUserParams(user, request.Password!);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
+
+            await authMethodService.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.BaseAuthentication, cancellationToken);
 
             var tokenDto = mapper.Map<AuthToken>(token);
             var roles = await userService.GetUserRolesAsync(user, cancellationToken);

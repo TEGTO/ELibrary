@@ -25,7 +25,9 @@ namespace Caching.Services
             {
                 AbsoluteExpirationRelativeToNow = duration
             };
+
             memoryCache.Set(key, value, cacheEntryOptions);
+
             return ValueTask.FromResult(true);
         }
         public ValueTask<bool> RemoveKeyAsync(string key, CancellationToken cancellationToken)

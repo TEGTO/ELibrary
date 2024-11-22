@@ -17,54 +17,19 @@ namespace Authentication.Token
             this.jwtSettings = jwtSettings;
         }
 
+        #region ITokenHandler Members
+
         public AccessTokenData CreateToken<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
         {
             var signingCredentials = GetSigningCredentials();
+
             var claims = GetClaims(user, roles);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             var refreshToken = GenerateRefreshToken();
+
             return new AccessTokenData { AccessToken = token, RefreshToken = refreshToken };
-        }
-        private SigningCredentials GetSigningCredentials()
-        {
-            var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
-            var secretKey = new SymmetricSecurityKey(key);
-            return new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-        }
-        private static List<Claim> GetClaims<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, user?.Email ?? ""),
-                new Claim(ClaimTypes.Name, user ?.UserName ?? ""),
-                new Claim(ClaimTypes.NameIdentifier, user ?.Id.ToString() ?? "")
-            };
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-                claims.Add(new Claim("Role", role));
-            }
-            return claims;
-        }
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
-        {
-            var tokenOptions = new JwtSecurityToken(
-                issuer: jwtSettings.Issuer,
-                audience: jwtSettings.Audience,
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.ExpiryInMinutes)),
-                signingCredentials: signingCredentials);
-            return tokenOptions;
-        }
-        private static string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
         }
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
@@ -78,15 +43,71 @@ namespace Authentication.Token
                 ValidateLifetime = false,
                 ValidateIssuerSigningKey = true
             };
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
             var jwtSecurityToken = securityToken as JwtSecurityToken;
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new SecurityTokenException("Invalid Token");
             }
+
             return principal;
         }
+
+        #endregion
+
+        #region Private Helpers
+
+        private static List<Claim> GetClaims<TKey>(IdentityUser<TKey> user, IList<string> roles) where TKey : IEquatable<TKey>
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user?.Email ?? ""),
+                new Claim(ClaimTypes.Name, user ?.UserName ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user ?.Id.ToString() ?? "")
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim("Role", role));
+            }
+
+            return claims;
+        }
+
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        {
+            var tokenOptions = new JwtSecurityToken(
+                issuer: jwtSettings.Issuer,
+                audience: jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.ExpiryInMinutes)),
+                signingCredentials: signingCredentials);
+
+            return tokenOptions;
+        }
+
+        private static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = Encoding.UTF8.GetBytes(jwtSettings.Key);
+            var secretKey = new SymmetricSecurityKey(key);
+            return new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+        }
+
+        #endregion
     }
 }
