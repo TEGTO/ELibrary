@@ -22,11 +22,6 @@ namespace LibraryShopEntities.Repositories.Shop
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
             return await GetQueryableOrder(queryable).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
-        public async Task<int> GetOrderCountAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
-        {
-            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
-            return await ApplyFilter(GetQueryableOrder(queryable), filter).CountAsync(cancellationToken);
-        }
         public async Task<IEnumerable<Order>> GetPaginatedOrdersAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
@@ -34,6 +29,11 @@ namespace LibraryShopEntities.Repositories.Shop
             queryable = ApplyFilter(GetQueryableOrder(queryable), filter);
 
             return await ApplyPagination(queryable, filter).ToListAsync(cancellationToken);
+        }
+        public async Task<int> GetOrderCountAsync(GetOrdersFilter filter, CancellationToken cancellationToken)
+        {
+            var queryable = await repository.GetQueryableAsync<Order>(cancellationToken);
+            return await ApplyFilter(GetQueryableOrder(queryable), filter).CountAsync(cancellationToken);
         }
         public async Task<Order> AddOrderAsync(Order order, CancellationToken cancellationToken)
         {

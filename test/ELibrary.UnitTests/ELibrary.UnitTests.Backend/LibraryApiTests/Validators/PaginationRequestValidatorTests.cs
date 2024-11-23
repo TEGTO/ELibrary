@@ -14,6 +14,7 @@ namespace LibraryApi.Validators.Tests
         public void SetUp()
         {
             paginationConfiguration = new PaginationOptions(100);
+
             validator = new LibraryFilterRequestValidator(paginationConfiguration);
         }
 
@@ -22,10 +23,14 @@ namespace LibraryApi.Validators.Tests
         {
             // Arrange
             var request = new LibraryFilterRequest { PageNumber = 1, PageSize = 10, ContainsName = "Valid Name" };
-            // Act & Assert
+
+            // Act 
             var result = validator.TestValidate(request);
+
+            //Assert
             result.ShouldNotHaveAnyValidationErrors();
         }
+
         [Test]
         public void LibraryFilterRequestValidator_InvalidPageNumber_FailsValidation()
         {

@@ -31,7 +31,7 @@ namespace Shared.Tests
             var serviceProvider = services.BuildServiceProvider();
 
             //Assert
-            var validator = serviceProvider.GetService<IValidator>();
+            var validator = serviceProvider.GetService<IValidator<MockEntity>>();
 
             Assert.NotNull(validator);
         }
@@ -117,5 +117,13 @@ namespace Shared.Tests
             // Assert
             Assert.That(services.Any(s => s.ServiceType == typeof(ISwaggerProvider)));
         }
+    }
+
+    public class MockValidator : AbstractValidator<MockEntity>
+    {
+    }
+    public class MockEntity
+    {
+        public string? Id { get; set; }
     }
 }

@@ -12,7 +12,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - Auth__GoogleOAuth__ClientId=${Auth__GoogleOAuth__ClientId}
       - Auth__GoogleOAuth__ClientSecret=${Auth__GoogleOAuth__ClientSecret}
@@ -32,7 +31,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

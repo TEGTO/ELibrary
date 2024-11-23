@@ -55,7 +55,10 @@ namespace LibraryShopEntities.Repositories.Library
         }
         public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
         {
-            await repository.UpdateRangeAsync(entities, cancellationToken);
+            if (entities.Any())
+            {
+                await repository.UpdateRangeAsync(entities, cancellationToken);
+            }
         }
         public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
         {

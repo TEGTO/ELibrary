@@ -1,4 +1,4 @@
-#User Api
+#User API
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -105,3 +105,93 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30008
+---
+#Library API
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elibrary-library-api
+  labels:
+    app: elibrary-library-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elibrary-library-api
+  template:
+    metadata:
+      labels:
+        app: elibrary-library-api
+    spec:
+      containers:
+        - name: elibrary-library-api
+          image: libraryapi:dev
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ASPNETCORE_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: ASPNETCORE_URLS
+            - name: ASPNETCORE_HTTP_PORTS
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: ASPNETCORE_HTTP_PORTS
+            - name: EFCreateDatabase
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: EFCreateDatabase
+            - name: MaxPaginationPageSize
+              valueFrom:
+                configMapKeyRef:
+                  name: elibrary-config
+                  key: MaxPaginationPageSize
+            - name: ConnectionStrings__LibraryDb
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: ConnectionStrings__LibraryDb
+            - name: AuthSettings__Key
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__Key
+            - name: AuthSettings__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__Audience
+            - name: AuthSettings__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__Issuer
+            - name: AuthSettings__ExpiryInMinutes
+              valueFrom:
+                secretKeyRef:
+                  name: elibrary-secret
+                  key: AuthSettings__ExpiryInMinutes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elibrary-library-api-service
+spec:
+  type: NodePort
+  selector:
+    app: elibrary-library-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30009
+---
+

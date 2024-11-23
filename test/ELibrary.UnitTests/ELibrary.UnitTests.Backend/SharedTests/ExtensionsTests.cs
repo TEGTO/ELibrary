@@ -32,8 +32,6 @@
                 Assert.IsNull(obj);
             }
         }
-
-
     }
 
     internal class TestObject

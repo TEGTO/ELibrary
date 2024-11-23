@@ -16,75 +16,91 @@ namespace LibraryShopEntities.Repositories.Shop.Tests
         public void SetUp()
         {
             mockRepository = new Mock<IDatabaseRepository<ShopDbContext>>();
+
             clientRepository = new ClientRepository(mockRepository.Object);
         }
+
         private static IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class
         {
             return data.AsQueryable().BuildMock();
         }
 
         [Test]
-        public async Task GetClientByUserIdAsync_ReturnsClient_WhenClientExists()
+        [TestCase("test-user-id", true, Description = "Returns a client when the client exists.")]
+        [TestCase("non-existing-user-id", false, Description = "Returns null when the client does not exist.")]
+        public async Task GetClientByUserIdAsync_TestCases(string userId, bool shouldExist)
         {
             // Arrange
-            var userId = "test-user-id";
-            var client = new Client { Id = "client-id", UserId = userId };
-            var mockQueryable = GetDbSetMock(new List<Client> { client });
+            var clients = shouldExist
+                ? new List<Client> { new Client { Id = "client-id", UserId = userId } }
+                : new List<Client>();
+
+            var mockQueryable = GetDbSetMock(clients);
             mockRepository.Setup(repo => repo.GetQueryableAsync<Client>(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockQueryable);
+
             // Act
             var result = await clientRepository.GetClientByUserIdAsync(userId, CancellationToken.None);
+
             // Assert
-            Assert.IsNotNull(result);
-            Assert.That(result?.UserId, Is.EqualTo(userId));
+            if (shouldExist)
+            {
+                Assert.IsNotNull(result);
+                Assert.That(result!.UserId, Is.EqualTo(userId));
+            }
+            else
+            {
+                Assert.IsNull(result);
+            }
         }
+
         [Test]
-        public async Task GetClientByUserIdAsync_ReturnsNull_WhenClientDoesNotExist()
+        [TestCase("client-id", "test-user-id", Description = "Creates a new client and returns it.")]
+        public async Task CreateClientAsync_TestCases(string clientId, string userId)
         {
             // Arrange
-            var userId = "non-existing-user-id";
-            var mockQueryable = GetDbSetMock(new List<Client>());
-            mockRepository.Setup(repo => repo.GetQueryableAsync<Client>(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mockQueryable);
-            // Act
-            var result = await clientRepository.GetClientByUserIdAsync(userId, CancellationToken.None);
-            // Assert
-            Assert.IsNull(result);
-        }
-        [Test]
-        public async Task CreateClientAsync_ReturnsCreatedClient()
-        {
-            // Arrange
-            var client = new Client { Id = "client-id", UserId = "test-user-id" };
+            var client = new Client { Id = clientId, UserId = userId };
             mockRepository.Setup(repo => repo.AddAsync(client, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(client);
+
             // Act
             var result = await clientRepository.CreateClientAsync(client, CancellationToken.None);
+
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.Id, Is.EqualTo(client.Id));
+            Assert.That(result.Id, Is.EqualTo(clientId));
+            Assert.That(result.UserId, Is.EqualTo(userId));
         }
+
         [Test]
-        public async Task UpdateClientAsync_ReturnsUpdatedClient()
+        [TestCase("client-id", "test-user-id", "Updated Name", Description = "Updates an existing client and returns it.")]
+        public async Task UpdateClientAsync_TestCases(string clientId, string userId, string updatedName)
         {
             // Arrange
-            var client = new Client { Id = "client-id", UserId = "test-user-id" };
-            var updatedClient = new Client { Id = "client-id", Name = "Updated Name" };
+            var client = new Client { Id = clientId, UserId = userId };
+            var updatedClient = new Client { Id = clientId, Name = updatedName };
             mockRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Client>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(updatedClient);
+
             // Act
             var result = await clientRepository.UpdateClientAsync(client, CancellationToken.None);
+
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.Name, Is.EqualTo(updatedClient.Name));
+            Assert.That(result.Id, Is.EqualTo(clientId));
+            Assert.That(result.Name, Is.EqualTo(updatedName));
         }
+
         [Test]
-        public async Task DeleteClientAsync_DeletesClient()
+        [TestCase("client-id", "test-user-id", Description = "Deletes an existing client.")]
+        public async Task DeleteClientAsync_TestCases(string clientId, string userId)
         {
             // Arrange
-            var client = new Client { Id = "client-id", UserId = "test-user-id" };
+            var client = new Client { Id = clientId, UserId = userId };
+
             // Act
             await clientRepository.DeleteClientAsync(client, CancellationToken.None);
+
             // Assert
             mockRepository.Verify(repo => repo.DeleteAsync(client, It.IsAny<CancellationToken>()), Times.Once);
         }

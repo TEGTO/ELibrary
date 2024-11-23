@@ -24,7 +24,6 @@ namespace LibraryShopEntities.Repositories.Shop
                 .AsNoTracking()
                 .Include(x => x.Client)
                 .Include(x => x.StockBookChanges)
-                .OrderByDescending(b => b.CreatedAt)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
         public async Task<IEnumerable<StockBookOrder>> GetPaginatedStockBookOrdersAsync(PaginationRequest pagination, CancellationToken cancellationToken)
