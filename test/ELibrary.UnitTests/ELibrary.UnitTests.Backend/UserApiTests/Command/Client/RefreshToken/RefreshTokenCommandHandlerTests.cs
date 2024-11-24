@@ -32,6 +32,7 @@ namespace UserApi.Command.Client.RefreshToken.Tests
                 tokenServiceMock.Object,
                 mapperMock.Object);
         }
+
         [Test]
         public async Task Handle_ValidRequest_ReturnsNewAuthToken()
         {
@@ -39,13 +40,21 @@ namespace UserApi.Command.Client.RefreshToken.Tests
             var token = new AuthToken { AccessToken = "oldToken", RefreshToken = "oldRefreshToken" };
             var tokenData = new AccessTokenData { AccessToken = "newToken", RefreshToken = "newRefreshToken" };
             var newAuthToken = new AuthToken { AccessToken = "newToken", RefreshToken = "newRefreshToken" };
-            mapperMock.Setup(m => m.Map<AccessTokenData>(token)).Returns(tokenData);
-            authServiceMock.Setup(a => a.RefreshTokenAsync(It.IsAny<RefreshTokenParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
-            mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(newAuthToken);
+
+            mapperMock.Setup(m => m.Map<AccessTokenData>(token))
+                .Returns(tokenData);
+            mapperMock.Setup(m => m.Map<AuthToken>(tokenData))
+                .Returns(newAuthToken);
+
+            authServiceMock.Setup(a => a.RefreshTokenAsync(It.IsAny<RefreshTokenParams>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tokenData);
+
             userServiceMock.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new User());
+
             // Act
             var result = await refreshTokenCommandHandler.Handle(new RefreshTokenCommand(token), CancellationToken.None);
+
             // Assert
             Assert.That(result.AccessToken, Is.EqualTo("newToken"));
             Assert.That(result.RefreshToken, Is.EqualTo("newRefreshToken"));

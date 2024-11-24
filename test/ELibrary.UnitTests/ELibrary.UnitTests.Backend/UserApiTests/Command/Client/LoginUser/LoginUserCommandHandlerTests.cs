@@ -33,16 +33,21 @@ namespace UserApi.Command.Client.LoginUser.Tests
         public async Task Handle_ValidRequest_ReturnsUserAuthenticationResponse()
         {
             // Arrange
-            var loginRequest = new UserAuthenticationRequest { Login = "testuser", Password = "Password123" };
             var user = new User { Email = "testuser@example.com" };
-            var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
-            var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
             var roles = new List<string> { "User" };
 
-            userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync(user);
-            userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
+            var loginRequest = new UserAuthenticationRequest { Login = "testuser", Password = "Password123" };
+            var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
+            var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
 
-            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
+
+            userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None))
+                .ReturnsAsync(user);
+            userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None))
+                .ReturnsAsync(roles);
+
+            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tokenData);
 
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
 
@@ -51,16 +56,21 @@ namespace UserApi.Command.Client.LoginUser.Tests
 
             // Assert
             Assert.That(result.Email, Is.EqualTo("testuser@example.com"));
+
+            Assert.IsNotNull(result.AuthToken);
+            Assert.IsNotNull(result.AuthToken.AccessToken);
+
             Assert.That(result.AuthToken.AccessToken, Is.EqualTo("token"));
             Assert.That(result.Roles, Is.EqualTo(roles));
         }
+
         [Test]
         public void Handle_InvalidCredentials_ThrowsUnauthorizedAccessException()
         {
             // Arrange
             var loginRequest = new UserAuthenticationRequest { Login = "invaliduser", Password = "wrongpassword" };
 
-            userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync((User)null);
+            userServiceMock.Setup(a => a.GetUserByLoginAsync(loginRequest.Login, CancellationToken.None)).ReturnsAsync(null as User);
 
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await loginUserCommandHandler.Handle(new LoginUserCommand(loginRequest), CancellationToken.None));

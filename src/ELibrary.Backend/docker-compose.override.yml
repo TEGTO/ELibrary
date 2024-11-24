@@ -12,6 +12,7 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
+      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - Auth__GoogleOAuth__ClientId=${Auth__GoogleOAuth__ClientId}
       - Auth__GoogleOAuth__ClientSecret=${Auth__GoogleOAuth__ClientSecret}
@@ -47,7 +48,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - Shop__MaxOrderAmount=${Shop__MaxOrderAmount}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - Chat__BotUrl=${ApiGateway}
@@ -68,7 +68,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - AllowedCORSOrigins=${AllowedCORSOrigins}
       - UseCORS=${UseCORS}
     volumes:

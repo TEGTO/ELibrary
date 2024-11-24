@@ -4,7 +4,9 @@ metadata:
   name: elibrary-config
 data:
   ASPNETCORE_ENVIRONMENT: "Development"
-  ASPNETCORE_URLS: "http://+:8080;"
-  ASPNETCORE_HTTP_PORTS: "8080"
   EFCreateDatabase: "true"
   MaxPaginationPageSize: "99"
+  AllowedCORSOrigins: ""
+  UseCORS: "true"
+  LibraryApiUrl: "http://apigateway:8080"
+  Chat__BotUrl: ""

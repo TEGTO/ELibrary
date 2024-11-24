@@ -21,20 +21,27 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
                 ConfirmPassword = "123456;QWERTY",
                 Roles = [Roles.CLIENT]
             };
+
             using var request = new HttpRequestMessage(HttpMethod.Post, "/auth/admin/register");
             request.Content = new StringContent(JsonSerializer.Serialize(registrationRequest), Encoding.UTF8, "application/json");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AdminAccessToken);
+
             // Act
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+
             var content = await response.Content.ReadAsStringAsync();
             var responseEntity = JsonSerializer.Deserialize<AdminUserResponse>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+
+            Assert.NotNull(responseEntity);
             Assert.That(responseEntity.Roles[0], Is.EqualTo(Roles.CLIENT));
         }
+
         [Test]
         public async Task RegisterUser_ConflictingEmail_ReturnsUnauthorized()
         {
@@ -45,6 +52,7 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
                 Password = "123456;QWERTY",
                 ConfirmPassword = "123456;QWERTY"
             });
+
             var registrationRequest = new AdminUserRegistrationRequest
             {
                 Email = "conflict@example.com",
@@ -52,14 +60,18 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
                 ConfirmPassword = "123456;QWERTY",
                 Roles = [Roles.CLIENT]
             };
+
             using var request = new HttpRequestMessage(HttpMethod.Post, "/auth/admin/register");
             request.Content = new StringContent(JsonSerializer.Serialize(registrationRequest), Encoding.UTF8, "application/json");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AdminAccessToken);
+
             // Act
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
         }
+
         [Test]
         public async Task RegisterUser_InvalidRequest_ReturnsBadRequest()
         {
@@ -70,14 +82,18 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
                 Password = "Test@123" // Invalid
                 //No confirmation
             };
+
             using var request = new HttpRequestMessage(HttpMethod.Post, "/auth/admin/register");
             request.Content = new StringContent(JsonSerializer.Serialize(registrationRequest), Encoding.UTF8, "application/json");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AdminAccessToken);
+
             // Act
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
+
         [Test]
         public async Task RegisterUser_NotEnoughRigts_ReturnsForbiddent()
         {
@@ -89,11 +105,14 @@ namespace UserApi.IntegrationTests.Controllers.AuthController
                 ConfirmPassword = "123456;QWERTY",
                 Roles = [Roles.CLIENT]
             };
+
             using var request = new HttpRequestMessage(HttpMethod.Post, "/auth/admin/register");
             request.Content = new StringContent(JsonSerializer.Serialize(registrationRequest), Encoding.UTF8, "application/json");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+
             // Act
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
         }

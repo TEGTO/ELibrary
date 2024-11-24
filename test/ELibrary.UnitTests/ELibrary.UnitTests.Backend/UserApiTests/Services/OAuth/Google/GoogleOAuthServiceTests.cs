@@ -54,12 +54,14 @@ namespace UserApi.Services.OAuth.Google.Tests
         {
             // Arrange
             var accessOnCodeParams = new GetAccessOnCodeParams("valid-code", "code-verifier", "https://example.com/callback");
+
             var tokenResult = new GoogleOAuthTokenResult
             {
                 AccessToken = "access-token",
                 RefreshToken = "refresh-token",
                 IdToken = "id-token"
             };
+
             var user = new User { UserName = "testuser" };
 
             var expectedAccessTokenData = new AccessTokenData
@@ -79,14 +81,19 @@ namespace UserApi.Services.OAuth.Google.Tests
             mockHttpClient.Setup(client => client.ExchangeAuthorizationCodeAsync(
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(tokenResult);
+
             mockUserOAuthCreation.Setup(x => x.CreateUserFromOAuthAsync(It.IsAny<CreateUserFromOAuth>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
+
             mockTokenService.Setup(service => service.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedAccessTokenData);
+
             mockGoogleTokenValidator.Setup(x => x.ValidateAsync(It.IsAny<string>(), It.IsAny<ValidationSettings>()))
                 .ReturnsAsync(mockPayload);
+
             // Act
             var result = await googleOAuthService.GetAccessOnCodeAsync(accessOnCodeParams, CancellationToken.None);
+
             // Assert
             Assert.NotNull(result);
             Assert.That(result.AccessToken, Is.EqualTo(expectedAccessTokenData.AccessToken));
@@ -98,13 +105,15 @@ namespace UserApi.Services.OAuth.Google.Tests
         {
             // Arrange
             var generateUrlParams = new GenerateOAuthRequestUrlParams("https://example.com/callback", "code-verifier");
+
             // Act
             googleOAuthService.GenerateOAuthRequestUrl(generateUrlParams);
+
             // Assert
             mockHttpClient.Verify(x => x.GenerateOAuthRequestUrl(
-               mockOAuthSettings.Scope,
-               generateUrlParams.RedirectUrl,
-               generateUrlParams.CodeVerifier), Times.Once);
+                mockOAuthSettings.Scope,
+                generateUrlParams.RedirectUrl,
+                generateUrlParams.CodeVerifier), Times.Once);
         }
     }
 }

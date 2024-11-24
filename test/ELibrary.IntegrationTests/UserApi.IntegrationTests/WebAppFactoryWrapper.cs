@@ -14,9 +14,8 @@ namespace UserApi.IntegrationTests
 {
     public sealed class WebAppFactoryWrapper : IAsyncDisposable
     {
-        private PostgreSqlContainer dbContainer;
-
-        protected WebApplicationFactory<Program> WebApplicationFactory { get; private set; }
+        private PostgreSqlContainer? DbContainer { get; set; }
+        private WebApplicationFactory<Program>? WebApplicationFactory { get; set; }
 
         public async Task<WebApplicationFactory<Program>> GetFactoryAsync()
         {
@@ -29,12 +28,14 @@ namespace UserApi.IntegrationTests
         }
         public async ValueTask DisposeAsync()
         {
+            if (DbContainer != null)
+            {
+                await DbContainer.StopAsync();
+                await DbContainer.DisposeAsync();
+            }
+
             if (WebApplicationFactory != null)
             {
-                await dbContainer.StopAsync();
-
-                await dbContainer.DisposeAsync();
-
                 await WebApplicationFactory.DisposeAsync();
                 WebApplicationFactory = null;
             }
@@ -42,14 +43,14 @@ namespace UserApi.IntegrationTests
 
         private async Task InitializeContainersAsync()
         {
-            dbContainer = new PostgreSqlBuilder()
+            DbContainer = new PostgreSqlBuilder()
                 .WithImage("postgres:latest")
                 .WithDatabase("elibrary-db")
                 .WithUsername("postgres")
                 .WithPassword("postgres")
                 .Build();
 
-            await dbContainer.StartAsync();
+            await DbContainer.StartAsync();
         }
         private WebApplicationFactory<Program> InitializeFactory()
         {
@@ -63,16 +64,17 @@ namespace UserApi.IntegrationTests
                       services.RemoveAll(typeof(IDbContextFactory<UserIdentityDbContext>));
 
                       services.AddDbContextFactory<UserIdentityDbContext>(options =>
-                          options.UseNpgsql(dbContainer.GetConnectionString()));
+                          options.UseNpgsql(DbContainer?.GetConnectionString()));
                   });
               });
         }
         private IConfigurationRoot GetConfiguration()
         {
             var configurationBuilder = new ConfigurationBuilder();
+
             configurationBuilder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { "ConnectionStrings:" + Configuration.AUTH_DATABASE_CONNECTION_STRING, dbContainer.GetConnectionString() },
+                { "ConnectionStrings:" + Configuration.AUTH_DATABASE_CONNECTION_STRING, DbContainer?.GetConnectionString() },
                 { Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS, "7" },
                 { Configuration.EF_CREATE_DATABASE, "true" },
                 { JwtConfiguration.JWT_SETTINGS_KEY, "q57+LXDr4HtynNQaYVs7t50HwzvTNrWM2E/OepoI/D4=" },
@@ -81,6 +83,7 @@ namespace UserApi.IntegrationTests
                 { JwtConfiguration.JWT_SETTINGS_AUDIENCE, "https://api.example.com" },
                 { PaginationConfiguration.MAX_PAGINATION_PAGE_SIZE, "99" },
             });
+
             return configurationBuilder.Build();
         }
     }

@@ -35,11 +35,12 @@ namespace UserApi.Command.Client.RegisterUser.Tests
         public async Task Handle_ValidRequest_ReturnsUserAuthenticationResponse()
         {
             // Arrange
-            var registrationRequest = new UserRegistrationRequest { Email = "testuser@example.com", Password = "Password123" };
             var user = new User { Email = "testuser@example.com" };
+            var roles = new List<string> { "User" };
+
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
             var authToken = new AuthToken { AccessToken = "token", RefreshToken = "refreshToken" };
-            var roles = new List<string> { "User" };
+            var registrationRequest = new UserRegistrationRequest { Email = "testuser@example.com", Password = "Password123" };
 
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
@@ -55,16 +56,22 @@ namespace UserApi.Command.Client.RegisterUser.Tests
 
             // Assert
             Assert.That(result.Email, Is.EqualTo("testuser@example.com"));
+
+            Assert.IsNotNull(result.AuthToken);
+            Assert.IsNotNull(result.AuthToken.AccessToken);
+
             Assert.That(result.AuthToken.AccessToken, Is.EqualTo("token"));
             Assert.That(result.Roles, Is.EqualTo(roles));
         }
+
         [Test]
         public void Handle_FailedRegistration_ThrowsUnauthorizedAccessException()
         {
             // Arrange
-            var registrationRequest = new UserRegistrationRequest { Email = "testuser@example.com", Password = "Password123" };
             var user = new User { Email = "testuser@example.com" };
             var errors = new List<IdentityError> { new IdentityError { Description = "Email already exists" } };
+
+            var registrationRequest = new UserRegistrationRequest { Email = "testuser@example.com", Password = "Password123" };
 
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
 
