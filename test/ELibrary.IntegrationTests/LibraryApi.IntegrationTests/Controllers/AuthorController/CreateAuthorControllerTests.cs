@@ -14,19 +14,19 @@ namespace LibraryApi.IntegrationTests.Controllers.AuthorController
             return await AuthorControllerTestHelper.CreateSamplesAsync(CreateSampleEntityAsync);
         }
 
-        protected override async ValueTask<CreateAuthorRequest> GetCreateRequestAsync()
+        protected override ValueTask<CreateAuthorRequest> GetCreateRequestAsync()
         {
-            return new CreateAuthorRequest()
+            return ValueTask.FromResult(new CreateAuthorRequest()
             {
                 Name = "John",
                 LastName = "Doe",
                 DateOfBirth = new DateTime(1949, 6, 8, 0, 0, 0, DateTimeKind.Utc),
-            };
+            });
         }
 
-        protected override async ValueTask<CreateAuthorRequest> GetInvalidCreateRequestAsync()
+        protected override ValueTask<CreateAuthorRequest> GetInvalidCreateRequestAsync()
         {
-            return new CreateAuthorRequest();
+            return ValueTask.FromResult(new CreateAuthorRequest());
         }
     }
 }

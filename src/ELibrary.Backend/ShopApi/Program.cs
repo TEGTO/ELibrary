@@ -75,11 +75,11 @@ builder.Services.AddOutputCache((options) =>
 
     options.SetOutputCachePolicy("AdvisorPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(AdvisorQueryRequest));
 
-    options.SetOutputCachePolicy("CartPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true);
+    options.SetOutputCachePolicy("CartPolicy", duration: TimeSpan.FromMilliseconds(500), useAuthId: true);
 
-    options.SetOutputCachePolicy("ClientPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true);
+    options.SetOutputCachePolicy("ClientPolicy", duration: TimeSpan.FromSeconds(1), useAuthId: true);
 
-    options.SetOutputCachePolicy("OrderPaginationPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true, type: typeof(GetOrdersFilter));
+    options.SetOutputCachePolicy("OrderPaginationPolicy", duration: TimeSpan.FromMilliseconds(500), useAuthId: true, type: typeof(GetOrdersFilter));
 
     options.SetOutputCachePolicy("StatisticsPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(GetShopStatisticsRequest));
 

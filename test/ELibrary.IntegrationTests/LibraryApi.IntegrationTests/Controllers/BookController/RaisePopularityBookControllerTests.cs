@@ -15,7 +15,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
 {
     internal class RaisePopularityBookControllerTests : BaseLibraryEntityControllerTest<Book, CreateBookRequest, BookResponse>
     {
-        protected List<Book> list;
+        protected List<Book?> list;
 
         protected override string ControllerEndpoint => BookControllerTestHelper.ControllerEndpoint;
 
@@ -40,7 +40,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
         {
             // Arrange
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/popularity");
-            var raiseRequest = new RaiseBookPopularityRequest { Ids = [list[^1].Id] };
+            var raiseRequest = new RaiseBookPopularityRequest { Ids = [list[^1]?.Id ?? 0] };
             request.Content = new StringContent(
                 JsonSerializer.Serialize(raiseRequest),
                 Encoding.UTF8,
@@ -55,7 +55,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
 
             Assert.NotNull(books);
             Assert.That(books.Count, Is.EqualTo(list.Count));
-            Assert.That(books[0].Name, Is.EqualTo(list[^1].Name));
+            Assert.That(books[0].Name, Is.EqualTo(list[^1]?.Name));
         }
         [Test]
         public async Task RaisePopularity_InvalidRequest_ReturnsBadRequest()
@@ -93,10 +93,10 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
 
             Assert.NotNull(books);
             Assert.That(books.Count, Is.EqualTo(list.Count));
-            Assert.That(books[0].Name, Is.EqualTo(list[^1].Name));
+            Assert.That(books[0].Name, Is.EqualTo(list[^1]?.Name));
         }
 
-        private async Task<List<BookResponse>> GetPaginatedAsync()
+        private async Task<List<BookResponse>?> GetPaginatedAsync()
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
             var filter = new LibraryFilterRequest();

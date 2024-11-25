@@ -14,9 +14,9 @@ namespace LibraryApi.IntegrationTests
 {
     public sealed class WebAppFactoryWrapper : IAsyncDisposable
     {
-        private PostgreSqlContainer dbContainer;
+        private PostgreSqlContainer? dbContainer;
 
-        protected WebApplicationFactory<Program> WebApplicationFactory { get; private set; }
+        private WebApplicationFactory<Program>? WebApplicationFactory { get; set; }
 
         public async Task<WebApplicationFactory<Program>> GetFactoryAsync()
         {
@@ -25,16 +25,20 @@ namespace LibraryApi.IntegrationTests
                 await InitializeContainersAsync();
                 WebApplicationFactory = InitializeFactory();
             }
+
             return WebApplicationFactory;
         }
+
         public async ValueTask DisposeAsync()
         {
-            if (WebApplicationFactory != null)
+            if (dbContainer != null)
             {
                 await dbContainer.StopAsync();
-
                 await dbContainer.DisposeAsync();
+            }
 
+            if (WebApplicationFactory != null)
+            {
                 await WebApplicationFactory.DisposeAsync();
                 WebApplicationFactory = null;
             }
@@ -63,7 +67,7 @@ namespace LibraryApi.IntegrationTests
                       services.RemoveAll(typeof(IDbContextFactory<ShopDbContext>));
 
                       services.AddDbContextFactory<ShopDbContext>(options =>
-                          options.UseNpgsql(dbContainer.GetConnectionString()));
+                          options.UseNpgsql(dbContainer?.GetConnectionString()));
                   });
               });
         }
@@ -72,7 +76,7 @@ namespace LibraryApi.IntegrationTests
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { "ConnectionStrings:" + Configuration.LIBRARY_DATABASE_CONNECTION_STRING, dbContainer.GetConnectionString() },
+                { "ConnectionStrings:" + Configuration.LIBRARY_DATABASE_CONNECTION_STRING, dbContainer?.GetConnectionString() },
                 { Configuration.EF_CREATE_DATABASE, "true" },
                 { JwtConfiguration.JWT_SETTINGS_KEY, "q57+LXDr4HtynNQaYVs7t50HwzvTNrWM2E/OepoI/D4=" },
                 { JwtConfiguration.JWT_SETTINGS_ISSUER, "https://token.issuer.example.com" },

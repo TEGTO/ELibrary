@@ -16,7 +16,7 @@ namespace LibraryApi.IntegrationTests.Controllers
             {
                 if (string.IsNullOrEmpty(managerAccessToken))
                 {
-                    managerAccessToken = GetManagerAccessTokenData().AccessToken;
+                    managerAccessToken = GetManagerAccessTokenData().AccessToken ?? "";
                 }
                 return managerAccessToken;
             }
@@ -27,7 +27,7 @@ namespace LibraryApi.IntegrationTests.Controllers
             {
                 if (string.IsNullOrEmpty(accessToken))
                 {
-                    accessToken = GetAccessTokenData().AccessToken;
+                    accessToken = GetAccessTokenData().AccessToken ?? "";
                 }
                 return accessToken;
             }

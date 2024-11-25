@@ -5,17 +5,15 @@
 
 <ng-container *ngIf="items$ | async as items; else loading">
     <ng-container *ngIf="items.length > 0; else emptyCart">
-        <mat-dialog-content>
-            <div class="content">
-                <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="products"
-                    [style.height.px]="calculateSelectionSize()">
-                    <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
-                        <div class="book-wrapper">
-                            <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
-                        </div>
-                    </ng-container>
-                </cdk-virtual-scroll-viewport>
-            </div>
+        <mat-dialog-content class="content">
+            <cdk-virtual-scroll-viewport #scroller [itemSize]="itemHeight" class="products"
+                [style.height.px]="calculateSelectionSize()">
+                <ng-container *cdkVirtualFor="let item of items; trackBy: trackById">
+                    <div class="book-wrapper">
+                        <div *ngTemplateOutlet="book; context: { cartBook: item }"></div>
+                    </div>
+                </ng-container>
+            </cdk-virtual-scroll-viewport>
         </mat-dialog-content>
         <mat-dialog-actions class="actions__bottom-container flex-col">
             <div class="w-full flex justify-end">

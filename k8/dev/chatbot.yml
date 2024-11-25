@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elibrary-chatbot
+  labels:
+    app: elibrary-chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elibrary-chatbot
+  template:
+    metadata:
+      labels:
+        app: elibrary-chatbot
+    spec:
+      containers:
+        - name: elibrary-chatbot
+          image: tegto/elibrary-chatbot:dev
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: elibrary-chatbot-config
+            - secretRef:
+                name: elibrary-chatbot-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatbot
+spec:
+  selector:
+    app: elibrary-chatbot
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

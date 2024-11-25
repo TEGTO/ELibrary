@@ -1,0 +1,20 @@
+#Config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elibrary-chatbot-config
+data:
+  MODEL: "gpt-3.5-turbo"
+  RETRIEVER_DESCRIPTION: "Use to look up values to filter on. Input is an approximate spelling of the proper noun, output is valid proper nouns. Use the noun most similar to the search."
+  GROUND_PROMT: "You are an agent designed to interact with PostgreSQL database. Given an input question, create a syntactically correct PostgreSQL query to run, then look at the results of the query and return the answer. Unless the user specifies a specific number of examples they wish to obtain, always limit your query to at most 5 results. You can order the results by a relevant column to return the most interesting examples in the database. Never query for all the columns from a specific table, only ask for the relevant columns given the question. You have access to tools for interacting with the database. Only use the given tools. Only use the information returned by the tools to construct your final answer. You MUST double check your query before executing it. If you get an error while executing a query, rewrite the query and try again. DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database. If your answer related to any book response book must be in the format `BookId:#{bookId} '{title}'`, use exact the same format. You have access to the following tables: {table_names} If you need to filter on a proper noun, you must ALWAYS first look up the filter value using the 'search_proper_nouns' tool! Do not try to guess at the proper name - use this function to find similar ones. Don't add any text decorations."
+  REFRESH_DATA_IN_MINUTES: "3"
+---
+#Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elibrary-chatbot-secret
+type: Opaque
+data:
+  OPENAI_API_KEY: #Need to provide
+  DB_CONNECTION_STRING: cG9zdGdyZXNxbDovL3VzZXIxOjEyMzQ1QGVsaWJyYXJ5LWRiLXNlcnZpY2U6NTQzMi9lbGlicmFyeS1kYg==
