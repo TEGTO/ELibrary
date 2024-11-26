@@ -6,7 +6,7 @@ namespace LibraryShopEntities.Domain.Dtos.Shop
     {
         public int Id { get; set; }
         public int BookId { get; set; }
-        public BookResponse Book { get; set; } = default!;
+        public BookResponse? Book { get; set; }
         public int ChangeAmount { get; set; }
     }
 }

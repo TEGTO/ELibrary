@@ -7,6 +7,6 @@ namespace UserApi.Domain.Dtos
     /// </summary>
     public class AdminGetUserFilter : PaginationRequest
     {
-        public string ContainsInfo { get; set; }
+        public string? ContainsInfo { get; set; }
     }
 }

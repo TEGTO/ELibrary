@@ -2,6 +2,6 @@
 {
     public class StatisticsBook
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
     }
 }

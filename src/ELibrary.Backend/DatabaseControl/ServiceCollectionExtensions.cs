@@ -11,7 +11,7 @@ namespace DatabaseControl
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddRepositoryPatternWithResilience<Context>(this IServiceCollection services, IConfiguration configuration) where Context : DbContext
+        public static IServiceCollection AddRepositoryWithResilience<Context>(this IServiceCollection services, IConfiguration configuration) where Context : DbContext
         {
             var pipelineConfiguration = configuration.GetSection(DatabaseConfiguration.REPOSITORY_RESILIENCE_PIPELINE)
                                         .Get<ResiliencePipelineConfiguration>() ?? new ResiliencePipelineConfiguration();

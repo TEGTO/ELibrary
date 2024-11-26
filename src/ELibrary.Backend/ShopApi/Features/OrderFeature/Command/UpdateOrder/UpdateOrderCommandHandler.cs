@@ -50,7 +50,7 @@ namespace ShopApi.Features.OrderFeature.Command.UpdateOrder
 
             var bookLookup = bookResponses.ToDictionary(book => book.Id);
             var response = mapper.Map<OrderResponse>(updatedOrder);
-            foreach (var listingBook in response.OrderBooks)
+            foreach (var listingBook in response.OrderBooks ?? [])
             {
                 if (bookLookup.TryGetValue(listingBook.BookId, out var book))
                 {

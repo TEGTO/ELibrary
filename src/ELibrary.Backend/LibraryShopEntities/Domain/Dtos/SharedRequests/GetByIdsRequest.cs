@@ -2,7 +2,7 @@
 {
     public class GetByIdsRequest
     {
-        public List<int> Ids { get; set; }
+        public List<int> Ids { get; set; } = [];
 
         public override string ToString()
         {

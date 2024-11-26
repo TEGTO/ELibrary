@@ -14,17 +14,17 @@ namespace LibraryApi.IntegrationTests.Controllers.PublisherController
             return await PublisherControllerTestHelper.CreateSamplesAsync(CreateSampleEntityAsync);
         }
 
-        protected override async ValueTask<CreatePublisherRequest> GetCreateRequestAsync()
+        protected override ValueTask<CreatePublisherRequest> GetCreateRequestAsync()
         {
-            return new CreatePublisherRequest()
+            return ValueTask.FromResult(new CreatePublisherRequest()
             {
                 Name = "Publisher",
-            };
+            });
         }
 
-        protected override async ValueTask<CreatePublisherRequest> GetInvalidCreateRequestAsync()
+        protected override ValueTask<CreatePublisherRequest> GetInvalidCreateRequestAsync()
         {
-            return new CreatePublisherRequest();
+            return ValueTask.FromResult(new CreatePublisherRequest());
         }
     }
 }

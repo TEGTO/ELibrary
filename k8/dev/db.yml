@@ -34,22 +34,9 @@ spec:
           volumeMounts:
             - name: elibrary-db-data
               mountPath: /var/lib/postgresql/data
-          env:
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: elibrary-secret
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: elibrary-secret
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: elibrary-secret
-                  key: POSTGRES_PASSWORD
+          envFrom:
+            - secretRef:
+                name: elibrary-db-secret
       volumes:
         - name: elibrary-db-data
           persistentVolumeClaim:
@@ -58,7 +45,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: elibrary-db-service
+  name: db
 spec:
   type: NodePort
   selector:

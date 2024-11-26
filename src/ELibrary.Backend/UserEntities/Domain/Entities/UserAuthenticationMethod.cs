@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserEntities.Domain.Entities
 {
@@ -9,7 +10,8 @@ namespace UserEntities.Domain.Entities
     [Index(nameof(UserId), nameof(AuthenticationMethod), IsUnique = true)]
     public class UserAuthenticationMethod
     {
-        public string UserId { get; set; }
+        [Required]
+        public string UserId { get; set; } = default!;
         public User User { get; set; } = default!;
         public AuthenticationMethod AuthenticationMethod { get; set; }
     }

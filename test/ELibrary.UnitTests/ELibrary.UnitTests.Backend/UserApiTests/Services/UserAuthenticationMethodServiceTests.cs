@@ -31,15 +31,23 @@ namespace UserApi.Services.Tests
             // Arrange
             var user = new User { Id = "1", AuthenticationMethods = new List<UserAuthenticationMethod>() };
             var users = new List<User> { user };
+
             var dbSetMock = GetDbSetMock(users);
+
             mockDatabaseRepository.Setup(repo => repo.GetQueryableAsync<User>(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(dbSetMock.Object);
+
             // Act
             await service.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.GoogleOAuth, CancellationToken.None);
+
             // Assert
-            mockDatabaseRepository.Verify(repo => repo.UpdateAsync(It.Is<User>(u => u.AuthenticationMethods.Count == 1), It.IsAny<CancellationToken>()), Times.Once);
-            Assert.That(user.AuthenticationMethods.First().AuthenticationMethod, Is.EqualTo(AuthenticationMethod.GoogleOAuth));
+            mockDatabaseRepository.Verify(
+                repo => repo.UpdateAsync(It.Is<User>(u => u.AuthenticationMethods.Count == 1), It.IsAny<CancellationToken>()),
+                Times.Once);
+
+            Assert.That(user.AuthenticationMethods[0].AuthenticationMethod, Is.EqualTo(AuthenticationMethod.GoogleOAuth));
         }
+
         [Test]
         public async Task SetUserAuthenticationMethodAsync_MethodAlreadyExists_DoesNotAddMethod()
         {
@@ -53,11 +61,15 @@ namespace UserApi.Services.Tests
                 }
             };
             var users = new List<User> { user };
+
             var dbSetMock = GetDbSetMock(users);
+
             mockDatabaseRepository.Setup(repo => repo.GetQueryableAsync<User>(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(dbSetMock.Object);
+
             // Act
             await service.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.GoogleOAuth, CancellationToken.None);
+
             // Assert
             mockDatabaseRepository.Verify(repo => repo.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
         }

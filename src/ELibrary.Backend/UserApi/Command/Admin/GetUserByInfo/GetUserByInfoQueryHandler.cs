@@ -20,7 +20,7 @@ namespace UserApi.Command.Admin.GetUserByInfo
 
         public async Task<AdminUserResponse?> Handle(GetUserByInfoQuery command, CancellationToken cancellationToken)
         {
-            var user = await userService.GetUserByUserInfoAsync(command.Info, cancellationToken);
+            var user = await userService.GetUserByLoginAsync(command.Info, cancellationToken);
 
             if (user == null)
             {

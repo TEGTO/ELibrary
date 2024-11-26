@@ -17,130 +17,152 @@ namespace LibraryShopEntities.Repositories.Shop.Tests
         public void SetUp()
         {
             mockRepository = new Mock<IDatabaseRepository<ShopDbContext>>();
+
             orderRepository = new OrderRepository(mockRepository.Object);
         }
-        private IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class
+
+        private static IQueryable<T> GetDbSetMock<T>(List<T> data) where T : class
         {
             return data.AsQueryable().BuildMock();
         }
 
-        [Test]
-        public async Task GetOrderByIdAsync_OrderExists_ReturnsOrder()
+        [TestCase(1, true, "Address 1", Description = "Order exists.")]
+        [TestCase(99, false, null, Description = "Order does not exist.")]
+        public async Task GetOrderByIdAsync_VariousCases_ReturnsExpectedResults(int orderId, bool exists, string? expectedAddress)
         {
             // Arrange
-            var orderId = 1;
             var orders = GetDbSetMock(new List<Order>
             {
-                new Order { Id = orderId, DeliveryAddress = "Address 1" }
+                new Order { Id = 1, DeliveryAddress = "Address 1" }
             });
+
             mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
                           .ReturnsAsync(orders);
+
             // Act
             var result = await orderRepository.GetOrderByIdAsync(orderId, CancellationToken.None);
+
             // Assert
-            Assert.IsNotNull(result);
-            Assert.That(result.Id, Is.EqualTo(orderId));
-            Assert.That(result.DeliveryAddress, Is.EqualTo("Address 1"));
+            if (exists)
+            {
+                Assert.IsNotNull(result);
+                Assert.That(result.Id, Is.EqualTo(orderId));
+                Assert.That(result.DeliveryAddress, Is.EqualTo(expectedAddress));
+            }
+            else
+            {
+                Assert.IsNull(result);
+            }
         }
-        [Test]
-        public async Task GetOrderByIdAsync_OrderDoesNotExist_ReturnsNull()
+
+        [TestCase(1, 2, "", 2, Description = "Valid pagination, returns all orders.")]
+        [TestCase(2, 1, "", 1, Description = "Page number exceeds available items.")]
+        [TestCase(1, 2, "Client1", 2, Description = "Get orders of 'Client1'.")]
+        [TestCase(2, 2, "Client0", 0, Description = "Get zero orders because client with this id doesn't exist.")]
+        public async Task GetPaginatedOrdersAsync_VariousFilters_ReturnsExpectedResults(int pageNumber, int pageSize, string clientId, int expectedCount)
         {
             // Arrange
-            var orderId = 1;
-            var orders = GetDbSetMock(new List<Order>());
-            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(orders);
-            // Act
-            var result = await orderRepository.GetOrderByIdAsync(orderId, CancellationToken.None);
-            // Assert
-            Assert.IsNull(result);
-        }
-        [Test]
-        public async Task GetPaginatedOrdersAsync_ValidRequest_ReturnsPaginatedOrders()
-        {
-            // Arrange
-            var filter = new GetOrdersFilter { PageNumber = 1, PageSize = 2 };
+            var filter = new GetOrdersFilter { PageNumber = pageNumber, PageSize = pageSize };
             var orders = GetDbSetMock(new List<Order>
             {
-                new Order { Id = 1, DeliveryAddress = "Address 1" },
-                new Order { Id = 2, DeliveryAddress = "Address 2" }
+                new Order { Id = 1, DeliveryAddress = "Address 1", ClientId = "Client1" },
+                new Order { Id = 2, DeliveryAddress = "Address 2", ClientId = "Client2" }
             });
+
             mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
                           .ReturnsAsync(orders);
+
             // Act
             var result = await orderRepository.GetPaginatedOrdersAsync(filter, CancellationToken.None);
+
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Id, Is.EqualTo(1));
-            Assert.That(result.Last().Id, Is.EqualTo(2));
+            Assert.That(result.Count(), Is.EqualTo(expectedCount));
         }
-        [Test]
-        public async Task GetOrderCountAsync_ValidData_ReturnsOrderCount()
+
+        [TestCase("test-client-id", 2, Description = "Filter matches orders.")]
+        [TestCase("non-existent-client", 0, Description = "Filter does not match any orders.")]
+        public async Task GetOrderCountAsync_VariousFilters_ReturnsExpectedCount(string clientId, int expectedCount)
         {
             // Arrange
-            var filter = new GetOrdersFilter { ClientId = "test-client-id" };
+            var filter = new GetOrdersFilter { ClientId = clientId };
             var orders = GetDbSetMock(new List<Order>
             {
                 new Order { Id = 1, ClientId = "test-client-id" },
                 new Order { Id = 2, ClientId = "test-client-id" }
             });
+
             mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
                           .ReturnsAsync(orders);
+
             // Act
             var result = await orderRepository.GetOrderCountAsync(filter, CancellationToken.None);
+
             // Assert
-            Assert.That(result, Is.EqualTo(2));
+            Assert.That(result, Is.EqualTo(expectedCount));
         }
-        [Test]
-        public async Task AddOrderAsync_ReturnsCreatedOrder()
+
+        [TestCase(1, "Test Address", 1, 1, 10, Description = "Single OrderBook.")]
+        [TestCase(2, "Another Address", 2, 3, 15, Description = "Another OrderBook.")]
+        public async Task AddOrderAsync_WithVariousOrders_ReturnsCreatedOrder(
+           int orderId, string address, int bookId, int amount, decimal price)
         {
             // Arrange
             var order = new Order
             {
-                Id = 1,
-                DeliveryAddress = "Test Address",
+                Id = orderId,
+                DeliveryAddress = address,
                 OrderBooks = new List<OrderBook>
                 {
-                    new OrderBook { BookId = 1, BookAmount = 1, BookPrice = 10 }
+                    new OrderBook { BookId = bookId, BookAmount = amount, BookPrice = price }
                 }
             };
 
             mockRepository.Setup(r => r.AddAsync(order, It.IsAny<CancellationToken>()))
                           .ReturnsAsync(order);
-            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
-                         .ReturnsAsync(GetDbSetMock(new List<Order> { order }));
+
             // Act
             var result = await orderRepository.AddOrderAsync(order, CancellationToken.None);
+
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.Id, Is.EqualTo(1));
+            Assert.That(result.Id, Is.EqualTo(orderId));
+            Assert.That(result.DeliveryAddress, Is.EqualTo(address));
+            Assert.That(result.OrderBooks[0].BookId, Is.EqualTo(bookId));
+
             mockRepository.Verify(r => r.AddAsync(order, It.IsAny<CancellationToken>()), Times.Once);
         }
-        [Test]
-        public async Task UpdateOrderAsync_ReturnsUpdatedOrder()
+
+        [TestCase(1, "Updated Address")]
+        [TestCase(2, "Another Updated Address")]
+        public async Task UpdateOrderAsync_WithVariousUpdates_ReturnsUpdatedOrder(int orderId, string updatedAddress)
         {
             // Arrange
-            var order = new Order { Id = 1, DeliveryAddress = "Updated Address" };
-            var orders = GetDbSetMock(new List<Order> { order });
+            var order = new Order { Id = orderId, DeliveryAddress = updatedAddress };
 
-            mockRepository.Setup(r => r.GetQueryableAsync<Order>(It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(orders);
             mockRepository.Setup(r => r.UpdateAsync(order, It.IsAny<CancellationToken>()))
                           .ReturnsAsync(order);
+
             // Act
             var result = await orderRepository.UpdateOrderAsync(order, CancellationToken.None);
+
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.DeliveryAddress, Is.EqualTo("Updated Address"));
+            Assert.That(result.Id, Is.EqualTo(orderId));
+            Assert.That(result.DeliveryAddress, Is.EqualTo(updatedAddress));
+
             mockRepository.Verify(r => r.UpdateAsync(order, It.IsAny<CancellationToken>()), Times.Once);
         }
-        [Test]
-        public async Task DeleteOrderAsync_DeletesOrder()
+
+        [TestCase(1, "Test Address")]
+        [TestCase(2, "Another Address")]
+        public async Task DeleteOrderAsync_WithVariousOrders_DeletesOrder(int orderId, string address)
         {
             // Arrange
-            var order = new Order { Id = 1, DeliveryAddress = "Test Address" };
+            var order = new Order { Id = orderId, DeliveryAddress = address };
+
             // Act
             await orderRepository.DeleteOrderAsync(order, CancellationToken.None);
+
             // Assert
             mockRepository.Verify(r => r.DeleteAsync(order, It.IsAny<CancellationToken>()), Times.Once);
         }

@@ -4,8 +4,8 @@ namespace UserApi.Domain.Models
 {
     public class CreateUserFromOAuth
     {
-        public string Email { get; set; }
-        public string LoginProviderSubject { get; set; }
-        public AuthenticationMethod AuthMethod { get; set; }
+        public required string Email { get; set; } = string.Empty;
+        public required string LoginProviderSubject { get; set; } = string.Empty;
+        public required AuthenticationMethod AuthMethod { get; set; }
     }
 }

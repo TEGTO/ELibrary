@@ -6,7 +6,7 @@ using Shared.Repositories;
 
 namespace LibraryShopEntities.Repositories.Library
 {
-    public class BookRepository : LibraryEntityRepository<Book>, IBookRepository
+    public sealed class BookRepository : LibraryEntityRepository<Book>, IBookRepository
     {
         public BookRepository(IDatabaseRepository<LibraryDbContext> repository) : base(repository)
         {
@@ -17,32 +17,31 @@ namespace LibraryShopEntities.Repositories.Library
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
             return await
-                IncludeBookEntities(queryable)
+                 IncludeBookEntities(queryable)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
-        public override async Task<IEnumerable<Book>> GetByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        public override async Task<IEnumerable<Book>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<Book>(cancellationToken);
 
             return await
-                IncludeBookEntities(queryable)
+                 IncludeBookEntities(queryable)
                 .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(cancellationToken);
         }
-        public async Task<IEnumerable<BookPopularity>> GetPopularitiesByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BookPopularity>> GetPopularitiesByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             var queryable = await repository.GetQueryableAsync<BookPopularity>(cancellationToken);
 
-            var popularities = await queryable
-                .Where(bp => ids.Contains(bp.BookId)).ToListAsync();
+            var popularities = await queryable.Where(bp => ids.Contains(bp.BookId)).ToListAsync(cancellationToken);
 
             return popularities;
         }
         public async Task UpdatePopularityRangeAsync(IEnumerable<BookPopularity> popularities, CancellationToken cancellationToken)
         {
-            await repository.UpdateRangeAsync(popularities.ToArray(), cancellationToken);
+            await repository.UpdateRangeAsync(popularities, cancellationToken);
         }
         public override async Task<IEnumerable<Book>> GetPaginatedAsync(LibraryFilterRequest req, CancellationToken cancellationToken)
         {
@@ -53,7 +52,7 @@ namespace LibraryShopEntities.Repositories.Library
 
             query = ApplyFilter(query, req);
 
-            var sortedBooks = await ApplySortingAsync(query, req, cancellationToken);
+            var sortedBooks = await ApplySorting(query, req).ToListAsync(cancellationToken);
 
             paginatedBooks.AddRange(sortedBooks
                   .Skip((req.PageNumber - 1) * req.PageSize)
@@ -72,14 +71,14 @@ namespace LibraryShopEntities.Repositories.Library
         public override async Task<Book> CreateAsync(Book book, CancellationToken cancellationToken)
         {
             book = await repository.AddAsync(book, cancellationToken);
-            return await GetByIdAsync(book.Id, cancellationToken);
+            return await GetByIdAsync(book.Id, cancellationToken) ?? throw new InvalidOperationException("Can not get created book!");
         }
         public override async Task<Book> UpdateAsync(Book book, CancellationToken cancellationToken)
         {
             await repository.UpdateAsync(book, cancellationToken);
-            return await GetByIdAsync(book.Id, cancellationToken);
+            return await GetByIdAsync(book.Id, cancellationToken) ?? throw new InvalidOperationException("Can not get updated book!");
         }
-        private IQueryable<Book> ApplyFilter(IQueryable<Book> query, LibraryFilterRequest req)
+        protected override IQueryable<Book> ApplyFilter(IQueryable<Book> query, LibraryFilterRequest req)
         {
             if (req is BookFilterRequest bookFilter)
             {
@@ -100,7 +99,7 @@ namespace LibraryShopEntities.Repositories.Library
             }
             return query.Where(b => b.Name.Contains(req.ContainsName));
         }
-        private async Task<IEnumerable<Book>> ApplySortingAsync(IQueryable<Book> query, LibraryFilterRequest req, CancellationToken cancellationToken)
+        private static IQueryable<Book> ApplySorting(IQueryable<Book> query, LibraryFilterRequest req)
         {
             if (req is BookFilterRequest bookFilter)
             {
@@ -123,7 +122,7 @@ namespace LibraryShopEntities.Repositories.Library
                 .OrderByDescending(b => b.StockAmount > 0)
                 .ThenByDescending(b => b.Id);
         }
-        private IQueryable<Book> IncludeBookEntities(IQueryable<Book> queryable)
+        private static IQueryable<Book> IncludeBookEntities(IQueryable<Book> queryable)
         {
             return queryable.Include(b => b.Author).Include(b => b.Genre).Include(b => b.Publisher);
         }

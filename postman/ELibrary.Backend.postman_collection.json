@@ -60,7 +60,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7129/auth/register",
+							"raw": "https://localhost:7129/auth/login",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -68,7 +68,7 @@
 							"port": "7129",
 							"path": [
 								"auth",
-								"register"
+								"login"
 							]
 						}
 					},
@@ -909,7 +909,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"name\",\r\n  \"middleName\": \"middleName\",\r\n  \"lastName\": \"lastName\",\r\n  \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address\",\r\n  \"phone\":\"phone\",\r\n  \"email\":\"example@gmail.com\"\r\n}",
+							"raw": "{\r\n  \"name\": \"name\",\r\n  \"middleName\": \"middleName\",\r\n  \"lastName\": \"lastName\",\r\n  \"dateOfBirth\":\"2020-08-03T09:45:45.4656254Z\",\r\n  \"address\":\"address\",\r\n  \"phone\":\"0123456789\",\r\n  \"email\":\"example@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3944,7 +3944,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"query\":\"Give me any books\"\r\n}",
+							"raw": "{\r\n    \"query\":\"Give me any book\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

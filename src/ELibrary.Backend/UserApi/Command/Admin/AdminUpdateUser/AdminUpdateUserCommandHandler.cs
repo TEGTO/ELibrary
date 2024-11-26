@@ -20,9 +20,14 @@ namespace UserApi.Command.Admin.AdminUpdateUser
 
         public async Task<AdminUserResponse> Handle(AdminUpdateUserCommand command, CancellationToken cancellationToken)
         {
+            ValidateCommand(command);
+
             var request = command.Request;
+
             var updateData = mapper.Map<UserUpdateData>(request);
-            var user = await userService.GetUserByUserInfoAsync(request.CurrentLogin, cancellationToken);
+            var user = await userService.GetUserByLoginAsync(request.CurrentLogin!, cancellationToken);
+
+            if (user == null) { throw new InvalidDataException("User to update is not found!"); }
 
             var identityErrors = await userService.UpdateUserAsync(user, updateData, true, cancellationToken);
             if (Utilities.HasErrors(identityErrors, out var errorResponse)) throw new AuthorizationException(errorResponse);
@@ -34,6 +39,15 @@ namespace UserApi.Command.Admin.AdminUpdateUser
             response.Roles = await userService.GetUserRolesAsync(user, cancellationToken);
 
             return response;
+        }
+
+        private void ValidateCommand(AdminUpdateUserCommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            var request = command.Request;
+
+            if (string.IsNullOrEmpty(request.CurrentLogin))
+                throw new InvalidDataException("Login can't be null or empty!");
         }
     }
 }

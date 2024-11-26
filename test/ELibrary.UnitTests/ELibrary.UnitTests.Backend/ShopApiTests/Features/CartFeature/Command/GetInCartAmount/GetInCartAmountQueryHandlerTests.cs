@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using LibraryShopEntities.Domain.Entities.Shop;
+﻿using LibraryShopEntities.Domain.Entities.Shop;
 using Moq;
 using ShopApi.Features.CartFeature.Services;
 
@@ -9,15 +8,13 @@ namespace ShopApi.Features.CartFeature.Command.GetInCartAmount.Tests
     internal class GetInCartAmountQueryHandlerTests
     {
         private Mock<ICartService> mockCartService;
-        private Mock<IMapper> mockMapper;
         private GetInCartAmountQueryHandler handler;
 
         [SetUp]
         public void SetUp()
         {
             mockCartService = new Mock<ICartService>();
-            mockMapper = new Mock<IMapper>();
-            handler = new GetInCartAmountQueryHandler(mockCartService.Object, mockMapper.Object);
+            handler = new GetInCartAmountQueryHandler(mockCartService.Object);
         }
 
         [Test]

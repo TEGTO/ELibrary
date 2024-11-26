@@ -4,6 +4,6 @@
     {
         public DateTime? FromUTC { get; set; }
         public DateTime? ToUTC { get; set; }
-        public StatisticsBookRequest[] IncludeBooks { get; set; }
+        public StatisticsBookRequest[] IncludeBooks { get; set; } = [];
     }
 }

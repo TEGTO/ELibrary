@@ -2,6 +2,6 @@
 {
     public class AdvisorResponse
     {
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace ShopApi.IntegrationTests.Controllers.StatisticsController
         public async Task GetShopStatistics_Invalid_ReturnsBadRequest()
         {
             //Arrange
-            var request = new GetShopStatisticsRequest();
+            var request = new GetShopStatisticsRequest() { FromUTC = DateTime.MaxValue, ToUTC = DateTime.MinValue };
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "/statistics");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ManagerAccessToken);
             httpRequest.Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");

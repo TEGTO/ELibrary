@@ -23,17 +23,17 @@ namespace ShopApi.Services
             libraryApi = configuration[Configuration.LIBRARY_API_URL]!;
         }
 
-        public async Task<IEnumerable<T>> GetByIdsAsync<T>(List<int> ids, string endpoint, CancellationToken cancellationToken)
+        public async Task<IEnumerable<T>> GetByIdsAsync<T>(IEnumerable<int> ids, string endpoint, CancellationToken cancellationToken)
         {
-            var request = new GetByIdsRequest { Ids = ids };
+            var request = new GetByIdsRequest { Ids = ids.ToList() };
             return await resiliencePipeline.ExecuteAsync(async (ct) =>
             {
                 return (await httpHelper.SendPostRequestAsync<IEnumerable<T>>(libraryApi + endpoint, JsonSerializer.Serialize(request), cancellationToken: cancellationToken))!;
             }, cancellationToken);
         }
-        public async Task RaiseBookPopularityByIdsAsync(List<int> ids, CancellationToken cancellationToken)
+        public async Task RaiseBookPopularityByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
-            var request = new RaiseBookPopularityRequest { Ids = ids };
+            var request = new RaiseBookPopularityRequest { Ids = ids.ToList() };
             await resiliencePipeline.ExecuteAsync(async (ct) =>
             {
                 return (await httpHelper.SendPostRequestAsync<string>(
@@ -41,7 +41,7 @@ namespace ShopApi.Services
                     JsonSerializer.Serialize(request), cancellationToken: cancellationToken))!;
             }, cancellationToken);
         }
-        public async Task UpdateBookStockAmountAsync(List<StockBookChange> changes, CancellationToken cancellationToken)
+        public async Task UpdateBookStockAmountAsync(IEnumerable<StockBookChange> changes, CancellationToken cancellationToken)
         {
             var request = changes.Select(mapper.Map<UpdateBookStockAmountRequest>);
             await resiliencePipeline.ExecuteAsync(async (ct) =>

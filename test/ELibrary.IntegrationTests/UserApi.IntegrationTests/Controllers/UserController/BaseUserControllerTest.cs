@@ -16,16 +16,20 @@ namespace UserApi.IntegrationTests.Controllers.UserController
                 Encoding.UTF8,
                 "application/json"
             );
-            var response = await client.SendAsync(request);
+
+            await client.SendAsync(request);
         }
-        protected async Task<string> GetAccessKeyForUserAsync(UserAuthenticationRequest loginRequest)
+        protected async Task<string?> GetAccessKeyForUserAsync(UserAuthenticationRequest loginRequest)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login");
             request.Content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
+
             var response = await client.SendAsync(request);
+
             var content = await response.Content.ReadAsStringAsync();
             var authResponse = JsonSerializer.Deserialize<UserAuthenticationResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return authResponse.AuthToken.AccessToken;
+
+            return authResponse?.AuthToken?.AccessToken;
         }
     }
 }

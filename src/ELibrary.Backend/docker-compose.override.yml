@@ -32,7 +32,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -49,7 +48,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - Shop__MaxOrderAmount=${Shop__MaxOrderAmount}
       - MaxPaginationPageSize=${MaxPaginationPageSize}
       - Chat__BotUrl=${ApiGateway}
@@ -70,7 +68,6 @@ services:
       - AuthSettings__Audience=${AuthSettings__Audience}
       - AuthSettings__Issuer=${AuthSettings__Issuer}
       - AuthSettings__ExpiryInMinutes=${AuthSettings__ExpiryInMinutes}
-      - AuthSettings__RefreshExpiryInDays=${AuthSettings__RefreshExpiryInDays}
       - AllowedCORSOrigins=${AllowedCORSOrigins}
       - UseCORS=${UseCORS}
     volumes:

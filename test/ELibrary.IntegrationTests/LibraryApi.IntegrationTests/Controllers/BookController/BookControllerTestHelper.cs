@@ -66,10 +66,12 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
                 LastName = "Doe",
                 DateOfBirth = new DateTime(1949, 6, 8, 0, 0, 0, DateTimeKind.Utc)
             }, "author");
+
             await createSampleGenreAsync(new CreateGenreRequest()
             {
                 Name = "Fantasy"
             }, "genre");
+
             await createSamplePublisherAsync(new CreatePublisherRequest()
             {
                 Name = "Publisher"

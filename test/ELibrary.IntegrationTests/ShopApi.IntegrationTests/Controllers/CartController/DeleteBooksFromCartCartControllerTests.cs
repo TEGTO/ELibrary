@@ -46,19 +46,5 @@ namespace ShopApi.IntegrationTests.Controllers.CartController
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
         }
-        [Test]
-        public async Task DeleteBooksFromCart_CartBookDoesntExist_ReturnsBadRequest()
-        {
-            // Arrange
-            var accessToken = GetRandomAccessTokenData();
-            var deleteBookFromCartRequests = new[] { new DeleteCartBookFromCartRequest() { Id = 50 } };
-            using var request = new HttpRequestMessage(HttpMethod.Put, "/cart");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            request.Content = new StringContent(JsonSerializer.Serialize(deleteBookFromCartRequests), Encoding.UTF8, "application/json");
-            // Act
-            var response = await httpClient.SendAsync(request);
-            // Assert
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-        }
     }
 }

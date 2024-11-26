@@ -2,8 +2,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Serilog;
 using System.Net;
 
 namespace ExceptionHandling
@@ -11,9 +11,9 @@ namespace ExceptionHandling
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly ILogger logger;
+        private readonly ILogger<ExceptionMiddleware> logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger logger)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
             this.next = next;
             this.logger = logger;
@@ -71,7 +71,7 @@ namespace ExceptionHandling
                 StatusCode = httpContext.Response.StatusCode.ToString(),
                 Messages = messages
             };
-            logger.Error(ex, responseError.ToString());
+            logger.LogError(ex, responseError.ToString());
             await httpContext.Response.WriteAsync(responseError.ToString()).ConfigureAwait(false);
         }
     }

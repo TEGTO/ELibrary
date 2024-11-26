@@ -63,24 +63,32 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
 
             var user = new User { Email = "testuser@gmail.com" };
             var roles = new List<string> { "Admin" };
+
             var tokenDto = new AccessTokenData { AccessToken = "new_access_token", RefreshToken = "new_refresh_token" };
 
-            mockOAuthService.Setup(s => s.GetAccessOnCodeAsync(It.IsAny<GetAccessOnCodeParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenDto);
+            mockOAuthService.Setup(s => s.GetAccessOnCodeAsync(It.IsAny<GetAccessOnCodeParams>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tokenDto);
+
             mockTokenService.Setup(s => s.GetPrincipalFromToken(tokenDto.AccessToken))
-                             .Returns(principal);
-            mockUserService.Setup(s => s.GetUserByUserInfoAsync(principal.Identity.Name, CancellationToken.None))
-                            .ReturnsAsync(user);
-            mockUserService.Setup(s => s.GetUserRolesAsync(user, CancellationToken.None))
-                            .ReturnsAsync(roles);
+                .Returns(principal);
+
             mockMapper.Setup(m => m.Map<AuthToken>(tokenDto))
-                       .Returns(accessToken);
+                .Returns(accessToken);
+
+            mockUserService.Setup(s => s.GetUserByLoginAsync(principal.Identity!.Name!, CancellationToken.None))
+                .ReturnsAsync(user);
+            mockUserService.Setup(s => s.GetUserRolesAsync(user, CancellationToken.None))
+                .ReturnsAsync(roles);
+
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
+
             // Assert
             Assert.That(result.Email, Is.EqualTo(user.Email));
             Assert.That(result.Roles, Is.EqualTo(roles));
             Assert.That(result.AuthToken, Is.EqualTo(accessToken));
         }
+
         [Test]
         public void Handle_UserNotFound_ThrowsUnauthorizedAccessException()
         {
@@ -100,13 +108,18 @@ namespace UserApi.Command.Client.LoginOAuth.Tests
             {
                 new Claim(ClaimTypes.Name, "nonexistentuser@gmail.com")
             }));
+
             var tokenDto = new AccessTokenData { AccessToken = "new_access_token", RefreshToken = "new_refresh_token" };
 
-            mockOAuthService.Setup(s => s.GetAccessOnCodeAsync(It.IsAny<GetAccessOnCodeParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenDto);
+            mockOAuthService.Setup(s => s.GetAccessOnCodeAsync(It.IsAny<GetAccessOnCodeParams>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(tokenDto);
+
             mockTokenService.Setup(s => s.GetPrincipalFromToken(tokenDto.AccessToken))
-                             .Returns(principal);
-            mockUserService.Setup(s => s.GetUserByUserInfoAsync(principal.Identity.Name, CancellationToken.None))
-                            .ReturnsAsync((User)null);
+                .Returns(principal);
+
+            mockUserService.Setup(s => s.GetUserByLoginAsync(principal.Identity!.Name!, CancellationToken.None))
+                .ReturnsAsync(null as User);
+
             // Act & Assert
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await handler.Handle(command, CancellationToken.None));
         }

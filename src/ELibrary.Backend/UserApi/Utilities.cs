@@ -13,7 +13,7 @@ namespace UserApi
                 return true;
             }
 
-            errorResponse = null;
+            errorResponse = [];
             return false;
         }
     }

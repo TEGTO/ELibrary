@@ -25,11 +25,11 @@ namespace UserApi.Services
             var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
             return string.IsNullOrEmpty(id) ? null : await userManager.FindByIdAsync(id!);
         }
-        public async Task<User?> GetUserByUserInfoAsync(string info, CancellationToken cancellationToken)
+        public async Task<User?> GetUserByLoginAsync(string login, CancellationToken cancellationToken)
         {
-            var user = await userManager.FindByEmailAsync(info);
-            user = user == null ? await userManager.FindByNameAsync(info) : user;
-            user = user == null ? await userManager.FindByIdAsync(info) : user;
+            var user = await userManager.FindByEmailAsync(login);
+            user = user == null ? await userManager.FindByNameAsync(login) : user;
+            user = user == null ? await userManager.FindByIdAsync(login) : user;
             return user;
         }
         public async Task<IEnumerable<User>> GetPaginatedUsersAsync(AdminGetUserFilter filter, CancellationToken cancellationToken)
@@ -96,20 +96,20 @@ namespace UserApi.Services
         {
             List<IdentityError> identityErrors = new List<IdentityError>();
 
-            if (user.UserName != null && !user.UserName.Equals(updateData.UserName))
+            if (updateData.UserName != null && !updateData.UserName.Equals(user.UserName))
             {
                 var result = await userManager.SetUserNameAsync(user, updateData.UserName);
                 identityErrors.AddRange(result.Errors);
             }
 
-            if (user.Email != null && !user.Email.Equals(updateData.Email))
+            if (updateData.Email != null && !updateData.Email.Equals(user.Email))
             {
                 var token = await userManager.GenerateChangeEmailTokenAsync(user, updateData.Email);
                 var result = await userManager.ChangeEmailAsync(user, updateData.Email, token);
                 identityErrors.AddRange(result.Errors);
             }
 
-            if (!string.IsNullOrEmpty(updateData.Password))
+            if (!string.IsNullOrEmpty(updateData.Password) && !string.IsNullOrEmpty(updateData.OldPassword))
             {
                 if (resetPassword)
                 {

@@ -15,13 +15,13 @@ namespace ShopApi.IntegrationTests.Controllers.StockBookOrderController
         public void OneTimeSetUp()
         {
             mockLibraryService.Setup(x => x.GetByIdsAsync<BookResponse>(
-              It.Is<List<int>>(ids => ids.Contains(100)),
+              It.Is<IEnumerable<int>>(ids => ids.Contains(100)),
               It.IsAny<string>(),
               It.IsAny<CancellationToken>()
             )).ThrowsAsync(new Exception("Invalid ID: 100"));
 
             mockLibraryService.Setup(x => x.GetByIdsAsync<BookResponse>(
-                It.Is<List<int>>(ids => !ids.Contains(100)),
+                It.Is<IEnumerable<int>>(ids => !ids.Contains(100)),
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new List<BookResponse> { new BookResponse { Id = 1, Name = "Test" } });

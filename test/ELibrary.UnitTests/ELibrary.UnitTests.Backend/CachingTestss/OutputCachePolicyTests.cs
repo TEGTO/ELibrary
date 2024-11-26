@@ -19,7 +19,6 @@ namespace Caching.Tests
         [SetUp]
         public void SetUp()
         {
-
             httpContextMock = new Mock<HttpContext>();
             requestMock = new Mock<HttpRequest>();
             responseMock = new Mock<HttpResponse>();
@@ -32,102 +31,141 @@ namespace Caching.Tests
             cacheContext = new OutputCacheContext() { HttpContext = httpContextMock.Object };
         }
 
-        [Test]
-        public async Task CacheRequestAsync_WithDuration_SetsResponseExpirationTimeSpan()
+        [TestCase(5, ExpectedResult = true)]
+        [TestCase(null, ExpectedResult = true)]
+        public async Task<bool> CacheRequestAsync_WithDuration_SetsResponseExpirationTimeSpan(int? minutes)
         {
             // Arrange
-            var policy = new OutputCachePolicy(TimeSpan.FromMinutes(5), false);
+            var duration = minutes.HasValue ? TimeSpan.FromMinutes(minutes.Value) : (TimeSpan?)null;
+            var policy = new OutputCachePolicy(duration, false);
+
             // Act
             await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
+
             // Assert
-            Assert.That(cacheContext.ResponseExpirationTimeSpan, Is.EqualTo(TimeSpan.FromMinutes(5)));
+            return cacheContext.ResponseExpirationTimeSpan == duration;
         }
-        [Test]
-        public async Task CacheRequestAsync_UseAuthenticationId_AddsUserIdToCacheKeyPrefix()
+
+        [TestCase("GET", true)]
+        [TestCase("PATCH", false)]
+        public async Task CacheRequestAsync_AttemptOutputCaching_VariesByMethod(string method, bool expectedResult)
         {
             // Arrange
-            var policy = new OutputCachePolicy(null, true);
-            // Act
-            await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
-            // Assert
-            Assert.IsTrue(cacheContext.CacheVaryByRules.CacheKeyPrefix.Contains("userId"));
-        }
-        [Test]
-        public async Task CacheRequestAsync_NoDuration_DoesNotSetExpirationTime()
-        {
-            // Arrange
-            var policy = new OutputCachePolicy(null, false);
-            // Act
-            await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
-            // Assert
-            Assert.IsNull(cacheContext.ResponseExpirationTimeSpan);
-        }
-        [Test]
-        public async Task CacheRequestAsync_PostRequestWithJsonContentType_SetsVaryByValues()
-        {
-            // Arrange
-            var policy = new OutputCachePolicy(null, false, "Name", "Id");
-            requestMock.Setup(r => r.Method).Returns("POST");
-            requestMock.Setup(r => r.ContentType).Returns("application/json");
-            var json = "{\"Name\":\"TestName\",\"Id\":\"123\"}";
-            requestMock.Setup(r => r.Body).Returns(new MemoryStream(Encoding.UTF8.GetBytes(json)));
-            // Act
-            await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
-            // Assert
-            Assert.That(cacheContext.CacheVaryByRules.VaryByValues["Name"], Is.EqualTo("TestName"));
-            Assert.That(cacheContext.CacheVaryByRules.VaryByValues["Id"], Is.EqualTo("123"));
-        }
-        [Test]
-        public async Task CacheRequestAsync_RequestWithCookie_DisablesCacheStorage()
-        {
-            // Arrange
+            requestMock.Setup(r => r.Method).Returns(method);
             var policy = new OutputCachePolicy();
-            responseMock.Setup(r => r.Headers).Returns(new HeaderDictionary
+
+            // Act
+            await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
+
+            // Assert
+            Assert.That(cacheContext.AllowCacheLookup, Is.EqualTo(expectedResult));
+            Assert.That(cacheContext.AllowCacheStorage, Is.EqualTo(expectedResult));
+        }
+
+        [TestCase("userId", true)]
+        [TestCase(null, false)]
+        public async Task CacheRequestAsync_UseAuthenticationId_AddsUserIdToCacheKeyPrefix(string? userId, bool shouldContainUserId)
+        {
+            // Arrange
+            if (userId != null)
             {
-                { "Set-Cookie", new StringValues("testcookie") }
-            });
-            // Act
-            await policy.ServeResponseAsync(cacheContext, CancellationToken.None);
-            // Assert
-            Assert.IsFalse(cacheContext.AllowCacheStorage);
-        }
-        [Test]
-        public async Task CacheRequestAsync_Non200Or301Status_DisablesCacheStorage()
-        {
-            // Arrange
-            var policy = new OutputCachePolicy();
-            responseMock.Setup(r => r.StatusCode).Returns(StatusCodes.Status404NotFound);
-            // Act
-            await policy.ServeResponseAsync(cacheContext, CancellationToken.None);
-            // Assert
-            Assert.IsFalse(cacheContext.AllowCacheStorage);
-        }
-        [Test]
-        public async Task AttemptOutputCaching_NonGetOrHeadorPostorPutMethod_ReturnsFalse()
-        {
-            // Arrange
-            requestMock.Setup(r => r.Method).Returns("PATCH");
-            var policy = new OutputCachePolicy();
+                user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId) }));
+                httpContextMock.Setup(ctx => ctx.User).Returns(user);
+            }
+            else
+            {
+                httpContextMock.Setup(ctx => ctx.User).Returns(new ClaimsPrincipal());
+            }
+
+            var policy = new OutputCachePolicy(null, true);
+
             // Act
             await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
+
             // Assert
-            Assert.IsFalse(cacheContext.AllowCacheLookup);
-            Assert.IsFalse(cacheContext.AllowCacheStorage);
+            if (shouldContainUserId)
+            {
+                Assert.That(cacheContext.CacheVaryByRules.CacheKeyPrefix, Is.Not.Null);
+                Assert.That(cacheContext.CacheVaryByRules.CacheKeyPrefix.Contains(userId!));
+            }
+            else
+            {
+                Assert.That(cacheContext.CacheVaryByRules.CacheKeyPrefix, Is.Null);
+            }
         }
-        [Test]
-        public async Task CacheRequestAsync_RequestWithPropertyNamesToCacheBy_SetsVaryByValues()
+
+        [TestCase("{\"Name\":\"TestName\",\"Id\":\"123\"}", "Name", "TestName")]
+        [TestCase("{\"Name\":\"TestName\",\"Id\":\"123\"}", "Id", "123")]
+        public async Task CacheRequestAsync_PostRequestWithJsonContentType_SetsVaryByValues(string json, string property, string expectedValue)
         {
             // Arrange
-            var policy = new OutputCachePolicy(propertyNamesToCacheBy: ["Category", "Author"]);
-            var json = "{\"Category\":\"Fiction\",\"Author\":\"AuthorName\"}";
+            var policy = new OutputCachePolicy(null, false, property);
             requestMock.Setup(r => r.Method).Returns("POST");
             requestMock.Setup(r => r.ContentType).Returns("application/json");
             requestMock.Setup(r => r.Body).Returns(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+
             // Act
             await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
+
             // Assert
-            Assert.That(cacheContext.CacheVaryByRules.VaryByValues["Category"], Is.EqualTo("Fiction"));
-            Assert.That(cacheContext.CacheVaryByRules.VaryByValues["Author"], Is.EqualTo("AuthorName"));
+            Assert.That(cacheContext.CacheVaryByRules.VaryByValues[property], Is.EqualTo(expectedValue));
+        }
+
+        [TestCase("Set-Cookie", "testcookie", false)]
+        [TestCase(null, null, true)]
+        public async Task CacheRequestAsync_RequestWithOrWithoutCookie_DisablesCacheStorage(string? headerKey, string? headerValue, bool expectedAllowCacheStorage)
+        {
+            // Arrange
+            var policy = new OutputCachePolicy();
+
+            if (headerKey != null)
+            {
+                responseMock.Setup(r => r.Headers).Returns(new HeaderDictionary { { headerKey, new StringValues(headerValue) } });
+            }
+
+            responseMock.Setup(r => r.StatusCode).Returns(StatusCodes.Status200OK);
+
+            cacheContext.AllowCacheStorage = true;
+
+            // Act
+            await policy.ServeResponseAsync(cacheContext, CancellationToken.None);
+
+            // Assert
+            Assert.That(cacheContext.AllowCacheStorage, Is.EqualTo(expectedAllowCacheStorage));
+        }
+
+        [TestCase(StatusCodes.Status200OK, true)]
+        [TestCase(StatusCodes.Status404NotFound, false)]
+        public async Task CacheRequestAsync_Non200Or301Status_DisablesCacheStorage(int statusCode, bool expectedAllowCacheStorage)
+        {
+            // Arrange
+            var policy = new OutputCachePolicy();
+            responseMock.Setup(r => r.StatusCode).Returns(statusCode);
+
+            cacheContext.AllowCacheStorage = true;
+
+            // Act
+            await policy.ServeResponseAsync(cacheContext, CancellationToken.None);
+
+            // Assert
+            Assert.That(cacheContext.AllowCacheStorage, Is.EqualTo(expectedAllowCacheStorage));
+        }
+
+        [TestCase("{\"Category\":\"Fiction\",\"Author\":\"AuthorName\"}", "Category", "Fiction")]
+        [TestCase("{\"Category\":\"Fiction\",\"Author\":\"AuthorName\"}", "Author", "AuthorName")]
+        public async Task CacheRequestAsync_RequestWithPropertyNamesToCacheBy_SetsVaryByValues(string json, string property, string expectedValue)
+        {
+            // Arrange
+            var policy = new OutputCachePolicy(null, false, property);
+            requestMock.Setup(r => r.Method).Returns("POST");
+            requestMock.Setup(r => r.ContentType).Returns("application/json");
+            requestMock.Setup(r => r.Body).Returns(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+
+            // Act
+            await policy.CacheRequestAsync(cacheContext, CancellationToken.None);
+
+            // Assert
+            Assert.That(cacheContext.CacheVaryByRules.VaryByValues[property], Is.EqualTo(expectedValue));
         }
     }
 }

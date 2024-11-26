@@ -1,9 +1,7 @@
 ﻿using Authentication.Token;
 using AutoMapper;
-using Caching.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 
 namespace LibraryApi.IntegrationTests
 {
@@ -13,7 +11,6 @@ namespace LibraryApi.IntegrationTests
         protected HttpClient client;
         protected JwtSettings settings;
         protected IMapper mapper;
-        protected Mock<ICachingHelper> mockCachingHelper;
         private WebAppFactoryWrapper wrapper;
         private WebApplicationFactory<Program> factory;
         private IServiceScope scope;

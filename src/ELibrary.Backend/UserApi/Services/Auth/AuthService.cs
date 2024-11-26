@@ -8,14 +8,12 @@ namespace UserApi.Services.Auth
     {
         private readonly UserManager<User> userManager;
         private readonly ITokenService tokenService;
-        private readonly IUserAuthenticationMethodService authMethodService;
         private readonly double expiryInDays;
 
-        public AuthService(UserManager<User> userManager, ITokenService tokenService, IUserAuthenticationMethodService authMethodService, IConfiguration configuration)
+        public AuthService(UserManager<User> userManager, ITokenService tokenService, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
-            this.authMethodService = authMethodService;
             expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
         }
 
@@ -27,14 +25,12 @@ namespace UserApi.Services.Auth
         }
         public async Task<AccessTokenData> LoginUserAsync(LoginUserParams loginParams, CancellationToken cancellationToken)
         {
-            var user = await GetUserByLoginAsync(loginParams.Login);
+            var user = loginParams.User;
 
-            if (user == null || !await userManager.CheckPasswordAsync(user, loginParams.Password))
+            if (!await userManager.CheckPasswordAsync(user, loginParams.Password))
             {
                 throw new UnauthorizedAccessException("Invalid authentication. Check Login or password.");
             }
-
-            await authMethodService.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.BaseAuthentication, cancellationToken);
 
             var refreshTokenExpiryDate = DateTime.UtcNow.AddDays(expiryInDays);
 
@@ -43,10 +39,10 @@ namespace UserApi.Services.Auth
 
             return tokenData;
         }
-        public async Task<AccessTokenData> RefreshTokenAsync(AccessTokenData accessTokenData, CancellationToken cancellationToken)
+        public async Task<AccessTokenData> RefreshTokenAsync(RefreshTokenParams refreshTokenParams, CancellationToken cancellationToken)
         {
-            var principal = tokenService.GetPrincipalFromToken(accessTokenData.AccessToken);
-            var user = await userManager.FindByNameAsync(principal.Identity.Name);
+            var user = refreshTokenParams.User;
+            var accessTokenData = refreshTokenParams.AccessTokenData;
 
             if (user == null)
             {
@@ -66,17 +62,6 @@ namespace UserApi.Services.Auth
             await tokenService.SetRefreshTokenAsync(user, tokenData, cancellationToken);
 
             return tokenData;
-        }
-
-        #endregion
-
-        #region Private Helpers
-
-        private async Task<User?> GetUserByLoginAsync(string login)
-        {
-            var user = await userManager.FindByEmailAsync(login);
-            user = user == null ? await userManager.FindByNameAsync(login) : user;
-            return user;
         }
 
         #endregion

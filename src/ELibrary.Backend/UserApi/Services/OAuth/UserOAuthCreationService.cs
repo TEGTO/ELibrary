@@ -36,7 +36,7 @@ namespace UserApi.Services.OAuth
                 await userManager.CreateAsync(user);
             }
 
-            UserLoginInfo userLoginInfo = null;
+            UserLoginInfo userLoginInfo = null!;
             switch (model.AuthMethod)
             {
                 case AuthenticationMethod.GoogleOAuth:

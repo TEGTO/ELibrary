@@ -21,7 +21,9 @@ namespace ShopApi.Features.ClientFeature.Command.CreateClient
         {
             var client = mapper.Map<Client>(command.Request);
             client.UserId = command.UserId;
+
             var createdClient = await clientService.CreateClientAsync(client, cancellationToken);
+
             return mapper.Map<ClientResponse>(createdClient);
         }
     }

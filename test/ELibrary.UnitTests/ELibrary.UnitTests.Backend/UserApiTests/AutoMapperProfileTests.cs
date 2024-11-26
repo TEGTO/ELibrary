@@ -15,6 +15,7 @@ namespace UserApi.Tests
         public void Setup()
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
+
             mapper = config.CreateMapper();
         }
 
@@ -28,12 +29,15 @@ namespace UserApi.Tests
                 Password = "password",
                 ConfirmPassword = "password",
             };
+
             // Act
             var result = mapper.Map<User>(request);
+
             // Assert
             Assert.That(result.Email, Is.EqualTo(request.Email));
             Assert.That(result.UserName, Is.EqualTo(request.Email));
         }
+
         [Test]
         public void AccessTokenDataToAuthToken_MapsCorrectly()
         {
@@ -44,20 +48,26 @@ namespace UserApi.Tests
                 RefreshToken = "refresh_token",
                 RefreshTokenExpiryDate = DateTime.Now.AddMinutes(30)
             };
+
             // Act
             var result = mapper.Map<AuthToken>(accessTokenData);
+
             // Assert
             Assert.That(result.AccessToken, Is.EqualTo(accessTokenData.AccessToken));
             Assert.That(result.RefreshToken, Is.EqualTo(accessTokenData.RefreshToken));
             Assert.That(result.RefreshTokenExpiryDate, Is.EqualTo(accessTokenData.RefreshTokenExpiryDate));
         }
+
         [Test]
         public void AccessTokenDataToAuthToken_Null()
         {
             // Arrange
             AccessTokenData? accessTokenData = null;
-            // Act & Assert
+
+            // Act
             var result = mapper.Map<AuthToken>(accessTokenData);
+
+            //Assert
             Assert.That(result, Is.Null);
         }
     }
