@@ -27,6 +27,7 @@
 	<br>
 	<img src="https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?logo=msazure&logoColor=white" alt="Azure">
 	<img src="https://img.shields.io/badge/Docker-2496ED.svg?style=flat&logo=Docker&logoColor=white" alt="Docker">
+	<img src="https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=fff" alt="Kubernetes">
  	<img src="https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white" alt="ChatGPT">
 	<img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
  	<img src="https://img.shields.io/badge/SonarCloud-F3702A?logo=sonarcloud&logoColor=fff" alt="ESLint">
@@ -68,7 +69,7 @@ Here are the main links for accessing the ELibrary project and its documentation
 - **Authentication**: JWT and OAuth 2.0
 - **API Gateway**: Ocelot for routing across microservices
 - **Resilience**: Polly for retry policies and fault tolerance
-- **Containerization**: Docker and Docker Compose
+- **Containerization**: Docker and Kubernetes
 - **CI/CD**: GitHub Actions for automated workflows
 - **AI Integration**: OpenAI’s GPT for recommendations
  

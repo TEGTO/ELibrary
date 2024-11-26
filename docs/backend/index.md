@@ -32,6 +32,7 @@ _layout: landing
     <br>
     <img src="https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?logo=msazure&logoColor=white" alt="Azure">
     <img src="https://img.shields.io/badge/Docker-2496ED.svg?style=flat&logo=Docker&logoColor=white" alt="Docker">
+    <img src="https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=fff" alt="Kubernetes">
     <img src="https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white" alt="ChatGPT">
     <img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
     <img src="https://img.shields.io/badge/SonarCloud-F3702A?logo=sonarcloud&logoColor=fff" alt="ESLint">
@@ -40,4 +41,4 @@ _layout: landing
     <img src="https://img.shields.io/badge/YAML-CB171E.svg?style=flat&logo=YAML&logoColor=white" alt="YAML">
 </p>
 
-This is a full-stack web store application built with modern technologies, featuring an ASP.NET Web API backend, Angular frontend, and PostgreSQL database, all deployed on Azure. The application integrates AI from OpenAI, hosted on Azure, to provide book recommendations. It implements secure authentication with JWT and OAuth 2.0 and manages state on the frontend using the NgRx (Redux) pattern. For resilience, it leverages the Polly library, and employs various design patterns, including the Mediator pattern with MediatR. The project is containerized with Docker Compose and uses GitHub Actions for CI/CD, along with Nunit and Test Containers for testing.
+This is a full-stack web store application built with modern technologies, featuring an ASP.NET Web API backend, Angular frontend, and PostgreSQL database, all deployed on Azure. The application integrates AI from OpenAI, hosted on Azure, to provide book recommendations. It implements secure authentication with JWT and OAuth 2.0 and manages state on the frontend using the NgRx (Redux) pattern. For resilience, it leverages the Polly library, and employs various design patterns, including the Mediator pattern with MediatR. The project is containerized with Docker & Kubernetes and uses GitHub Actions for CI/CD, along with Nunit and Test Containers for testing.
