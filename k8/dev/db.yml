@@ -37,10 +37,20 @@ spec:
           envFrom:
             - secretRef:
                 name: elibrary-db-secret
+          resources:
+            requests:
+              memory: "512M"
+              cpu: "500M"
+              ephemeral-storage: "1GI"
+            limits:
+              memory: "1GI"
+              cpu: "750m"
+              ephemeral-storage: "2GI"
       volumes:
         - name: elibrary-db-data
           persistentVolumeClaim:
             claimName: elibrary-db-pvc
+      automountServiceAccountToken: false
 ---
 apiVersion: v1
 kind: Service
