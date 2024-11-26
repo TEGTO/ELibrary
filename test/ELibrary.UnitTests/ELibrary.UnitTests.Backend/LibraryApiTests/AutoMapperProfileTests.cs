@@ -16,6 +16,7 @@ namespace LibraryApi.Tests
         public void Setup()
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
+
             mapper = config.CreateMapper();
         }
 
@@ -28,16 +29,19 @@ namespace LibraryApi.Tests
                 Id = 1,
                 Name = "John",
                 LastName = "Doe",
-                DateOfBirth = new DateTime(1980, 1, 1)
+                DateOfBirth = new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
             };
+
             // Act
             var result = mapper.Map<AuthorResponse>(author);
+
             // Assert
             Assert.That(result.Id, Is.EqualTo(author.Id));
             Assert.That(result.Name, Is.EqualTo(author.Name));
             Assert.That(result.LastName, Is.EqualTo(author.LastName));
             Assert.That(result.DateOfBirth, Is.EqualTo(author.DateOfBirth));
         }
+
         [Test]
         public void Map_CreateAuthorRequestToAuthor_MapsCorrectly()
         {
@@ -46,15 +50,18 @@ namespace LibraryApi.Tests
             {
                 Name = "John",
                 LastName = "Doe",
-                DateOfBirth = new DateTime(1980, 1, 1)
+                DateOfBirth = new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
             };
+
             // Act
             var result = mapper.Map<Author>(createRequest);
+
             // Assert
             Assert.That(result.Name, Is.EqualTo(createRequest.Name));
             Assert.That(result.LastName, Is.EqualTo(createRequest.LastName));
             Assert.That(result.DateOfBirth, Is.EqualTo(createRequest.DateOfBirth));
         }
+
         [Test]
         public void Map_GenreToGenreResponse_MapsCorrectly()
         {
@@ -64,12 +71,15 @@ namespace LibraryApi.Tests
                 Id = 1,
                 Name = "Science Fiction"
             };
+
             // Act
             var result = mapper.Map<GenreResponse>(genre);
+
             // Assert
             Assert.That(result.Id, Is.EqualTo(genre.Id));
             Assert.That(result.Name, Is.EqualTo(genre.Name));
         }
+
         [Test]
         public void Map_CreateGenreRequestToGenre_MapsCorrectly()
         {
@@ -78,11 +88,14 @@ namespace LibraryApi.Tests
             {
                 Name = "Fantasy"
             };
+
             // Act
             var result = mapper.Map<Genre>(createRequest);
+
             // Assert
             Assert.That(result.Name, Is.EqualTo(createRequest.Name));
         }
+
         [Test]
         public void Map_BookToBookResponse_MapsCorrectly()
         {
@@ -91,21 +104,26 @@ namespace LibraryApi.Tests
             {
                 Id = 1,
                 Name = "Dune",
-                PublicationDate = new DateTime(1965, 8, 1),
+                PublicationDate = new DateTime(1965, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                 AuthorId = 1,
                 GenreId = 1,
                 Author = new Author() { Id = 1 },
                 Genre = new Genre() { Id = 1 },
             };
+
             // Act
             var result = mapper.Map<BookResponse>(book);
+
             // Assert
             Assert.That(result.Id, Is.EqualTo(book.Id));
             Assert.That(result.Name, Is.EqualTo(book.Name));
             Assert.That(result.PublicationDate, Is.EqualTo(book.PublicationDate));
+            Assert.IsNotNull(result.Author);
+            Assert.IsNotNull(result.Genre);
             Assert.That(result.Author.Id, Is.EqualTo(book.Author.Id));
             Assert.That(result.Genre.Id, Is.EqualTo(book.Genre.Id));
         }
+
         [Test]
         public void Map_CreateBookRequestToBook_MapsCorrectly()
         {
@@ -113,12 +131,14 @@ namespace LibraryApi.Tests
             var createRequest = new CreateBookRequest
             {
                 Name = "Dune",
-                PublicationDate = new DateTime(1965, 8, 1),
+                PublicationDate = new DateTime(1965, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                 AuthorId = 1,
                 GenreId = 1
             };
+
             // Act
             var result = mapper.Map<Book>(createRequest);
+
             // Assert
             Assert.That(result.Name, Is.EqualTo(createRequest.Name));
             Assert.That(result.PublicationDate, Is.EqualTo(createRequest.PublicationDate));

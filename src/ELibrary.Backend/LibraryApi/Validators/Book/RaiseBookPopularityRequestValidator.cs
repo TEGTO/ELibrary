@@ -7,7 +7,7 @@ namespace LibraryApi.Validators.Book
     {
         public RaiseBookPopularityRequestValidator()
         {
-            RuleFor(x => x.Ids).NotNull();
+            RuleFor(x => x.Ids).NotNull().NotEmpty();
         }
     }
 }

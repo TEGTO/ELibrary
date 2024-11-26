@@ -14,7 +14,7 @@ namespace ShopApi.IntegrationTests.Controllers.OrderController
             await AddOrdersToClientAsync(AccessToken);
 
             mockLibraryService.Setup(x => x.GetByIdsAsync<BookResponse>(
-                It.IsAny<List<int>>(),
+                It.IsAny<IEnumerable<int>>(),
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync((List<int> ids, string endpoint, CancellationToken token) =>

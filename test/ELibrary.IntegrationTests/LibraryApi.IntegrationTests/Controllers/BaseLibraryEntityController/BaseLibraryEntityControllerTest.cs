@@ -29,6 +29,7 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
                 Encoding.UTF8,
                 "application/json"
             );
+
             var response = await client.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
 

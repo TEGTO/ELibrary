@@ -43,9 +43,9 @@ namespace LibraryApi.IntegrationTests.Controllers.BookController
             };
         }
 
-        protected override async ValueTask<CreateBookRequest> GetInvalidCreateRequestAsync()
+        protected override ValueTask<CreateBookRequest> GetInvalidCreateRequestAsync()
         {
-            return new CreateBookRequest();
+            return ValueTask.FromResult(new CreateBookRequest());
         }
     }
 }

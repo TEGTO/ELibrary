@@ -44,8 +44,10 @@ namespace Authentication
                     policy => policy.RequireRole(Roles.ADMINISTRATOR));
             });
             services.AddCustomAuthentication(jwtSettings);
+
             return services;
         }
+
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
         {
             services.AddAuthentication(options =>
@@ -68,6 +70,7 @@ namespace Authentication
             });
             return services;
         }
+
         public static IApplicationBuilder UseIdentity(this IApplicationBuilder app)
         {
             app.UseAuthentication();

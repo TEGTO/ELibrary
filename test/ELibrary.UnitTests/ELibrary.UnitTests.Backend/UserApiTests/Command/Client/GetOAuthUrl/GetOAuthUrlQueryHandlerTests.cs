@@ -29,6 +29,8 @@ namespace UserApi.Command.Client.GetOAuthUrl.Tests
         public async Task Handle_GoogleOAuthProvider_ReturnsCorrectUrl()
         {
             // Arrange
+            string expectedUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=test-client-id";
+
             var request = new GetOAuthUrlQuery
             (
                 new GetOAuthUrlQueryParams
@@ -38,15 +40,18 @@ namespace UserApi.Command.Client.GetOAuthUrl.Tests
                     CodeVerifier = "google-code-verifier"
                 }
             );
-            string expectedUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=test-client-id";
+
             mockGoogleOAuthService.Setup(service => service.GenerateOAuthRequestUrl(It.IsAny<GenerateOAuthRequestUrlParams>()))
                 .Returns(expectedUrl);
+
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
+
             // Assert
             Assert.NotNull(result);
             Assert.That(result.Url, Is.EqualTo(expectedUrl));
         }
+
         [Test]
         public void Handle_InvalidOAuthProvider_ThrowsKeyNotFoundException()
         {
@@ -60,6 +65,7 @@ namespace UserApi.Command.Client.GetOAuthUrl.Tests
                     CodeVerifier = "invalid-provider-verifier"
                 }
             );
+
             // Act & Assert
             Assert.ThrowsAsync<KeyNotFoundException>(async () =>
             {

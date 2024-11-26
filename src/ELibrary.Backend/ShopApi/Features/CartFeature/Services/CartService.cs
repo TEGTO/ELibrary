@@ -17,9 +17,9 @@ namespace ShopApi.Features.CartFeature.Services
 
         #region ICartService Members
 
-        public async Task<Cart?> GetCartByUserIdAsync(string userId, bool includeBooks, CancellationToken cancellationToken)
+        public async Task<Cart?> GetCartByUserIdAsync(string userId, bool includeProducts, CancellationToken cancellationToken)
         {
-            return await repository.GetCartByUserIdAsync(userId, includeBooks, cancellationToken);
+            return await repository.GetCartByUserIdAsync(userId, includeProducts, cancellationToken);
         }
         public async Task<int> GetInCartAmountAsync(Cart cart, CancellationToken cancellationToken)
         {
@@ -34,9 +34,10 @@ namespace ShopApi.Features.CartFeature.Services
         public async Task<CartBook> AddCartBookAsync(Cart cart, CartBook cartBook, CancellationToken cancellationToken)
         {
             var cartInDb = await repository.GetCartByUserIdAsync(cart.UserId, includeBooks: true, cancellationToken);
-            if (cartInDb == null) throw new InvalidOperationException("Cart is not found.");
 
-            var existingCartBook = cartInDb.Books.Find(cb => cb.BookId == cartBook.BookId);
+            TryValidateCartWithBooks(cartInDb);
+
+            var existingCartBook = cartInDb!.Books.Find(cb => cb.BookId == cartBook.BookId);
 
             if (existingCartBook == null)
             {
@@ -63,9 +64,10 @@ namespace ShopApi.Features.CartFeature.Services
         public async Task<Cart> DeleteBooksFromCartAsync(Cart cart, int[] bookIds, CancellationToken cancellationToken)
         {
             var cartInDb = await repository.GetCartByUserIdAsync(cart.UserId, includeBooks: true, cancellationToken);
-            if (cartInDb == null || cartInDb.Books == null || !cartInDb.Books.Any()) return cartInDb;
 
-            var cartBooksToDelete = cartInDb.Books.Where(b => bookIds.Contains(b.BookId)).ToList();
+            if (!TryValidateCartWithBooks(cartInDb)) return cartInDb!;
+
+            var cartBooksToDelete = cartInDb!.Books.Where(b => bookIds.Contains(b.BookId)).ToList();
             if (cartBooksToDelete.Any())
             {
                 foreach (var cartBook in cartBooksToDelete)
@@ -81,6 +83,19 @@ namespace ShopApi.Features.CartFeature.Services
         public async Task<bool> CheckBookCartAsync(Cart cart, string id, CancellationToken cancellationToken)
         {
             return await repository.CheckBookInCartAsync(cart.Id, id, cancellationToken);
+        }
+
+        #endregion
+
+        #region Private Helpers
+
+        private static bool TryValidateCartWithBooks(Cart? cart)
+        {
+            if (cart == null) throw new InvalidOperationException("Cart is not found.");
+
+            if (cart.Books == null || !cart.Books.Any()) return false;
+
+            return true;
         }
 
         #endregion

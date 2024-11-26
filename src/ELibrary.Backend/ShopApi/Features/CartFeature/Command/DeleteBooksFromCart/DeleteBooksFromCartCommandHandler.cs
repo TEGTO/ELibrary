@@ -30,20 +30,16 @@ namespace ShopApi.Features.CartFeature.Command.DeleteBooksFromCart
 
             var bookIds = command.Requests.Select(x => x.Id).Distinct();
 
-            var bookResponses = await GetLibraryEntityHelper.GetBookResponsesForIdsAsync(bookIds.ToList(), libraryService, cancellationToken);
+            await cartService.DeleteBooksFromCartAsync(cart, bookIds.ToArray(), cancellationToken);
 
-            var response = await cartService.DeleteBooksFromCartAsync(cart, bookIds.ToArray(), cancellationToken);
+            cart = await cartService.GetCartByUserIdAsync(command.UserId, true, cancellationToken);
 
-            var bookLookup = bookResponses.ToDictionary(book => book.Id);
-            var cartResponse = mapper.Map<CartResponse>(response);
-            foreach (var listingBook in cartResponse.Books)
+            if (cart == null)
             {
-                if (bookLookup.TryGetValue(listingBook.BookId, out var book))
-                {
-                    listingBook.Book = book;
-                }
+                throw new InvalidOperationException("Can not find cart after cart book update!");
             }
-            return cartResponse;
+
+            return await GetLibraryEntityHelper.GetCartResponseWithBooksAsync(cart, libraryService, mapper, cancellationToken);
         }
     }
 }

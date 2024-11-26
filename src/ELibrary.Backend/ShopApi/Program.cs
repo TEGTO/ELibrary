@@ -56,7 +56,7 @@ builder.Services.AddSingleton<ILibraryService, LibraryService>();
 #endregion
 
 builder.Services.AddPagination(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<ShopDbContext>(builder.Configuration);
+builder.Services.AddRepositoryWithResilience<ShopDbContext>(builder.Configuration);
 builder.Services.AddDefaultResiliencePipeline(builder.Configuration, Configuration.DEFAULT_RESILIENCE_PIPELINE);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
@@ -75,11 +75,11 @@ builder.Services.AddOutputCache((options) =>
 
     options.SetOutputCachePolicy("AdvisorPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(AdvisorQueryRequest));
 
-    options.SetOutputCachePolicy("CartPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true);
+    options.SetOutputCachePolicy("CartPolicy", duration: TimeSpan.FromMilliseconds(500), useAuthId: true);
 
-    options.SetOutputCachePolicy("ClientPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true);
+    options.SetOutputCachePolicy("ClientPolicy", duration: TimeSpan.FromSeconds(1), useAuthId: true);
 
-    options.SetOutputCachePolicy("OrderPaginationPolicy", duration: TimeSpan.FromSeconds(3), useAuthId: true, type: typeof(GetOrdersFilter));
+    options.SetOutputCachePolicy("OrderPaginationPolicy", duration: TimeSpan.FromMilliseconds(500), useAuthId: true, type: typeof(GetOrdersFilter));
 
     options.SetOutputCachePolicy("StatisticsPolicy", duration: TimeSpan.FromSeconds(10), type: typeof(GetShopStatisticsRequest));
 

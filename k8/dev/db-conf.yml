@@ -1,0 +1,10 @@
+#Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elibrary-db-secret
+type: Opaque
+data:
+  POSTGRES_DB: ZWxpYnJhcnktZGI=
+  POSTGRES_USER: dXNlcjE=
+  POSTGRES_PASSWORD: MTIzNDU=

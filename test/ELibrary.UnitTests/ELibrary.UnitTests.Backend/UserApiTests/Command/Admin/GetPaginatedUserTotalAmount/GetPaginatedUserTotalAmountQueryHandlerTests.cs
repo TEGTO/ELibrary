@@ -23,11 +23,14 @@ namespace UserApiTests.Command.Admin.GetPaginatedUserTotalAmount
         public async Task Handle_ValidRequest_ReturnsTotalCount()
         {
             // Arrange
-            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             var totalCount = 100;
+
+            var filter = new AdminGetUserFilter { PageNumber = 1, PageSize = 10 };
             userServiceMock.Setup(a => a.GetUserTotalAmountAsync(filter, It.IsAny<CancellationToken>())).ReturnsAsync(totalCount);
+
             // Act
             var result = await getPaginatedUserTotalAmountQueryHandler.Handle(new GetPaginatedUserTotalAmountQuery(filter), CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(totalCount));
         }

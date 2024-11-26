@@ -19,7 +19,7 @@ namespace UserApi.Services.Tests
         {
             var userStoreMock = new Mock<IUserStore<User>>();
 
-            mockUserManager = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            mockUserManager = new Mock<UserManager<User>>(userStoreMock.Object, null!, null!, null!, null!, null!, null!, null!, null!);
 
             mockTokenHandler = new Mock<ITokenHandler>();
             tokenService = new TokenService(mockTokenHandler.Object, mockUserManager.Object);
@@ -39,38 +39,50 @@ namespace UserApi.Services.Tests
                 RefreshToken = "test_refresh_token",
                 RefreshTokenExpiryDate = refreshTokenExpiryDate
             };
+
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(roles);
             mockTokenHandler.Setup(m => m.CreateToken(user, roles)).Returns(expectedTokenData);
+
             // Act
             var result = await tokenService.CreateNewTokenDataAsync(user, refreshTokenExpiryDate, CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(expectedTokenData));
         }
+
         [Test]
         public async Task SetRefreshTokenAsync_ValidUserAndTokenData_UpdatesUserRefreshToken()
         {
             // Arrange
             var user = new User { UserName = "testuser" };
+
             var accessTokenData = new AccessTokenData
             {
                 RefreshToken = "test_refresh_token",
                 RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(7)
             };
+
             mockUserManager.Setup(m => m.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+
             // Act
             await tokenService.SetRefreshTokenAsync(user, accessTokenData, CancellationToken.None);
+
             // Assert
             mockUserManager.Verify(m => m.UpdateAsync(It.Is<User>(u => u.RefreshToken == accessTokenData.RefreshToken && u.RefreshTokenExpiryTime == accessTokenData.RefreshTokenExpiryDate)), Times.Once);
         }
+
         [Test]
         public void GetPrincipalFromExpiredToken_ValidToken_ReturnsClaimsPrincipal()
         {
             // Arrange
             var token = "expired_token";
             var expectedPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, "testuser") }));
+
             mockTokenHandler.Setup(m => m.GetPrincipalFromExpiredToken(token)).Returns(expectedPrincipal);
+
             // Act
             var result = tokenService.GetPrincipalFromToken(token);
+
             // Assert
             Assert.That(result, Is.EqualTo(expectedPrincipal));
         }

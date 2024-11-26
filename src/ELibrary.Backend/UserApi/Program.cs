@@ -59,7 +59,7 @@ builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuth
 #endregion
 
 builder.Services.AddPagination(builder.Configuration);
-builder.Services.AddRepositoryPatternWithResilience<UserIdentityDbContext>(builder.Configuration);
+builder.Services.AddRepositoryWithResilience<UserIdentityDbContext>(builder.Configuration);
 builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
 builder.Services.AddSharedFluentValidation(typeof(Program));
 builder.Services.ConfigureCustomInvalidModelStateResponseControllers();

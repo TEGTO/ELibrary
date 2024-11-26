@@ -30,7 +30,7 @@ namespace ShopApi.Features.CartFeature.Command.GetCart
             }
             else
             {
-                return await GetLibraryEntityHelper.GetCartResponseWiithBooksAsync(cart, libraryService, mapper, cancellationToken);
+                return await GetLibraryEntityHelper.GetCartResponseWithBooksAsync(cart, libraryService, mapper, cancellationToken);
             }
         }
     }

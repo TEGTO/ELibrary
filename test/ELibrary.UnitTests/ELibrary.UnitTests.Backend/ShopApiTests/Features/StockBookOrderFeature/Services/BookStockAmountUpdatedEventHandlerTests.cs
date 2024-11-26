@@ -15,6 +15,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
         public void SetUp()
         {
             mockLibraryService = new Mock<ILibraryService>();
+
             handler = new BookStockAmountUpdatedEventHandler(mockLibraryService.Object);
         }
 
@@ -31,14 +32,16 @@ namespace ShopApi.Features.StockBookOrderFeature.Services.Tests
             {
                 StockBookChanges = stockChanges
             };
-            var bookStockAmountUpdatedEvent = new BookStockAmountUpdatedEvent(stockBookOrder);
-            var cancellationToken = CancellationToken.None;
+
+            var bookStockAmountUpdatedEvent = new BookStockAmountUpdatedEvent() { StockBookOrder = stockBookOrder };
+
             // Act
-            await handler.HandleAsync(bookStockAmountUpdatedEvent, cancellationToken);
+            await handler.HandleAsync(bookStockAmountUpdatedEvent, CancellationToken.None);
+
             // Assert
             mockLibraryService.Verify(service => service.UpdateBookStockAmountAsync(
                 It.Is<List<StockBookChange>>(changes => changes == stockChanges),
-                cancellationToken), Times.Once);
+                CancellationToken.None), Times.Once);
         }
     }
 }

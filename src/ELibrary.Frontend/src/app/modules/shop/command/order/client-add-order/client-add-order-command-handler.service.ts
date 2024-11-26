@@ -8,6 +8,7 @@ import { CommandHandler, getClientOrderHistoryPath, mapOrderBookToDeleteCartBook
 })
 export class ClientAddOrderCommandHandlerService extends CommandHandler<ClientAddOrderCommand> implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
+  private isRequestInProgress = false;
 
   constructor(
     private readonly orderService: OrderService,
@@ -25,9 +26,16 @@ export class ClientAddOrderCommandHandlerService extends CommandHandler<ClientAd
   cleanUp() {
     this.destroy$.next();
     this.destroy$.complete();
+    this.isRequestInProgress = false;
   }
 
   dispatch(command: ClientAddOrderCommand): void {
+    if (this.isRequestInProgress) {
+      return;
+    }
+
+    this.isRequestInProgress = true;
+
     this.orderService.createOrder(mapOrderToCreateOrderRequest(command.order))
       .pipe(
         takeUntil(this.destroy$)
@@ -36,9 +44,10 @@ export class ClientAddOrderCommandHandlerService extends CommandHandler<ClientAd
         (result) => {
           if (result.isSuccess) {
             this.redirector.redirectTo(getClientOrderHistoryPath());
-            this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5)
-            const requests = command.order!.orderBooks.map(x => mapOrderBookToDeleteCartBookFromCartRequest(x));
+            this.snackManager.openInfoSnackbar("✔️ The order was successfully created!", 5);
+            const requests = command.order.orderBooks.map(x => mapOrderBookToDeleteCartBookFromCartRequest(x));
             this.cartService.deleteBooksFromCart(requests);
+            this.cleanUp();
           }
           else if (!result.isSuccess && result.error !== null) {
             this.cleanUp();

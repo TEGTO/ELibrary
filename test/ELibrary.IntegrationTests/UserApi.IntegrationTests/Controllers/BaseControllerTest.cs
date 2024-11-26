@@ -16,7 +16,7 @@ namespace UserApi.IntegrationTests.Controllers
             {
                 if (string.IsNullOrEmpty(adminAccessToken))
                 {
-                    adminAccessToken = GetAdminAccessTokenData().AccessToken;
+                    adminAccessToken = GetAdminAccessTokenData().AccessToken ?? "";
                 }
                 return adminAccessToken;
             }
@@ -27,7 +27,7 @@ namespace UserApi.IntegrationTests.Controllers
             {
                 if (string.IsNullOrEmpty(accessToken))
                 {
-                    accessToken = GetAccessTokenData().AccessToken;
+                    accessToken = GetAccessTokenData().AccessToken ?? "";
                 }
                 return accessToken;
             }
@@ -36,23 +36,27 @@ namespace UserApi.IntegrationTests.Controllers
         protected AccessTokenData GetAdminAccessTokenData()
         {
             var jwtHandler = new JwtHandler(settings);
+
             IdentityUser identity = new IdentityUser()
             {
                 Id = "1",
                 UserName = "testuser",
                 Email = "test@example.com"
             };
+
             return jwtHandler.CreateToken(identity, [Roles.ADMINISTRATOR]);
         }
         protected AccessTokenData GetAccessTokenData()
         {
             var jwtHandler = new JwtHandler(settings);
+
             IdentityUser identity = new IdentityUser()
             {
                 Id = "1",
                 UserName = "testuser",
                 Email = "test@example.com"
             };
+
             return jwtHandler.CreateToken(identity, [Roles.CLIENT]);
         }
     }

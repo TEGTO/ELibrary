@@ -14,8 +14,8 @@ namespace ExceptionHandling
                 options.InvalidModelStateResponseFactory = context =>
                 {
                     var errors = context.ModelState
-                        .Where(x => x.Value.ValidationState == ModelValidationState.Invalid)
-                        .SelectMany(x => x.Value.Errors.Select(e => new ValidationFailure(x.Key, e.ErrorMessage)))
+                        .Where(x => x.Value != null && x.Value.ValidationState == ModelValidationState.Invalid)
+                        .SelectMany(x => x.Value!.Errors.Select(e => new ValidationFailure(x.Key, e.ErrorMessage)))
                         .ToList();
                     throw new ValidationException(errors);
                 };

@@ -18,7 +18,8 @@ namespace UserApi.Services.OAuth.Google.Tests
             mockOAuthSettings = new GoogleOAuthSettings
             {
                 ClientId = "test-client-id",
-                ClientSecret = "test-client-secret"
+                ClientSecret = "test-client-secret",
+                Scope = ""
             };
 
             googleOAuthHttpClient = new GoogleOAuthHttpClient(mockOAuthSettings, mockHttpHelper.Object);
@@ -45,14 +46,16 @@ namespace UserApi.Services.OAuth.Google.Tests
                  It.IsAny<CancellationToken>()
                  ))
                 .ReturnsAsync(expectedTokenResult);
+
             // Act
-            var result = await googleOAuthHttpClient.ExchangeAuthorizationCodeAsync(
-                code, codeVerifier, redirectUrl, CancellationToken.None);
+            var result = await googleOAuthHttpClient.ExchangeAuthorizationCodeAsync(code, codeVerifier, redirectUrl, CancellationToken.None);
+
             // Assert
             Assert.NotNull(result);
             Assert.That(result.AccessToken, Is.EqualTo(expectedTokenResult.AccessToken));
             Assert.That(result.RefreshToken, Is.EqualTo(expectedTokenResult.RefreshToken));
         }
+
         [Test]
         public void GenerateOAuthRequestUrl_ValidParams_ReturnsCorrectUrl()
         {
@@ -61,8 +64,10 @@ namespace UserApi.Services.OAuth.Google.Tests
             var redirectUrl = "https://example.com/callback";
             var codeVerifier = "valid-code-verifier";
             var expectedBaseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+
             // Act
             var resultUrl = googleOAuthHttpClient.GenerateOAuthRequestUrl(scope, redirectUrl, codeVerifier);
+
             // Assert
             Assert.IsTrue(resultUrl.StartsWith(expectedBaseUrl));
             Assert.IsTrue(resultUrl.Contains("client_id=test-client-id"));
@@ -73,26 +78,30 @@ namespace UserApi.Services.OAuth.Google.Tests
             Assert.IsTrue(resultUrl.Contains("code_challenge_method=S256"));
             Assert.IsTrue(resultUrl.Contains("access_type=offline"));
         }
+
         [Test]
         public async Task RefreshAccessTokenAsync_ValidParams_ReturnsNewTokenResult()
         {
             // Arrange
             var refreshToken = "valid-refresh-token";
             var cancellationToken = CancellationToken.None;
+
             var expectedTokenResult = new GoogleOAuthTokenResult
             {
                 AccessToken = "new-access-token",
                 RefreshToken = "new-refresh-token"
             };
+
             mockHttpHelper.Setup(x => x.SendPostRequestAsync<GoogleOAuthTokenResult>(
                 It.IsAny<string>(),
                 It.IsAny<Dictionary<string, string>>(),
-                 It.IsAny<string>(),
-                 It.IsAny<CancellationToken>()
-                ))
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedTokenResult);
+
             // Act
             var result = await googleOAuthHttpClient.RefreshAccessTokenAsync(refreshToken, cancellationToken);
+
             // Assert
             Assert.NotNull(result);
             Assert.That(result.AccessToken, Is.EqualTo(expectedTokenResult.AccessToken));

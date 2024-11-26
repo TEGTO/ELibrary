@@ -1,0 +1,34 @@
+#Config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elibrary-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Development"
+  EFCreateDatabase: "true"
+  MaxPaginationPageSize: "99"
+  Shop__MaxOrderAmount: "99"
+  AllowedCORSOrigins: ""
+  UseCORS: "true"
+  LibraryApiUrl: "http://apigateway:8080"
+  Chat__BotUrl: "http://apigateway:8080"
+---
+#Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elibrary-secret
+type: Opaque
+data:
+  ConnectionStrings__AuthenticationDb: VXNlciBJRD11c2VyMTtQYXNzd29yZD0xMjM0NTtIb3N0PWRiO1BvcnQ9NTQzMjtEYXRhYmFzZT1lbGlicmFyeS1kYjtQb29saW5nPXRydWU7TWluUG9vbFNpemU9MDtNYXhQb29sU2l6ZT0xMDA7Q29ubmVjdGlvbkxpZmV0aW1lPTA7VHJ1c3RTZXJ2ZXJDZXJ0aWZpY2F0ZT10cnVl
+  ConnectionStrings__LibraryDb: VXNlciBJRD11c2VyMTtQYXNzd29yZD0xMjM0NTtIb3N0PWRiO1BvcnQ9NTQzMjtEYXRhYmFzZT1lbGlicmFyeS1kYjtQb29saW5nPXRydWU7TWluUG9vbFNpemU9MDtNYXhQb29sU2l6ZT0xMDA7Q29ubmVjdGlvbkxpZmV0aW1lPTA7VHJ1c3RTZXJ2ZXJDZXJ0aWZpY2F0ZT10cnVl
+  ConnectionStrings__ShopDb: VXNlciBJRD11c2VyMTtQYXNzd29yZD0xMjM0NTtIb3N0PWRiO1BvcnQ9NTQzMjtEYXRhYmFzZT1lbGlicmFyeS1kYjtQb29saW5nPXRydWU7TWluUG9vbFNpemU9MDtNYXhQb29sU2l6ZT0xMDA7Q29ubmVjdGlvbkxpZmV0aW1lPTA7VHJ1c3RTZXJ2ZXJDZXJ0aWZpY2F0ZT10cnVl
+  ConnectionStrings__ChatDb: VXNlciBJRD11c2VyMTtQYXNzd29yZD0xMjM0NTtIb3N0PWRiO1BvcnQ9NTQzMjtEYXRhYmFzZT1lbGlicmFyeS1kYjtQb29saW5nPXRydWU7TWluUG9vbFNpemU9MDtNYXhQb29sU2l6ZT0xMDA7Q29ubmVjdGlvbkxpZmV0aW1lPTA7VHJ1c3RTZXJ2ZXJDZXJ0aWZpY2F0ZT10cnVl
+  AuthSettings__Key: MTAxNDQyNGMtNjgyNi00NzI5LUNlcnRpZmljYXRlUGFzc3dvcmRiNGU0LTlkMGI4MjZiZjNmNg==
+  AuthSettings__Audience: aHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20=
+  AuthSettings__Issuer: aHR0cHM6Ly90b2tlbi5pc3N1ZXIuZXhhbXBsZS5jb20=
+  AuthSettings__ExpiryInMinutes: MzA=
+  AuthSettings__RefreshExpiryInDays: MTA=
+  Auth__GoogleOAuth__ClientId: MzQ4MjMwNzA4MzgwLWxwNXAyNDBldGlkY2NqNGw0N2ZtMGpwaHQxdnVoOXI3LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t
+  Auth__GoogleOAuth__ClientSecret: R09DU1BYLVJiOFV1NXMtS3NLR2U1TTVhajhVNndQMVZFVko=
+  Auth__GoogleOAuth__Scope: aHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC91c2VyaW5mby5wcm9maWxl

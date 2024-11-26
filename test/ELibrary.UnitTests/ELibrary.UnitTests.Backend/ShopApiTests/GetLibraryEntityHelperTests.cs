@@ -25,19 +25,22 @@ namespace ShopApi.Tests
         {
             // Arrange
             var ids = new List<int> { 1, 2 };
-            var cancellationToken = CancellationToken.None;
+
             var expectedBooks = new List<BookResponse>
             {
                 new BookResponse { Id = 1, Name = "Book 1" },
                 new BookResponse { Id = 2, Name = "Book 2" }
             };
+
             mockLibraryService.Setup(service => service.GetByIdsAsync<BookResponse>(
-                    ids,
-                    $"/{LibraryConfiguration.LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT}",
-                    cancellationToken))
+                ids,
+                $"/{LibraryConfiguration.LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT}",
+                CancellationToken.None))
                 .ReturnsAsync(expectedBooks);
+
             // Act
-            var result = await GetLibraryEntityHelper.GetBookResponsesForIdsAsync(ids, mockLibraryService.Object, cancellationToken);
+            var result = await GetLibraryEntityHelper.GetBookResponsesForIdsAsync(ids, mockLibraryService.Object, CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(expectedBooks));
         }
@@ -46,20 +49,22 @@ namespace ShopApi.Tests
         {
             // Arrange
             var ids = new List<int> { 1, 2, 3 };
-            var cancellationToken = CancellationToken.None;
+
             var availableBooks = new List<BookResponse>
             {
                 new BookResponse { Id = 1, Name = "Book 1" },
                 new BookResponse { Id = 2, Name = "Book 2" }
             };
+
             mockLibraryService.Setup(service => service.GetByIdsAsync<BookResponse>(
-                    ids,
-                    $"/{LibraryConfiguration.LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT}",
-                    cancellationToken))
+                ids,
+                $"/{LibraryConfiguration.LIBRARY_API_GET_BOOKS_BY_IDS_ENDPOINT}",
+                CancellationToken.None))
                 .ReturnsAsync(availableBooks);
+
             // Act & Assert
             Assert.ThrowsAsync<InvalidDataException>(() =>
-                GetLibraryEntityHelper.GetBookResponsesForIdsAsync(ids, mockLibraryService.Object, cancellationToken));
+                GetLibraryEntityHelper.GetBookResponsesForIdsAsync(ids, mockLibraryService.Object, CancellationToken.None));
         }
         [Test]
         public async Task GetCartResponseWithBooksAsync_ValidCart_ReturnsExpectedCartResponse()
@@ -73,12 +78,13 @@ namespace ShopApi.Tests
                     new CartBook { BookId = 2, BookAmount = 2 }
                 }
             };
-            var cancellationToken = CancellationToken.None;
+
             var bookResponses = new List<BookResponse>
             {
                 new BookResponse { Id = 1, Name = "Book 1" },
                 new BookResponse { Id = 2, Name = "Book 2" }
             };
+
             var cartResponse = new CartResponse
             {
                 Books = new List<CartBookResponse>
@@ -87,14 +93,22 @@ namespace ShopApi.Tests
                     new CartBookResponse { BookId = 2 }
                 }
             };
+
             mockLibraryService.Setup(service => service.GetByIdsAsync<BookResponse>(
-                    It.IsAny<List<int>>(),
-                    It.IsAny<string>(),
-                    cancellationToken))
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<string>(),
+                CancellationToken.None))
                 .ReturnsAsync(bookResponses);
+
             mockMapper.Setup(mapper => mapper.Map<CartResponse>(cart)).Returns(cartResponse);
+
             // Act
-            var result = await GetLibraryEntityHelper.GetCartResponseWiithBooksAsync(cart, mockLibraryService.Object, mockMapper.Object, cancellationToken);
+            var result = await GetLibraryEntityHelper.GetCartResponseWithBooksAsync(
+                cart,
+                mockLibraryService.Object,
+                mockMapper.Object,
+                CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(cartResponse));
             Assert.That(result.Books[0].Book, Is.EqualTo(bookResponses[0]));
@@ -115,7 +129,7 @@ namespace ShopApi.Tests
                     }
                 }
             };
-            var cancellationToken = CancellationToken.None;
+
             var orderResponses = new List<OrderResponse>
             {
                 new OrderResponse
@@ -127,20 +141,29 @@ namespace ShopApi.Tests
                     }
                 }
             };
+
             var bookResponses = new List<BookResponse>
             {
                 new BookResponse { Id = 1, Name = "Book 1" },
                 new BookResponse { Id = 2, Name = "Book 2" }
             };
+
             mockLibraryService.Setup(service => service.GetByIdsAsync<BookResponse>(
-                    It.IsAny<List<int>>(),
-                    It.IsAny<string>(),
-                    cancellationToken))
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<string>(),
+                CancellationToken.None))
                 .ReturnsAsync(bookResponses);
+
             mockMapper.Setup(mapper => mapper.Map<OrderResponse>(It.IsAny<Order>()))
                 .Returns((Order order) => orderResponses[orders.IndexOf(order)]);
+
             // Act
-            var result = await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync(orders, mockLibraryService.Object, mockMapper.Object, cancellationToken);
+            var result = await GetLibraryEntityHelper.GetOrderResponsesWithBooksAsync(
+                orders,
+                mockLibraryService.Object,
+                mockMapper.Object,
+                CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(orderResponses));
             Assert.That(orderResponses[0].OrderBooks[0].Book, Is.EqualTo(bookResponses[0]));
@@ -161,7 +184,7 @@ namespace ShopApi.Tests
                     }
                 }
             };
-            var cancellationToken = CancellationToken.None;
+
             var stockOrderResponses = new List<StockBookOrderResponse>
             {
                 new StockBookOrderResponse
@@ -173,20 +196,29 @@ namespace ShopApi.Tests
                     }
                 }
             };
+
             var bookResponses = new List<BookResponse>
             {
                 new BookResponse { Id = 1, Name = "Book 1" },
                 new BookResponse { Id = 2, Name = "Book 2" }
             };
+
             mockLibraryService.Setup(service => service.GetByIdsAsync<BookResponse>(
-                    It.IsAny<List<int>>(),
-                    It.IsAny<string>(),
-                    cancellationToken))
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<string>(),
+                CancellationToken.None))
                 .ReturnsAsync(bookResponses);
+
             mockMapper.Setup(mapper => mapper.Map<StockBookOrderResponse>(It.IsAny<StockBookOrder>()))
                 .Returns((StockBookOrder order) => stockOrderResponses[stockOrders.IndexOf(order)]);
+
             // Act
-            var result = await GetLibraryEntityHelper.GetStockBookOrderResponseWiithBooksAsync(stockOrders, mockLibraryService.Object, mockMapper.Object, cancellationToken);
+            var result = await GetLibraryEntityHelper.GetStockBookOrderResponseWithBooksAsync(
+                stockOrders,
+                mockLibraryService.Object,
+                mockMapper.Object,
+                CancellationToken.None);
+
             // Assert
             Assert.That(result, Is.EqualTo(stockOrderResponses));
             Assert.That(stockOrderResponses[0].StockBookChanges[0].Book, Is.EqualTo(bookResponses[0]));

@@ -43,7 +43,7 @@ namespace ShopApi.Features.CartFeature.Command.UpdateCartBookInCart
                 cancellationToken);
 
             var bookListingResponse = mapper.Map<CartBookResponse>(response);
-            bookListingResponse.Book = bookResponse[0];
+            bookListingResponse.Book = bookResponse.First();
 
             return bookListingResponse;
         }

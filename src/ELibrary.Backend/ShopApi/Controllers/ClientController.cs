@@ -8,7 +8,6 @@ using ShopApi.Features.ClientFeature.Command.CreateClient;
 using ShopApi.Features.ClientFeature.Command.GetClient;
 using ShopApi.Features.ClientFeature.Command.UpdateClient;
 using ShopApi.Features.ClientFeature.Dtos;
-using System.Security.Claims;
 
 namespace ShopApi.Controllers
 {
@@ -30,7 +29,7 @@ namespace ShopApi.Controllers
         [OutputCache(PolicyName = "ClientPolicy")]
         public async Task<ActionResult<GetClientResponse>> GetClient(CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new GetClientForUserQuery(userId), cancellationToken);
 
             return Ok(response);
@@ -38,7 +37,7 @@ namespace ShopApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ClientResponse>> CreateClient([FromBody] CreateClientRequest request, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new CreateClientForUserCommand(userId, request), cancellationToken);
 
             return Created("", response);
@@ -46,7 +45,7 @@ namespace ShopApi.Controllers
         [HttpPut]
         public async Task<ActionResult<ClientResponse>> UpdateClient([FromBody] UpdateClientRequest request, CancellationToken cancellationToken)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = Utilities.GetUserId(User);
             var response = await mediator.Send(new UpdateClientForUserCommand(userId, request), cancellationToken);
 
             return Ok(response);

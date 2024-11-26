@@ -1,6 +1,5 @@
 ﻿using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Library;
-using LibraryShopEntities.Domain.Entities.Shop;
 using LibraryShopEntities.Filters;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -20,6 +19,7 @@ namespace LibraryShopEntities.Repositories.Library.Tests
         public void SetUp()
         {
             repositoryMock = new Mock<IDatabaseRepository<LibraryDbContext>>();
+
             repository = new BookRepository(repositoryMock.Object);
             cancellationToken = new CancellationToken();
         }
@@ -30,107 +30,68 @@ namespace LibraryShopEntities.Repositories.Library.Tests
         }
 
         [Test]
-        public async Task GetByIdAsync_ValidId_ReturnsBookWithEntities()
-        {
-            // Arrange
-            var book = new Book
-            {
-                Id = 1,
-                Name = "Book1",
-                Author = new Author { Id = 1, Name = "Author1" },
-                Genre = new Genre { Id = 1, Name = "Genre1" },
-                Publisher = new Publisher { Id = 1, Name = "Publisher1" }
-            };
-            var books = new List<Book> { book };
-            var dbSetMock = GetDbSetMock(books);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            // Act
-            var result = await repository.GetByIdAsync(1, cancellationToken);
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.That(result!.Id, Is.EqualTo(book.Id));
-            Assert.That(result.Author!.Name, Is.EqualTo(book.Author.Name));
-            Assert.That(result.Genre!.Name, Is.EqualTo(book.Genre.Name));
-            Assert.That(result.Publisher!.Name, Is.EqualTo(book.Publisher.Name));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
-        }
-        [Test]
-        public async Task GetByIdAsync_InvalidId_ReturnsNull()
-        {
-            // Arrange
-            var books = new List<Book>();
-            var dbSetMock = GetDbSetMock(books);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            // Act
-            var result = await repository.GetByIdAsync(99, cancellationToken);
-            // Assert
-            Assert.IsNull(result);
-        }
-        [Test]
-        public async Task GetByIds_ValidIds_ReturnsEntities()
+        [TestCase(1, "Book1", true, Description = "Book exists.")]
+        [TestCase(99, null, false, Description = "Book does not exist.")]
+        public async Task GetByIdAsync_TestCases(int id, string? expectedName, bool shouldExist)
         {
             // Arrange
             var books = new List<Book>
             {
-                new Book
-                {
-                    Id = 1,
-                    Name =  "Book1",
-                    Author = new Author { Id = 1, Name = "Author1" },
-                    Genre = new Genre { Id = 1, Name = "Genre1" },
-                    Publisher = new Publisher { Id = 1, Name = "Publisher1" },
-                    PublicationDate = DateTime.UtcNow,
-                    Price = 10,
-                    PageAmount = 10,
-                    StockAmount = 10,
-                },
-                new Book
-                {
-                    Id = 2,
-                    Name = "Book2",
-                    Author = new Author { Id = 2, Name = "Author2" },
-                    Genre = new Genre { Id = 2, Name = "Genre2" },
-                    Publisher = new Publisher { Id = 1, Name = "Publisher2" },
-                    PublicationDate = DateTime.UtcNow,
-                    Price = 10,
-                    PageAmount = 10,
-                    StockAmount = 10,
-                }
+                new Book { Id = 1, Name = "Book1" },
+                new Book { Id = 2, Name = "Book2" }
             };
-            var orders = new List<Order>
-            {
-                new Order
-                {
-                    OrderBooks= new List<OrderBook>
-                    {
-                        new OrderBook
-                        {
-                            Id = "1",
-                            BookId = 1
-                        },
-                    }
-                }
-            };
-            var dbBookSetMock = GetDbSetMock(books);
+            var dbSetMock = GetDbSetMock(books);
+
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbBookSetMock.Object);
-            var dbOrderSetMock = GetDbSetMock(orders);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken))
-                .ReturnsAsync(dbOrderSetMock.Object);
-            var ids = new List<int> { 1, 2, 3 };
+                .ReturnsAsync(dbSetMock.Object);
+
             // Act
-            var result = await repository.GetByIdsAsync(ids, CancellationToken.None);
+            var result = await repository.GetByIdAsync(id, cancellationToken);
+
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Author!.Name, Is.EqualTo("Author1"));
-            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre1"));
-            Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher1"));
+            if (shouldExist)
+            {
+                Assert.IsNotNull(result);
+                Assert.That(result!.Name, Is.EqualTo(expectedName));
+            }
+            else
+            {
+                Assert.IsNull(result);
+            }
+
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
+
         [Test]
-        public async Task GetPopularitiesByIdsAsync_ExistingIds_ReturnsMatchingPopularities()
+        [TestCase(new[] { 1, 2 }, 2, Description = "Finds two books by their ids.")]
+        [TestCase(new[] { 1 }, 1, Description = "Finds one book by it id.")]
+        [TestCase(new[] { 99, 100 }, 0, Description = "Finds zero books.")]
+        public async Task GetByIdsAsync_TestCases(int[] ids, int expectedCount)
+        {
+            // Arrange
+            var books = new List<Book>
+            {
+                new Book { Id = 1, Name = "Book1" },
+                new Book { Id = 2, Name = "Book2" }
+            };
+            var dbSetMock = GetDbSetMock(books);
+
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+                .ReturnsAsync(dbSetMock.Object);
+
+            // Act
+            var result = await repository.GetByIdsAsync(ids, cancellationToken);
+
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(expectedCount));
+
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+
+        [Test]
+        [TestCase(new[] { 1, 2 }, 2, new[] { 10, 5 }, Description = "Returns matching popularities for existing IDs.")]
+        [TestCase(new[] { 99, 100 }, 0, new int[0], Description = "Returns an empty list for non-matching IDs.")]
+        public async Task GetPopularitiesByIdsAsync_TestCases(int[] ids, int expectedCount, int[] expectedPopularities)
         {
             // Arrange
             var popularities = new List<BookPopularity>
@@ -139,35 +100,28 @@ namespace LibraryShopEntities.Repositories.Library.Tests
                 new BookPopularity { BookId = 2, Popularity = 5 }
             };
             var dbSetMock = GetDbSetMock(popularities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<BookPopularity>(cancellationToken)).ReturnsAsync(dbSetMock.Object);
-            var ids = new List<int> { 1, 2 };
+
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<BookPopularity>(cancellationToken))
+                .ReturnsAsync(dbSetMock.Object);
+
             // Act
-            var result = await repository.GetPopularitiesByIdsAsync(ids, cancellationToken);
+            var result = await repository.GetPopularitiesByIdsAsync(ids.ToList(), cancellationToken);
+
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First(bp => bp.BookId == 1).Popularity, Is.EqualTo(10));
-            Assert.That(result.First(bp => bp.BookId == 2).Popularity, Is.EqualTo(5));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<BookPopularity>(cancellationToken), Times.Once);
-        }
-        [Test]
-        public async Task GetPopularitiesByIdsAsync_NoMatchingIds_ReturnsEmptyList()
-        {
-            // Arrange
-            var popularities = new List<BookPopularity>
+            Assert.That(result.Count(), Is.EqualTo(expectedCount));
+
+            foreach (var id in ids)
             {
-                new BookPopularity { BookId = 1, Popularity = 10 },
-                new BookPopularity { BookId = 2, Popularity = 5 }
-            };
-            var dbSetMock = GetDbSetMock(popularities);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<BookPopularity>(cancellationToken)).ReturnsAsync(dbSetMock.Object);
-            var ids = new List<int> { 99, 100 };
-            // Act
-            var result = await repository.GetPopularitiesByIdsAsync(ids, cancellationToken);
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsEmpty(result);
+                var expectedPopularity = Array.Find(expectedPopularities, pop => popularities.Exists(p => p.BookId == id && p.Popularity == pop));
+                if (expectedPopularity > 0)
+                {
+                    Assert.That(result.First(bp => bp.BookId == id).Popularity, Is.EqualTo(expectedPopularity));
+                }
+            }
+
             repositoryMock.Verify(repo => repo.GetQueryableAsync<BookPopularity>(cancellationToken), Times.Once);
         }
+
         [Test]
         public async Task UpdatePopularityRangeAsync_ValidPopularities_UpdatesEntities()
         {
@@ -177,14 +131,18 @@ namespace LibraryShopEntities.Repositories.Library.Tests
                 new BookPopularity { BookId = 1, Popularity = 15 },
                 new BookPopularity { BookId = 2, Popularity = 20 }
             };
+
             // Act
             await repository.UpdatePopularityRangeAsync(popularities, cancellationToken);
+
             // Assert
-            repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.Is<BookPopularity[]>(p =>
+            repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.Is<IEnumerable<BookPopularity>>(p =>
                 p.SequenceEqual(popularities)), cancellationToken), Times.Once);
         }
+
         [Test]
-        public async Task GetPaginatedAsync_ValidPage_ReturnsBooksWithEntities()
+        [TestCaseSource(nameof(BookPaginationFilterTestCases))]
+        public async Task GetPaginatedAsync_TestCases(int expectedCount, string? firstBookName, LibraryFilterRequest filter)
         {
             // Arrange
             var books = new List<Book>
@@ -192,156 +150,320 @@ namespace LibraryShopEntities.Repositories.Library.Tests
                 new Book
                 {
                     Id = 1,
-                    Name =  "Book1",
-                    Author = new Author { Id = 1, Name = "Author1" },
-                    Genre = new Genre { Id = 1, Name = "Genre1" },
-                    Publisher = new Publisher { Id = 1, Name = "Publisher1" },
-                    PublicationDate = DateTime.UtcNow,
-                    Price = 10,
-                    PageAmount = 10,
-                    StockAmount = 10,
+                    Name = "Book1",
+                    PublicationDate = DateTime.MinValue,
+                    Price = 100,
+                    CoverType = CoverType.Soft,
+                    StockAmount = 0,
+                    PageAmount = 100,
+                    AuthorId = 1,
+                    GenreId = 1,
+                    PublisherId = 1,
+                    BookPopularity = new BookPopularity() { Popularity = 1 },
                 },
                 new Book
                 {
                     Id = 2,
                     Name = "Book2",
-                    Author = new Author { Id = 2, Name = "Author2" },
-                    Genre = new Genre { Id = 2, Name = "Genre2" },
-                    Publisher = new Publisher { Id = 1, Name = "Publisher2" },
-                    PublicationDate = DateTime.UtcNow,
-                    Price = 10,
-                    PageAmount = 10,
-                    StockAmount = 10,
-                }
-            };
-            var orders = new List<Order>
-            {
-                new Order
+                    PublicationDate = DateTime.MaxValue,
+                    Price = 1000,
+                    CoverType = CoverType.Hard,
+                    StockAmount = 100,
+                    PageAmount = 1000,
+                    AuthorId = 2,
+                    GenreId = 2,
+                    PublisherId = 2,
+                    BookPopularity = new BookPopularity() { Popularity = 100 },
+                },
+                new Book
                 {
-                    OrderBooks= new List<OrderBook>
-                    {
-                        new OrderBook
-                        {
-                            Id = "1",
-                            BookId = 1
-                        },
-                    }
-                }
+                    Id = 3,
+                    Name = "Book3",
+                    PublicationDate = DateTime.MaxValue,
+                    Price = 1000,
+                    CoverType = CoverType.Hard,
+                    StockAmount = 100,
+                    PageAmount = 1000,
+                    AuthorId = 3,
+                    GenreId = 3,
+                    PublisherId = 3,
+                    BookPopularity = new BookPopularity() { Popularity = 1 },
+                },
             };
-            var dbBookSetMock = GetDbSetMock(books);
+            var dbSetMock = GetDbSetMock(books);
+
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbBookSetMock.Object);
-            var dbOrderSetMock = GetDbSetMock(orders);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Order>(cancellationToken))
-                .ReturnsAsync(dbOrderSetMock.Object);
-            var paginationRequest = new BookFilterRequest() { PageNumber = 1, PageSize = 10 };
+                .ReturnsAsync(dbSetMock.Object);
+
             // Act
-            var result = await repository.GetPaginatedAsync(paginationRequest, cancellationToken);
+            var result = await repository.GetPaginatedAsync(filter, cancellationToken);
+
             // Assert
-            Assert.That(result.Count(), Is.EqualTo(2));
-            Assert.That(result.First().Author!.Name, Is.EqualTo("Author1"));
-            Assert.That(result.First().Genre!.Name, Is.EqualTo("Genre1"));
-            Assert.That(result.First().Publisher!.Name, Is.EqualTo("Publisher1"));
+            Assert.That(result.Count(), Is.EqualTo(expectedCount));
+            if (expectedCount > 0)
+            {
+                Assert.That(result.First().Name, Is.EqualTo(firstBookName));
+            }
+
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
         }
+
         [Test]
-        public async Task GetItemTotalAmountAsync_ReturnsCorrectCount()
+        [TestCaseSource(nameof(BookPaginationAmountFilterTestCases))]
+        public async Task GetItemTotalAmountAsync_TestCases(int expectedCount, LibraryFilterRequest filter)
         {
             // Arrange
             var books = new List<Book>
             {
-                new Book { Id = 1, Name = "Book1" },
-                new Book { Id = 2, Name = "Book2" }
+                new Book
+                {
+                    Id = 1,
+                    Name = "Book1",
+                    PublicationDate = DateTime.MinValue,
+                    Price = 100,
+                    CoverType = CoverType.Soft,
+                    StockAmount = 0,
+                    PageAmount = 100,
+                    AuthorId = 1,
+                    GenreId = 1,
+                    PublisherId = 1,
+                },
+                new Book
+                {
+                    Id = 2,
+                    Name = "Book2",
+                    PublicationDate = DateTime.MaxValue,
+                    Price = 1000,
+                    CoverType = CoverType.Hard,
+                    StockAmount = 100,
+                    PageAmount = 1000,
+                    AuthorId = 2,
+                    GenreId = 2,
+                    PublisherId = 2,
+                },
             };
+
             var dbSetMock = GetDbSetMock(books);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            var filterRequest = new BookFilterRequest();
-            // Act
-            var result = await repository.GetItemTotalAmountAsync(filterRequest, cancellationToken);
-            // Assert
-            Assert.That(result, Is.EqualTo(2));
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
-        }
-        [Test]
-        public async Task CreateAsync_ValidBook_AddsBookWithEntities()
-        {
-            // Arrange
-            var book = new Book
-            {
-                Id = 1,
-                Name = "Book1",
-                AuthorId = 1,
-                GenreId = 2,
-                PublisherId = 3,
-            };
-            var books = new List<Book> { book };
-            var dbSetMock = GetDbSetMock(books);
-            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
-               .ReturnsAsync(dbSetMock.Object);
-            repositoryMock.Setup(repo => repo.AddAsync(book, cancellationToken)).ReturnsAsync(book);
-            // Act
-            var result = await repository.CreateAsync(book, cancellationToken);
-            // Assert
-            Assert.That(result.AuthorId, Is.EqualTo(book.AuthorId));
-            Assert.That(result.GenreId, Is.EqualTo(book.GenreId));
-            Assert.That(result.PublisherId, Is.EqualTo(book.PublisherId));
-            repositoryMock.Verify(d => d.AddAsync(book, It.IsAny<CancellationToken>()), Times.Once);
-            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
-        }
-        [Test]
-        public async Task UpdateAsync_ValidBook_UpdatesBookWithEntities()
-        {
-            // Arrange
-            var book = new Book
-            {
-                Id = 1,
-                Name = "Book1",
-                AuthorId = 1,
-                GenreId = 1,
-                Author = new Author { Id = 1, Name = "Author1" },
-                Genre = new Genre { Id = 1, Name = "Genre1" },
-                Publisher = new Publisher { Id = 1, Name = "Publisher1" },
-            };
-            var updatedBook = new Book
-            {
-                Id = 1,
-                Name = "UpdatedBook1",
-                AuthorId = 1,
-                GenreId = 2,
-                PublisherId = 3,
-            };
-            var dbSetMock = GetDbSetMock([updatedBook]);
+
             repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
                 .ReturnsAsync(dbSetMock.Object);
-            repositoryMock.Setup(repo => repo.UpdateAsync(book, cancellationToken))
-                .ReturnsAsync(updatedBook);
+
             // Act
-            var result = await repository.UpdateAsync(book, cancellationToken);
+            var result = await repository.GetItemTotalAmountAsync(filter, cancellationToken);
+
             // Assert
-            Assert.That(result.Name, Is.EqualTo("UpdatedBook1"));
-            Assert.That(result.AuthorId, Is.EqualTo(1));
-            Assert.That(result.GenreId, Is.EqualTo(2));
-            Assert.That(result.PublisherId, Is.EqualTo(3));
+            Assert.That(result, Is.EqualTo(expectedCount));
+
             repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
-            repositoryMock.Verify(repo => repo.UpdateAsync(book, cancellationToken), Times.Once);
         }
+
         [Test]
-        public async Task DeleteByIdAsync_ValidId_DeletesBook()
+        [TestCase(2, "Book1", Description = "Adds valid book and verifies it can be retrieved by ID.")]
+        public async Task CreateAsync_TestCases(int id, string name)
         {
             // Arrange
-            var book = new Book
+            var book = new Book { Id = id, Name = name };
+            var dbSetMock = GetDbSetMock(new List<Book> { book });
+
+            repositoryMock.Setup(repo => repo.AddAsync(book, cancellationToken))
+                .ReturnsAsync(book);
+
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+                .ReturnsAsync(dbSetMock.Object);
+
+            // Act
+            var result = await repository.CreateAsync(book, cancellationToken);
+
+            // Assert
+            Assert.That(result.Id, Is.EqualTo(id));
+            Assert.That(result.Name, Is.EqualTo(name));
+
+            repositoryMock.Verify(repo => repo.AddAsync(book, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+        [Test]
+        [TestCase(2, "Book2", Description = "Throws exception when created book cannot be retrieved by ID.")]
+        public void CreateAsync_ThrowsException_WhenGetByIdFails(int id, string name)
+        {
+            // Arrange
+            var book = new Book { Id = id, Name = name };
+
+            repositoryMock.Setup(repo => repo.AddAsync(book, cancellationToken))
+                .ReturnsAsync(book);
+
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+                .ReturnsAsync(GetDbSetMock(new List<Book>()).Object);
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await repository.CreateAsync(book, cancellationToken));
+
+            Assert.That(exception.Message, Is.EqualTo("Can not get created book!"));
+            repositoryMock.Verify(repo => repo.AddAsync(book, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+
+        [Test]
+        [TestCase(1, "UpdatedBook1", Description = "Updates valid book and verifies it can be retrieved by ID.")]
+        public async Task UpdateAsync_TestCases(int id, string updatedName)
+        {
+            // Arrange
+            var updatedBook = new Book { Id = id, Name = updatedName };
+            var dbSetMock = GetDbSetMock(new List<Book> { updatedBook });
+
+            repositoryMock.Setup(repo => repo.UpdateAsync(updatedBook, cancellationToken))
+                .ReturnsAsync(updatedBook);
+
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+                .ReturnsAsync(dbSetMock.Object);
+
+            // Act
+            var result = await repository.UpdateAsync(updatedBook, cancellationToken);
+
+            // Assert
+            Assert.That(result.Id, Is.EqualTo(id));
+            Assert.That(result.Name, Is.EqualTo(updatedName));
+
+            repositoryMock.Verify(repo => repo.UpdateAsync(updatedBook, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+        [Test]
+        [TestCase(1, "UpdatedBook2", Description = "Throws exception when updated book cannot be retrieved by ID.")]
+        public void UpdateAsync_ThrowsException_WhenGetByIdFails(int id, string updatedName)
+        {
+            // Arrange
+            var updatedBook = new Book { Id = id, Name = updatedName };
+
+            repositoryMock.Setup(repo => repo.UpdateAsync(updatedBook, cancellationToken))
+                .ReturnsAsync(updatedBook);
+
+            repositoryMock.Setup(repo => repo.GetQueryableAsync<Book>(cancellationToken))
+                .ReturnsAsync(GetDbSetMock(new List<Book>()).Object);
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await repository.UpdateAsync(updatedBook, cancellationToken));
+
+            Assert.That(exception.Message, Is.EqualTo("Can not get updated book!"));
+            repositoryMock.Verify(repo => repo.UpdateAsync(updatedBook, cancellationToken), Times.Once);
+            repositoryMock.Verify(repo => repo.GetQueryableAsync<Book>(cancellationToken), Times.Once);
+        }
+
+        [Test]
+        [TestCase(2, Description = "Valid list with two books")]
+        [TestCase(0, Description = "Empty list")]
+        public async Task UpdateRangeAsync_TestCases(int bookCount)
+        {
+            // Arrange
+            var booksToUpdate = Enumerable.Range(1, bookCount)
+                .Select(i => new Book
+                {
+                    Id = i,
+                    Name = $"UpdatedBook{i}",
+                })
+                .ToList();
+
+            // Act
+            await repository.UpdateRangeAsync(booksToUpdate, cancellationToken);
+
+            // Assert
+            if (bookCount > 0)
             {
-                Id = 1,
-                Name = "Book1",
-                Author = new Author { Id = 1, Name = "Author1" },
-                Genre = new Genre { Id = 1, Name = "Genre1" },
-                Publisher = new Publisher { Id = 1, Name = "Publisher1" },
-            };
+                repositoryMock.Verify(repo => repo.UpdateRangeAsync(booksToUpdate, cancellationToken), Times.Once);
+            }
+            else
+            {
+                repositoryMock.Verify(repo => repo.UpdateRangeAsync(It.IsAny<IEnumerable<Book>>(), It.IsAny<CancellationToken>()), Times.Never);
+            }
+        }
+
+        [Test]
+        [TestCase(1, "BookToDelete", Description = "Deletes valid book by calling generic repository.")]
+        public async Task DeleteAsync_TestCases(int id, string name)
+        {
+            // Arrange
+            var book = new Book { Id = id, Name = name };
+
             // Act
             await repository.DeleteAsync(book, cancellationToken);
+
             // Assert
             repositoryMock.Verify(repo => repo.DeleteAsync(book, cancellationToken), Times.Once);
+        }
+
+        public static object[] BookPaginationFilterTestCases()
+        {
+            return [
+                new object[] { 3, "Book3", new LibraryFilterRequest() { PageNumber = 1, PageSize = 10, } },
+                new object[] { 0, null!, new LibraryFilterRequest() { PageNumber = 2, PageSize = 10, } },
+                new object[] { 3, "Book3", new LibraryFilterRequest() { PageNumber = 1, PageSize = 10, ContainsName = "Book" } },
+                new object[] { 1, "Book1", new LibraryFilterRequest() { PageNumber = 1, PageSize = 10, ContainsName = "Book1" } },
+                new object[] { 3, "Book2", new BookFilterRequest() { PageNumber = 1, PageSize = 10, } },
+                new object[] { 0, null!, new BookFilterRequest() { PageNumber = 2, PageSize = 10, } },
+                new object[] { 3, "Book2", new BookFilterRequest() { PageNumber = 1, PageSize = 10, ContainsName = "Book" } },
+                new object[] { 1, "Book1", new BookFilterRequest() { PageNumber = 1, PageSize = 10, ContainsName = "Book1" } },
+                new object[] { 3, "Book2", new BookFilterRequest() { PageNumber = 1, PageSize = 10, Sorting = BookSorting.MostPopular } },
+                new object[] { 3, "Book3", new BookFilterRequest() { PageNumber = 1, PageSize = 10, Sorting = BookSorting.LeastPopular } },
+                new object[] { 2, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublicationFrom = DateTime.UtcNow  } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublicationTo = DateTime.UtcNow  } },
+                new object[] { 3, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublicationFrom = DateTime.MinValue, PublicationTo = DateTime.MaxValue  } },
+                new object[] { 0, null!, new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublicationFrom = DateTime.UtcNow, PublicationTo = DateTime.UtcNow.AddDays(1) } },
+                new object[] { 2, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, MinPrice = 101  } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, MaxPrice = 101  } },
+                new object[] { 0, null!, new BookFilterRequest() {  PageNumber = 1, PageSize = 10, MinPrice = 101, MaxPrice = 102  } },
+                new object[] { 2, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, CoverType = CoverType.Hard  } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, CoverType = CoverType.Soft  } },
+                new object[] { 3, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, CoverType = CoverType.Any  } },
+                new object[] { 2, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, OnlyInStock = true } },
+                new object[] { 3, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, OnlyInStock = false } },
+                new object[] { 2, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, MinPageAmount = 101  } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, MaxPageAmount = 101  } },
+                new object[] { 0, null!, new BookFilterRequest() {  PageNumber = 1, PageSize = 10, MinPageAmount = 101, MaxPageAmount = 102  } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, AuthorId = 1, } },
+                new object[] { 1, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, AuthorId = 2, } },
+                new object[] { 0, null!, new BookFilterRequest() {  PageNumber = 1, PageSize = 10, AuthorId = 0, } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, GenreId = 1, } },
+                new object[] { 1, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, GenreId = 2, } },
+                new object[] { 0, null!, new BookFilterRequest() {  PageNumber = 1, PageSize = 10, GenreId = 0, } },
+                new object[] { 1, "Book1", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublisherId = 1, } },
+                new object[] { 1, "Book2", new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublisherId = 2, } },
+                new object[] { 0, null!, new BookFilterRequest() {  PageNumber = 1, PageSize = 10, PublisherId = 0, } },
+            ];
+        }
+        public static object[] BookPaginationAmountFilterTestCases()
+        {
+            return [
+                new object[] { 2, new LibraryFilterRequest() },
+                new object[] { 2, new LibraryFilterRequest() { ContainsName = "Book" } },
+                new object[] { 1, new LibraryFilterRequest() { ContainsName = "Book2" } },
+                new object[] { 2, new BookFilterRequest() },
+                new object[] { 2, new BookFilterRequest() { ContainsName = "Book" } },
+                new object[] { 1, new BookFilterRequest() { ContainsName = "Book2" } },
+                new object[] { 1, new BookFilterRequest() { PublicationFrom = DateTime.UtcNow  } },
+                new object[] { 1, new BookFilterRequest() { PublicationTo = DateTime.UtcNow  } },
+                new object[] { 2, new BookFilterRequest() { PublicationFrom = DateTime.MinValue, PublicationTo = DateTime.MaxValue  } },
+                new object[] { 0, new BookFilterRequest() { PublicationFrom = DateTime.UtcNow, PublicationTo = DateTime.UtcNow.AddDays(1) } },
+                new object[] { 1, new BookFilterRequest() { MinPrice = 101  } },
+                new object[] { 1, new BookFilterRequest() { MaxPrice = 101  } },
+                new object[] { 0, new BookFilterRequest() { MinPrice = 101, MaxPrice = 102  } },
+                new object[] { 1, new BookFilterRequest() { CoverType = CoverType.Hard  } },
+                new object[] { 1, new BookFilterRequest() { CoverType = CoverType.Soft  } },
+                new object[] { 2, new BookFilterRequest() { CoverType = CoverType.Any  } },
+                new object[] { 1, new BookFilterRequest() { OnlyInStock = true } },
+                new object[] { 2, new BookFilterRequest() { OnlyInStock = false } },
+                new object[] { 1, new BookFilterRequest() { MinPageAmount = 101  } },
+                new object[] { 1, new BookFilterRequest() { MaxPageAmount = 101  } },
+                new object[] { 0, new BookFilterRequest() { MinPageAmount = 101, MaxPageAmount = 102  } },
+                new object[] { 1, new BookFilterRequest() { AuthorId = 1, } },
+                new object[] { 1, new BookFilterRequest() { AuthorId = 2, } },
+                new object[] { 0, new BookFilterRequest() { AuthorId = 0, } },
+                new object[] { 1, new BookFilterRequest() { GenreId = 1, } },
+                new object[] { 1, new BookFilterRequest() { GenreId = 2, } },
+                new object[] { 0, new BookFilterRequest() { GenreId = 0, } },
+                new object[] { 1, new BookFilterRequest() { PublisherId = 1, } },
+                new object[] { 1, new BookFilterRequest() { PublisherId = 2, } },
+                new object[] { 0, new BookFilterRequest() { PublisherId = 0, } },
+            ];
         }
     }
 }

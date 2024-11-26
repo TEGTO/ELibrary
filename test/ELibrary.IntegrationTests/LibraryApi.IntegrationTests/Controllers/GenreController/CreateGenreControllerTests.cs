@@ -14,17 +14,17 @@ namespace LibraryApi.IntegrationTests.Controllers.GenreController
             return await GenreControllerTestHelper.CreateSamplesAsync(CreateSampleEntityAsync);
         }
 
-        protected override async ValueTask<CreateGenreRequest> GetCreateRequestAsync()
+        protected override ValueTask<CreateGenreRequest> GetCreateRequestAsync()
         {
-            return new CreateGenreRequest()
+            return ValueTask.FromResult(new CreateGenreRequest()
             {
                 Name = "Genre",
-            };
+            });
         }
 
-        protected override async ValueTask<CreateGenreRequest> GetInvalidCreateRequestAsync()
+        protected override ValueTask<CreateGenreRequest> GetInvalidCreateRequestAsync()
         {
-            return new CreateGenreRequest();
+            return ValueTask.FromResult(new CreateGenreRequest());
         }
     }
 }

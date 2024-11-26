@@ -17,8 +17,8 @@ namespace UserApi.IntegrationTests
         protected JwtSettings settings;
         private WebAppFactoryWrapper wrapper;
         private WebApplicationFactory<Program> factory;
-        protected Mock<IGoogleOAuthHttpClient> mockGoogleOAuthHttpClient;
-        protected Mock<IGoogleTokenValidator> mockGoogleTokenValidator;
+        protected Mock<IGoogleOAuthHttpClient>? mockGoogleOAuthHttpClient;
+        protected Mock<IGoogleTokenValidator>? mockGoogleTokenValidator;
         private IServiceScope scope;
 
         [OneTimeSetUp]

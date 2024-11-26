@@ -11,12 +11,7 @@ namespace UserApi.Services
         public Task<IdentityResult> DeleteUserAsync(User user, CancellationToken cancellationToken);
         public Task<IEnumerable<User>> GetPaginatedUsersAsync(AdminGetUserFilter filter, CancellationToken cancellationToken);
         public Task<User?> GetUserAsync(ClaimsPrincipal principal, CancellationToken cancellationToken);
-        /// <summary>
-        /// Get a user by any information about him. 
-        /// </summary>
-        /// <param name="info">Login, Name, Email, Id, etc...</param>
-        /// <returns></returns>
-        public Task<User?> GetUserByUserInfoAsync(string info, CancellationToken cancellationToken);
+        public Task<User?> GetUserByLoginAsync(string login, CancellationToken cancellationToken);
         public Task<List<string>> GetUserRolesAsync(User user, CancellationToken cancellationToken);
         public Task<int> GetUserTotalAmountAsync(AdminGetUserFilter filter, CancellationToken cancellationToken);
         public Task<List<IdentityError>> SetUserRolesAsync(User user, List<string> roles, CancellationToken cancellationToken);

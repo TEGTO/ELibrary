@@ -19,16 +19,19 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
         public async Task CreateEntity_ValidEntity_ReturnsOKWithItem()
         {
             // Arrange
-            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             var createRequest = await GetCreateRequestAsync();
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ManagerAccessToken);
             request.Content = new StringContent(
                 JsonSerializer.Serialize(createRequest),
                 Encoding.UTF8,
                 "application/json"
             );
+
             // Act 
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
 
@@ -37,56 +40,69 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             {
                 PropertyNameCaseInsensitive = true
             });
+
             Assert.NotNull(responseEntity);
             Assert.That(mapper.Map<TEntity>(responseEntity).Name, Is.EqualTo(mapper.Map<TEntity>(createRequest).Name));
         }
+
         [Test]
         public async Task CreateEntity_NotEnoughtRights_ReturnsEAccessForbidden()
         {
             // Arrange
-            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             var createRequest = GetCreateRequestAsync();
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
             request.Content = new StringContent(
                 JsonSerializer.Serialize(createRequest),
                 Encoding.UTF8,
                 "application/json"
             );
+
             // Act 
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
         }
+
         [Test]
         public async Task CreateEntity_UnauthorizedRequest_ReturnsUnauthorized()
         {
             // Arrange
-            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             var createRequest = GetCreateRequestAsync();
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             request.Content = new StringContent(
                 JsonSerializer.Serialize(createRequest),
                 Encoding.UTF8,
                 "application/json"
             );
+
             // Act 
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
         }
+
         [Test]
         public async Task CreateEntity_InvalidEntity_BadRequest()
         {
             // Arrange
-            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             var createRequest = await GetInvalidCreateRequestAsync();
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, ControllerEndpoint);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ManagerAccessToken);
             request.Content = new StringContent(
                 JsonSerializer.Serialize(createRequest),
                 Encoding.UTF8,
                 "application/json"
             );
+
             // Act 
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }

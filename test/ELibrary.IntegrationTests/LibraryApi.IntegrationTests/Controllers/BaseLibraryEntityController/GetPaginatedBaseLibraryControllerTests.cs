@@ -34,25 +34,30 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
 
             using var request3 = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
             request3.Content = new StringContent(JsonSerializer.Serialize(filter), Encoding.UTF8, "application/json");
+
             // Act 
             var response = await client.SendAsync(request);
             var list = await CreateSamplesAsync();
             var response2 = await client.SendAsync(request2);
             var response3 = await client.SendAsync(request3);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(response2.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(response3.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
             var content = await response.Content.ReadAsStringAsync();
             var responseEntities = JsonSerializer.Deserialize<List<TEntityResponse>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+
             var content2 = await response2.Content.ReadAsStringAsync();
             var responseEntities2 = JsonSerializer.Deserialize<List<TEntityResponse>>(content2, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+
             var content3 = await response3.Content.ReadAsStringAsync();
             var responseEntities3 = JsonSerializer.Deserialize<List<TEntityResponse>>(content3, new JsonSerializerOptions
             {
@@ -68,25 +73,31 @@ namespace LibraryApi.IntegrationTests.Controllers.BaseLibraryEntityController
             Assert.That(responseEntities.Count, Is.EqualTo(responseEntities2.Count));
             Assert.That(responseEntities3.Count, Is.Not.EqualTo(responseEntities2.Count));
         }
+
         [Test]
         public async Task GetPaginatedEntities_ReturnsOkWithEmptyList()
         {
             // Arrange
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
             var filter = GetFilter();
             filter.PageNumber = 1;
             filter.PageSize = 10;
             filter.ContainsName = "ZEROMATCHES";
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerEndpoint}/pagination");
             request.Content = new StringContent(JsonSerializer.Serialize(filter), Encoding.UTF8, "application/json");
+
             // Act 
             var response = await client.SendAsync(request);
+
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
             var content = await response.Content.ReadAsStringAsync();
             var responseEntities = JsonSerializer.Deserialize<List<TEntity>>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+
             Assert.NotNull(responseEntities);
             Assert.That(responseEntities.Count, Is.EqualTo(0));
         }

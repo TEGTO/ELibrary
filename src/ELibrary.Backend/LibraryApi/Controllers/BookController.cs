@@ -35,14 +35,14 @@ namespace LibraryApi.Controllers
 
         [HttpPost("popularity")]
         [AllowAnonymous]
-        public virtual async Task<IActionResult> RaisePopularity(RaiseBookPopularityRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> RaisePopularity(RaiseBookPopularityRequest request, CancellationToken cancellationToken)
         {
             await bookService.RaisePopularityAsync(request.Ids, cancellationToken);
             return Ok();
         }
         [HttpPost("stockamount")]
         [AllowAnonymous]
-        public virtual async Task<IActionResult> UpdateStockAmount(List<UpdateBookStockAmountRequest> requests, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateStockAmount(List<UpdateBookStockAmountRequest> requests, CancellationToken cancellationToken)
         {
             var d = requests.ToDictionary(x => x.BookId, y => y.ChangeAmount);
             await bookService.ChangeBookStockAmount(d, cancellationToken);

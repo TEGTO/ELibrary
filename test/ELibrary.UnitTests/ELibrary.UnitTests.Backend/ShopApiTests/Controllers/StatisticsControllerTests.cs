@@ -21,6 +21,7 @@ namespace ShopApi.Controllers.Tests
             {
                 mapperMock = new Mock<IMapper>();
                 statisticsServiceMock = new Mock<IStatisticsService>();
+
                 controller = new StatisticsController(
                     mapperMock.Object,
                     statisticsServiceMock.Object
@@ -33,16 +34,32 @@ namespace ShopApi.Controllers.Tests
                 // Arrange
                 var request = new GetShopStatisticsRequest();
                 var getStatistics = new GetShopStatisticsFilter();
-                var statistics = new ShopStatistics();
+
+                var statistics = new ShopStatistics()
+                {
+                    AveragePrice = 0,
+                    CanceledCopies = 0,
+                    CanceledOrderAmount = 0,
+                    EarnedMoney = 0,
+                    InCartCopies = 0,
+                    InOrderCopies = 0,
+                    OrderAmount = 0,
+                    SoldCopies = 0,
+                };
+
                 var response = new ShopStatisticsResponse();
+
                 mapperMock.Setup(m => m.Map<GetShopStatisticsFilter>(request)).Returns(getStatistics);
                 statisticsServiceMock.Setup(s => s.GetStatisticsAsync(getStatistics, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(statistics);
                 mapperMock.Setup(m => m.Map<ShopStatisticsResponse>(statistics)).Returns(response);
+
                 // Act
                 var result = await controller.GetShopStatistics(request, CancellationToken.None);
+
                 // Assert
                 var okResult = result.Result as OkObjectResult;
+
                 Assert.IsNotNull(okResult);
                 Assert.That(okResult.StatusCode, Is.EqualTo(200));
                 Assert.That(okResult.Value, Is.EqualTo(response));

@@ -26,7 +26,7 @@ namespace ShopApi.Features.StockBookOrderFeature.Services
 
             var newStockBookOrder = await stockBookOrderRepository.AddStockBookOrderAsync(stockBookOrder, cancellationToken);
 
-            var bookPriceUpdatedEvent = new BookStockAmountUpdatedEvent(newStockBookOrder);
+            var bookPriceUpdatedEvent = new BookStockAmountUpdatedEvent() { StockBookOrder = newStockBookOrder };
             await eventDispatcher.DispatchAsync(bookPriceUpdatedEvent, cancellationToken);
 
             return (await stockBookOrderRepository.GetStockBookOrderByIdAsync(newStockBookOrder.Id, cancellationToken))!;

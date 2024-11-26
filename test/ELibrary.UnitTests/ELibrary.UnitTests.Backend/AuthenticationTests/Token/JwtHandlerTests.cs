@@ -2,19 +2,18 @@
 using Authentication.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Moq;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AuthenticationTests.Token
 {
     [TestFixture]
     internal class JwtHandlerTests
     {
-        private Mock<JwtSettings> mockJwtSettings;
+        private JwtHandler jwtHandler;
 
         [SetUp]
         public void Setup()
         {
-            // Mock JwtSettings
             var jwtSettings = new JwtSettings
             {
                 Key = "this is super secret key for authentication testing",
@@ -23,63 +22,85 @@ namespace AuthenticationTests.Token
                 ExpiryInMinutes = 30
             };
 
-            mockJwtSettings = new Mock<JwtSettings>();
-            mockJwtSettings.SetupGet(settings => settings.Key).Returns(jwtSettings.Key);
-            mockJwtSettings.SetupGet(settings => settings.Issuer).Returns(jwtSettings.Issuer);
-            mockJwtSettings.SetupGet(settings => settings.Audience).Returns(jwtSettings.Audience);
-            mockJwtSettings.SetupGet(settings => settings.ExpiryInMinutes).Returns(jwtSettings.ExpiryInMinutes);
-        }
-
-        private JwtHandler CreateJwtHandler()
-        {
-            return new JwtHandler(
-                mockJwtSettings.Object);
+            jwtHandler = new JwtHandler(jwtSettings);
         }
 
         [Test]
-        public void CreateToken_ValidData_ValidAccessToken()
+        [TestCase("test@example.com", "testuser", new[] { Roles.ADMINISTRATOR })]
+        [TestCase("", "testuser", new[] { Roles.ADMINISTRATOR })]
+        [TestCase("", "", new[] { Roles.ADMINISTRATOR })]
+        [TestCase("user@example.com", "user123", new[] { Roles.CLIENT, Roles.MANAGER })]
+        [TestCase("admin@example.com", "admin", new string[0])]
+        [TestCase("", "admin", new string[0])]
+        [TestCase("", "", new string[0])]
+        public void CreateToken_ValidData_ShouldReturnValidAccessToken(string email, string username, string[] roles)
         {
             // Arrange
             var user = new IdentityUser
             {
-                Email = "test@example.com",
-                UserName = "testuser"
+                Email = email,
+                UserName = username
             };
-            var jwtHandler = CreateJwtHandler();
+
             // Act
-            var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
+            var accessTokenData = jwtHandler.CreateToken(user, roles);
+
             // Assert
-            Assert.IsNotNull(accessTokenData.AccessToken);
-            Assert.IsNotNull(accessTokenData.RefreshToken);
-            Assert.IsNotEmpty(accessTokenData.AccessToken);
-            Assert.IsNotEmpty(accessTokenData.RefreshToken);
-            mockJwtSettings.VerifyAll();
+            Assert.IsFalse(string.IsNullOrEmpty(accessTokenData.AccessToken));
+            Assert.IsFalse(string.IsNullOrEmpty(accessTokenData.RefreshToken));
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            Assert.IsTrue(tokenHandler.CanReadToken(accessTokenData.AccessToken));
         }
-        [Test]
-        public void GetPrincipalFromExpiredToken_ValidData_ValidPrincipal()
+        [TestCase(null, null, null)]
+        public void CreateToken_NullData_ThrowsNullReferenceException(string email, string username, string[] roles)
         {
             // Arrange
             var user = new IdentityUser
             {
-                Email = "test@example.com",
-                UserName = "testuser"
+                Email = email,
+                UserName = username
             };
-            var jwtHandler = CreateJwtHandler();
-            var accessTokenData = jwtHandler.CreateToken(user, new[] { Roles.CLIENT });
+
+            // Act + Assert
+            Assert.Throws<NullReferenceException>(() => jwtHandler.CreateToken(user, roles));
+        }
+
+        [Test]
+        [TestCase("test@example.com", "testuser", new[] { Roles.ADMINISTRATOR })]
+        [TestCase("", "testuser", new[] { Roles.ADMINISTRATOR })]
+        [TestCase("user@example.com", "user123", new[] { Roles.CLIENT, Roles.MANAGER })]
+        [TestCase("admin@example.com", "admin", new string[0])]
+        [TestCase("", "admin", new string[0])]
+        [TestCase("", "", new string[0])]
+        public void GetPrincipalFromExpiredToken_ValidData_ValidPrincipal(string email, string username, string[] roles)
+        {
+            // Arrange
+            var user = new IdentityUser
+            {
+                Email = email,
+                UserName = username
+            };
+            var accessTokenData = jwtHandler.CreateToken(user, roles);
+
             // Act
+            Assert.IsNotNull(accessTokenData.AccessToken);
             var principal = jwtHandler.GetPrincipalFromExpiredToken(accessTokenData.AccessToken);
+
             // Assert
             Assert.IsNotNull(principal);
+            Assert.IsNotNull(principal.Identity);
             Assert.IsTrue(principal.Identity.IsAuthenticated);
         }
         [Test]
-        public void GetPrincipalFromExpiredToken_InvalidData_ThrowsException()
+        [TestCase(null, typeof(ArgumentNullException))]
+        [TestCase("", typeof(ArgumentNullException))]
+        [TestCase("invalid_jwt_token", typeof(SecurityTokenMalformedException))]
+        public void GetPrincipalFromExpiredToken_InvalidData_ThrowsException(string token, Type exceptionType)
         {
-            // Arrange
-            var jwtHandler = CreateJwtHandler();
-            var invalidToken = "invalid_jwt_token";
             // Act & Assert
-            Assert.Throws<SecurityTokenMalformedException>(() => jwtHandler.GetPrincipalFromExpiredToken(invalidToken));
+            var exception = Assert.Throws(exceptionType, () => jwtHandler.GetPrincipalFromExpiredToken(token));
+            Assert.IsInstanceOf(exceptionType, exception);
         }
     }
 }
