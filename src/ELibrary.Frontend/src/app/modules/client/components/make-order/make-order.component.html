@@ -67,7 +67,7 @@
                                     <label for="payment">Payment</label>
                                     <div>
                                         <mat-radio-group id="payment" [formControl]="paymentMethodInput">
-                                            <mat-radio-button *ngFor="let item of paymentMethods"
+                                            <mat-radio-button *ngFor="let item of paymentMethods" [disabled]="true"
                                                 [value]="item.value">{{item.name}}</mat-radio-button>
                                             <mat-error
                                                 *ngIf="validateInputField(paymentMethodInput).hasError">{{validateInputField(paymentMethodInput).message}}</mat-error>

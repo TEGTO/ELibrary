@@ -8,6 +8,7 @@ export const environment =
   maxOrderAmount: 99,
   bookCoverPlaceholder: '../../../../../assets/book_cover_placeholder.png',
   botProfilePicture: '../../../../../assets/bot_avatar.png',
+  bookIcon: '../../../../../assets/open_book.png',
   botChatDebouncingTimeInMilliseconds: 3000,
   minOrderTime: new Date(2023, 11, 1, 6, 30),
   maxOrderTime: new Date(2023, 11, 1, 21, 0),

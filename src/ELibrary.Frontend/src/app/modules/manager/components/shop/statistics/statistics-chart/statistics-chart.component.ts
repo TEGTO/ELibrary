@@ -29,6 +29,8 @@ export class StatisticsChartComponent {
       formattedData = this.formatDataByDay(data);
     }
 
+    formattedData = this.sortFormattedData(formattedData);
+
     this.chartOptions = {
       chart: {
         type: 'area' as ChartType,
@@ -150,6 +152,20 @@ export class StatisticsChartComponent {
       labelText = `${date.getDate()} ${date.toLocaleString('en-EN', { month: 'short' })}`;
     }
     return labelText;
+  }
+
+  private sortFormattedData(formattedData: { x: number, y: number }[]): { x: number, y: number }[] {
+    return formattedData.sort((n1, n2) => {
+      if (n1.x > n2.x) {
+        return 1;
+      }
+
+      if (n1.x < n2.x) {
+        return -1;
+      }
+
+      return 0;
+    });
   }
 }
 

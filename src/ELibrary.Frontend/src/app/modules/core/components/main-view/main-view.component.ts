@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../../../environment/environment';
 import { AuthenticationService, START_LOGIN_COMMAND_HANDLER, StartLoginCommand } from '../../../authentication';
 import { CommandHandler, getAdminUerTable, getClientOrderHistoryPath, getManagerBooksPath, Policy, PolicyType, UserAuth } from '../../../shared';
 import { ClientService } from '../../../shop';
@@ -16,6 +17,7 @@ export class MainViewComponent implements OnInit {
   get adminPath() { return getAdminUerTable(); }
   get managerPath() { return getManagerBooksPath(); }
   get orderHistoryPath() { return getClientOrderHistoryPath(); }
+  get bookIcon() { return environment.bookIcon; }
 
   constructor(
     private readonly authService: AuthenticationService,
