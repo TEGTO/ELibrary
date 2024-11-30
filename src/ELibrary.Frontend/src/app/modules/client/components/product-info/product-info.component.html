@@ -9,8 +9,8 @@
     <div class="book mr-2 h-full w-full border border-gray-200 rounded-lg p-10">
         <div class="w-full flex flex-wrap gap-10">
             <div class="book__cover">
-                <img class="h-56 w-36" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
-                    (error)="onErrorImage($event)" />
+                <img class="h-56 w-36" crossorigin='anonymous' [ngSrc]="getCoverUrl(book)" alt="Book cover"
+                    (error)="onErrorImage(book)" height="224" width="144" priority />
             </div>
             <!-- Book Details -->
             <div class="h-full w-5/12 pt-5 flex">

@@ -1,5 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -75,7 +75,8 @@ const routes: Routes = [
     MatPaginator,
     MatExpansionModule,
     ReactiveFormsModule,
-    PlaceholderPipe
+    PlaceholderPipe,
+    NgOptimizedImage,
   ]
 })
 export class ClientModule { }

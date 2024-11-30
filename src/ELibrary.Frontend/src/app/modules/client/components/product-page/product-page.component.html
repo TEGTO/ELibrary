@@ -1,4 +1,5 @@
 <app-book-filter (filterChange)="filterChange($event)"></app-book-filter>
+
 <div class="bg-zinc-50 body__products">
     <ng-container *ngIf="items$ | async as items; else loading">
         <ng-container *ngIf="items.length > 0; else noItems">
@@ -28,8 +29,8 @@
         <a [routerLink]="getBookPage(book)"
             class="flex flex-col items-center hover:cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 relative">
             <div class="book__cover relative">
-                <img class="h-42 w-24" crossorigin='anonymous' [src]="book.coverImgUrl" alt="Book cover"
-                    (error)="onErrorImage($event)" />
+                <img class="h-36 w-24" crossorigin="anonymous" [ngSrc]="getCoverUrl(book)" alt="Book cover"
+                    (error)="onErrorImage(book)" height="144" width="96" priority />
                 <!-- Gray Overlay with Centered "Out of Stock" Text -->
                 <div *ngIf="!checkIfInStock(book)"
                     class="absolute inset-0 bg-gray-100/70 flex items-center justify-center text-red-600 font-bold text-xs">

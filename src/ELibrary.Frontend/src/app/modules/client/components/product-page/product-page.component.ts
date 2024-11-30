@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { map, Observable, tap } from 'rxjs';
-import { environment } from '../../../../../environment/environment';
-import { BookService } from '../../../library';
+import { BookFallbackCoverPipe, BookService } from '../../../library';
 import { Book, BookFilterRequest, CommandHandler, CurrencyPipeApplier, defaultBookFilterRequest } from '../../../shared';
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from '../../../shop';
 
@@ -27,7 +26,8 @@ export class ProductPageComponent implements OnInit {
   constructor(
     private readonly bookService: BookService,
     private readonly currenctyApplier: CurrencyPipeApplier,
-    @Inject(CART_ADD_BOOK_COMMAND_HANDLER) private readonly addBookToCartHandler: CommandHandler<CartAddBookCommand>
+    @Inject(CART_ADD_BOOK_COMMAND_HANDLER) private readonly addBookToCartHandler: CommandHandler<CartAddBookCommand>,
+    private readonly fallbackImagePipe: BookFallbackCoverPipe,
   ) { }
 
   ngOnInit(): void {
@@ -97,11 +97,16 @@ export class ProductPageComponent implements OnInit {
   getBookPage(book: Book): string {
     return book.id.toString();
   }
+
   checkIfInStock(book: Book): boolean {
     return book.stockAmount > 0;
   }
-  onErrorImage(event: Event) {
-    const element = event.target as HTMLImageElement;
-    element.src = environment.bookCoverPlaceholder;
+
+  getCoverUrl(book: Book): string {
+    return this.fallbackImagePipe.transform(book.coverImgUrl, book.id);
+  }
+
+  onErrorImage(book: Book) {
+    this.fallbackImagePipe.markAsFailed(book.id);
   }
 }

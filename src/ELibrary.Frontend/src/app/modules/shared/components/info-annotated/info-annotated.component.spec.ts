@@ -8,7 +8,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { InfoAnnotatedComponent } from './info-annotated.component';
 
 describe('InfoAnnotatedComponent', () => {
-  let component: InfoAnnotatedComponent;
   let fixture: ComponentFixture<InfoAnnotatedComponent>;
   let mockSnackBarRef: MatSnackBarRef<InfoAnnotatedComponent>;
 
@@ -30,7 +29,6 @@ describe('InfoAnnotatedComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(InfoAnnotatedComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { PageEvent } from '@angular/material/paginator';
 import { filter, Observable } from 'rxjs';
 import { environment } from '../../../../../environment/environment';
+import { BookFallbackCoverPipe } from '../../../library';
 import { Client, combineDateTime, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getCreatedOrderMinDate, getDefaultGetOrdersFilter, getOrderDeliveryMethods, GetOrdersFilter, getOrderStatusString, getPaymentMethods, getProductInfoPath, getProductsPath, minDateValidator, notEmptyString, Order, OrderBook, OrderStatus, phoneValidator, ValidationMessage } from '../../../shared';
 import { CLIENT_CANCEL_ORDER_COMMAND_HANDLER, CLIENT_UPDATE_ORDER_COMMAND_HANDLER, ClientCancelOrderCommand, ClientService, ClientUpdateOrderCommand, OrderService } from '../../../shop';
 
@@ -39,7 +40,8 @@ export class OrderHistoryComponent implements OnInit {
     private readonly currencyApplier: CurrencyPipeApplier,
     private readonly orderService: OrderService,
     @Inject(CLIENT_UPDATE_ORDER_COMMAND_HANDLER) private readonly updateOrderHandler: CommandHandler<ClientUpdateOrderCommand>,
-    @Inject(CLIENT_CANCEL_ORDER_COMMAND_HANDLER) private readonly cancelOrderHandler: CommandHandler<ClientCancelOrderCommand>
+    @Inject(CLIENT_CANCEL_ORDER_COMMAND_HANDLER) private readonly cancelOrderHandler: CommandHandler<ClientCancelOrderCommand>,
+    private readonly fallbackImagePipe: BookFallbackCoverPipe,
   ) { }
 
   ngOnInit(): void {
@@ -195,8 +197,12 @@ export class OrderHistoryComponent implements OnInit {
   isOrderCompleted(order: Order): boolean {
     return order.orderStatus === OrderStatus.Completed;
   }
-  onErrorImage(event: Event) {
-    const element = event.target as HTMLImageElement;
-    element.src = environment.bookCoverPlaceholder;
+
+  getCoverUrl(orderBook: OrderBook): string {
+    return this.fallbackImagePipe.transform(orderBook.book.coverImgUrl, orderBook.book.id);
+  }
+
+  onErrorImage(orderBook: OrderBook) {
+    this.fallbackImagePipe.markAsFailed(orderBook.book.id);
   }
 }

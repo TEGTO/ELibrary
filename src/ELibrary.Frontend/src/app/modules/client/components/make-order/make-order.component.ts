@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@ang
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, map, Observable, tap } from 'rxjs';
 import { environment } from '../../../../../environment/environment';
+import { BookFallbackCoverPipe } from '../../../library';
 import { CartBook, Client, combineDateTime, CommandHandler, CurrencyPipeApplier, DeliveryMethod, getDefaultOrder, getOrderCreateMinDate, getOrderDeliveryMethods, getPaymentMethods, getProductInfoPath, getProductsPath, mapCartBookToOrderBook, minDateValidator, notEmptyString, Order, PaymentMethod, phoneValidator, ValidationMessage } from '../../../shared';
 import { CartService, CLIENT_ADD_ORDER_COMMAND_HANDLER, ClientAddOrderCommand, ClientService } from '../../../shop';
 
@@ -40,7 +41,8 @@ export class MakeOrderComponent implements OnInit {
     private readonly clientService: ClientService,
     private readonly currencyApplier: CurrencyPipeApplier,
     private readonly cartService: CartService,
-    @Inject(CLIENT_ADD_ORDER_COMMAND_HANDLER) private readonly addOrderHandler: CommandHandler<ClientAddOrderCommand>
+    @Inject(CLIENT_ADD_ORDER_COMMAND_HANDLER) private readonly addOrderHandler: CommandHandler<ClientAddOrderCommand>,
+    private readonly fallbackImagePipe: BookFallbackCoverPipe,
   ) { }
 
   ngOnInit(): void {
@@ -128,8 +130,12 @@ export class MakeOrderComponent implements OnInit {
   getCartBookPrice(cartBook: CartBook): number {
     return cartBook.book.price * cartBook.bookAmount;
   }
-  onErrorImage(event: Event) {
-    const element = event.target as HTMLImageElement;
-    element.src = environment.bookCoverPlaceholder;
+
+  getCoverUrl(cartBook: CartBook): string {
+    return this.fallbackImagePipe.transform(cartBook.book.coverImgUrl, cartBook.book.id);
+  }
+
+  onErrorImage(cartBook: CartBook) {
+    this.fallbackImagePipe.markAsFailed(cartBook.book.id);
   }
 }
