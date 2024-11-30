@@ -45,7 +45,6 @@ $button-icon-light: mat.define-theme((color: (theme-type: dark,
 :root {
     @include mat.all-component-themes($theme);
     @include square-elements;
-    // @include toolbar-theme($theme);
 }
 
 @include mat-timepicker.timepicker-theme($theme);

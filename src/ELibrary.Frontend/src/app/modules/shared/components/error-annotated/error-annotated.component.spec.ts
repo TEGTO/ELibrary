@@ -8,7 +8,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorAnnotatedComponent } from './error-annotated.component';
 
 describe('ErrorAnnotatedComponent', () => {
-  let component: ErrorAnnotatedComponent;
   let fixture: ComponentFixture<ErrorAnnotatedComponent>;
   let mockSnackBarRef: MatSnackBarRef<ErrorAnnotatedComponent>;
 
@@ -30,7 +29,6 @@ describe('ErrorAnnotatedComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorAnnotatedComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

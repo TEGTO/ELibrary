@@ -53,15 +53,16 @@ namespace ShopApi
 
         public static async Task<IEnumerable<OrderResponse>> GetOrderResponsesWithBooksAsync(IEnumerable<Order> orders, ILibraryService libraryService, IMapper mapper, CancellationToken cancellationToken)
         {
-            var orderResponses = orders.Select(mapper.Map<OrderResponse>);
+            var orderResponses = orders.Select(mapper.Map<OrderResponse>).ToList();
 
             var bookIds = GetDistinctBookIds(orderResponses);
             var bookResponses = await GetBookResponsesForIdsAsync(bookIds, libraryService, cancellationToken);
+
             var bookLookup = bookResponses.ToDictionary(book => book.Id);
 
             foreach (var order in orderResponses)
             {
-                foreach (var orderBook in order.OrderBooks ?? [])
+                foreach (var orderBook in order.OrderBooks ?? Enumerable.Empty<OrderBookResponse>())
                 {
                     if (bookLookup.TryGetValue(orderBook.BookId, out var book))
                     {

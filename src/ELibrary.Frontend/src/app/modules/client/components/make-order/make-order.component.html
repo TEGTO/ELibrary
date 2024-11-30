@@ -67,7 +67,7 @@
                                     <label for="payment">Payment</label>
                                     <div>
                                         <mat-radio-group id="payment" [formControl]="paymentMethodInput">
-                                            <mat-radio-button *ngFor="let item of paymentMethods"
+                                            <mat-radio-button *ngFor="let item of paymentMethods" [disabled]="true"
                                                 [value]="item.value">{{item.name}}</mat-radio-button>
                                             <mat-error
                                                 *ngIf="validateInputField(paymentMethodInput).hasError">{{validateInputField(paymentMethodInput).message}}</mat-error>
@@ -127,8 +127,8 @@
         <div class="w-full flex justify-between items-center">
             <div class=" flex flex gap-5">
                 <a class="book__cover hover:cursor-pointer" [routerLink]="getBookPage(cartBook)">
-                    <img class="h-42 w-24" crossorigin='anonymous' [src]="cartBook.book.coverImgUrl" alt="Book cover"
-                        (error)="onErrorImage($event)" />
+                    <img class="h-36 w-24" crossorigin="anonymous" [ngSrc]="getCoverUrl(cartBook)" alt="Book cover"
+                        (error)="onErrorImage(cartBook)" height="144" width="96" priority />
                 </a>
                 <a class="h-full flex flex-col items-start pt-5">
                     <a class="book__name text-gray-700 font-bold truncate hover:cursor-pointer hover:underline hover:text-red-500"

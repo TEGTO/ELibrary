@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 import { CartService, CLIENT_START_ADDING_ORDER_COMMAND_HANDLER, ClientStartAddingOrderCommand, DELETE_CART_BOOK_COMMAND_HANDLER, DeleteCartBookCommand, UPDATE_CART_BOOK_COMMAND_HANDLER, UpdateCartBookCommand } from '../../..';
 import { environment } from '../../../../../../environment/environment';
+import { BookFallbackCoverPipe } from '../../../../library';
 import { Book, CartBook, CommandHandler, CurrencyPipeApplier, getProductInfoPath, getProductsPath } from '../../../../shared';
 
 @Component({
@@ -29,6 +30,7 @@ export class CartDialogComponent implements OnInit, OnDestroy {
     @Inject(DELETE_CART_BOOK_COMMAND_HANDLER) private readonly deleteCartBookHandler: CommandHandler<DeleteCartBookCommand>,
     @Inject(CLIENT_START_ADDING_ORDER_COMMAND_HANDLER) private readonly startAddingOrderHandler: CommandHandler<ClientStartAddingOrderCommand>,
     private readonly dialogRef: MatDialogRef<CartDialogComponent>,
+    private readonly fallbackImagePipe: BookFallbackCoverPipe,
   ) { }
 
   ngOnInit(): void {
@@ -116,8 +118,12 @@ export class CartDialogComponent implements OnInit, OnDestroy {
   checkIfInStock(book: Book): boolean {
     return book.stockAmount > 0;
   }
-  onImageError(event: Event) {
-    const element = event.target as HTMLImageElement;
-    element.src = environment.bookCoverPlaceholder;
+
+  getCoverUrl(cartBook: CartBook): string {
+    return this.fallbackImagePipe.transform(cartBook.book.coverImgUrl, cartBook.book.id);
+  }
+
+  onErrorImage(cartBook: CartBook) {
+    this.fallbackImagePipe.markAsFailed(cartBook.book.id);
   }
 }

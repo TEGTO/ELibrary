@@ -25,7 +25,7 @@ Here are the main links for accessing the ELibrary project and its documentation
 - **Authentication**: JWT and OAuth 2.0
 - **API Gateway**: Ocelot for routing across microservices
 - **Resilience**: Polly for retry policies and fault tolerance
-- **Containerization**: Docker and Docker Compose
+- **Containerization**: Docker and Kubernetes
 - **CI/CD**: GitHub Actions for automated workflows
 - **AI Integration**: OpenAI’s GPT for recommendations
  

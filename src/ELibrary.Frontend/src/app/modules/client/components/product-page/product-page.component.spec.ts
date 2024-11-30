@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +7,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { of } from 'rxjs';
-import { BookService } from '../../../library';
+import { BookFallbackCoverPipe, BookService } from '../../../library';
 import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook } from '../../../shared';
 import { CART_ADD_BOOK_COMMAND_HANDLER } from '../../../shop';
 import { ProductPageComponent } from './product-page.component';
@@ -30,6 +31,9 @@ describe('ProductPageComponent', () => {
         const bookServiceSpyObj = jasmine.createSpyObj('BookService', ['getPaginated', 'getItemTotalAmount']);
         const addBookToCartHandlerSpyObj = jasmine.createSpyObj('CommandHandler', ['dispatch']);
         const currencyPipeApplierSpy = jasmine.createSpyObj('CurrencyPipeApplier', ['applyCurrencyPipe']);
+        const fallbackImagePipeSpy = jasmine.createSpyObj<BookFallbackCoverPipe>(['transform']);
+
+        fallbackImagePipeSpy.transform.and.returnValue("someurl");
 
         await TestBed.configureTestingModule({
             declarations: [ProductPageComponent],
@@ -38,10 +42,12 @@ describe('ProductPageComponent', () => {
                 MatDialogModule,
                 BrowserAnimationsModule,
                 RouterModule.forChild(routes),
+                NgOptimizedImage
             ],
             providers: [
                 { provide: BookService, useValue: bookServiceSpyObj },
                 { provide: CurrencyPipeApplier, useValue: currencyPipeApplierSpy },
+                { provide: BookFallbackCoverPipe, useValue: fallbackImagePipeSpy },
                 { provide: CART_ADD_BOOK_COMMAND_HANDLER, useValue: addBookToCartHandlerSpyObj },
                 provideRouter(
                     routes

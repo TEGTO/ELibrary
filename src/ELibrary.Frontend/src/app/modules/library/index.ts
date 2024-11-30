@@ -38,6 +38,7 @@ export * from "./components/book/inputs/publisher-input/publisher-input.componen
 export * from "./components/genre/genre-change-dialog/genre-change-dialog.component";
 export * from "./components/library-filter/library-filter.component";
 export * from "./components/publisher/publisher-change-dialog/publisher-change-dialog.component";
+export * from "./pipes/book-fallback-cover/book-fallback-cover.pipe";
 export * from "./services/library-dialog-manager/library-dialog-manager";
 export * from "./services/library-dialog-manager/library-dialog-manager.service";
 export * from "./services/library-entity-service/author-service/author-controller.service";

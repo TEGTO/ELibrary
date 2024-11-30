@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { NgOptimizedImage } from "@angular/common";
 import { ComponentFixture, fakeAsync, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
-import { BookService } from "../../../library";
+import { BookFallbackCoverPipe, BookService } from "../../../library";
 import { Book, CommandHandler, CurrencyPipeApplier, getDefaultBook, PlaceholderPipe, RouteReader } from "../../../shared";
 import { CART_ADD_BOOK_COMMAND_HANDLER, CartAddBookCommand } from "../../../shop";
 import { ProductInfoComponent } from "./product-info.component";
@@ -29,18 +30,22 @@ describe('ProductInfoComponent', () => {
         const currencyPipeApplierSpy = jasmine.createSpyObj('CurrencyPipeApplier', ['applyCurrencyPipe']);
         const addBookToCartHandlerSpy = jasmine.createSpyObj('CommandHandler', ['dispatch']);
         const routeReaderSpy = jasmine.createSpyObj<RouteReader>('RouteReader', ['readIdInt']);
+        const fallbackImagePipeSpy = jasmine.createSpyObj<BookFallbackCoverPipe>(['transform']);
+
+        fallbackImagePipeSpy.transform.and.returnValue("someurl");
 
         activatedRouteStub = new BehaviorSubject(convertToParamMap({ id: '1' }));
         routeReaderSpy.readIdInt.and.returnValue(of(mockBook));
 
         await TestBed.configureTestingModule({
-            imports: [PlaceholderPipe],
+            imports: [PlaceholderPipe, NgOptimizedImage],
             declarations: [ProductInfoComponent],
             providers: [
                 { provide: BookService, useValue: mockBookService },
                 { provide: CurrencyPipeApplier, useValue: currencyPipeApplierSpy },
                 { provide: RouteReader, useValue: routeReaderSpy },
                 { provide: CART_ADD_BOOK_COMMAND_HANDLER, useValue: addBookToCartHandlerSpy },
+                { provide: BookFallbackCoverPipe, useValue: fallbackImagePipeSpy },
                 provideRouter([]),
                 {
                     provide: ActivatedRoute,

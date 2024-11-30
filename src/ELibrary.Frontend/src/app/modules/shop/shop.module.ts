@@ -1,5 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -49,6 +49,7 @@ import { InputRangeDirective, LoadingComponent } from '../shared';
     LibraryModule,
     MatTimepickerModule,
     MatExpansionModule,
+    NgOptimizedImage,
     MatMenuModule,
     MatSelectModule,
     RouterModule,
