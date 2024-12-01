@@ -1,7 +1,7 @@
-﻿using LibraryShopEntities.Data;
+using DatabaseControl.Repositories;
+using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
 
 namespace LibraryShopEntities.Repositories.Shop
 {

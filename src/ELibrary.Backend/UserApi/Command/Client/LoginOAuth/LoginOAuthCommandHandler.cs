@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Responses;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserApi.Services.OAuth;
@@ -36,7 +37,7 @@ namespace UserApi.Command.Client.LoginOAuth
             var request = command.Request;
 
             var token = await oAuthServices[request.OAuthLoginProvider].GetAccessOnCodeAsync(
-                new GetAccessOnCodeParams(request.Code!, request.CodeVerifier!, request.RedirectUrl!), cancellationToken);
+                new GetAccessOnCodeParams(request.Code!, request.CodeVerifier, request.RedirectUrl), cancellationToken);
 
             if (string.IsNullOrEmpty(token.AccessToken))
                 throw new InvalidOperationException("Access token os null or empty!");
@@ -44,7 +45,7 @@ namespace UserApi.Command.Client.LoginOAuth
             var principal = tokenService.GetPrincipalFromToken(token.AccessToken);
 
             if (principal == null || principal.Identity == null || string.IsNullOrEmpty(principal.Identity.Name))
-                throw new InvalidOperationException("Calims principal are invalid!");
+                throw new InvalidOperationException("Claims principal are invalid!");
 
             var user = await userService.GetUserByLoginAsync(principal.Identity.Name, cancellationToken);
             if (user == null) throw new UnauthorizedAccessException("Invalid authentication!");
@@ -58,7 +59,7 @@ namespace UserApi.Command.Client.LoginOAuth
                 errors.AddRange(await userService.SetUserRolesAsync(user, new() { Roles.CLIENT }, cancellationToken));
                 if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
-                var refreshTokenParams = new RefreshTokenParams(user, token);
+                var refreshTokenParams = new RefreshTokenModel(user, token);
                 token = await authService.RefreshTokenAsync(refreshTokenParams, cancellationToken);
 
                 tokenDto = mapper.Map<AuthToken>(token);
@@ -68,7 +69,7 @@ namespace UserApi.Command.Client.LoginOAuth
             return new UserAuthenticationResponse
             {
                 AuthToken = tokenDto,
-                Email = user.Email,
+                Email = user.Email ?? "",
                 Roles = roles,
             };
         }

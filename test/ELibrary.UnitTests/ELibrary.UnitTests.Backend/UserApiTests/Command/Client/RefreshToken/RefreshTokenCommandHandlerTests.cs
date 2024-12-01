@@ -3,6 +3,7 @@ using AutoMapper;
 using Moq;
 using System.Security.Claims;
 using UserApi.Domain.Dtos;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
@@ -46,7 +47,7 @@ namespace UserApi.Command.Client.RefreshToken.Tests
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData))
                 .Returns(newAuthToken);
 
-            authServiceMock.Setup(a => a.RefreshTokenAsync(It.IsAny<RefreshTokenParams>(), It.IsAny<CancellationToken>()))
+            authServiceMock.Setup(a => a.RefreshTokenAsync(It.IsAny<RefreshTokenModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(tokenData);
 
             userServiceMock.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))

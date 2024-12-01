@@ -43,7 +43,7 @@ namespace UserApi.Services.OAuth.Google
                 Audience = new[] { oAuthSettings.ClientId }
             });
 
-            var userToBeCreated = new CreateUserFromOAuth
+            var userToBeCreated = new CreateUserFromOAuthModel
             {
                 Email = payload.Email,
                 LoginProviderSubject = payload.Subject,

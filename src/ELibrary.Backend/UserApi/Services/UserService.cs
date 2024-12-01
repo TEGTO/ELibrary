@@ -92,7 +92,7 @@ namespace UserApi.Services
         {
             return (await userManager.GetRolesAsync(user)).ToList();
         }
-        public async Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateData updateData, bool resetPassword, CancellationToken cancellationToken)
+        public async Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateModel updateData, bool resetPassword, CancellationToken cancellationToken)
         {
             List<IdentityError> identityErrors = new List<IdentityError>();
 

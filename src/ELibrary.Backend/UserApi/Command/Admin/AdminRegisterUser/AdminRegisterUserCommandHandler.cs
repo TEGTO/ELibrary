@@ -3,6 +3,7 @@ using ExceptionHandling;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UserApi.Domain.Dtos.Responses;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
@@ -32,14 +33,14 @@ namespace UserApi.Command.Admin.AdminRegisterUser
 
             var errors = new List<IdentityError>();
 
-            var registerParams = new RegisterUserParams(user, request.Password!);
+            var registerParams = new RegisterUserModel(user, request.Password);
             errors.AddRange((await authService.RegisterUserAsync(registerParams, cancellationToken)).Errors);
             if (Utilities.HasErrors(errors, out var errorResponse)) throw new AuthorizationException(errorResponse);
 
             errors.AddRange(await userService.SetUserRolesAsync(user, request.Roles, cancellationToken));
             if (Utilities.HasErrors(errors, out errorResponse)) throw new AuthorizationException(errorResponse);
 
-            user = await userService.GetUserByLoginAsync(request.Email!, cancellationToken);
+            user = await userService.GetUserByLoginAsync(request.Email, cancellationToken);
 
             if (user == null) { throw new InvalidDataException("Created user is not found!"); }
 

@@ -1,5 +1,6 @@
 ﻿using Authentication.Models;
 using Microsoft.AspNetCore.Identity;
+using UserApi.Domain.Models;
 using UserEntities.Domain.Entities;
 
 namespace UserApi.Services.Auth
@@ -19,15 +20,15 @@ namespace UserApi.Services.Auth
 
         #region IAuthService Members
 
-        public async Task<IdentityResult> RegisterUserAsync(RegisterUserParams registerParams, CancellationToken cancellationToken)
+        public async Task<IdentityResult> RegisterUserAsync(RegisterUserModel registerModel, CancellationToken cancellationToken)
         {
-            return await userManager.CreateAsync(registerParams.User, registerParams.Password);
+            return await userManager.CreateAsync(registerModel.User, registerModel.Password);
         }
-        public async Task<AccessTokenData> LoginUserAsync(LoginUserParams loginParams, CancellationToken cancellationToken)
+        public async Task<AccessTokenData> LoginUserAsync(LoginUserModel loginModel, CancellationToken cancellationToken)
         {
-            var user = loginParams.User;
+            var user = loginModel.User;
 
-            if (!await userManager.CheckPasswordAsync(user, loginParams.Password))
+            if (!await userManager.CheckPasswordAsync(user, loginModel.Password))
             {
                 throw new UnauthorizedAccessException("Invalid authentication. Check Login or password.");
             }
@@ -39,10 +40,10 @@ namespace UserApi.Services.Auth
 
             return tokenData;
         }
-        public async Task<AccessTokenData> RefreshTokenAsync(RefreshTokenParams refreshTokenParams, CancellationToken cancellationToken)
+        public async Task<AccessTokenData> RefreshTokenAsync(RefreshTokenModel refreshTokenModel, CancellationToken cancellationToken)
         {
-            var user = refreshTokenParams.User;
-            var accessTokenData = refreshTokenParams.AccessTokenData;
+            var user = refreshTokenModel.User;
+            var accessTokenData = refreshTokenModel.AccessTokenData;
 
             if (user == null)
             {

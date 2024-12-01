@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DatabaseControl.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using MockQueryable.Moq;
 using Moq;
 using Polly;
 using Polly.Registry;
-using Shared.Repositories;
 
 namespace DatabaseControl.Tests
 {

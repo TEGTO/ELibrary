@@ -3,6 +3,7 @@ using AutoMapper;
 using Moq;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
@@ -46,7 +47,7 @@ namespace UserApi.Command.Client.LoginUser.Tests
             userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None))
                 .ReturnsAsync(roles);
 
-            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>()))
+            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(tokenData);
 
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);

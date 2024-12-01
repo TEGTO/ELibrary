@@ -33,9 +33,9 @@ namespace UserApi.Command.Client.UpdateUser.Tests
             var user = new User { Email = "testuser@example.com" };
 
             var updateRequest = new UserUpdateDataRequest { Email = "newemail@example.com" };
-            var updateData = new UserUpdateData { Email = "newemail@example.com" };
+            var updateData = new UserUpdateModel { Email = "newemail@example.com", UserName = "" };
 
-            mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(updateData);
+            mapperMock.Setup(m => m.Map<UserUpdateModel>(updateRequest)).Returns(updateData);
 
             userServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
@@ -57,9 +57,9 @@ namespace UserApi.Command.Client.UpdateUser.Tests
             var errors = new List<IdentityError> { new IdentityError { Description = "Update failed" } };
 
             var updateRequest = new UserUpdateDataRequest { Email = "newemail@example.com" };
-            var updateData = new UserUpdateData { Email = "newemail@example.com" };
+            var updateData = new UserUpdateModel { Email = "newemail@example.com", UserName = "" };
 
-            mapperMock.Setup(m => m.Map<UserUpdateData>(updateRequest)).Returns(updateData);
+            mapperMock.Setup(m => m.Map<UserUpdateModel>(updateRequest)).Returns(updateData);
 
             userServiceMock.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);

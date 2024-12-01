@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DatabaseControl.Repositories;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
-using Shared.Repositories;
 using UserEntities.Data;
 using UserEntities.Domain.Entities;
 

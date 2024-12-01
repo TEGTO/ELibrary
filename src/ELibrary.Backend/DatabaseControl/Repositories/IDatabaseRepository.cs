@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Shared.Repositories
+namespace DatabaseControl.Repositories
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S2326:Unused type parameters should be removed", Justification = "<Pending>")]
     public interface IDatabaseRepository<TContext> where TContext : DbContext

@@ -11,7 +11,7 @@ export class BookFallbackCoverPipe implements PipeTransform {
   private readonly failedImages = new Set<number>();
 
   transform(coverImgUrl: string, bookId: number): string {
-    if (this.failedImages.has(bookId) || !bookId || !coverImgUrl) {
+    if (this.failedImages.has(bookId) || !bookId) {
       return environment.bookCoverPlaceholder;
     }
     return coverImgUrl;

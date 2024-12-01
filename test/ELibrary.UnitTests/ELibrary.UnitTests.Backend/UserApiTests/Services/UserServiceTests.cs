@@ -182,7 +182,7 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var updateData = new UserUpdateData { UserName = "newuser", Email = "newemail@example.com", Password = "newpass", OldPassword = "oldpass" };
+            var updateData = new UserUpdateModel { UserName = "newuser", Email = "newemail@example.com", Password = "newpass", OldPassword = "oldpass" };
             var identityResult = IdentityResult.Success;
 
             userManagerMock.Setup(x => x.SetUserNameAsync(user, updateData.UserName)).ReturnsAsync(identityResult);
@@ -202,7 +202,7 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var updateData = new UserUpdateData { UserName = "newuser", Email = "newemail@example.com", Password = "newpass", OldPassword = "oldpass" };
+            var updateData = new UserUpdateModel { UserName = "newuser", Email = "newemail@example.com", Password = "newpass", OldPassword = "oldpass" };
             var identityErrors = new List<IdentityError> { new IdentityError { Description = "Password change failed" } };
 
             userManagerMock.Setup(x => x.SetUserNameAsync(user, updateData.UserName)).ReturnsAsync(IdentityResult.Success);

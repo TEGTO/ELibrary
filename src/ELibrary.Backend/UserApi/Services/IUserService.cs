@@ -15,6 +15,6 @@ namespace UserApi.Services
         public Task<List<string>> GetUserRolesAsync(User user, CancellationToken cancellationToken);
         public Task<int> GetUserTotalAmountAsync(AdminGetUserFilter filter, CancellationToken cancellationToken);
         public Task<List<IdentityError>> SetUserRolesAsync(User user, List<string> roles, CancellationToken cancellationToken);
-        public Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateData updateData, bool resetPassword, CancellationToken cancellationToken);
+        public Task<List<IdentityError>> UpdateUserAsync(User user, UserUpdateModel updateData, bool resetPassword, CancellationToken cancellationToken);
     }
 }

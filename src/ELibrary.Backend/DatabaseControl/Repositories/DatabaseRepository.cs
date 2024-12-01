@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Polly;
 using Polly.Registry;
 
-namespace Shared.Repositories
+namespace DatabaseControl.Repositories
 {
     public class DatabaseRepository<TContext> : IDatabaseRepository<TContext> where TContext : DbContext
     {

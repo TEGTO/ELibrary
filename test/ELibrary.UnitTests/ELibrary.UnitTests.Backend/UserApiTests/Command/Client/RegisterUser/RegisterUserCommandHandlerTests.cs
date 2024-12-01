@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Requests;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
@@ -45,8 +46,8 @@ namespace UserApi.Command.Client.RegisterUser.Tests
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
             mapperMock.Setup(m => m.Map<AuthToken>(tokenData)).Returns(authToken);
 
-            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
-            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
+            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
+            authServiceMock.Setup(a => a.LoginUserAsync(It.IsAny<LoginUserModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(tokenData);
 
             userServiceMock.Setup(a => a.SetUserRolesAsync(It.IsAny<User>(), It.IsAny<List<string>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new List<IdentityError>());
             userServiceMock.Setup(a => a.GetUserRolesAsync(user, CancellationToken.None)).ReturnsAsync(roles);
@@ -75,7 +76,7 @@ namespace UserApi.Command.Client.RegisterUser.Tests
 
             mapperMock.Setup(m => m.Map<User>(registrationRequest)).Returns(user);
 
-            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await registerUserCommandHandler.Handle(new RegisterUserCommand(registrationRequest), CancellationToken.None));

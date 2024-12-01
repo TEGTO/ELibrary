@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pagination;
 using Shared;
-using Shared.Repositories;
 using UserApi;
 using UserApi.Services;
 using UserApi.Services.Auth;
@@ -50,13 +49,20 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IGoogleOAuthHttpClient, GoogleOAuthHttpClient>();
 builder.Services.AddScoped<IUserOAuthCreationService, UserOAuthCreationService>();
 builder.Services.AddScoped<IUserAuthenticationMethodService, UserAuthenticationMethodService>();
-builder.Services.AddSingleton<IDatabaseRepository<UserIdentityDbContext>, DatabaseRepository<UserIdentityDbContext>>();
 builder.Services.AddScoped(provider => new Dictionary<OAuthLoginProvider, IOAuthService>
     {
         { OAuthLoginProvider.Google, provider.GetService<GoogleOAuthService>()! },
     });
 
 #endregion
+
+builder.Services.AddPagination(builder.Configuration);
+
+builder.Services.AddRepositoryWithResilience<UserIdentityDbContext>(builder.Configuration);
+
+builder.Services.AddCustomHttpClientServiceWithResilience(builder.Configuration);
+builder.Services.AddSharedFluentValidation(typeof(Program));
+builder.Services.ConfigureCustomInvalidModelStateResponseControllers();
 
 builder.Services.AddPagination(builder.Configuration);
 builder.Services.AddRepositoryWithResilience<UserIdentityDbContext>(builder.Configuration);
