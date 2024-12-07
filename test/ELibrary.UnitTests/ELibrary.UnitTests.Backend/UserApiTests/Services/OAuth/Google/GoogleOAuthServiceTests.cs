@@ -82,7 +82,7 @@ namespace UserApi.Services.OAuth.Google.Tests
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(tokenResult);
 
-            mockUserOAuthCreation.Setup(x => x.CreateUserFromOAuthAsync(It.IsAny<CreateUserFromOAuth>(), It.IsAny<CancellationToken>()))
+            mockUserOAuthCreation.Setup(x => x.CreateUserFromOAuthAsync(It.IsAny<CreateUserFromOAuthModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
             mockTokenService.Setup(service => service.CreateNewTokenDataAsync(user, It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))

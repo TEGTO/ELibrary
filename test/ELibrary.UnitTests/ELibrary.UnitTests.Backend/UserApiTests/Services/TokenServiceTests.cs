@@ -58,6 +58,7 @@ namespace UserApi.Services.Tests
 
             var accessTokenData = new AccessTokenData
             {
+                AccessToken = "",
                 RefreshToken = "test_refresh_token",
                 RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(7)
             };

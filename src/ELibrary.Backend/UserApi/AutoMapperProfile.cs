@@ -16,7 +16,7 @@ namespace UserApi
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email)) // Map Email to UserName
                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));   // Map Email to Email
 
-            CreateMap<UserUpdateDataRequest, UserUpdateData>()
+            CreateMap<UserUpdateDataRequest, UserUpdateModel>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
@@ -24,7 +24,7 @@ namespace UserApi
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
-            CreateMap<AdminUserUpdateDataRequest, UserUpdateData>()
+            CreateMap<AdminUserUpdateDataRequest, UserUpdateModel>()
               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
               .ForMember(dest => dest.OldPassword, opt => opt.MapFrom(src => src.Password));

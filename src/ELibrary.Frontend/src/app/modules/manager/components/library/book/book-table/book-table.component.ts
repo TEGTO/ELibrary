@@ -3,7 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { BookService, CREATE_BOOK_COMMAND_HANDLER, CreateBookCommand, DELETE_BOOK_COMMAND_HANDLER, DeleteBookCommand, UPDATE_BOOK_COMMAND_HANDLER, UpdateBookCommand } from '../../../../../library';
-import { Book, BookFilterRequest, CommandHandler, GenericTableComponent, defaultBookFilterRequest as getDefaultBookFilterRequest, getProductInfoPath, LocaleService, LocalizedDatePipe } from '../../../../../shared';
+import { Book, BookFilterRequest, CommandHandler, GenericTableComponent, defaultBookFilterRequest as getDefaultBookFilterRequest, getProductInfoPath, LocaleService } from '../../../../../shared';
 
 interface BookItem {
   id: number;
@@ -26,13 +26,11 @@ export class BookTableComponent implements OnInit {
   totalAmount$!: Observable<number>;
 
   private filterReq: BookFilterRequest = getDefaultBookFilterRequest();
-  private defaultPagination = { pageIndex: 1, pageSize: 10 };
+  private readonly defaultPagination = { pageIndex: 1, pageSize: 10 };
   columns = [
     { header: 'Name', field: 'name', linkPath: (item: any) => getProductInfoPath(item.id) },
-    { header: 'Publication Date', field: 'publicationDate', pipe: new LocalizedDatePipe(this.localeService.getLocale()) },
     { header: 'Author', field: 'author' },
     { header: 'Genre', field: 'genre' },
-    { header: 'Publisher', field: 'publisher' },
     { header: 'Price', field: 'price', pipe: new CurrencyPipe(this.localeService.getLocale(), this.localeService.getCurrency()) },
     { header: 'Stock Amount', field: 'stockAmount' },
   ];

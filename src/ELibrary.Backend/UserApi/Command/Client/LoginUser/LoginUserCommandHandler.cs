@@ -2,6 +2,7 @@
 using MediatR;
 using UserApi.Domain.Dtos;
 using UserApi.Domain.Dtos.Responses;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
@@ -28,10 +29,10 @@ namespace UserApi.Command.Client.LoginUser
             ValidateCommand(command);
 
             var request = command.Request;
-            var user = await userService.GetUserByLoginAsync(request.Login!, cancellationToken);
+            var user = await userService.GetUserByLoginAsync(request.Login, cancellationToken);
             if (user == null) throw new UnauthorizedAccessException("Invalid authentication! Wrong password or login!");
 
-            var loginParams = new LoginUserParams(user, request.Password!);
+            var loginParams = new LoginUserModel(user, request.Password);
             var token = await authService.LoginUserAsync(loginParams, cancellationToken);
 
             await authMethodService.SetUserAuthenticationMethodAsync(user, AuthenticationMethod.BaseAuthentication, cancellationToken);
@@ -42,7 +43,7 @@ namespace UserApi.Command.Client.LoginUser
             return new UserAuthenticationResponse
             {
                 AuthToken = tokenDto,
-                Email = user.Email,
+                Email = user.Email ?? "",
                 Roles = roles,
             };
         }

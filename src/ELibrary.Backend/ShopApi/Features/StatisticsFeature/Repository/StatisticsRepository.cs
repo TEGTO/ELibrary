@@ -1,7 +1,7 @@
-﻿using LibraryShopEntities.Data;
+﻿using DatabaseControl.Repositories;
+using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Shop;
 using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
 using ShopApi.Features.StatisticsFeature.Domain.Models;
 
 namespace ShopApi.Features.StatisticsFeature.Repository

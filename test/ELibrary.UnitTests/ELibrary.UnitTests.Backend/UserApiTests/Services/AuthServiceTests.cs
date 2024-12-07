@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Claims;
+using UserApi.Domain.Models;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
 
@@ -38,7 +39,7 @@ namespace UserApi.Services.Tests
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var password = "Password123";
-            var registerParams = new RegisterUserParams(user, password);
+            var registerParams = new RegisterUserModel(user, password);
             var identityResult = IdentityResult.Success;
 
             userManagerMock.Setup(x => x.CreateAsync(user, password)).ReturnsAsync(identityResult);
@@ -55,7 +56,7 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var loginParams = new LoginUserParams(user, "Password123");
+            var loginParams = new LoginUserModel(user, "Password123");
             var tokenData = new AccessTokenData { AccessToken = "token", RefreshToken = "refreshToken" };
 
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(true);
@@ -79,7 +80,7 @@ namespace UserApi.Services.Tests
         {
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
-            var loginParams = new LoginUserParams(user, "wrongPassword");
+            var loginParams = new LoginUserModel(user, "wrongPassword");
 
             userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginParams.Password)).ReturnsAsync(false);
 
@@ -101,7 +102,7 @@ namespace UserApi.Services.Tests
 
             var tokenData = new AccessTokenData { AccessToken = "old-access-token", RefreshToken = "valid-refresh-token" };
             var newTokenData = new AccessTokenData { AccessToken = "new-access-token", RefreshToken = "new-refresh-token" };
-            var tokenParams = new RefreshTokenParams(user, tokenData);
+            var tokenParams = new RefreshTokenModel(user, tokenData);
 
             userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
             userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
@@ -124,7 +125,7 @@ namespace UserApi.Services.Tests
             // Arrange
             var user = new User { UserName = "testuser", Email = "testuser@example.com" };
             var tokenData = new AccessTokenData { AccessToken = "invalid-token", RefreshToken = "invalid-refresh-token" };
-            var tokenParams = new RefreshTokenParams(user, tokenData);
+            var tokenParams = new RefreshTokenModel(user, tokenData);
 
             tokenServiceMock.Setup(x => x.GetPrincipalFromToken(tokenData.AccessToken)).Throws<UnauthorizedAccessException>();
 

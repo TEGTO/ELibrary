@@ -1,9 +1,9 @@
-﻿using LibraryShopEntities.Data;
+﻿using DatabaseControl.Repositories;
+using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Shop;
 using MockQueryable.Moq;
 using Moq;
 using Pagination;
-using Shared.Repositories;
 
 namespace LibraryShopEntities.Repositories.Shop.Tests
 {

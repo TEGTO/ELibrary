@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using UserApi.Domain.Dtos.Requests;
 using UserApi.Domain.Dtos.Responses;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 using UserEntities.Domain.Entities;
@@ -41,7 +42,7 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
             mapperMock.Setup(m => m.Map<AdminUserResponse>(user)).Returns(adminResponse);
 
-            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
+            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Success);
 
             userService.Setup(a => a.SetUserRolesAsync(user, adminRequest.Roles, CancellationToken.None)).ReturnsAsync(new List<IdentityError>());
             userService.Setup(a => a.GetUserByLoginAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
@@ -65,7 +66,7 @@ namespace UserApi.Command.Admin.AdminRegisterUser.Tests
 
             mapperMock.Setup(m => m.Map<User>(adminRequest)).Returns(user);
 
-            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
+            authServiceMock.Setup(a => a.RegisterUserAsync(It.IsAny<RegisterUserModel>(), It.IsAny<CancellationToken>())).ReturnsAsync(IdentityResult.Failed(errors.ToArray()));
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<AuthorizationException>(async () => await adminRegisterUserCommandHandler.Handle(new AdminRegisterUserCommand(adminRequest), CancellationToken.None));

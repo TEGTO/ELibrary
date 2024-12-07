@@ -5,6 +5,6 @@ namespace UserApi.Services.OAuth
 {
     public interface IUserOAuthCreationService
     {
-        public Task<User?> CreateUserFromOAuthAsync(CreateUserFromOAuth model, CancellationToken cancellationToken);
+        public Task<User?> CreateUserFromOAuthAsync(CreateUserFromOAuthModel model, CancellationToken cancellationToken);
     }
 }

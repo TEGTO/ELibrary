@@ -2,6 +2,7 @@
 using AutoMapper;
 using MediatR;
 using UserApi.Domain.Dtos;
+using UserApi.Domain.Models;
 using UserApi.Services;
 using UserApi.Services.Auth;
 
@@ -28,7 +29,7 @@ namespace UserApi.Command.Client.RefreshToken
 
             var tokenData = mapper.Map<AccessTokenData>(command.Request);
 
-            var principal = tokenService.GetPrincipalFromToken(tokenData.AccessToken!);
+            var principal = tokenService.GetPrincipalFromToken(tokenData.AccessToken);
 
             var user = await userService.GetUserAsync(principal, cancellationToken);
 
@@ -37,7 +38,7 @@ namespace UserApi.Command.Client.RefreshToken
                 throw new InvalidOperationException("User is not found by access token!");
             }
 
-            var refreshParams = new RefreshTokenParams(user, tokenData);
+            var refreshParams = new RefreshTokenModel(user, tokenData);
             var newToken = await authService.RefreshTokenAsync(refreshParams, cancellationToken);
 
             return mapper.Map<AuthToken>(newToken);

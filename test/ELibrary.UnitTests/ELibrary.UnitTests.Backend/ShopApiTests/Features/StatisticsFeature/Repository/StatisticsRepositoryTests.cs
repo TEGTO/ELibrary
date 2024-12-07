@@ -1,8 +1,8 @@
-﻿using LibraryShopEntities.Data;
+﻿using DatabaseControl.Repositories;
+using LibraryShopEntities.Data;
 using LibraryShopEntities.Domain.Entities.Shop;
 using MockQueryable.Moq;
 using Moq;
-using Shared.Repositories;
 using ShopApi.Features.StatisticsFeature.Domain.Models;
 using ShopApi.Features.StatisticsFeature.Repository;
 

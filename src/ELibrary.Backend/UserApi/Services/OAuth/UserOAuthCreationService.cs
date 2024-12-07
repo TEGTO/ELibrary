@@ -15,7 +15,7 @@ namespace UserApi.Services.OAuth
             this.authMethodService = authMethodService;
         }
 
-        public async Task<User?> CreateUserFromOAuthAsync(CreateUserFromOAuth model, CancellationToken cancellationToken)
+        public async Task<User?> CreateUserFromOAuthAsync(CreateUserFromOAuthModel model, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByLoginAsync(nameof(model.AuthMethod), model.LoginProviderSubject);
 

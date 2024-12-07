@@ -19,7 +19,7 @@ namespace UserApi.Command.Client.UpdateUser
 
         public async Task<Unit> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
         {
-            var updateData = mapper.Map<UserUpdateData>(command.Request);
+            var updateData = mapper.Map<UserUpdateModel>(command.Request);
             var user = await userService.GetUserAsync(command.UserPricipal, cancellationToken);
 
             if (user == null)

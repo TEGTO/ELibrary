@@ -1,11 +1,12 @@
-﻿using EntityFramework.Exceptions.PostgreSQL;
+using DatabaseControl;
+using DatabaseControl.Repositories;
+using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Polly;
 using Resilience;
-using Shared.Repositories;
 
 namespace DatabaseControl
 {

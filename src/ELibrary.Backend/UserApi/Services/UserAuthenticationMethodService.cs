@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shared.Repositories;
+﻿using DatabaseControl.Repositories;
+using Microsoft.EntityFrameworkCore;
 using UserEntities.Data;
 using UserEntities.Domain.Entities;
 

@@ -23,7 +23,7 @@ namespace Caching
 
         public ValueTask CacheRequestAsync(
             OutputCacheContext context,
-            CancellationToken cancellationToken)
+            CancellationToken cancellation)
         {
             var attemptOutputCaching = AttemptOutputCaching(context);
             context.EnableOutputCaching = true;
@@ -56,12 +56,12 @@ namespace Caching
             return ValueTask.CompletedTask;
         }
         public ValueTask ServeFromCacheAsync
-            (OutputCacheContext context, CancellationToken cancellationToken)
+            (OutputCacheContext context, CancellationToken cancellation)
         {
             return ValueTask.CompletedTask;
         }
         public ValueTask ServeResponseAsync
-            (OutputCacheContext context, CancellationToken cancellationToken)
+            (OutputCacheContext context, CancellationToken cancellation)
         {
             var response = context.HttpContext.Response;
 

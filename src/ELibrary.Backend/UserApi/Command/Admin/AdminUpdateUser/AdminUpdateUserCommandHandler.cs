@@ -24,8 +24,8 @@ namespace UserApi.Command.Admin.AdminUpdateUser
 
             var request = command.Request;
 
-            var updateData = mapper.Map<UserUpdateData>(request);
-            var user = await userService.GetUserByLoginAsync(request.CurrentLogin!, cancellationToken);
+            var updateData = mapper.Map<UserUpdateModel>(request);
+            var user = await userService.GetUserByLoginAsync(request.CurrentLogin, cancellationToken);
 
             if (user == null) { throw new InvalidDataException("User to update is not found!"); }
 

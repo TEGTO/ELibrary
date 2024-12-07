@@ -28,7 +28,7 @@ namespace UserApi.Services.OAuth.Tests
             // Arrange
             var existingUser = new User { UserName = "existingUser@example.com" };
 
-            var model = new CreateUserFromOAuth
+            var model = new CreateUserFromOAuthModel
             {
                 Email = "newuser@example.com",
                 LoginProviderSubject = "12345",
@@ -52,7 +52,7 @@ namespace UserApi.Services.OAuth.Tests
             mockUserManager.Setup(m => m.AddLoginAsync(It.IsAny<User>(), It.IsAny<UserLoginInfo>()))
                 .ReturnsAsync(IdentityResult.Success);
 
-            var model = new CreateUserFromOAuth
+            var model = new CreateUserFromOAuthModel
             {
                 Email = "newuser@example.com",
                 LoginProviderSubject = "12345",
